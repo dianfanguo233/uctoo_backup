@@ -1,0 +1,53 @@
+<div class="grey-line">
+    <div class="row official-shop clearfix">
+            <div class="grid_3">
+                <h3 class="col-title"> 精品推荐 </h3><span class="liner"></span><!--daley:2014.06.30:style="width:50px" for IE9-->
+                <ul class="list_product_widget clearfix">
+                    <foreach name="featured" item="goods">
+                    <lt name="key" value="3">
+                    <li class="clearfix">
+                        <a href="{$goods.url}" title="{$goods.name}"><img width="50" style="width:50px" src="{$goods.icon}" class="fll" />{$goods.name}</a> 
+                        <span class="amount">¥{$goods.price}</span>
+                    </li>
+                    </lt>
+                    </foreach>
+                </ul>
+            </div><!-- widget -->
+
+            <div class="grid_3">
+                <h3 class="col-title"> 最新上架 </h3><span class="liner"></span>
+                <ul class="list_product_widget clearfix">
+                    <foreach name="newgoods" item="goods">
+                    <li class="clearfix">
+                        <a href="{$goods.url}" title="{$goods.name}"><img width="50" style="width:50px" src="{$goods.icon}" class="fll" />{$goods.name}</a> 
+                        <span class="amount">¥{$goods.price}</span>
+                    </li>
+                    </foreach>
+                </ul>
+            </div><!-- widget -->
+
+            <div class="grid_3">
+                <h3 class="col-title"> 热卖产品 </h3><span class="liner"></span>
+                <ul class="list_product_widget clearfix">
+                    <foreach name="hotgoods" item="goods">
+                    <li class="clearfix">
+                        <a href="{$goods.url}" title="{$goods.name}"><img width="50" style="width:50px" src="{$goods.icon}" class="fll" />{$goods.name}</a> 
+                        <span class="amount">¥{$goods.price}</span>
+                    </li>
+                    </foreach>
+                </ul>
+            </div><!-- widget -->
+
+            <div class="grid_3">
+                <h3 class="col-title"> 随机推荐 </h3><span class="liner"></span>
+                <ul class="list_product_widget clearfix">
+                    <foreach name="suijigoods" item="goods">
+                    <li class="clearfix">
+                        <a href="{$goods.url}" title="{$goods.name}"><img width="50" style="width:50px" src="{$goods.icon}" class="fll" />{$goods.name}</a> 
+                        <span class="amount">¥{$goods.price}</span>
+                    </li>
+                    </foreach>
+                </ul>
+            </div><!-- widget -->
+    </div><!-- row -->
+</div>

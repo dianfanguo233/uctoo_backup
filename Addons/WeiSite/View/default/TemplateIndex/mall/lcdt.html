@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+<title>楼层导航</title>
+<link rel="stylesheet" href="{:CUSTOM_TEMPLATE_PATH}Index/mall/css/reset.css" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/css/reset.css" />
+<link rel="stylesheet" href="{:CUSTOM_TEMPLATE_PATH}Index/mall/css/style.css" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/css/style.css" />
+<script src="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/jquery-1.8.2.min.js" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/jquery-1.8.2.min.js"></script>
+<script src="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/iscroll.js" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/iscroll.js"></script>
+<script src="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/core.js" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/core.js"></script>
+<script src="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/index.js" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/index.js"></script>
+<script src="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/swipe.js" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/swipe.js"></script>
+<script src="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/jquery.touchwipe.min.js" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/jquery.touchwipe.min.js"></script>
+</head>
+
+<body style="background:#ffffff;">
+
+<div class="top_menu">
+<a class="logo" href="{:CUSTOM_TEMPLATE_PATH}Index/mall/index.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/index.html"></a>
+<a class="member" href="{:CUSTOM_TEMPLATE_PATH}Index/mall/hyzx.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/hyzx.html"></a>
+</div>
+
+<div id="wrap" >
+    <div id="test"></div>
+     <!--手机上的测试条，相当于console.log-->
+       <div class="container" id="container">
+         <div class="main" style="  " >
+         <div style=" position:relative; margin-top:60px;">
+          <div class="pp_tab pp_tab2"><a href="{:CUSTOM_TEMPLATE_PATH}Index/mall/ppdt.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/ppdt.html">品类</a><a href="lcdt.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/lcdt.html"  class="on">地图</a></div>
+              <a href="{:CUSTOM_TEMPLATE_PATH}Index/mall/kfzx.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/kfzx.html" class="kfzx">客服中心</a>
+              <div class="xzlc">
+              <a class="go_s" href=""></a>
+              <div class="lclist">
+              <ul class="lcxz">
+              <li>1F</li>
+              <li>2F</li>
+              <li>3F</li>
+              <li>4F</li>
+              <li>5F</li>
+              </ul>
+              </div>
+              <a class="go_x" href=""></a>
+              </div>
+              <div class="dtu">
+              
+              <div><a href="images/lcmap.jpg" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/images/lcmap.jpg" target="_blank"><img src="images/lcmap.jpg" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/images/lcmap.jpg"  /></a></div>
+              <div><a href="images/lcmap.jpg" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/images/lcmap.jpg" target="_blank"><img src="images/lcmap.jpg" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/images/lcmap.jpg"  /></a></div>
+              <div><a href="images/lcmap.jpg" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/images/lcmap.jpg" target="_blank"><img src="images/lcmap.jpg" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/images/lcmap.jpg" /></a></div>
+              <div><a href="images/lcmap.jpg" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/images/lcmap.jpg" target="_blank"><img src="images/lcmap.jpg" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/images/lcmap.jpg" /></a></div>
+              <div><a href="images/lcmap.jpg" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/images/lcmap.jpg" target="_blank"><img src="images/lcmap.jpg" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/images/lcmap.jpg" /></a></div>
+              </div>
+            </div>  
+            <div class="mina">
+            <div class="tjsjt">推荐商家</div>
+              <div class="serviceBlock" id="serviceBlock" style="position:relative;">
+            
+                     <div class="con " style="width:100%; ">
+              <div></div>
+             
+              <div class="pp_list">
+             
+             
+              <ul class="">
+              <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo1.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo1.png*/; background-size:100% auto;"></div><p>卡宾</p><p class="sm">8.8折优惠!</p></A></li>
+                <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo2.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo2.png*/; background-size:100% auto;"></div><p>B.TBOY</p><p></p></A></li>
+                  <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo3.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo3.png*/; background-size:100% auto;"></div><p>道博</p><p class="sm">新活动!</p></A></li>
+                    <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo4.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo4.png*/; background-size:100% auto;"></div><p>度比古卡</p><p class="sm"></p></A></li>
+                      <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo5.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo5.png*/; background-size:100% auto;"></div><p>森马</p><p class="sm">8.8折优惠!</p></A></li>
+                       <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo6.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo6.png*/; background-size:100% auto;"></div><p>佐丹奴</p><p class="sm"></p></A></li>
+                                       <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo4.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo4.png*/; background-size:100% auto;"></div><p>度比古卡</p><p class="sm"></p></A></li>
+                      <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo5.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo5.png*/; background-size:100% auto;"></div><p>森马</p><p class="sm">8.8折优惠!</p></A></li>
+                       <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo6.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo6.png*/; background-size:100% auto;"></div><p>佐丹奴</p><p class="sm"></p></A></li>
+                        <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo5.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo5.png*/; background-size:100% auto;"></div><p>森马</p><p class="sm">8.8折优惠!</p></A></li>
+                       <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo6.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo6.png*/; background-size:100% auto;"></div><p>佐丹奴</p><p class="sm"></p></A></li>
+                                       <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo4.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo4.png*/; background-size:100% auto;"></div><p>度比古卡</p><p class="sm"></p></A></li>
+                      <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo5.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo5.png*/; background-size:100% auto;"></div><p>森马</p><p class="sm">8.8折优惠!</p></A></li>
+                       <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo6.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo6.png*/; background-size:100% auto;"></div><p>佐丹奴</p><p class="sm"></p></A></li>
+                        <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo5.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo5.png*/; background-size:100% auto;"></div><p>森马</p><p class="sm">8.8折优惠!</p></A></li>
+                       <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo6.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo6.png*/; background-size:100% auto;"></div><p>佐丹奴</p><p class="sm"></p></A></li>
+                                       <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo4.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo4.png*/; background-size:100% auto;"></div><p>度比古卡</p><p class="sm"></p></A></li>
+                      <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo5.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo5.png*/; background-size:100% auto;"></div><p>森马</p><p class="sm">8.8折优惠!</p></A></li>
+                       <li><A href="sjsy.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/sjsy.html"><div class="pp_pic" style="background:url(images/logo_lo6.png)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/logo_lo6.png*/; background-size:100% auto;"></div><p>佐丹奴</p><p class="sm"></p></A></li>
+                         <div  style="clear:both;"></div>
+                      </ul>
+                     
+                <div  style="clear:both;"></div>
+              
+              
+            
+             
+              </div>
+              
+              <div style="height:80px;"></div>
+              
+              
+              
+              
+              
+                </div>
+              
+              </div>
+              </div>
+         </div>
+      </div>
+</div>
+              
+              
+              
+              
+              
+  <script>
+  $(function(){
+	  $(".xzlc").touchwipe({
+		   wipeLeft: function() { 
+  
+	  },
+     wipeRight: function() { 
+ },
+     wipeUp: function() {  
+	  $(".go_x").trigger("click"); 
+	  
+	 },
+     wipeDown: function() {// alert("down");
+	 
+	   
+	     $(".go_s").trigger("click"); 
+	  },
+     min_move_x: 20,
+     min_move_y: 20,
+     preventDefaultEvents: true
+});
+
+	   $(".tjsjt").touchwipe({
+     wipeLeft: function() { 
+  
+	  },
+     wipeRight: function() { 
+ },
+     wipeUp: function() {  
+	 
+	   $(".mina").animate({"top":"300px"},500);
+	 },
+     wipeDown: function() {// alert("down");
+	    $(".mina").animate({"top":"30px"},500);
+	  },
+     min_move_x: 200,
+     min_move_y: 20,
+     preventDefaultEvents: true
+});
+
+
+
+	  $(".tjsjt").toggle(function(){
+		  
+		  $(".mina").animate({"top":"30px"},500);
+		  
+		  },function(){
+		  
+		  $(".mina").animate({"top":"300px"},500);
+		  })
+	  i=0;
+	  
+	  $(".go_s").click(function(e) {
+       i=i+1; 
+	   if(i>4)
+	   {
+		   i=0;
+		   }
+		$(".lcxz").animate({"top":-40*i},500);
+		
+		return false;
+    });
+	  $(".go_x").click(function(e) {
+       i=i-1; 
+	   if(i<=-1)
+	   {
+		   i=4;
+		   $(".lcxz").animate({"top":-40*i},500);
+		   }
+		   else
+		   {
+		$(".lcxz").animate({"top":-40*i},500);
+		   }
+		return false;
+    });
+	  
+	  
+	  
+	  })
+  
+  </script>            
+              
+                
+ <!--底部菜单-->
+ <div class="bottom_menu">
+ <ul>
+<li><a href="index.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/index.html"><span class="bmico bmico1"></span>首页</a></li>
+ <li><a href="zxhd.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/zxhd.html"><span class="bmico bmico2"></span>最新活动</a></li>
+ <li><a href="zxyh.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/zxyh.html"><span class="bmico bmico3"></span>优惠推荐</a></li>
+ <li class="on"><a href="ppdt.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/ppdt.html"><span class="bmico bmico4"></span>商家导航</a></li>
+ 
+ </ul>
+ 
+ </div>
+ 
+ <!--底部菜单-->             
+              
+              
+
+ 
+</body>
+</html>

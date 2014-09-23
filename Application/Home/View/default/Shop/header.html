@@ -1,0 +1,130 @@
+<header id="header">
+			<div class="extrabox" style="display:none;">
+				<div class="row clearfix">
+					<div class="extra-content">
+						<!-- grid 8 -->
+
+						<div class="grid_4">
+							<h3 class="col-title"> 留言咨询 </h3><span class="liner"></span>
+							<div class="widget-content">
+								<form method="post" id="contactForm-widget" action="processForm.php">
+									<div class="clearfix">
+										<div class="grid_6 alpha fll"><input type="text" name="senderName" id="senderName" placeholder="姓名称呼" class="requiredField" /></div>
+										<div class="grid_6 omega flr"><input type="text" name="senderEmail" id="senderEmail" placeholder="Email邮箱地址" class="requiredField email" /></div>
+									</div>
+									<div><textarea name="message" id="message" placeholder="留言内容" class="requiredField" rows="6"></textarea></div>
+									<input type="submit" id="sendMessage" name="sendMessage" value="发送留言" />
+									<span>  </span>
+								</form><!-- end form -->
+							</div><!-- widget content -->
+						</div><!-- grid 4 -->
+					</div><!-- extra content -->
+
+					<div class="arrow-down"><i class="icon-angle-down"></i></div><!-- arrow down -->
+				</div><!-- end row -->
+			</div>	<!-- end extrabox -->
+
+			<div class="head">
+				<div class="row clearfix">
+					<div class="logo">
+						<a href="{:SITE_URL}" title="UCToo HTML5 Template"><img src="__STATIC__/uctoo/images/logo.png" alt="UCToo HTML5 Template"></a>
+					</div><!-- end logo -->
+
+
+					<div class="shopping_bag">
+						<div class="header_bag"><!--daley:2014.06.30:add:if-->
+							<a href="{:U('shopcart')}"><i class="icon-shopping-cart mid"></i><span id="topCart_allnum"><if condition="$CartGoods.allnum neq ''">{$CartGoods.allnum}<else />0</if></span></a>
+						</div>
+					
+						<div class="view_cart_mini">
+							<div class="view_cart">
+								<ul class="cart_list" id="topCart_goods">
+                                	<!--daley:2014.06.30:add:if-->
+                                	<if condition="$CartGoods neq ''">
+									<foreach name="CartGoods" item="goods">
+									<notempty name="goods.id">
+									<li class="clearfix"><!--daley:2014.06.30:style="width:50px" for IE9-->
+										<a href="{$goods.url}"><img class="fll" width="50" style="width:50px" src="{$goods.icon}" /></a>
+										<div class="cart_list_product_title">
+											<a href="{$goods.url}">{$goods.name}</a>
+											<div>数量: {$goods.num}</div>
+                                            <if condition="$goods.ori_attr neq ''"><div>属性: {$goods.attr}</div></if>
+										</div>
+										<div class="price_remover">
+											<a href="{:U('shopcart','act=del&id='.$goods['id'].'&slt_attrids='.$goods['slt_attrids'])}" class="remove" title="删除">×</a>
+											<span class="amount">¥{$goods.price}</span>
+										</div>
+									</li>
+									</notempty>
+									</foreach>
+									<else />
+                                    <li style="text-align:center">您还未选购商品哦。</li>
+                                    </if>
+						        </ul>
+					
+								<span class="total_checkout fll">总额</span><!--daley:2014.06.30:add:if-->
+								<span class="amount_total flr" id="topCart_allprice">¥<if condition="$CartGoods.allprice neq ''">{$CartGoods.allprice}<else />0.00</if></span>
+								<div class="tac">
+									<a href="{:U('shopcart')}" class="tbutton mt medium"><span style="width:122px">查看购物车</span></a>   
+									<a href="{:U('shoppay')}" class="tbutton mt medium color2"><span style="width:154px"><i class="icon-credit-card mid"></i>选好，去结账</span></a>
+								</div>
+							</div>
+						</div>
+					</div><!-- end Shopping Cart -->
+					<div class="social social-head" style="display:none;">
+						<a href="#" class="toptip" title="Linkedin"><i class="icon-linkedin"></i></a>
+						<a href="#" class="toptip" title="Github"><i class="icon-github"></i></a>
+						<a href="#" class="toptip" title="Dribbble"><i class="icon-dribbble"></i></a>
+						<a href="#" class="toptip" title="instagram"><i class="icon-instagram"></i></a>
+						<a href="#" class="toptip" title="Google Plus"><i class="icon-google-plus"></i></a>
+						<a href="#" class="toptip" title="Facebook"><i class="icon-facebook"></i></a>
+						<a href="#" class="toptip" title="Twitter"><i class="icon-twitter"></i></a>
+					</div><!-- end social -->
+
+					<div class="info">
+						<!--daley:bak:<span>商店切换：<select style="width:100px;" onchange="qiehuan(this);">
+							<foreach name="shop" item="sp">
+							<option value="{$sp.id}" <if condition="$sp['id'] eq $sid">selected="selected"</if>>{$sp.title}</option>
+							</foreach>
+						</select></span>-->
+                        <span><i class="icon-envelope-alt"></i> contact@uctoo.com</span>
+                        <span><i class="icon-phone"></i>  UCToo官方QQ交流群: 102324323 </span>
+					</div><!-- end info -->
+					<script type="text/javascript">
+						function qiehuan(dom){
+							var id = dom.value;
+							$.get("{:U('qiehuan')}",{sid:id},function(data){
+								window.location.reload();
+							});
+						}
+					</script>
+				</div><!-- row -->
+			</div><!-- head -->
+
+			<div class="headdown">
+				<div class="row clearfix">
+					<nav>
+						<ul class="sf-menu">
+							<li><a href="{:SITE_URL}">首页</a>
+							</li>
+							<li class="current selectedLava"><a href="{:U('shopindex')}">商城</a>
+								<!--daley:bak:<ul>
+									<li><a href="{:U('shoppdlist')}">产品列表</a></li>
+									<li class="current"><a href="{:U('shopsidebar')}">列表页侧边栏</a></li>
+									<li><a href="{:U('shopproduct')}">产品详情</a></li>
+									<li><a href="{:U('shopcart')}">购物车</a></li>
+									<li><a href="{:U('shoppay')}">支付</a></li>
+								</ul>-->
+							</li>
+						</ul><!-- end menu -->
+					</nav><!-- end nav -->
+
+					<!--daley:continue:<div class="search">
+						<form action="{:U('search')}" id="search" method="post">
+							<input id="inputhead" name="search" type="text" onfocus="if (this.value=='开始搜索...') this.value = '';" onblur="if (this.value=='') this.value = '开始搜索...';" value="<empty name="search">开始搜索...<else />{$search}</empty>" placeholder="开始搜索..." style="cursor:text">
+							<button type="submit"><i class="icon-search"></i></button>
+						</form>
+					</div>-->
+				</div><!-- row -->
+			</div><!-- headdown -->
+		</header><!-- end header -->

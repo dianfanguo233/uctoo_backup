@@ -1,0 +1,130 @@
+<include file="Public/mobile_head"/>	
+<link href="{:CUSTOM_TEMPLATE_PATH}Index/DGLM/main.css?v={:SITE_VERSION}" rel="stylesheet" type="text/css">
+<body id="weisite" style="background:#eee url({$config.background}) no-repeat; background-size:100% 100%">
+<div class="container">
+    <if condition="!empty($slideshow)">
+    <section class="banner">
+    	<ul>
+        <volist name="slideshow" id="vo">
+        	<li>
+            	<a href="{$vo.url}"><img src="{$vo.img}"/></a>
+            	<span class="title">{$vo.title}</span>
+            </li>
+         </volist>
+        </ul>
+        <span class="identify">
+        <volist name="slideshow" id="vo">
+        	<em></em>
+         </volist>        
+        </span>
+    </section>
+    </if>
+    <if condition="!empty($category)">
+    <section >
+    	<div class="icon_lists" style="height: 100px">
+            <volist name="category" id="vo">
+                <a class="item" href="{$vo.url}">
+                    <span class="icon"><img src="{$vo.icon}"/></span>
+                    <span class="click_item_txt">{$vo.title}</span>
+                </a>
+            </volist>
+        </div>
+    </section>
+    </if>
+    <section>
+        <div class="warp-box">
+            <div class="item-box">
+                <h3 class="color1">本周推荐</h3>
+                <div class="row no-gutter">
+                    <div class="col-50 left">
+                        <a href="#">
+                            <span>【商城•美食】商城美食街新店开业</span>
+                            <img alt="图片" src="__STATIC__/uctoo/plugins/floors/img/tj1.png" />
+                        </a>
+                    </div>
+                    <div class="col-50 right">
+                        <div class="row no-gutter">
+                            <div class="col-50">
+                                <a href="javascript:void(0)">
+                                    <span>清凉一夏</span>
+                                </a>
+                            </div>
+                            <div class="col-50">
+                                <a href="javascript:void(0)">
+                                    <img alt="图片" src="__STATIC__/uctoo/plugins/floors/img/tj2.png" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row no-gutter">
+                            <div class="col-50">
+                                <a href="javascript:void(0)">
+                                    <span>爽口冰激凌</span>
+                                </a>
+                            </div>
+                            <div class="col-50">
+                                <a href="javascript:void(0)">
+                                    <img alt="图片" src="__STATIC__/uctoo/plugins/floors/img/tj3.png" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="warp-box">
+            <div class="item-box">
+                <h3 class="color2">优惠券</h3>
+                <div class="row no-gutter">
+                    <div class="col-50 left">
+                        <a href="#">
+                            <span>【商城•M记控】麦麦陪你激情渡过世界杯</span>
+                            <img alt="图片" src="__STATIC__/uctoo/plugins/floors/img/mc.png" />
+                        </a>
+                    </div>
+                    <div class="col-50 right">
+                        <div class="row no-gutter">
+                            <div class="col-50">
+                                <a href="javascript:void(0)">
+                                    <span>清凉一夏</span>
+                                </a>
+                            </div>
+                            <div class="col-50">
+                                <a href="javascript:void(0)">
+                                    <img alt="图片" src="__STATIC__/uctoo/plugins/floors/img/tj2.png" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row no-gutter">
+                            <div class="col-50">
+                                <a href="javascript:void(0)">
+                                    <span>爽口冰激凌</span>
+                                </a>
+                            </div>
+                            <div class="col-50">
+                                <a href="javascript:void(0)">
+                                    <img alt="图片" src="__STATIC__/uctoo/plugins/floors/img/tj3.png" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- 底部导航 -->
+{$footer_html}
+<!-- 统计代码 -->
+<notempty name="config.code">
+<p class="hide bdtongji">
+{$config.code}
+</p>
+</notempty>
+</body>
+<script type="text/javascript">
+$(function(){
+	$.WeiPHP.initBanner(true,5000);
+})
+
+</script>
+</html>

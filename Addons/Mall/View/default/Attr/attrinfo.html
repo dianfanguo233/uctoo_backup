@@ -1,0 +1,50 @@
+<extend name="Base/common" />
+<block name="body">
+  <div class="span9 page_message">
+    <section id="contents">
+      <include file="Addons/_nav" />  
+      <div class="tab-content"> 
+        <!--属性开始-->
+        <form action="<empty name="info.id">{:U('attradd')}<else />{:U('attredit')}</empty>" method="post" class="form-horizontal" id="form">
+          <notempty name="info.id"><input type="hidden" name="id" value="{$info.id}" /></notempty>
+          <div class="form-item cf">
+            <label class="item-label">属性名：<span class="check-tips">显示出来的名称，如：颜色</span></label>
+            <div class="controls">
+              <input type="text"  class="text input-large" name="name" value="{$info.name}" <eq name="at.atype" value="edit">disabled="disabled"</eq> />
+            </div>
+          </div>
+          <div class="form-item cf">
+            <label class="item-label">属性介绍：<span class="check-tips">&nbsp;</span></label>
+            <div class="controls">
+              <label class="textarea input-large">
+                <textarea name="desc" style="width:600px;">{$info.desc}</textarea>
+              </label>
+            </div>
+          </div>
+          <div class="form-item cf">
+            <button class="btn submit-btn ajax-post" id="submit" type="submit" target-form="form-horizontal">确 定</button>     
+           <button class="btn" type="button" onclick="javascript:history.back(-1);return false;" target-form="form-horizontal">返 回</button>
+          </div>
+        </form>
+        <!--属性结束-->
+        <!-- 预览 -->
+        <include file="Addons/weixinPreview" />  
+      </div>
+    </section>
+  </div>
+</block>
+<block name="script">
+  <link href="__STATIC__/datetimepicker/css/datetimepicker.css?v={:SITE_VERSION}" rel="stylesheet" type="text/css">
+  <php>if(C('COLOR_STYLE')=='blue_color') echo '
+    <link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css?v={:SITE_VERSION}" rel="stylesheet" type="text/css">
+    ';</php>
+  <link href="__STATIC__/datetimepicker/css/dropdown.css?v={:SITE_VERSION}" rel="stylesheet" type="text/css">
+  <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script> 
+  <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js?v={:SITE_VERSION}" charset="UTF-8"></script> 
+<script type="text/javascript">
+// $('#submit').click(function(){
+//   alert(123);
+//     $('#form').submit();
+// });
+</script> 
+</block>

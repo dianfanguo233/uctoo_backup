@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>详细资料页</title>
+    <link rel="stylesheet" href="{:ADDON_PUBLIC_PATH}/uctoo/f7/css/framework7.min.css">
+    <link rel="stylesheet" href="{:ADDON_PUBLIC_PATH}/uctoo/f7/css/my-app.css">
+    <link type="text/css" rel="stylesheet" href="__PUBLIC__/Core/js/ext/toastr/toastr.min.css"/>
+    <!-- jQuery库 -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="__STATIC__/jquery-1.10.2.min.js"></script>
+    <![endif]-->
+    <!--[if gte IE 9]><!-->
+    <script type="text/javascript" src="__STATIC__/jquery-2.0.3.min.js"></script>
+    <!--<![endif]-->
+    <script type="text/javascript" src="__PUBLIC__/Core/js/ext/toastr/toastr.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/Core/js/core.js"></script>
+</head>
+<body>
+    <div class="statusbar-overlay"></div>
+    <div class="views">
+        <div class="view view-main">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a class="back link" href="{:addons_url ( 'UserCenter://UserCenter/usercenter' )}"><i class="icon icon-back-blue"></i><span>返回</span></a>
+                    </div>
+                    <div class="center sliding">详细资料</div>
+                </div>
+            </div>
+            <div class="pages navbar-through toolbar-through">
+                <div data-page="index" class="page">
+                    <div class="page-content whitebg">
+                        <div class="row no-gutter padding-ud-15">
+                            <div class="col-40 warp-head-img">
+                                <img alt="用户头像" src="{:ADDON_PUBLIC_PATH}/uctoo/img/u-head.png" class="head-img" />
+                            </div>
+                            <div class="col-30 warp-baseinfo">
+                                <h4>昵称:{$user.nickname}</h4>
+                                <h5>积分：{$user.score}</h5>
+                                <h5>余额：0</h5>
+                            </div>
+                            <div class="col-30 warp-btns">
+                                <a href="{:addons_url ( 'UserCenter://Config/index' )}" class="btn blue">我的资料</a><br />
+                                <a href="javascript:void(0);" class="btn orange"><i></i>充<i></i><i></i>值<i></i></a>
+                            </div>
+                        </div>
+                        <div class="warp-jbzl">
+                            <div class="toolbar tabbar">
+                                <div class="toolbar-inner">
+                                    <a href="#tab1" class="tab-link active">基本资料</a>
+                                    <a href="#tab2" class="tab-link">修改密码</a>
+                                </div>
+                                <div class="tabs">
+                                    <div id="tab1" class="tab active">
+                                        <div class="list-block form">
+                                            <form action="{:addons_url ( 'UserCenter://Config/index' )}" method="post">
+                                                <ul>
+
+                                                    <li>
+                                                        <label>姓<i class="sm"></i><i class="sm"></i>名：</label>
+                                                        <input type="text" class="form-control" id="username" name="username" value="{$ucuser.username|op_t}"
+                                                               placeholder="真实姓名">
+                                                    </li>
+                                                    <li>
+                                                        <label>昵<i></i>称：</label>
+                                                        <input type="text" class="form-control" id="nickname" name="nickname" value="{$user.nickname|op_t}"
+                                                               placeholder="昵称">
+                                                    </li>
+                                                    <li>
+                                                        <label>性<i></i>别：</label>
+                                                        <label class="radio-inline">
+                                                            <input name="sex" type="radio" value="1"
+                                                            <eq name="user.sex" value="1"> checked</eq>
+                                                            > 男
+                                                        </label>
+                                                        <label class="radio-inline">
+                                                            <input name="sex" type="radio" value="2"
+                                                            <eq name="user.sex" value="2"> checked</eq>
+                                                            > 女
+                                                        </label>
+                                                        <label class="radio-inline">
+                                                            <input name="sex" type="radio" value="0"
+                                                            <eq name="user.sex" value="0"> checked</eq>
+                                                            > 保密
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label>手<i></i>机：</label>
+                                                        <input type="tel" placeholder="输入你的手机号" class="text input-medium" name="mobile" value="{$user.mobile}">
+                                                    </li>
+
+                                                    <li>
+                                                        <label>邮箱：</label>
+                                                        <input type="email" class="form-control" id="email" placeholder="邮箱" name="email"
+                                                               value="{$ucuser.email|htmlspecialchars}">
+                                                    </li>
+                                                </ul>
+                                                <button type="submit" class="button button-submit">保存</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div id="tab2" class="tab">
+
+
+
+                                        <div class="col-md-8">
+                                            <form id="changePasswordForm"  action="{:addons_url ( 'UserCenter://Config/doChangePassword' )}" method="post" class="form-horizontal">
+                                                <div class="form-group">
+                                                    <label for="inputOldPassword" class="col-sm-2 control-label">旧密码</label>
+
+                                                    <div class="col-sm-10">
+                                                        <input type="password" class="form-control" id="inputOldPassword" value="" name="old_password" placeholder="输入旧密码">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="inputNewPassword" class="col-sm-2 control-label">新密码</label>
+
+                                                    <div class="col-sm-10">
+                                                        <input type="password" class="form-control" id="inputNewPassword" value="" name="new_password" placeholder="输入新密码">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="inputConfirmPassword" class="col-sm-2 control-label">确认密码</label>
+
+                                                    <div class="col-sm-10">
+                                                        <input type="password" class="form-control" id="inputConfirmPassword" value="" name="confirm_password"" placeholder="输入确认密码">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-offset-2 col-sm-10">
+                                                        <p class="text-danger" id="submitTip"></p>
+                                                        <button type="submit" class="btn btn-primary">保存</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <block name="script">
+                                            <script>
+                                                //检查两次输入的密码是否一致
+                                                $(function(){
+                                                    $('#changePasswordForm').submit(function(e){
+                                                        var newPassword = $('#inputNewPassword').val();
+                                                        var confirmPassword = $('#inputConfirmPassword').val();
+                                                        if(newPassword != confirmPassword) {
+                                                            op_error('两次输入的密码不一致');
+                                                            e.stopPropagation();
+                                                            return false;
+                                                        }
+                                                    })
+                                                })
+                                            </script>
+                                        </block>
+
+
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="{:ADDON_PUBLIC_PATH}/uctoo/f7/js/framework7.min.js"></script>
+    <script type="text/javascript" src="{:ADDON_PUBLIC_PATH}/uctoo/f7/js/my-app.js"></script>
+</body>
+</html> 

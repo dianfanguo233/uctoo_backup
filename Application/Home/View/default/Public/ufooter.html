@@ -1,0 +1,61 @@
+<!-- start: FOOTER -->
+<block name="ufooter">
+<div class="footer clearfix">
+    <div class="footer-inner">
+    <a href="{:U('Home/Index/about')}" target="_blank">关于我们</a>&nbsp;&nbsp;&nbsp;<a href="{:U('home/index/help')}">使用说明</a></br>
+        本系统由 <strong><a href="http://www.uctoo.com" target="_blank">UCToo</a></strong> 强力驱动。   Copyright &copy; 2014 UCT Inc.
+    </div>
+    <div class="footer-items">
+        <span class="go-top"><i class="clip-chevron-up"></i></span>
+    </div>
+</div>
+</block>
+<!-- end: FOOTER -->
+<!-- start: MAIN JAVASCRIPTS -->
+<!--[if lt IE 9]>
+<script src="__STATIC__/uctoo/plugins/respond.min.js"></script>
+<script src="__STATIC__/uctoo/plugins/excanvas.min.js"></script>
+<script src="__STATIC__/uctoo/plugins/html5shiv.js"></script>
+<script type="text/javascript" src="__STATIC__/uctoo/js/jquery-1.10.2.min.js"></script>
+<![endif]-->
+<!--[if gte IE 9]><!-->
+<script type="text/javascript" src="__STATIC__/uctoo/js/jquery-2.0.3.min.js"></script>
+<!--<![endif]-->
+<script src="__STATIC__/uchome/plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js"></script>
+<script src="__STATIC__/uctoo/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="__STATIC__/uchome/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js"></script>
+<script src="__STATIC__/uctoo/plugins/blockUI/jquery.blockUI.js"></script>
+<script src="__STATIC__/uchome/plugins/iCheck/jquery.icheck.min.js"></script>
+<script src="__STATIC__/uchome/plugins/perfect-scrollbar/src/jquery.mousewheel.js"></script>
+<script src="__STATIC__/uchome/plugins/perfect-scrollbar/src/perfect-scrollbar.js"></script>
+<script src="__STATIC__/uchome/plugins/less/less-1.5.0.min.js"></script>
+<script src="__STATIC__/uchome/plugins/jquery-cookie/jquery.cookie.js"></script>
+<script src="__STATIC__/uchome/plugins/bootstrap-colorpalette/js/bootstrap-colorpalette.js"></script>
+<script src="__STATIC__/uchome/js/main.js"></script>
+<!-- end: MAIN JAVASCRIPTS -->
+
+<include file="Public/var"/>
+<block name="pagescript">
+    <!-- start: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
+    <script src="__STATIC__/uchome/plugins/flot/jquery.flot.js"></script>
+    <script src="__STATIC__/uchome/plugins/flot/jquery.flot.pie.js"></script>
+    <script src="__STATIC__/uchome/plugins/flot/jquery.flot.resize.min.js"></script>
+    <script src="__STATIC__/uchome/plugins/jquery.sparkline/jquery.sparkline.js"></script>
+    <script src="__STATIC__/uchome/plugins/jquery-easy-pie-chart/jquery.easy-pie-chart.js"></script>
+    <script src="__STATIC__/uchome/plugins/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+    <script src="__STATIC__/uchome/plugins/fullcalendar/fullcalendar/fullcalendar.js"></script>
+    <script src="__STATIC__/uchome/js/index.js"></script>
+    <!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
+    <script>
+        jQuery(document).ready(function() {
+            Main.init();
+            Index.init();
+        });
+    </script>
+</block>
+<block name="script"></block> <!-- 用于加载js代码 -->
+<!-- 页面footer钩子，一般用于加载插件JS文件和JS代码 -->
+{:hook('pageFooter', 'widget')}
+<div class="hidden"><!-- 用于加载统计代码等隐藏元素 -->
+	<block name="hidden"></block>
+</div>

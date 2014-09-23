@@ -1,0 +1,85 @@
+<extend name="Base/shop"/>
+<block name="body">
+<div class="page-content">
+			<div class="row official-shop clearfix mbs">
+				<div class="woo-title">
+					<h3 class="col-title"> 产品列表 <small>共 {$page.allpage} 页，{$page.allnum}件</small></h3><span class="liner mbt"></span>
+					<div class="filter_wrapper">
+					<form class="woocommerce-ordering" method="post" action="{:U('','cid='.$cid)}" name="orderform">
+						<input type="hidden" name="search" value="{$search}" /><!--daley:2014.06.30:add:style-->
+						<select name="orderby" class="orderby hasCustomSelect" onchange="orderform.submit();" style="padding-top:10px">
+							<option value="paixu" <eq name="orderby" value="paixu">selected="selected"</eq>>默认排序</option>
+							<option value="id desc" <eq name="orderby" value="id desc">selected="selected"</eq>>按时间排序</option>
+							<option value="price" <eq name="orderby" value="price">selected="selected"</eq>>按价格排序：从低到高</option>
+							<option value="price desc" <eq name="orderby" value="price desc">selected="selected"</eq>>按价格排序：从高到低</option>
+						</select>
+					</form>
+				</div>
+				</div><!-- woo title -->
+
+
+				<div id="masonry-container" class="mbt three-column transitions-enabled centered clearfix">
+				<div class="grid_12">
+					<ul class="products">
+						<foreach name="Products" item="goods">
+						<li class="grid_3">
+							<div class="product-content">
+								<div class="product-img">
+									<div class="product_1 flexslider">
+										<ul class="slides">
+											<li><a href="{$goods.url}"><img src="{$goods.icon}" /></a></li>
+											<!--<li><a href="{$goods.url}"><img src="{$goods.icon}" /></a></li>
+											<li><a href="{$goods.url}"><img src="{$goods.icon}" /></a></li>
+											<li><a href="{$goods.url}"><img src="{$goods.icon}" /></a></li>-->
+										</ul>
+									</div>
+								</div>
+								<a href="{$goods.url}" class="add-to"><i class="icon-shopping-cart mi"></i> 查看商品详情 </a><!-- 添加到购物车 onclick="addcart({$goods.id},$('#buyshop').val());"-->
+							</div><!-- product content -->
+
+							<h5> <a href="{$goods.url}">{$goods.name}</a> </h5>
+							<span class="price"><span class="from">售价: </span> <strong>  ￥{$goods.price} </strong></span>
+                            <div id="pro_attr_div_{$goods.id}" pro_id="{$goods.id}" style="display:none"><foreach name="goods.attrs1" item="v">
+                              <span style="float:left; line-height:24px">{$v[0].name}：</span>
+                              <div name="{$v[0].name}">
+                              <foreach name="v" item="vv">
+                              <span class="pro_attr" title="{$vv.desc}" path="{$vv.path}" price="{$vv.price}" onclick="pro_attr_click(this,0)" onmouseover="pro_attr_mouseover(this)" onmouseout="pro_attr_mouseout(this)" slt="0" attr_id="{$vv.id}">{$vv.value}</span>
+                              </foreach>
+                              </div>
+                              <span style="display:block; clear:both; height:16px"></span>
+                            </foreach></div>
+						</li><!-- product -->
+						</foreach>
+
+
+					</ul><!-- products -->
+				</div><!-- grid full -->
+				</div><!-- masonry -->
+
+				<div class="pagination-tt clearfix" id="page">
+				<ul>
+					<foreach name="page.show" key="k" item="p">
+					<if condition="$k+1 eq $page['now']">
+					<li><span>{$k+1}</span></li>
+					<else />
+					<li><a href="{$p}">{$k+1}</a></li>
+					</if>
+					</foreach>
+					<notempty name="page.lastpage">
+					<li><span>...</span></li>
+					<li><a href="{$page.lastpage}">{$page.allpage}</a></li>
+					</notempty>
+				</ul>
+				<span class="pages">第 {$page.now}/{$page.allpage} 页</span>
+			</div>
+			<script type="text/javascript">
+			$("#page a").click(function(){
+				$("form[name='orderform']").attr('action',$(this).attr('href')).submit();
+				return false;
+			});
+			</script>
+			</div><!-- row -->
+		</div><!-- end page content -->
+
+		<include file="Shop/productcols"/><!-- grey -->
+</block>

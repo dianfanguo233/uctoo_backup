@@ -1,0 +1,37 @@
+a:hover, .opened, .widget .list li.current a, .active .accordion-head, .active .toggle-head, .labele, .filterable li a:hover, .filterable li.current a, .services [class^="grid_"]:hover .service-icon, .evo_fc_day.has_events,
+.detailes a:hover, .detailes h5 a:hover, .preve:hover, .nexte:hover, #testimonials .flex-direction-nav a i:hover, .grey-line:hover .action-t i, #footer a:hover, .dropcap-border, .tags a:hover, 
+.ajde_evcal_calendar .calendar_header .evcal_arrows:hover, ul.newsticker a:hover, .breadcrumbIn ul li a:hover, .post-format i, .errori, .products .add-to:hover, .header_bag a:hover, .shopping_bag:hover .header_bag a, 
+ul.showcomments .entry-title i, table.shop_table .product-name a:hover, .woocommerce table.shop_table .product-name a:hover, .services [class^="grid_"]:hover .ico_l {
+	color: #f39c12
+}
+.load-color, #contactForm #sendMessage, #sendOrder, #login_form_official #login_button, #register_form_official #register_button, .headdown, .sf-menu ul li, .pagination-tt ul li a:hover, .side-navigation a.active,
+.nav-arrows a:hover, .mslider-arrow:hover, .big-slider .flex-direction-nav a, .projectslider .flex-direction-nav a:hover, ul.showcomments .reply a:hover, #commentform .send-message, .fLeft:hover, .fRight:hover,
+.service-i i, .service-older h3.service-title, #toTop, .tbutton, .dropcap, .footer-last, .progress-bar span, .post .blockquote-post, .hover-fx, .the-icons .span3 a:hover, .services [class^="grid_"]:hover .tbutton, 
+.service-ii i, #loginform #login-button, #filter_button, .table th, .table tfoot td, .header_bag span, .ui-widget-header, .header_v2 .sf-menu > li:hover > a, .header_v2 .sf-menu > li > a:hover, .header_v2 .sf-menu > li.current > a, 
+.co-info .co-info-back, .head #open-left, #contactForm-widget #sendMessage:hover {
+	background-color: #f39c12
+}
+.nicescroll-rails div {background-color: #f39c12 !important}
+.head, .pagination-tt ul li a, .side-navigation a.active, .active .accordion-head, .active .toggle-head, .sb-slider h3, .labele, .dropcap-border, #footer, .tags a:hover, .service-older [class^="grid_"]:hover h3, 
+.widget #searchwidget input:focus, #newsletters input:focus, .coupon_input:focus, #loginform #input-i:focus, .products [class^="grid_"]:hover .product-content, .products .add-to:hover, #footer .col-title,
+.col-title, .widget .list li a:hover, #track_input:focus, #contactForm #senderName:focus, #contactForm #senderEmail:focus, #login_form_official #login_input:focus, #register_form_official #register_input:focus,
+.widget .list li.current a, #contactForm #message:focus, #commentform input:focus, #commentform textarea:focus, .headdown .social a:hover, #contactForm-widget #senderName:focus, #contactForm-widget #senderEmail:focus, #contactForm-widget #message:focus {
+	border-color: #f39c12 !important
+}
+.sf-menu li li li:first-child {border-top-color: #f39c12 !important}
+.tabs li a.active {border-top: 2px solid #f39c12}
+.from-blog li:hover, .anyClass li:hover, .portfolio li:hover {border-bottom: 3px solid #f39c12}
+.arrow-down {border-top: 22px solid #f39c12}
+.action, .dark_action {border-left: 2px solid #f39c12}
+.arrow-down.opened {border-top: 0}
+
+.sf-menu li li {border-top: 1px solid #FFA415;border-bottom: 1px solid #D38710;}
+.sf-menu ul li:hover, .sf-menu li li.current, .service-older [class^="grid_"]:hover h3, #contactForm #sendMessage:hover, #sendOrder:hover, .tbutton:hover, #toTop:hover, #commentform .send-message:hover,
+#commentform .send-message:focus, .hover-fx, .services [class^="grid_"] .tbutton:hover, #loginform #login-button:hover, #filter_button:hover, .header_v2 .sf-menu ul li:hover, .big-slider .flex-direction-nav a:hover, 
+.header_v8 .sf-menu li.back {background: #D38710}
+.headdown .social a {border: 1px solid #D38710}
+.big-slider .flex-direction-nav a:hover {background-color: #D38710}
+.header_v2 .sf-menu li a {color: #808080;}
+.sf-menu a, .sf-menu li:before, .sf-menu li li a, .copyright, .foot-menu li:before, .header_v2 .sf-menu li li a {color: #ECECEC}
+.foot-menu a:hover {color: #ddd !important}
+.headdown .social a i, .headdown .info, .pagination-tt ul li a:hover {color: #fff}

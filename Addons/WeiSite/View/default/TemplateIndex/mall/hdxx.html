@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+<title>活动详情</title>
+<link rel="stylesheet" href="{:CUSTOM_TEMPLATE_PATH}Index/mall/css/reset.css" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/css/reset.css" />
+<link rel="stylesheet" href="{:CUSTOM_TEMPLATE_PATH}Index/mall/css/style.css" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/css/style.css" />
+<script src="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/jquery-1.8.2.min.js" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/jquery-1.8.2.min.js"></script>
+<script src="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/iscroll.js" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/iscroll.js"></script>
+<script src="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/core.js" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/core.js"></script>
+<script src="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/index.js" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/index.js"></script>
+<script src="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/swipe.js" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/js/swipe.js"></script>
+</head>
+
+<body style="background:#f0efed;">
+
+<div class="top_menu">
+<a class="logo" href="{:CUSTOM_TEMPLATE_PATH}Index/mall/index.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/index.html"></a>
+<a class="member" href="{:CUSTOM_TEMPLATE_PATH}Index/mall/hyzx.html" tppabs="{:CUSTOM_TEMPLATE_PATH}Index/mall/hyzx.html"></a>
+</div>
+
+<div id="wrap">
+    <div id="test"></div>
+     <!--手机上的测试条，相当于console.log-->
+       <div class="container" id="container">
+         <div class="main" >
+              <div class="serviceBlock" id="serviceBlock" style="position:relative;">
+                     <div class="con " style="width:100%; ">
+              <div></div>
+              <div class="member_top" style="background:url(images/hdxq.jpg)/*tpa={:CUSTOM_TEMPLATE_PATH}Index/mall/images/hdxq.jpg*/ no-repeat; background-size:cover; height:162px;">
+              <span class="map_info" style="text-align:left; text-indent:1em;">森马 毕业旅行季 满149减20 满249减50 </span>
+              </div>
+              
+                <div class="dxrk dxrknew"><ul><li class="nico lbx"><span class="ico_h ico_hd_ico1"></span>活动时间</li><li class="nico lbx dxhei">4月1日 至 5月2日</li><li class="hico" id="hdshow"><span class="ico_h ico_hd_ico2"></span>活动内容</li>
+                <li id="hdcon" class="nico lbx" style="height:auto; display:none;">
+                <div class="hd_content">asdasd<br>
+adASD<br>
+ad<br>
+adA<br>
+Sd</div></li>
+                
+                </ul></div>
+              
+              
+              <div class="dxrk dxrknew"><ul><li class="hico lbx"><span class="ico_h ico_hd_ico3"></span>商户：<span  class="dxrk_num dxhei">森马服饰</span></li><li class="hico lbx"><span class="ico_h ico_hd_ico4"></span>地址：<span  class="dxrk_num dxhei">2F-76</span></li><li class="hico"><span class="ico_h ico_hd_ico5"></span>电话：<span  class="dxrk_num dxhei">027-3343435</span></li></ul></div>
+            <div style=" height:50px;"></div>  
+              
+              
+              
+              
+              
+              
+              </div>
+              </div>
+         </div>
+      </div>
+</div>
+              
+              
+              
+              
+              
+ <script>
+ $(function(){
+	 $("#hdshow").toggle(function(){
+		 $(this).removeClass("hico").addClass("hicoh")
+		 $("#hdcon").slideDown(500); 
+		 
+		 },function(){
+			  $("#hdcon").slideUp(500);
+			 $(this).removeClass("hicoh").addClass("hico") 
+			 })
+	 
+	 })
+ </script>            
+              
+              
+ 
+              
+
+ 
+</body>
+</html>

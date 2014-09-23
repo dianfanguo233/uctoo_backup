@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>商家首页</title>
+    <link rel="stylesheet" href="__STATIC__/uctoo/plugins/floors/f7/css/framework7.min.css">
+    <link rel="stylesheet" href="__STATIC__/uctoo/plugins/floors/f7/css/my-app.css">
+</head>
+<body>
+    <div class="statusbar-overlay"></div>
+    <div class="views">
+        <div class="view view-main">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="center sliding">
+                        <img alt="logo" src="{$shopInfo.logo|get_cover_url}" style="margin-left: 30px;" />{$shopInfo.title}</div>
+                </div>
+            </div>
+            <div class="pages navbar-through toolbar-through">
+                <div class="page whitebg">
+                    <div class="page-content warp-wsw">
+                        <div class="img-box">
+                            <img alt="图片说明" src="{$shopInfo.cover|get_cover_url}" />
+                            <div class="h-sjinfo">
+                                <div class="logobox">
+
+                                    <div class="bars">
+                                        <span><img src="__STATIC__/uctoo/plugins/floors/img/bar1.png" alt="bar1" />{$content[0].view_count}</span>
+                                        <span><img src="__STATIC__/uctoo/plugins/floors/img/bar2.png" alt="bar3" />0</span>
+                                        <span><img src="__STATIC__/uctoo/plugins/floors/img/bar3.png" alt="bar3" />{$content[0].reply_count}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="warp-sjnav">
+                            <div class="buttons-row">
+                                    <a href="#tab1" class="tab-link button">简 介</a>
+                                    <a href="#tab2" class="tab-link button">商 品</a>
+                                    <a href="#tab3" class="tab-link button">优 惠</a>
+                                    <a href="tel:{$shopInfo.phone}" class="external button">电 话</a>
+                                </div>
+                        </div>
+                        <!-- Tabs, tabs wrapper -->
+                        <div class="tabs">
+                            <!-- Tab 1, active by default -->
+                            <div id="tab1" class="tab active">
+                                <div class="content-block">
+
+                        <div class="warp-tjsj warp-type">
+                            <h3 class="blue">简介</h3>
+                            <div class="jianjienr">
+                                {$shopInfo.content}
+                            </div>
+                            <h3 class="arrowd"><a href="#"><img alt="arrow down" src="__STATIC__/uctoo/plugins/floors/img/arrow.png" /></a></h3>
+                        </div>
+                                    <div class="warp-tjsj warp-type">
+                                        <h3 class="blue">地址</h3>
+                                        <div class="jianjienr">
+                                            {$shopInfo.address}
+                                        </div>
+
+                                    </div>
+
+                        <div class="warp-tjsj warp-type">
+                            <h3 class="blue">评论</h3>
+                            <div class="comment-box">
+                                <textarea class="comment" placeholder="请输入评论"></textarea>
+                                <button class="btn">发表评论</button>
+                            </div>
+                            <div class="comment-lsit">
+                                暂时没有评论
+                            </div>
+                            <h3 class="arrowd"><a href="#"><img alt="arrow down" src="__STATIC__/uctoo/plugins/floors/img/arrow.png" /></a></h3>
+                        </div>
+
+
+
+
+                                </div>
+                            </div><!--end tab1-->
+                            <!-- Tab 2 -->
+                            <div id="tab2" class="tab">
+                                <div class="content-block">
+                                    <div class="row warp-cplist">
+                                    <if condition="$Products neq ''">
+                                        <foreach name="Products" item="goods">
+
+                                        <div class="col-33">
+                                            <a href="{$goods.url}" class="external"><img alt="商品图片" src="{$goods.icon}" /></a>
+                                                <a href="{$goods.url}" class="external"><h3>{$goods.name}</h3></a>
+                                            <h3 class="jiage">
+                                                ￥{$goods.price}
+
+                                            </h3>
+                                        </div>
+                                        </foreach>
+                                        <else />
+                                        <p>暂无本店产品信息</p>
+                                    </if>
+                                    </div>
+
+
+
+
+
+
+
+                                </div>
+                            </div>
+                            <!-- Tab 3 -->
+                            <div id="tab3" class="tab">
+                                <div class="content-block">
+                                    <p>暂无本店优惠信息</p>
+                                    ...
+                                </div>
+                            </div>
+
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="__STATIC__/uctoo/plugins/floors/f7/js/framework7.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/uctoo/plugins/floors/f7/js/my-app.js"></script>
+</body>
+</html> 

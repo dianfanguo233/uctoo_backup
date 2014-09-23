@@ -1,0 +1,15 @@
+DELETE FROM `uctoo_attribute` WHERE model_id = (SELECT id FROM uctoo_model WHERE `name`='xydzp' ORDER BY id DESC LIMIT 1); 
+DELETE FROM `uctoo_model` WHERE `name`='xydzp' ORDER BY id DESC LIMIT 1; 
+DROP TABLE IF EXISTS `uctoo_xydzp`;
+DELETE FROM `uctoo_attribute` WHERE model_id = (SELECT id FROM uctoo_model WHERE `name`='xydzp_option' ORDER BY id DESC LIMIT 1); 
+DELETE FROM `uctoo_model` WHERE `name`='xydzp_option' ORDER BY id DESC LIMIT 1; 
+DROP TABLE IF EXISTS `uctoo_xydzp_option`;
+DELETE FROM `uctoo_attribute` WHERE model_id = (SELECT id FROM uctoo_model WHERE `name`='xydzp_log' ORDER BY id DESC LIMIT 1); 
+DELETE FROM `uctoo_model` WHERE `name`='xydzp_log' ORDER BY id DESC LIMIT 1; 
+DROP TABLE IF EXISTS `uctoo_xydzp_log`;
+DELETE FROM `uctoo_attribute` WHERE model_id = (SELECT id FROM uctoo_model WHERE `name`='xydzp_jplist' ORDER BY id DESC LIMIT 1);
+DELETE FROM `uctoo_model` WHERE `name`='xydzp_jplist' ORDER BY id DESC LIMIT 1; 
+DROP TABLE IF EXISTS `uctoo_xydzp_jplist`;
+DELETE FROM `uctoo_attribute` WHERE model_id = (SELECT id FROM uctoo_model WHERE `name`='xydzp_userlog' ORDER BY id DESC LIMIT 1); 
+DELETE FROM `uctoo_model` WHERE `name`='xydzp_userlog' ORDER BY id DESC LIMIT 1; 
+DROP TABLE IF EXISTS `uctoo_xydzp_userlog`;

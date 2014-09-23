@@ -1,0 +1,185 @@
+<extend name="Base/shoppro"/>
+<block name="body">
+<div class="page-content" style="margin-bottom:0">
+    <div class="row products official-shop clearfix" style="margin-bottom:0"><!--daley:bak:class的mbs-->
+    	<if condition="$cue neq ''">
+        <div class="clearfix mb" style="color:#F00;text-align:center;font-size:16px">{$cue}</div>
+        <else />
+        <div class="clearfix mb">
+            <div class="grid_6">
+                <div class="product_256 flexslider">
+                    <ul class="slides">
+						<li><img id="mainimg" src="{$pt.path}" /></li>
+                        <!--daley:bak:多图片:<li><img src="__STATIC__/uctoo/plugins/shop/images/products/product_big_2.jpg" alt="" /></li>
+                        <li><img src="__STATIC__/uctoo/plugins/shop/images/products/product_big_3.jpg" alt="" /></li>
+                        <li><img src="__STATIC__/uctoo/plugins/shop/images/products/product_big_4.jpg" alt="" /></li>-->
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grid_6">
+                <div class="single-first-row mbt clearfix">
+                    <div class="project-links">
+                        <if condition="$prev_item[0]['id'] neq ''"><a href="/index.php?s=/Home/Index/shopproduct/sid/{$sid}/id/{$prev_item.0.id}" title="{$prev_item.0.name}"><i class="icon-angle-left mi"></i>上一条</a><else /><a href="javascript:;" title="没有了"><i class="icon-angle-left mi"></i>上一条</a></if>
+                        <a href="javascript:;"> <i class="icon-male toptip"></i> </a>
+                        <if condition="$next_item[0]['id'] neq ''"><a href="/index.php?s=/Home/Index/shopproduct/sid/{$sid}/id/{$next_item.0.id}" title="{$next_item.0.name}">下一条<i class="icon-angle-right mii"></i></a><else /><a href="javascript:;" title="没有了">下一条<i class="icon-angle-right mii"></i></a></if>
+                    </div><!-- links -->
+                </div>
+                <h3> {$pt.name} </h3>
+
+                <p class="item_price" style="line-height:40px;height:40px;"><span class="from" style="display:block;float:left">价格：</span><!--daley:bak:<del>¥42.00</del>--> <span class="amount" style="display:block;float:left">¥<span id="mainprice_{$id}">{$pt.price}</span><span id="ori_mainprice_{$id}" style="display:none">{$pt.price}</span><!--34.00--></span></p>
+
+                <!--daley:bak:<p class="review">
+                    <span class="mid">2 Reviews</span> 
+                    <i class="icon-star" title="Rated 3.40 out of 5"></i>
+                    <i class="icon-star" title="Rated 3.40 out of 5"></i>
+                    <i class="icon-star" title="Rated 3.40 out of 5"></i>
+                    <i class="icon-star-half-empty" title="Rated 3.40 out of 5"></i>
+                    <i class="icon-star-empty" title="Rated 3.40 out of 5"></i>
+                </p>-->
+                <div id="pro_attr_div_{$id}" pro_id="{$id}">
+                   <foreach name="attrs1" item="v">
+                      <span style="float:left; line-height:24px">{$v[0].name}：</span>
+                       <div name="{$v[0].name}">
+                       <foreach name="v" item="vv">
+                         <span class="pro_attr" title="{$vv.desc}" path="{$vv.path}" price="{$vv.price}" <eq name="vv.type" value="0">onclick="pro_attr_click(this,0)"<else/>onclick="pro_attr_config(this,0)"</eq> onmouseover="pro_attr_mouseover(this)" onmouseout="pro_attr_mouseout(this)" slt="0" attr_id="{$vv.id}">{$vv.value}</span>
+                       </foreach>
+                       </div>
+                   <span style="display:block; clear:both; height:16px"></span>
+                   </foreach>
+                </div>
+
+                <form action="#" method="post" onsubmit="return addProduct(this);">
+                    <input type="hidden" name="goods_id" value="{$pt.id}" />
+                    <div class="pa_selection mb">
+                        <select name="shop_id" style="padding-top:10px; display:none"><!--daley:2014.06.30:add:style-->
+                            <option value="" class="active">请选择供货商</option>
+                            <?php
+                            foreach($shops as $k=>$v){
+                            	if($k==$sid)
+                                	$slt=' selected="selected"';
+                            	echo '<option value="'.$k.'"'.$slt.'>'.$v.'</option>';
+                            }
+                            ?>                            
+                        </select>
+                    </div>
+                
+                    <div class="single_variation_wrap">
+                        <div class="single_variation mb"><!--daley:bak:<del>¥42.0</del><span class="amount_single">¥34.00</span>--></div>
+                        <div class="variations_button">
+                            <button type="submit" class="tbutton medium"><span>加入购物车</span></button>
+                        </div>
+                    </div>
+                    <div><input type="hidden" name="product_id" value=""></div>
+                </form>
+            </div>
+        </div><!-- clear -->
+
+		
+        <div class="clearfix mbs">
+            <ul class="tabs">
+                <li><a href="#t-1" class="active">详细描述</a></li>
+                <li><a href="#t-2">商品属性</a></li>
+                <!--daley:bak:隐藏评论-->
+                <li style="display:none"><a href="#t-3">评论 (2)</a></li>
+            </ul><!-- tabs -->
+
+            <ul class="tabs-content">
+                <li id="t-1" class="active">
+                	{$pt.introduction}
+                </li><!-- tab content -->
+
+                <li id="t-2">
+                    <table class="shop_attributes">
+                        <tbody>
+                            <foreach name="attrs2" item="v">
+                            <tr>
+                                <th>{$v.name}</th>
+                                <td class="product_weight">{$v.value}</td>
+                            </tr>
+                            </foreach>
+                        		
+                        </tbody>
+                    </table>
+                </li><!-- tab content -->
+
+                <li id="t-3">
+                    <ul class="showcomments clearfix">						
+                        <li class="clearfix">
+                            <div class="thumb">
+                                <a href="#"><img src="__STATIC__/uctoo/plugins/shop/images/assets/user1.jpg" /></a>
+                            </div>
+                            <h5 class="entry-title"><a href="#" class="title">Jessica Alba</a><i>30 September, 2013</i>
+                                <span class="date review">
+                                    <i class="icon-star" title="Rated 3.40 out of 5"></i>
+                                    <i class="icon-star" title="Rated 3.40 out of 5"></i>
+                                    <i class="icon-star" title="Rated 3.40 out of 5"></i>
+                                    <i class="icon-star-half-empty" title="Rated 3.40 out of 5"></i>
+                                    <i class="icon-star-empty" title="Rated 3.40 out of 5"></i>
+                                </p>
+                            </h5>
+                            <p>Nam vitae tellus lectus. Vivamus et ultrices urna. Morbi et elit odio, vel cursus sapien. Curabitur ac turpis et velit hendrerit commodo. Curabitur orci erat. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.</p>
+                        </li>						
+                        <li class="clearfix">
+                            <div class="thumb">
+                                <a href="#"><img src="__STATIC__/uctoo/plugins/shop/images/assets/user2.jpg" /></a>
+                            </div>
+                            <h5 class="entry-title"><a href="#" class="title">John Doe</a><i>18 September, 2013</i>
+                                <span class="date review">
+                                    <i class="icon-star" title="Rated 2 out of 5"></i>
+                                    <i class="icon-star" title="Rated 2 out of 5"></i>
+                                    <i class="icon-star-empty" title="Rated 2 out of 5"></i>
+                                    <i class="icon-star-empty" title="Rated 2 out of 5"></i>
+                                    <i class="icon-star-empty" title="Rated 2 out of 5"></i>
+                                </p>
+                            </h5>
+                            <p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham. making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.</p>
+                        </li>
+                    </ul>
+                </li><!-- tab content -->
+            </ul><!-- end tabs -->
+        </div><!-- clearfix -->
+        
+        </if>
+        
+        <h3 class="col-title"> 特色推荐 </h3><span class="liner"></span>
+            <div class="products_carousel">
+                <div class="anymore">
+                    <ul class="products">
+                        <foreach name="featured" item="goods">
+                        <li class="grid_product">
+                            <div class="product-content">
+                                <div class="product-img">
+                                    <a href="{$goods.url}"><img src="{$goods.icon}" /></a>
+                                </div>
+                                <a href="javascript:void(0);" onclick="addcart({$goods.id});" class="add-to"><i class="icon-shopping-cart mi"></i> 加入购物车 </a>
+                            </div><!-- product content -->
+
+                            <h5> <a href="{$goods.url}">{$goods.name}</a> </h5>
+                            <span class="price"><span class="from">售价: </span><del><span class="amount">¥{$goods.price}</span></del> <strong>  ¥{$goods.price} </strong></span>
+                        </li><!-- product -->
+                        </foreach>
+                    </ul><!-- products -->
+                </div><!-- anymore -->
+
+                <div class="preve"><i class="icon-angle-left"></i></div><!-- portfolio carousel left -->
+                <div class="nexte"><i class="icon-angle-right"></i></div><!-- portfolio carousel right -->
+            </div><!-- portfolio carousel -->
+    </div><!-- row -->
+
+</div><!-- end page content -->
+
+<include file="Shop/productcols"/>
+<!-- grey -->
+<script type="text/javascript">
+pageFlag='pro_detail';
+//oriMainPrice=parseFloat($('#mainprice').html());//初始价格
+function addProduct(f){
+    var goods_id = f.goods_id.value;
+    var shop_id = f.shop_id.value;
+    addcart(goods_id,shop_id);
+    return false;
+}
+</script>
+
+</block>

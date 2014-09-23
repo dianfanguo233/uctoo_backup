@@ -1,0 +1,55 @@
+<extend name="Base/common" />
+<block name="body">
+  <div class="span9 page_message">
+    <section id="contents"> 
+      <ul class="tab-nav nav">
+        <li class="current"><a href="{:U('lists')}">预约记录<b class="arrow fa fa-sort-up"></b></a></li>
+        <li><a href="{:U('config')}">预约配置<b class="arrow fa fa-sort-up"></b></a></li>
+      </ul>
+      <!-- 数据窗口 -->
+      <div class="data-table" >
+        <div class="table-striped">
+          <form method="post">
+            <table cellpadding="5" cellspacing="1" style="width:auto;" >
+                <tr>
+                    <th width="120px">预约号</th>
+                    <td>{$data.id}</td>
+                </tr>
+                    <th>联系人</th>
+                      <td>{$data.name}</td>
+                </tr>
+                    <th>联系电话</th>
+                      <td>{$data.phone}</td>
+                </tr>
+                    <th>预约时间</th>
+                      <td>{$data.yTime|date="Y-m-d H:i",###}</td>
+                </tr>
+                    <th>人数</th>
+                      <td>{$data.number}</td>
+                </tr>
+                    <th>预约项目</th>
+                      <td>{$data.item}</td>
+                </tr>
+                    <th>预约门店</th>
+                      <td>{$data.market}</td>
+                </tr>
+                    <th>备注</th>
+                      <td>{$data.remark}</td>
+                </tr>
+                    <th>提交时间</th>
+                      <td>{$data.cTime|date="Y-m-d H:i",###}</td>
+                </tr>
+                    <th>备忘</th>
+                      <td><textarea id="memo" name="memo" rows="10">{$data.memo}</textarea></td>
+                </tr>
+                </tr>
+                      <td colspan="2" align="right"><input class="btn" type="submit" value="保存"></td>
+                </tr>
+            </table>
+            <input type="hidden" name="id" value="{$data.id}">
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+</block>

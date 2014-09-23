@@ -1,0 +1,11 @@
+@charset "utf-8";
+/* 相册展示 */
+.Photo_select{ float:left; width:100%;zoom:1; margin:30px 0 20px; }
+.Photo_select li{ float:left; position:relative; margin-right:20px; width:200px; height:200px; text-align:center;  list-style:none; cursor:pointer}
+.Photo_select li.selected .phone,.template_select li.hover .phone{ background:url(../images/m/iphone1.png) no-repeat;}
+.Photo_item_pic { border:2px solid gray; width:200px; height:150px; overflow:hidden;}
+.Photo_item { border-width:3px; border-color:#333 }
+.Photo_item p{ padding-top:10px;}
+.Photo_item input{ display:inline; vertical-align:middle; margin:0 5px 0 0 ;}
+.Photo_item label{ display:inline;}
+.Photo_item .use_tips{ position:absolute; top:50px; right:170px; background:#333; padding:10px; color:#fff; width:150px; border-radius:10px; text-align:left; display:none}

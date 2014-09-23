@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>详细资料页</title>
+    <link rel="stylesheet" href="__STATIC__/uctoo/plugins/floors/f7/css/framework7.min.css">
+    <link rel="stylesheet" href="__STATIC__/uctoo/plugins/floors/f7/css/my-app.css">
+</head>
+<body>
+    <div class="statusbar-overlay"></div>
+    <div class="views">
+        <div class="view view-main">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a class="back link" href="/userCenter.html"><i class="icon icon-back-blue"></i><span>返回</span></a>
+                    </div>
+                    <div class="center sliding">详细资料页</div>
+                </div>
+            </div>
+            <div class="pages navbar-through toolbar-through">
+                <div data-page="index" class="page">
+                    <div class="page-content whitebg">
+                        <div class="row no-gutter padding-ud-15">
+                            <div class="col-40 warp-head-img">
+                                <img alt="用户头像" src="__STATIC__/uctoo/plugins/floors/img/u-head.png" class="head-img" />
+                            </div>
+                            <div class="col-30 warp-baseinfo">
+                                <h4>昵称:{$user.nickname}</h4>
+                                <h5>积分：{$user.score}</h5>
+                                <h5>余额：0</h5>
+                            </div>
+                            <div class="col-30 warp-btns">
+                                <a href="{:addons_url ( 'UserCenter://Config/index' )}" class="btn blue">我的资料</a><br />
+                                <a href="javascript:void(0);" class="btn orange"><i></i>充<i></i><i></i>值<i></i></a>
+                            </div>
+                        </div>
+                        <div class="warp-jbzl">
+                            <div class="toolbar tabbar">
+                                <div class="toolbar-inner">
+                                    <a href="#tab1" class="tab-link active">基本资料</a>
+                                    <a href="#tab2" class="tab-link">更多资料</a>
+                                </div>
+                                <div class="tabs">
+                                    <div id="tab1" class="tab active">
+                                        <div class="list-block form">
+                                            <form action="/" method="post">
+                                                <ul>
+                                                    <li>
+                                                        <label>头<i></i>像：</label>
+                                                        <input type="file" />
+                                                    </li>
+                                                    <li>
+                                                        <label>用<i class="sm"></i>户<i class="sm"></i>名：</label>
+                                                        <input type="text" />
+                                                    </li>
+                                                    <li>
+                                                        <label>昵<i></i>称：</label>
+                                                        <input type="text" />
+                                                    </li>
+                                                    <li>
+                                                        <label>性<i></i>别：</label>
+                                                        <input type="text" />
+                                                    </li>
+                                                    <li>
+                                                        <label>生<i></i>日：</label>
+                                                        <input type="text" class="sm" placeholder="年" />
+                                                        <input type="text" class="sm" placeholder="月" />
+                                                        <input type="text" class="sm" placeholder="日" />
+                                                    </li>
+                                                    <li>
+                                                        <label>地<i></i>区：</label>
+                                                        <input type="text" class="sm" placeholder="省份" />
+                                                        <input type="text" class="sm" placeholder="城市" />
+                                                        <input type="text" class="sm" placeholder="地区" />
+                                                    </li>
+                                                    <li>
+                                                        <label>详细地址：</label>
+                                                        <input type="text" />
+                                                    </li>
+                                                </ul>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div id="tab2" class="tab">
+                                        2
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="__STATIC__/uctoo/plugins/floors/f7/js/framework7.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/uctoo/plugins/floors/f7/js/my-app.js"></script>
+</body>
+</html> 

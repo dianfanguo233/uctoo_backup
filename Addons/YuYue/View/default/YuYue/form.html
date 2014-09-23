@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>在线预约</title>
+    <link href="http://lib.sinaapp.com/js/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://lib.sinaapp.com/js/jquery-ui/1.10.2/themes/ui-lightness/jquery-ui.min.css" rel="stylesheet">
+    <style type="text/css">
+      .btn-default.active {background-color:#47a447;color:#fff;}
+      #ui-datepicker-div {z-index:99;}
+      .lb-left {width: 30%;}
+      .inline{display: inline-block; width: 68%;}
+      .clear{clear:both;}
+      .form-control[readonly] {background-color: #fff; cursor: default;}
+      .alert{display: none;}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+    <h1>在线预约</h1>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <form role="form"  method="post">
+          <label>预约项目：</label>
+          <div class="form-group">
+          <div class="btn-group" data-toggle="buttons">
+            <volist name="items" id="vo" empty="无预约项目" >
+              <label class="btn btn-default <?php if(($vo==$items[0] && empty($item_i)) || $vo==$item_i){echo 'active'; }?>">
+                <input type="radio" name="item" id="item1" value="{$vo}" <?php if(($vo==$items[0] && empty($item_i)) || $vo==$item_i){echo 'checked'; }?> > {$vo}
+              </label>
+            </volist>
+          </div>
+        </div>
+
+        <label>预约门店：</label>
+        <div class="form-group">
+          <div class="btn-group" data-toggle="buttons">
+            <volist name="markets" id="vo" empty="无预约门店" >
+              <label class="btn btn-default <?php if($vo==$markets[0]){echo 'active'; }?>">
+                <input type="radio" name="market" id="market1" value="{$vo}" <?php if($vo==$markets[0]){echo 'checked'; }?> > {$vo}
+              </label>
+            </volist>
+          </div>
+        </div>
+
+        <div class="form-group">
+            <label class="lb-left" for="name">联系人</label>
+            <input type="text" id="name" class="form-control inline" id="email" name="name" required="required">
+          </div>
+          <div class="form-group">
+            <label class="lb-left" for="phone">手  机</label>
+            <input type="number" id="phone" class="form-control inline"  id="phone" name="phone" required="required">
+          </div>
+          <div class="form-group">
+            <label class="lb-left" for="number">预约人数</label>
+            <input type="number" class="form-control inline"  id="number" name="number" value="1">
+          </div>
+          <div class="form-group">
+            <label class="lb-left" for="yTime">预约日期</label>
+            <input type="text" class="form-control inline" id="yTime" name="yTime" readonly="true" value="<?php echo date('Y-m-d',strtotime('+1 day')); ?>">
+          </div>
+          <div class="form-group">
+            <label class="lb-left"  for="yTimeHour">到店时间</label>
+            <select name="yTimeHour">
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+              <option>11</option>
+              <option>12</option>
+              <option>13</option>
+              <option>14</option>
+              <option>15</option>
+              <option>16</option>
+              <option>17</option>
+              <option>18</option>
+            </select>
+            <label>点</label>
+            <select name="yTimeMin">
+              <option>00</option>
+              <option>10</option>
+              <option>15</option>
+              <option>30</option>
+              <option>40</option>
+              <option>45</option>
+              <option>50</option>
+            </select>
+            <label>分</label>
+          </div>
+          <div class="form-group">
+            <label for="remark">备注</label>
+            <textarea class="form-control" id="remark" name="remark"></textarea>
+          </div>
+      </form>
+      <div class="alert alert-danger" role="alert"></div>
+      <div class="form-group">
+            <div class="col-sm-10">
+              <button id="btn-submit" class="btn btn-success btn-lg btn-block">提交预约</button>
+            </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-info clear">
+    <div class="panel-body">
+      {$notice}
+    </div>
+  </div>
+</div>
+    <script src="http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+    <script src="http://lib.sinaapp.com/js/jquery-ui/1.10.2/jquery-ui.min.js"></script>
+    <script src="http://lib.sinaapp.com/js/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script>
+      $("#yTime").datepicker( { dateFormat: "yy-mm-dd" } );
+    </script>
+    <script>
+      $(document).ready(function(){
+        $('#btn-submit').click(function(){
+          if($('#name').val()==""){
+            $('.alert').html("请输入联系人")
+            $('.alert').show();
+            $('#name').focus();
+            return false;
+          }
+          if($('#phone').val() == "" || $('#phone').val().length != 11){
+            $('#phone').focus();
+            $('.alert').html("请输入正确的手机号")
+            $('.alert').show();
+            return false;
+          }
+          $("form").submit();
+         });
+      });
+    </script>
+
+  </body>
+</html>

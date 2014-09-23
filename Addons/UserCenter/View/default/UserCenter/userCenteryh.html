@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>个人中心优惠券页面</title>
+    <link rel="stylesheet" href="__STATIC__/uctoo/plugins/floors/f7/css/framework7.min.css">
+    <link rel="stylesheet" href="__STATIC__/uctoo/plugins/floors/f7/css/my-app.css">
+</head>
+<body>
+    <div class="statusbar-overlay"></div>
+    <div class="views">
+        <div class="view view-main">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a class="back link" href="/userCenter.html"><i class="icon icon-back-blue"></i><span>返回</span></a>
+                    </div>
+                    <div class="center sliding">优惠券</div>
+                </div>
+            </div>
+            <div class="pages navbar-through toolbar-through">
+                <div data-page="index" class="page whitebg">
+                    <div class="page-content">
+                        <div class="row no-gutter padding-ud-15">
+                            <div class="col-40 warp-head-img">
+                                <img alt="用户头像" src="__STATIC__/uctoo/plugins/floors/img/u-head.png" class="head-img" />
+                            </div>
+                            <div class="col-30 warp-baseinfo">
+                                <h4>昵称:{$user.nickname}</h4>
+                                <h5>积分：{$user.score}</h5>
+                                <h5>余额：0</h5>
+                            </div>
+                            <div class="col-30 warp-btns">
+                                <a href="{:addons_url ( 'UserCenter://Config/index' )}" class="btn blue">我的资料</a><br />
+                                <a href="javascript:void(0);" class="btn orange"><i></i>充<i></i><i></i>值<i></i></a>
+                            </div>
+                        </div>
+                        <div class="list-block warp-list">
+                            <a href="javascript:void(0);" class="block-link">优惠券列表</a>
+                            <a href="javascript:void(0);" class="block-link">我的优惠券</a>
+                            <a href="javascript:void(0);" class="block-link">近一个月过期的优惠券</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="__STATIC__/uctoo/plugins/floors/f7/js/framework7.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/uctoo/plugins/floors/f7/js/my-app.js"></script>
+</body>
+</html> 

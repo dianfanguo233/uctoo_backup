@@ -1,0 +1,44 @@
+
+<extend name="Base/common" />
+
+<block name="body">
+<link href="{:ADDON_PUBLIC_PATH}/css.css" rel="stylesheet" type="text/css">
+  <div class="span9 page_message">
+    <section id="contents"> 
+      <include file="Addons/_nav" />     
+      <div class="cf">
+        <div class="fl">
+          <empty name="model.extend">
+			<div class="tools">
+				<if condition="$add_button"><a class="btn" href="{:U('add?model='.$model['id'].'&pid='.$pid)}">新 增</a></if>
+					</div>
+          </empty>
+        </div>
+
+      </div>
+ 
+      <ul class="Photo_select">
+                    <volist name="list_data" id="vo">
+                    <li>
+                    <div class="Photo_item ">
+                    <div class='Photo_item_pic'>
+                       <img src="{$vo.pic|get_picture_url}" />
+                        	</div>
+                       
+
+                        
+  <a  class="confirm" href=" {:U('edit?model='.$model['id'].'&id='.$vo[id])}">编辑</a>
+ <a   onClick="return confirm('确认要删除？')" href=" {:U('del?model='.$model['id'].'&id='.$vo[id])}">删除</a>
+ </div>
+                    </li>
+                    
+                   
+                    </volist>
+                </ul>
+      
+    
+      <div class="page"> {$_page|default=''} </div>
+    </section>
+  </div>
+</block>
+

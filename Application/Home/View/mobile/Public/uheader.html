@@ -1,0 +1,111 @@
+<!-- start: HEADER -->
+<div class="navbar navbar-inverse navbar-fixed-top">
+<!-- start: TOP NAVIGATION CONTAINER -->
+<div class="container">
+<div class="navbar-header">
+    <!-- start: RESPONSIVE MENU TOGGLER -->
+    <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">
+        <span class="clip-list-2"></span>
+    </button>
+    <!-- end: RESPONSIVE MENU TOGGLER -->
+    <!-- start: LOGO -->
+    <a class="navbar-brand" href="{:U('index/index')}" title="{:C('WEB_SITE_TITLE')}">
+        <img src="__STATIC__/uchome/images/logo.png" title="{:C('WEB_SITE_TITLE')}"/>
+    </a>
+    <!-- end: LOGO -->
+</div>
+<if condition="is_login()">
+<div class="navbar-tools">
+<!-- start: TOP NAVIGATION MENU -->
+<ul class="nav navbar-right">
+<!-- start: MP DROPDOWN -->
+<li class="dropdown">
+    <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" data-close-others="true" href="#">
+        <span class="desc" style="opacity: 1; text-decoration: none;">{$member_public.public_name}</span>
+        <i class="clip-list-5"></i>
+        <span class="badge"> 12</span>
+        <i class="clip-chevron-down"></i>
+    </a>
+    <ul class="dropdown-menu">
+        <li>
+            <span class="dropdown-menu-title"> 您管理了12个公众号</span>
+        </li>
+        <volist name='member_public_list' id='vo'>
+            <li><a href="{:U('home/MemberPublic/changPublic','id='.$vo['id'])}">{$vo.public_name}</a></li>
+        </volist>
+        <li class="view-all">
+            <a href="{:U('home/MemberPublic/lists')}">
+                公众号管理 <i class="fa fa-arrow-circle-o-right"></i>
+            </a>
+        </li>
+    </ul>
+</li>
+<!-- end: MP DROPDOWN-->
+<!-- start: USER DROPDOWN -->
+<li class="dropdown current-user">
+    <a data-toggle="dropdown" data-hover="dropdown" class="dropdown-toggle" data-close-others="true" href="#">
+        <img src="assets/images/avatar-1-small.jpg" class="circle-img" alt="">
+        <span class="username">{:get_username()}</span>
+        <i class="clip-chevron-down"></i>
+    </a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="#">
+                <i class="clip-user-2"></i>
+                &nbsp;我的帐号
+            </a>
+        </li>
+        <li>
+            <a href="{:U('Admin/index/index')}">
+                <i class="clip-settings"></i>
+                &nbsp;后台管理
+            </a>
+        </li>
+        <li>
+            <a href="{:U('User/profile')}">
+                <i class="clip-key"></i>
+                &nbsp;修改密码
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#"><i class="clip-locked"></i>
+                &nbsp;锁屏</a>
+        </li>
+        <li>
+            <a href="{:U('User/logout')}">
+                <i class="clip-exit"></i>
+                &nbsp;退出
+            </a>
+        </li>
+    </ul>
+</li>
+<!-- end: USER DROPDOWN -->
+</ul>
+<!-- end: TOP NAVIGATION MENU -->
+</div>
+<else/>
+<div class="navbar-tools">
+<!-- start: HORIZONTAL MENU -->
+    <ul class="nav navbar-right">
+        <li>
+            <a href="#">你好!欢迎来到{:C('WEB_SITE_TITLE')}</a>
+        </li>
+        <li>
+            <a href="{:U('User/login')}">登录</a>
+        </li>
+        <li>
+            <a href="{:U('User/register')}">注册</a>
+        </li>
+        <li>
+            <a href="{:U('admin/index/index')}" style="padding-right:0">后台入口</a>
+        </li>
+    </ul>
+<!-- end: HORIZONTAL MENU -->
+</div>
+</if>
+</div>
+<!-- end: TOP NAVIGATION CONTAINER -->
+</div>
+<script type="text/javascript" src="__STATIC__/uploadify/jquery.uploadify.min.js"></script>
+<!-- end: HEADER -->

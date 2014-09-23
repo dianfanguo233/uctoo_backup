@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="">
+<title></title>
+<link href="{:ADDON_PUBLIC_PATH}/weixin.css?v={:SITE_VERSION}" rel="stylesheet" type="text/css">
+    <link type="text/css" rel="stylesheet" href="__PUBLIC__/Core/js/ext/toastr/toastr.min.css"/>
+    <!-- jQuery库 -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="__STATIC__/jquery-1.10.2.min.js"></script>
+    <![endif]-->
+    <!--[if gte IE 9]><!-->
+    <script type="text/javascript" src="__STATIC__/jquery-2.0.3.min.js"></script>
+    <!--<![endif]-->
+    <script type="text/javascript" src="__PUBLIC__/Core/js/ext/toastr/toastr.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Core/js/core.js"></script>
+
+<script type="text/javascript">
+function checkForm(){
+	var content = $('#username').val();
+	if(content==''){
+		$('#errorInfo').html('{$field.title}不能为空').show();
+		return false;
+	}
+	return true;
+}
+</script>
+</head>
+
+<body>
+<div class="Survey_cont">
+    <a target="_blank" href="{:U('home/index/index')}">
+        <h2>{:C('WEB_SITE_TITLE')}</h2>
+    </a>
+  <article class="clearfix">
+    <form method="post" action="{:addons_url ( 'UserCenter://User/register' )}" >
+      <div class="survey_box">
+
+        <div class="profile_list">
+            <h4>欢迎注册</h4>
+            <div class="form-group">
+
+              <input class="text" id="username" placeholder="请输入用户名（手机号码）" name="username" value="" />
+                <br/><a id="sendSms" class="btn btn-default btn-block" data-url="{:addons_url ( 'UserCenter://User/doBindMobile' )}">发送手机验证码</a>
+            </div>
+
+            <div class="form-group">
+
+                <input type="text" name="verify" class="form-control" placeholder="输入手机验证码"/>
+
+            </div>
+            <div class="form-group">
+            <input type="password" id="password" placeholder="请输入密码" class="form-control password" name="password" />
+            </div>
+            <div class="form-group">
+                <input type="password" id="repassword" placeholder="请再次输入密码" class="form-control password" name="repassword" />
+            </div>
+        </div>
+        <div  class="warning" id="errorInfo"></div>
+      </div>
+      <input type="submit" class="button" value=" 注 册 " />
+      <div class="new-account">
+            已有帐号，
+            <a href="{:addons_url ( 'UserCenter://User/login' )}" class="login">
+                立即登录
+            </a>
+        </div>
+    </form>
+  </article>
+</div>
+<script>
+    //点击发送验证码
+    $(function(){
+        var $button = $('#sendSms');
+        $button.click(function(){
+            $button.addClass('disabled',true);
+            var url = $button.attr('data-url');
+            var mobile = $('#username').val();
+
+            $.post(url, {mobile:mobile}, function(a){
+                a = {info:"短信验证码已发送，请注意查收"};
+                handleAjax(a);
+            });
+        });
+    });
+</script>
+</body>
+</html>
