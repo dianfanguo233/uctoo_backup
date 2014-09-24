@@ -744,7 +744,7 @@ INSERT INTO `uctoo_attribute` VALUES ('886', 'token', 'Token', 'varchar(255) NOT
 INSERT INTO `uctoo_attribute` VALUES ('887', 'youhuiid', '优惠id', 'int(10) NOT NULL', 'num', '0', '表示该商品属于那个优惠id', '0', '', '154', '0', '1', '1401693201', '1401688829', '', '3', '', 'regex', '', '3', 'function');
 INSERT INTO `uctoo_attribute` VALUES ('888', 'attr', '关联属性', 'text NOT NULL', 'string', '', '填写需要的属性', '1', '', '154', '0', '1', '1404643754', '1403929868', '', '3', '', 'regex', '', '3', 'function');
 INSERT INTO `uctoo_attribute` VALUES ('889', 'featured', '特色推荐', 'char(10) NOT NULL', 'radio', '0', '特色推荐', '1', '0:否\r\n1:是', '154', '0', '1', '1403952052', '1403952052', '', '3', '', 'regex', '', '3', 'function');
-INSERT INTO `uctoo_attribute` VALUES ('890', 'typeid', '商品分类ID', 'int(10) NOT NULL', 'num', '', '', '1', '', '154', '1', '1', '1404554604', '1404479762', '', '3', '', 'regex', '', '3', 'function');
+INSERT INTO `uctoo_attribute` VALUES ('890', 'typeid', '商品分类ID', 'int(10) NOT NULL', 'num', '', '', '4', '', '154', '1', '1', '1404554604', '1404479762', '', '3', '', 'regex', '', '3', 'function');
 INSERT INTO `uctoo_attribute` VALUES ('891', 'owner_id', '管理员ID', 'int(10) NOT NULL', 'num', '', '', '4', '', '154', '0', '1', '1409823843', '1404479762', '', '3', '', 'regex', '', '3', 'function');
 INSERT INTO `uctoo_attribute` VALUES ('892', 'token', ' Token ', 'varchar(255) NOT NULL', 'string', '', '', '0', '', '155', '0', '1', '1401108700', '1401103980', '', '3', '', 'regex', 'get_token', '3', 'function');
 INSERT INTO `uctoo_attribute` VALUES ('893', 'keyword', ' 关键词 ', 'varchar(255) NOT NULL', 'string', '', '', '1', '', '155', '1', '1', '1401108295', '1401108295', '', '3', '', 'regex', '', '3', 'function');
@@ -864,8 +864,8 @@ INSERT INTO `uctoo_attribute` VALUES ('1335', 'level', '优先级', 'int(10) NOT
 INSERT INTO `uctoo_attribute` VALUES ('1336', 'create_time', '创建时间', 'int(10) unsigned NOT NULL ', 'datetime', '0', '', '1', '', '152', '0', '1', '1383895903', '1383891233', '', '0', '', '', '', '0', '');
 INSERT INTO `uctoo_attribute` VALUES ('1337', 'update_time', '更新时间', 'int(10) unsigned NOT NULL ', 'datetime', '0', '', '0', '', '152', '0', '1', '1384508277', '1383891233', '', '0', '', '', '', '0', '');
 INSERT INTO `uctoo_attribute` VALUES ('1338', 'status', '数据状态', 'tinyint(4) NOT NULL ', 'radio', '0', '', '0', '-1:删除\r\n0:禁用\r\n1:正常\r\n2:待审核\r\n3:草稿', '152', '0', '1', '1384508496', '1383891233', '', '0', '', '', '', '0', '');
-INSERT INTO `uctoo_attribute` VALUES ('1339', 'logistics', '物流信息', 'text NOT NULL', 'textarea', '', '', '1', '', '155', '0', '1', '1410254321', '1410254321', '', '3', '', 'regex', '', '3', 'function');
-INSERT INTO `uctoo_attribute` VALUES ('1340', 'thumbnail','属性缩略图','varchar(255) NOT NULL','string','','属性缩略图','1','','0','0','1','1404489216','1404489216','','3','','regex','','3','function');
+INSERT INTO `uctoo_attribute` VALUES ('1339', 'logistics', '物流信息', 'text NOT NULL', 'textarea', '', '', '1', '', '149', '0', '1', '1410254321', '1410254321', '', '3', '', 'regex', '', '3', 'function');
+INSERT INTO `uctoo_attribute` VALUES ('1340', 'thumbnail','属性缩略图','varchar(255) NOT NULL','string','','属性缩略图','1','','144','0','1','1404489216','1404489216','','3','','regex','','3','function');
 
 -- ----------------------------
 -- Table structure for uctoo_auth_extend

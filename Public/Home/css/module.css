@@ -964,9 +964,9 @@ label.textarea ~ .check-tips {
 	display: block;
 }
 .upload-img-box {
-	position: absolute;
-	top: 5px;
-	left: 0;
+
+	top:5px;
+	left:0;
 }
 .upload_file .upload-img-box{ position:static; left:0; top:0; margin-top:10px;}
 .upload-img-box .upload-pre-item {
