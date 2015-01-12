@@ -32,6 +32,7 @@ a {
 }
 a:hover{
 	text-decoration:none;
+	color:#e60002
 }
 input,button,textarea,select,option {
 	font-family:inherit;

@@ -99,11 +99,12 @@ class MemberModel extends Model {
 	 * @return void
 	 */
 	public function logout() {
+		$token = get_token();
 		session ( 'mid', null );
 		session ( 'user_auth', null );
 		session ( 'user_auth_sign', null );
 		session ( 'token', null );
-		session ( 'openid', null );
+		session ( 'openid_'.$token, null );
 		session ( 'is_follow_login', null );
 	}
 	

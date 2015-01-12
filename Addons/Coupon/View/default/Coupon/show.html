@@ -11,7 +11,17 @@
                 <p>优惠券：{$data.title}<br/>
                 SN码&nbsp;&nbsp;：{$sn.sn}<br/>
                 状 态&nbsp;&nbsp;：<eq name="sn.is_use" value="1">已使用<else />未使用</eq><br/>
+                
+                <if condition="!empty($data['start_time']) && !empty($data['end_time'])">
                 有效期：{$data.start_time|time_format} 至 {$data.end_time|time_format}
+                </if>
+
+                <if condition="!empty($data['start_time']) && empty($data['end_time'])">
+                开始时间：{$data.start_time|time_format}
+                </if>
+                <if condition="empty($data['start_time']) && !empty($data['end_time'])">
+                截止时间：{$data.end_time|time_format}
+                </if>                
                 </p>
             </div>
         </div>

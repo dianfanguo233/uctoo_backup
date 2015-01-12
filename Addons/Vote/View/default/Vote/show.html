@@ -48,7 +48,7 @@ function checkForm(){
         <php>}</php>
     </div>
     <div class="vote_info mb">{$info.description|htmlspecialchars_decode}</div>
-    <p class="time">投票截止日期：{$info.end_date|time_format}</p>
+    <notempty name="info.end_date"><p class="time">投票截止日期：{$info.end_date|time_format}</p></notempty>
   </article>
   <p class="vote_type">
       本次投票为<php>if($info['type']==0) { $type='radio';$style_cls='regular-radio';echo '单选投票<br>';}else{ $type='checkbox';$style_cls='regular-checkbox';echo '多选投票<br>';}</php>
@@ -75,7 +75,14 @@ function checkForm(){
             <php> } </php>
             <p class="list"> <input type="{$type}" class="{$style_cls}" id="check_{$opt.id}" name="optArr[]" value="{$opt.id}"           
               <php>if(in_array($opt[id], $joinData)) echo 'checked="checked" '; if(!$canJoin) echo ' disabled'; </php>
-              ><label for="check_{$opt.id}"></label>{$opt.name}
+              ><label for="check_{$opt.id}"></label>
+                <empty name="opt.url">
+                    {$opt.name}
+                        <else />
+                        <a href="{$opt.url}">{$opt.name}</a>
+                </empty>
+
+
             </p>
             <div class="clearfix tb">
               <div class="databar">
@@ -102,24 +109,45 @@ function checkForm(){
     <php>if(!$canJoin && !empty($event_url)) { </php>
      <div class="tb"><a href="{$event_url}" class="btn m_10 flex_1" style="background-color:#f36637">参加抽奖活动</a></div>
      <php> } </php>
+     
+     <div class="tb" id="close_page" style="display:none"><input type="button" id="close_page_btn" class="btn m_10 flex_1" value="关闭返回" /></div>
   </form>
   </div>
 </div>
 </body>
 </html>
 <script>
-$(function(){
-<php>
-foreach($opts as $k=>$v){
-echo '$(".vote-per-'.$k.'").animate( { width: "'.$v['percent'].'%"}, 5000);';
+function init_close(){
+		$('#close_page').show();
+		$('#close_page_btn').click(function(){
+			  WeixinJSBridge.invoke('closeWindow',{},function(res){;});
+		});	
 }
-</php>
-$(".list").live("click", function () {
-     if ($(this).hasClass("bgBlue")) {
-         $(this).removeClass("bgBlue").find("input").attr("checked", true);
-     } else {
-         $(this).addClass("bgBlue").find("input").attr("checked", false);
-     }
- });
+$(function(){
+	
+	<php>
+	foreach($opts as $k=>$v){
+	echo '$(".vote-per-'.$k.'").animate( { width: "'.$v['percent'].'%"}, 5000);';
+	}
+	</php>
+	
+	$(".list").click(function () {
+		 if ($(this).hasClass("bgBlue")) {
+			 $(this).removeClass("bgBlue").find("input");
+		 } else {
+			 $(this).addClass("bgBlue").find("input");
+		 }
+	 });
+	 
+	if (typeof WeixinJSBridge == "undefined"){
+		if( document.addEventListener ){
+			document.addEventListener('WeixinJSBridgeReady', init_close, false);
+		}else if (document.attachEvent){
+			document.attachEvent('WeixinJSBridgeReady', init_close); 
+			document.attachEvent('onWeixinJSBridgeReady', init_close);
+		}
+	}else{
+		init_close();
+	}	   
 });
 </script>

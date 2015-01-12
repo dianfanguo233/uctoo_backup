@@ -9,12 +9,38 @@ use Think\Model;
  */
 class WeixinModel extends Model {
 	var $data = array ();
+	var $wxcpt, $sReqTimeStamp, $sReqNonce, $sEncryptMsg;
 	public function __construct() {
 		if ($_REQUEST ['doNotInit'])
 			return true;
 		
-		$content = file_get_contents ( 'php://input' );
+		$content = wp_file_get_contents ( 'php://input' );
 		! empty ( $content ) || die ( '这是微信请求的接口地址，直接在浏览器里无效' );
+		
+		if ($_GET ['encrypt_type'] == 'aes') {
+			vendor ( 'WXBiz.wxBizMsgCrypt' );
+			
+			$this->sReqTimeStamp = I ( 'get.timestamp' );
+			$this->sReqNonce = I ( 'get.nonce' );
+			$this->sEncryptMsg = I ( 'get.msg_signature' );
+			
+			$map ['id'] = I ( 'get.id' );
+			$info = M ( 'member_public' )->where ( $map )->find ();
+			get_token ( $info ['token'] ); // 设置token
+			
+			$this->wxcpt = new \WXBizMsgCrypt ( 'uctoo', $info ['encodingaeskey'], $info ['appid'] );
+			
+			$sMsg = ""; // 解析之后的明文
+			$errCode = $this->wxcpt->DecryptMsg ( $this->sEncryptMsg, $this->sReqTimeStamp, $this->sReqNonce, $content, $sMsg );
+			if ($errCode != 0) {
+				addWeixinLog ( $_GET, "DecryptMsg Error: " . $errCode );
+				exit ();
+			} else {
+				// 解密成功，sMsg即为xml格式的明文
+				$content = $sMsg;
+			}
+		}
+		
 		$data = new \SimpleXMLElement ( $content );
 		// $data || die ( '参数获取失败' );
 		foreach ( $data as $key => $value ) {
@@ -74,6 +100,11 @@ class WeixinModel extends Model {
 		$msg ['CreateTime'] = NOW_TIME;
 		$msg ['MsgType'] = $msgType;
 		
+		if($_REQUEST ['doNotInit']){
+			dump($msg);
+			exit;
+		}
+		
 		$xml = new \SimpleXMLElement ( '<xml></xml>' );
 		$this->_data2xml ( $xml, $msg );
 		$str = $xml->asXML ();
@@ -81,7 +112,17 @@ class WeixinModel extends Model {
 		// 记录日志
 		addWeixinLog ( $str, '_replyData' );
 		
-		echo ( $str );
+		if ($_GET ['encrypt_type'] == 'aes') {
+			$sEncryptMsg = ""; // xml格式的密文
+			$errCode = $this->wxcpt->EncryptMsg ( $str, $this->sReqTimeStamp, $this->sReqNonce, $sEncryptMsg );
+			if ($errCode == 0) {
+				$str = $sEncryptMsg;
+			} else {
+				addWeixinLog ( $str, "EncryptMsg Error: " . $errCode );
+			}
+		}
+		
+		echo ($str);
 	}
 	/* 组装xml数据 */
 	public function _data2xml($xml, $data, $item = 'item') {

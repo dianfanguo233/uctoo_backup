@@ -15,6 +15,7 @@ class VoteOptionModel extends Model {
 				continue;
 			
 			$opt_data ['name'] = $opt;
+			$opt_data ['url'] = $post ['url'] [$key];
 			$opt_data ['image'] = $post ['image'] [$key];
 			$opt_data ['order'] = intval ( $post ['order'] [$key] );
 			if ($key > 0) {

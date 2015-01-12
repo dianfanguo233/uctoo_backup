@@ -25,17 +25,14 @@ class QrCodeModel extends Model {
 		$this->appID = trim ( $public ['appid'] );
 		$this->appSecret = trim ( $public ['secret'] );
 		
-		$this->accessToken = S ( 'accessToken_' . $map ['token'] );
-		if (! $this->accessToken) {
-			$this->AccessTokenGet ( $map ['token'] );
-		}
+		$this->accessToken = get_access_token ();
 	}
 	
 	// 增加二维码
 	function add_qr_code($action_name = 'QR_SCENE', $addon = '', $aim_id = '') {
 		set_time_limit ( 30 );
 		
-		$data ['scene_id'] = $this->get_scene_id ();
+		$data ['scene_id'] = $this->get_scene_id ( $action_name );
 		if (! $data ['scene_id']) {
 			return - 1; // 场景值已满
 		}
@@ -111,21 +108,13 @@ class QrCodeModel extends Model {
 	
 	/* 从微信服务器获取access_token并写入配置文件 */
 	private function AccessTokenGet($token) {
-		$url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' . $this->appID . '&secret=' . $this->appSecret;
-		$content = file_get_contents ( $url );
-		$tempArr = json_decode ( $content, true );
-		if (@array_key_exists ( 'access_token', $tempArr )) {
-			$this->accessToken = $tempArr ['access_token'];
-			S ( 'accessToken_' . $token, $tempArr ['access_token'], 1500 );
-		} else {
-			$this->ErrorLogger ( 'access_token get falied.' );
-		}
+		return get_access_token ();
 	}
 	/* 用户分组查询 */
 	public function GroupsQuery() {
 		$access_token = $this->accessToken;
 		$url = 'https://api.weixin.qq.com/cgi-bin/groups/get?access_token=' . $access_token;
-		$tempArr = json_decode ( file_get_contents ( $url ), true );
+		$tempArr = json_decode ( wp_file_get_contents ( $url ), true );
 		if (@array_key_exists ( 'groups', $tempArr )) {
 			return $tempArr ['groups']; // 返回数组格式的分组信息
 		} else {

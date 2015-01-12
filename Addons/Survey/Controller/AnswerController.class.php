@@ -44,6 +44,9 @@ class AnswerController extends AddonsController {
 		$list = M ( $name )->where ( $map )->order ( 'id DESC' )->group ( 'uid' )->selectPage ();
 		foreach ( $list ['list_data'] as &$vo ) {
 			$member = get_memberinfo ( $vo ['uid'] );
+			if (empty ( $member )) {
+				$member = get_followinfo ( $vo ['uid']  );
+			}
 			$vo ['truename'] = $member ['truename'];
 			$vo ['mobile'] = $member ['mobile'];
 		}

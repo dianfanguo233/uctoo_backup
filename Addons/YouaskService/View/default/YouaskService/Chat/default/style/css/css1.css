@@ -1,4 +1,4 @@
-/*weixin emoji*/
+﻿/*weixin emoji*/
 .emoji { background: url("img/emoji17ced3.png") top left no-repeat; width: 20px; height: 20px; display:inline; display: -moz-inline-stack; display: inline-block; vertical-align: top; zoom: 1; *display: inline; }
 .emoji2600 { background-position: 0px -260px; }
 .emoji2601 { background-position: 0px -20px; }

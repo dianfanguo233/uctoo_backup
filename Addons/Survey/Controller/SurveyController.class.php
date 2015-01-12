@@ -55,9 +55,12 @@ class SurveyController extends AddonsController {
 		$this->display ();
 	}
 	function survey() {
-		$map ['survey_id'] = intval ( $_REQUEST ['survey_id'] );
+		$map ['id'] = intval ( $_REQUEST ['survey_id'] );
 		$map ['token'] = get_token ();
 		$survey = M ( 'survey' )->where ( $map )->find ();
+		
+		$map ['survey_id'] = $map ['id'];
+		unset ( $map ['id'] );
 		$list = M ( 'survey_question' )->where ( $map )->order ( 'sort asc, id asc' )->select ();
 		
 		if (IS_POST) {

@@ -14,10 +14,32 @@ class UserCenterController extends AddonsController {
 		$this->assign ( 'add_button', false );
 		$this->assign ( 'del_button', false );
 		$this->assign ( 'check_all', false );
-		
+		//拉取粉丝
+		$url = addons_url ( 'UserCenter://UserCenter/Alllistsinfo');
+		$this->assign ( 'addlisturl', $url );
+		//获取粉丝总数
+		$token = get_token ();
+		$content = getWeixinUserAllInfo ($token);
+		$this->assign ( 'total', $content['total'] );
 		$model = $this->getModel ( 'follow' );
 		
 		parent::common_lists ( $model );
+	}
+	//拉取用户列表并获得基本信息
+	public function Alllistsinfo() {
+		$token = get_token ();
+		$content = getWeixinUserAllInfo ($token);
+		$openids = $content['data']['openid'];
+		if (is_array ( $openids )) {
+			foreach ($openids as $openid) {
+			//	$info = D ( 'Common/Follow' )->init_follow ($openid);
+				$info = D ( 'Common/Follow' )->update_follow ($openid);
+			}
+		$url = addons_url ( 'UserCenter://UserCenter/lists');
+		$this->success ( '总共拉取了'.$content['count'].'个粉丝！',$url); 
+		}else{
+			$this->error('订阅号无拉取粉丝接口');
+		}
 	}
 	// 用户绑定
 	public function edit() {
@@ -84,7 +106,7 @@ class UserCenterController extends AddonsController {
 			empty($openid) || $info = getWeixinUserInfo ( $openid, $token );
 			if (is_array ( $info )) {
 				if (empty ( $data ['headimgurl'] ) && ! empty ( $info ['headimgurl'] )) {
-					// 把微信头像转到WeiPHP的通用图片ID保存 TODO
+					// 把微信头像转到uctoo的通用图片ID保存 TODO
 					$data ['headimgurl'] = $info ['headimgurl'];
 				}
 				$data = array_merge ( $info, $data );
@@ -96,46 +118,25 @@ class UserCenterController extends AddonsController {
 			
 			$this->assign('post_url', U('edit'));
 
-            redirect (  addons_url ( 'UserCenter://UserCenter/userCenter'  ) );
-
 			$this->display ($html);
 		}
 	
 		
 	}
-
-
 	public function userCenter() {
-
         $user = get_followinfo ( $this->mid );
         $this->assign ( 'user', $user );
         $is_follow_login = session ( 'is_follow_login' );
         $this->assign ( 'is_follow_login', $is_follow_login );
-
 		$this->display();
 	}
-    public function userCentercard() {
-        $user = get_followinfo ( $this->mid );
-        $this->assign ( 'user', $user );
-
-        $this->display();
-    }
-    public function userCenterinfo() {
-        $user = get_followinfo ( $this->mid );
-        $this->assign ( 'user', $user );
-
-        $this->display();
-    }
-    public function userCenteryh() {
-        $user = get_followinfo ( $this->mid );
-        $this->assign ( 'user', $user );
-
-
-        $this->display();
-    }
-    public function index() {
-        $this->display();
-    }
+	public function userMessage() {
+		$user = get_followinfo ( $this->mid );
+		$this->assign ( 'user', $user );
+		$is_follow_login = session ( 'is_follow_login' );
+		$this->assign ( 'is_follow_login', $is_follow_login );
+		$this->display();
+	}
 	function config(){
 		// 使用提示
 		$normal_tips = '如需用户关注时提示先绑定，请进入‘欢迎语’插件按提示进行配置提示语';

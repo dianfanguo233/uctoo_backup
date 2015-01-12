@@ -6,6 +6,9 @@ use Addons\Card\Controller\BaseController;
 
 class CardController extends BaseController {
 	function config() {
+		$normal_tips = '配置完保存后，在微信里回复: 会员卡，即可看到效果。';
+		$this->assign ( 'normal_tips', $normal_tips );
+		
 		$this->getModel ();
 		
 		if (IS_POST) {

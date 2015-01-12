@@ -55,14 +55,14 @@ class CustomMenuController extends AddonsController {
 	function _deal_data($d) {
 		$res ['name'] = str_replace ( '├──', '', $d ['title'] );
 		
-		if (! empty ( $d ['keyword'] )) {
-			$res ['type'] = 'click';
-			
-			$res ['key'] = $d ['keyword'];
-		} else {
+		if($d['type']=='view'){
 			$res ['type'] = 'view';
-			$res ['url'] = $d ['url'];
+			$res ['url'] = trim ( $d ['url'] );			
+		}elseif($d['type']!='none'){
+			$res ['type'] = trim( $d['type'] );
+			$res ['key'] = trim ( $d ['keyword'] );			
 		}
+
 		return $res;
 	}
 	function json_encode_cn($data) {
@@ -88,7 +88,7 @@ class CustomMenuController extends AddonsController {
 		foreach ( $tree ['button'] as $k => $d ) {
 			$tree2 ['button'] [] = $d;
 		}
-		
+
 		$tree = $this->json_encode_cn ( $tree2 );
 		$map ['token'] = get_token ();
 		$info = M ( 'member_public' )->where ( $map )->find ();
@@ -99,7 +99,7 @@ class CustomMenuController extends AddonsController {
 		curl_setopt ( $ch1, CURLOPT_URL, $url_get );
 		curl_setopt ( $ch1, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt ( $ch1, CURLOPT_CONNECTTIMEOUT, $timeout );
-		curl_setopt ( $ch1, CURLOPT_SSL_VERIFYPEER, false );
+		curl_setopt ( $ch1, CURLOPT_SSL_VERIFYPEER, FALSE );
 		curl_setopt ( $ch1, CURLOPT_SSL_VERIFYHOST, false );
 		$accesstxt = curl_exec ( $ch1 );
 		curl_close ( $ch1 );
@@ -116,8 +116,8 @@ class CustomMenuController extends AddonsController {
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $url );
 		curl_setopt ( $ch, CURLOPT_CUSTOMREQUEST, "POST" );
-		curl_setopt ( $ch, CURLOPT_SSL_VERIFYPEER, false );
-		curl_setopt ( $ch, CURLOPT_SSL_VERIFYHOST, false );
+		curl_setopt ( $ch, CURLOPT_SSL_VERIFYPEER, FALSE );
+		curl_setopt ( $ch, CURLOPT_SSL_VERIFYHOST, FALSE );
 		curl_setopt ( $ch, CURLOPT_HTTPHEADER, $header );
 		curl_setopt ( $ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 5.01; Windows NT 5.0)' );
 		curl_setopt ( $ch, CURLOPT_FOLLOWLOCATION, 1 );

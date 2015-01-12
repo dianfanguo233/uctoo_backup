@@ -21,14 +21,9 @@ class HomeController extends Controller {
 		$this->redirect('Index/index');
 	}
 	//初始化操作
-
- function _initialize(){
-        //移动设备浏览，则切换模板
-        if (ismobile()) {
-            //设置默认主题为 mobile
-            C('DEFAULT_THEME','mobile');
-        }
-    }
+	function _initialize() {
+		
+	}
 
 	/* 用户登录检测 */
 	protected function login(){

@@ -99,13 +99,13 @@
                             {:hook('adminArticleEdit', array('name'=>$field['name'],'value'=>$data[$field['name']]))} </label>
                         </case>
                         <case value="picture">
-                          <div class="controls uploadrow" title="点击修改图片">
+                          <div class="controls uploadrow2" title="点击修改图片">
                             <input type="file" id="upload_picture_{$field.name}">
                             <input type="hidden" name="{$field.name}" id="cover_id_{$field.name}" value="{$data[$field['name']]}"/>
                             
                             <div class="upload-img-box">
                               <notempty name="data[$field['name']]">
-                                <div class="upload-pre-item"><img width="120" height="120" src="__ROOT__{$data[$field['name']]|get_cover='path'}"/></div>
+                                <div class="upload-pre-item2"><img width="180" height="100" src="__ROOT__{$data[$field['name']]|get_cover='path'}"/></div>
                               </notempty>
                             </div>
                           </div>
@@ -114,12 +114,12 @@
 								//上传图片
 							    /* 初始化上传插件 */
 								$("#upload_picture_{$field.name}").uploadify({
-							        "height"          : 120,
+							        "height"          : 100,
 							        "swf"             : "__STATIC__/uploadify/uploadify.swf",
 							        "fileObjName"     : "download",
 							        "buttonText"      : "上传图片",
 							        "uploader"        : "{:U('home/File/uploadPicture',array('session_id'=>session_id()))}",
-							        "width"           : 120,
+							        "width"           : 180,
 							        'removeTimeout'	  : 1,
 							        'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
 							        "onUploadSuccess" : uploadPicture{$field.name}
@@ -131,7 +131,7 @@
 							        	$("#cover_id_{$field.name}").val(data.id);
 							        	src = data.url || '__ROOT__' + data.path;
 							        	$("#cover_id_{$field.name}").parent().find('.upload-img-box').html(
-							        		'<div class="upload-pre-item"><img width="120" height="120" src="' + src + '"/></div>'
+							        		'<div class="upload-pre-item2"><img width="180" height="100" src="' + src + '"/></div>'
 							        	);
 										$('.weixin-cover-pic').attr('src',src);
 							        } else {
@@ -197,7 +197,7 @@
           </volist>
           <div class="form-item cf">
             <notempty name="data.id"><input type="hidden" name="id" value="{$data.id}"></notempty>
-            <button class="btn submit-btn ajax-post" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+            <button class="btn submit-btn ajax-post" id="submit" type="submit" target-form="form-horizontal">{$submit_name|default='确 定'}</button>
           </div>
         </form>
         <include file="Addons/weixinPreview"/>

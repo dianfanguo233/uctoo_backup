@@ -118,7 +118,7 @@ class Dispatcher {
 		$depr = C ( 'URL_PATHINFO_DEPR' );
 		define ( 'MODULE_PATHINFO_DEPR', $depr );
 		
-		//=====weiphp 修改 支持 index.php/addon/Vote/Vote/lists 这样的插件短地址
+		//=====uctoo 修改 支持 index.php/addon/Vote/Vote/lists 这样的插件短地址
 		$info = trim ( $_SERVER ['PATH_INFO'], '/' );
 		$re = C('URL_ROUTE_RULES');
 		if (substr ( $info, 0, 6 ) == 'addon/' && C('URL_ROUTER_ON') && isset($re['Addons/execute/:_addons/:_controller/:_action'])) {
@@ -275,7 +275,7 @@ class Dispatcher {
 			// 智能识别方式 user_type 识别到 UserTypeController 控制器
 			$controller = ucfirst ( parse_name ( $controller, 1 ) );
 		}
-			// weiphp 20140418 固定为首字母大写，兼容大小写
+			// uctoo 20140418 固定为首字母大写，兼容大小写
 			// return strip_tags ( $controller );
 		return strip_tags ( ucfirst ( $controller ) );
 	}
@@ -332,7 +332,7 @@ class Dispatcher {
 				return '';
 			}
 		}
-		//weiphp 20140418 固定为首字母大写，兼容大小写
+		//uctoo 20140418 固定为首字母大写，兼容大小写
 		// return strip_tags ( C ( 'URL_CASE_INSENSITIVE' ) ? ucfirst ( strtolower ( $module ) ) : $module );
 		return strip_tags ( ucfirst ( strtolower ( $module ) ) );
 	}

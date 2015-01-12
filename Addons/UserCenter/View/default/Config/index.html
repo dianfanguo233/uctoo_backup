@@ -1,177 +1,302 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>详细资料页</title>
-    <link rel="stylesheet" href="{:ADDON_PUBLIC_PATH}/framework7/f7/css/framework7.min.css">
-    <link rel="stylesheet" href="{:ADDON_PUBLIC_PATH}/framework7/f7/css/my-app.css">
-    <link type="text/css" rel="stylesheet" href="__PUBLIC__/Core/js/ext/toastr/toastr.min.css"/>
-    <!-- jQuery库 -->
-    <!--[if lt IE 9]>
-    <script type="text/javascript" src="__STATIC__/jquery-1.10.2.min.js"></script>
-    <![endif]-->
-    <!--[if gte IE 9]><!-->
-    <script type="text/javascript" src="__STATIC__/jquery-2.0.3.min.js"></script>
-    <!--<![endif]-->
-    <script type="text/javascript" src="__PUBLIC__/Core/js/ext/toastr/toastr.min.js"></script>
-    <script type="text/javascript" src="__PUBLIC__/Core/js/core.js"></script>
-</head>
-<body>
-    <div class="statusbar-overlay"></div>
-    <div class="views">
-        <div class="view view-main">
-            <div class="navbar">
-                <div class="navbar-inner">
-                    <div class="left">
-                        <a class="back link" href="{:addons_url ( 'UserCenter://UserCenter/usercenter' )}"><i class="icon icon-back-blue"></i><span>返回</span></a>
-                    </div>
-                    <div class="center sliding">详细资料</div>
-                </div>
-            </div>
-            <div class="pages navbar-through toolbar-through">
-                <div data-page="index" class="page">
-                    <div class="page-content whitebg">
-                        <div class="row no-gutter padding-ud-15">
-                            <div class="col-40 warp-head-img">
-                                <img alt="用户头像" src="{:ADDON_PUBLIC_PATH}/uctoo/img/u-head.png" class="head-img" />
-                            </div>
-                            <div class="col-30 warp-baseinfo">
-                                <h4>昵称:{$user.nickname}</h4>
-                                <h5>积分：{$user.score}</h5>
-                                <h5>余额：0</h5>
-                            </div>
-                            <div class="col-30 warp-btns">
-                                <a href="{:addons_url ( 'UserCenter://Config/index' )}" class="btn blue">我的资料</a><br />
-                                <a href="javascript:void(0);" class="btn orange"><i></i>充<i></i><i></i>值<i></i></a>
-                            </div>
-                        </div>
-                        <div class="warp-jbzl">
-                            <div class="toolbar tabbar">
-                                <div class="toolbar-inner">
-                                    <a href="#tab1" class="tab-link active">基本资料</a>
-                                    <a href="#tab2" class="tab-link">修改密码</a>
-                                </div>
-                                <div class="tabs">
-                                    <div id="tab1" class="tab active">
-                                        <div class="list-block form">
-                                            <form action="{:addons_url ( 'UserCenter://Config/index' )}" method="post">
-                                                <ul>
-
-                                                    <li>
-                                                        <label>姓<i class="sm"></i><i class="sm"></i>名：</label>
-                                                        <input type="text" class="form-control" id="username" name="username" value="{$ucuser.username|op_t}"
-                                                               placeholder="真实姓名">
-                                                    </li>
-                                                    <li>
-                                                        <label>昵<i></i>称：</label>
-                                                        <input type="text" class="form-control" id="nickname" name="nickname" value="{$user.nickname|op_t}"
-                                                               placeholder="昵称">
-                                                    </li>
-                                                    <li>
-                                                        <label>性<i></i>别：</label>
-                                                        <label class="radio-inline">
-                                                            <input name="sex" type="radio" value="1"
-                                                            <eq name="user.sex" value="1"> checked</eq>
-                                                            > 男
-                                                        </label>
-                                                        <label class="radio-inline">
-                                                            <input name="sex" type="radio" value="2"
-                                                            <eq name="user.sex" value="2"> checked</eq>
-                                                            > 女
-                                                        </label>
-                                                        <label class="radio-inline">
-                                                            <input name="sex" type="radio" value="0"
-                                                            <eq name="user.sex" value="0"> checked</eq>
-                                                            > 保密
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <label>手<i></i>机：</label>
-                                                        <input type="tel" placeholder="输入你的手机号" class="text input-medium" name="mobile" value="{$user.mobile}">
-                                                    </li>
-
-                                                    <li>
-                                                        <label>邮箱：</label>
-                                                        <input type="email" class="form-control" id="email" placeholder="邮箱" name="email"
-                                                               value="{$ucuser.email|htmlspecialchars}">
-                                                    </li>
-                                                </ul>
-                                                <button type="submit" class="button button-submit">保存</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div id="tab2" class="tab">
+<extend name="Base/ucmobile_base" />
+<block name="body">
+    <header data-am-widget="header" class="am-header am-header-default ">
+  <div class="am-header-left am-header-nav">
+    <a href="#" class="">
+      <i class="am-header-icon am-icon-home"></i>
+    </a>
+    <a href="#phone-link" class="">
+      <i class="am-header-icon am-icon-phone"></i>
+    </a>
+  </div>
+  <h1 class="am-header-title">个人中心</h1>
+  <div class="am-header-right am-header-nav">
+    <!-- <a href="{:addons_url ( 'UserCenter://UserCenter/userCenter' )}" class="">
+      <i class="am-header-icon am-icon-user"></i>
+    </a>
+    -->
+    <a href="#cart-link" class="">
+      <i class="am-header-icon am-icon-shopping-cart"></i>
+    </a>
+	<a href="#" class=""><!--Menu icon placeholder-->
+      <i class="am-header-icon "></i>
+    </a>
+  </div>
+</header>
 
 
-
-                                        <div class="col-md-8">
-                                            <form id="changePasswordForm"  action="{:addons_url ( 'UserCenter://Config/doChangePassword' )}" method="post" class="form-horizontal">
-                                                <div class="form-group">
-                                                    <label for="inputOldPassword" class="col-sm-2 control-label">旧密码</label>
-
-                                                    <div class="col-sm-10">
-                                                        <input type="password" class="form-control" id="inputOldPassword" value="" name="old_password" placeholder="输入旧密码">
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="inputNewPassword" class="col-sm-2 control-label">新密码</label>
-
-                                                    <div class="col-sm-10">
-                                                        <input type="password" class="form-control" id="inputNewPassword" value="" name="new_password" placeholder="输入新密码">
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="inputConfirmPassword" class="col-sm-2 control-label">确认密码</label>
-
-                                                    <div class="col-sm-10">
-                                                        <input type="password" class="form-control" id="inputConfirmPassword" value="" name="confirm_password"" placeholder="输入确认密码">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="col-sm-offset-2 col-sm-10">
-                                                        <p class="text-danger" id="submitTip"></p>
-                                                        <button type="submit" class="btn btn-primary">保存</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-
-                                        <block name="script">
-                                            <script>
-                                                //检查两次输入的密码是否一致
-                                                $(function(){
-                                                    $('#changePasswordForm').submit(function(e){
-                                                        var newPassword = $('#inputNewPassword').val();
-                                                        var confirmPassword = $('#inputConfirmPassword').val();
-                                                        if(newPassword != confirmPassword) {
-                                                            op_error('两次输入的密码不一致');
-                                                            e.stopPropagation();
-                                                            return false;
-                                                        }
-                                                    })
-                                                })
-                                            </script>
-                                        </block>
-
-
-
-
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Menu -->
+    <nav data-am-widget="menu" class="am-menu  am-menu-offcanvas1" data-am-menu-offcanvas>
+      <a href="javascript: void(0)" class="am-menu-toggle">
+          <i class="am-menu-toggle-icon am-icon-bars"></i>
+      </a>
+        <div class="am-offcanvas">
+            <div class="am-offcanvas-bar">
+                <ul class="am-menu-nav sm-block-grid-1">
+                    <li class="am-parent">
+                        <a href="##">公司</a>
+                        <ul class="am-menu-sub am-collapse  sm-block-grid-2 ">
+                            <li class="">
+                                <a href="##">公司</a>
+                            </li>
+                            <li class="">
+                                <a href="##">人物</a>
+                            </li>
+                            <li class="">
+                                <a href="##">趋势</a>
+                            </li>
+                            <li class="">
+                                <a href="##">投融资</a>
+                            </li>
+                            <li class="">
+                                <a href="##">创业公司</a>
+                            </li>
+                            <li class="">
+                                <a href="##">创业人物</a>
+                            </li>
+                            <li class="am-menu-nav-channel">
+                                <a href="##" title="公司">进入栏目 &raquo;</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="am-parent">
+                        <a href="##">人物</a>
+                        <ul class="am-menu-sub am-collapse  sm-block-grid-3 ">
+                            <li class="">
+                                <a href="##">公司</a>
+                            </li>
+                            <li class="">
+                                <a href="##">人物</a>
+                            </li>
+                            <li class="">
+                                <a href="##">趋势</a>
+                            </li>
+                            <li class="">
+                                <a href="##">投融资</a>
+                            </li>
+                            <li class="">
+                                <a href="##">创业公司</a>
+                            </li>
+                            <li class="">
+                                <a href="##">创业人物</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="am-parent">
+                        <a href="#c3">趋势</a>
+                        <ul class="am-menu-sub am-collapse am-avg-sm-4">
+                            <li class="">
+                                <a href="##">公司</a>
+                            </li>
+                            <li class="">
+                                <a href="##">人物</a>
+                            </li>
+                            <li class="">
+                                <a href="##">趋势</a>
+                            </li>
+                            <li class="">
+                                <a href="##">投融资</a>
+                            </li>
+                            <li class="">
+                                <a href="##">创业公司</a>
+                            </li>
+                            <li class="">
+                                <a href="##">创业人物</a>
+                            </li>
+                            <li class="am-menu-nav-channel">
+                                <a href="#c3" title="趋势">泥煤 &raquo;</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="am-parent">
+                        <a href="##">投融资</a>
+                        <ul class="am-menu-sub am-collapse am-avg-sm-3">
+                            <li class="">
+                                <a href="##">公司</a>
+                            </li>
+                            <li class="">
+                                <a href="##">人物</a>
+                            </li>
+                            <li class="">
+                                <a href="##">趋势</a>
+                            </li>
+                            <li class="">
+                                <a href="##">投融资</a>
+                            </li>
+                            <li class="">
+                                <a href="##">创业公司</a>
+                            </li>
+                            <li class="">
+                                <a href="##">创业人物</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="">
+                        <a href="##">创业公司</a>
+                    </li>
+                    <li class="">
+                        <a href="##">创业人物</a>
+                    </li>
+                </ul>
             </div>
         </div>
+    </nav>
+
+    <div class="am-g">
+
+            <div class="am-panel am-panel-default">
+                <div class="am-panel-bd">
+                    <div class="am-g">
+                        <div class="am-u-sm-4">
+                            <notempty name="user.headimgurl">
+                                <img class="am-img-circle am-img-thumbnail" src="{$user.headimgurl}" alt="用户头像"/>
+                                <else />
+                                <img class="am-img-circle am-img-thumbnail" src="{:ADDON_PUBLIC_PATH}/head.jpg" alt="用户头像"/>
+                            </notempty>
+                            <br>
+                            <div class="am-btn-group-stacked">
+                                <eq name="is_follow_login" value="2">
+                                    <a href="#" class="am-btn am-btn-primary" >退出</a>
+                                    <else/>
+                                    <a href="#" class="am-btn am-btn-primary" >登录/注册</a>
+                                </eq>
+                                <a class="am-btn am-btn-primary">充值</a>
+                            </div>
+                        </div>
+                        <div class="am-u-sm-8">
+                            <div class="user-info">
+                                <p class="user-info-order">
+
+                                昵称：<strong>{$user.nickname}</strong><br>
+                                积分：<strong>{$user.score}</strong> <br>
+                                余额：<strong>0</strong><br>
+                                等级：<strong>Lv1 新手</strong><br>
+                                </p>
+                            </div>
+                            <div class="user-info">
+                                <p>信用信息</p>
+                                <div class="am-progress am-progress-sm">
+                                    <div class="am-progress-bar am-progress-bar-success" style="width: 80%"></div>
+                                </div>
+                                <p class="user-info-order">
+                                    信用等级：正常<br>
+                                    信用积分：<strong>80</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <ul class="am-nav am-nav-tabs">
+            <li><a href="{:addons_url ( 'UserCenter://UserCenter/userCenter' )}">应用</a></li>
+            <li><a href="{:addons_url ( 'UserCenter://UserCenter/userMessage' )}">消息</a></li>
+            <li class="am-active"><a href="{:addons_url ( 'UserCenter://Config/index' )}">资料</a></li>
+            <li><a href="#">群组</a></li>
+            <li><a href="#">关注</a></li>
+        </ul>
+
+        <div data-am-widget="tabs" class="am-tabs am-tabs-d2">
+  <ul class="am-tabs-nav am-cf">
+    <li class="am-active">
+      <a href="[data-tab-panel-0]">基本资料</a>
+    </li>
+    <li class="">
+      <a href="[data-tab-panel-1]">扩展资料</a>
+    </li>
+  </ul>
+  <div class="am-tabs-bd">
+    <div data-tab-panel-0 class="am-tab-panel am-active">
+        <form class="am-form" action="{:addons_url ( 'UserCenter://Config/index' )}" method="post">
+            <fieldset>
+                <div class="am-form-group">
+                    <label for="nickname">昵称：</label>
+                    <input type="text" class="" id="nickname" name="nickname" value="{$user.nickname|op_t}"
+                           placeholder="昵称" >
+                </div>
+                <div class="am-form-group">
+                    <label for="nickname">姓名：</label>
+                    <input type="text" class="" id="username" name="username" value="{$ucuser.username}"
+                           placeholder="真实姓名">
+                </div>
+                <div class="am-form-group">
+                    <label>性别：</label>
+                    <label class="am-radio-inline">
+                        <input name="sex" type="radio"  value="1" name="docInlineRadio"
+                        <eq name="user.sex" value="1"> checked</eq>
+                        > 男
+                    </label>
+                    <label class="am-radio-inline">
+                        <input name="sex" type="radio" value="2" name="docInlineRadio"
+                        <eq name="user.sex" value="2"> checked</eq>
+                        > 女
+                    </label>
+                    <label class="am-radio-inline">
+                        <input name="sex" type="radio" value="0" name="docInlineRadio"
+                        <eq name="user.sex" value="0"> checked</eq>
+                        > 保密
+                    </label>
+                </div>
+                <div class="am-form-group">
+                    <label for="email">邮箱：</label>
+                    <input type="text" class="" id="email" placeholder="邮箱" name="email"
+                           value="{$ucuser.email}">
+                </div>
+                <div class="am-form-group">
+                    <label for="mobile">手机：</label>
+                    <input type="tel" class="" id="mobile" placeholder="手机" name="mobile"  value="{$user.mobile}">
+                </div>
+
+                <p><button type="submit" class="am-btn am-btn-primary">提交</button></p>
+            </fieldset>
+        </form>
     </div>
-    <script type="text/javascript" src="{:ADDON_PUBLIC_PATH}/framework7/f7/js/framework7.min.js"></script>
-    <script type="text/javascript" src="{:ADDON_PUBLIC_PATH}/framework7/f7/js/my-app.js"></script>
-</body>
-</html> 
+    <div data-tab-panel-1 class="am-tab-panel ">
+       扩展资料需定制。
+    </div>
+  </div>
+
+    </div><!-- end资料tab -->
+
+
+<!-- Navbar -->
+<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default "
+     id="">
+  <ul class="am-navbar-nav am-cf am-avg-sm-4">
+    <li data-am-navbar-share>
+      <a href="#">
+        <span class="am-icon-share-square-o"></span>
+        <span class="am-navbar-label">分享</span>
+      </a>
+    </li>
+    <li data-am-navbar-qrcode>
+      <a href="#">
+        <span class="am-icon-qrcode"></span>
+        <span class="am-navbar-label">二维码</span>
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span class="am-icon-github"></span>
+        <span class="am-navbar-label">GitHub</span>
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span class="am-icon-download"></span>
+        <span class="am-navbar-label">下载使用</span>
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span class="am-icon-location-arrow"></span>
+        <span class="am-navbar-label">Bug 反馈</span>
+      </a>
+    </li>
+  </ul>
+</div>
+</block><!--body end -->
+<block name="script">
+    <script type="text/javascript">
+
+    </script>
+</block>

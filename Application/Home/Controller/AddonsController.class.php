@@ -229,4 +229,47 @@ class AddonsController extends Controller {
 			$this->display ( './Application/Home/View/default/Addons/mobileForm.html' );
 		}
 	}
+	// WAP页面的通用分页HTML
+	function _wapPage($count, $row) {
+		if ($count <= $row)
+			return '';
+		
+		$page = new \Think\Page ( $count, $row );
+		$page->setConfig ( 'theme', '%UP_PAGE% %NOW_PAGE%/%TOTAL_PAGE% %DOWN_PAGE%' );
+		$page->setConfig ( 'prev', '上一页<span class="arrow_left"></span>' );
+		$page->setConfig ( 'next', '下一页<span class="arrow_right"></span>' );
+		return $page->show ();
+	}
+	// 插件中的Model文件的通用调试方法
+	function test_model() {
+		$_addon = I ( 'get._addon' );
+		$_model = I ( 'get._model' );
+		$_act = I ( 'get._act' );
+		
+		empty ( $_addon ) && die ( '_addon参数不能为空' );
+		empty ( $_model ) && $_model = 'WeixinAddon';
+		empty ( $_act ) && $_act = 'reply';
+		
+		// 带key_开头的索引作为$keywordArr参数传入，其它作为$dataArr参数传入
+		foreach ( $_GET as $k => $v ) {
+			if ($key = str_replace ( 'key_', '', $k, $count ) && $count > 0) {
+				$keywordArr [$key] = $v;
+			} else {
+				$dataArr [$k] = $v;
+			}
+		}
+		dump ( 'dataArr:' );
+		dump ( $dataArr );
+		dump ( 'keywordArr:' );
+		dump ( $keywordArr );
+		
+		$_REQUEST ['doNotInit'] = 1;
+		
+		$dataArr ['Content'] = '苏州天气';
+		
+		// 加载相应的插件来处理并反馈信息
+		require_once ONETHINK_ADDON_PATH . $_addon . '/Model/WeixinAddonModel.class.php';
+		$model = D ( 'Addons://' . $_addon . '/WeixinAddon' );
+		$model->reply ( $dataArr, $keywordArr );
+	}
 }

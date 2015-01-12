@@ -782,7 +782,7 @@ function U($url='',$vars='',$suffix=true,$domain=true) {
     // 解析URL
     $info   =  parse_url($url);
 		
-		// weiphp 增加插件地址支持
+		// uctoo 增加插件地址支持
 	if (isset ( $_GET ['_addons'] ) && strpos ( $info ['path'], '/' ) === false) {
 		$info['query'] = '_addons='.$_GET['_addons'].'&_controller='.$_GET['_controller'].'&_action='.$info['path'].'&'.$info['query'];
 		$info['path'] = 'home/addons/execute';
@@ -935,7 +935,7 @@ function U($url='',$vars='',$suffix=true,$domain=true) {
         $url   =  (is_ssl()?'https://':'http://').$domain.$url;
     }
     
-    //缩短插件的URL weiphp修改
+    //缩短插件的URL uctoo修改
 	$re = C('URL_ROUTE_RULES');
 	if ( C('URL_ROUTER_ON') && isset($re['Addons/execute/:_addons/:_controller/:_action'])) {
 		$url = str_ireplace(array('home/addons/execute','_addons/','_controller/','_action/'), array('addon',''), $url);
@@ -951,6 +951,9 @@ function U($url='',$vars='',$suffix=true,$domain=true) {
  * @return void
  */
 function W($name, $data=array()) {
+	if(isset($data['one_param'])){
+		$data = array($data);
+	}
     return R($name,$data,'Widget');
 }
 

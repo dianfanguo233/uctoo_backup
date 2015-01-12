@@ -228,7 +228,7 @@ class VoteController extends AddonsController {
 		
 		$test_id = intval ( $_REQUEST ['test_id'] );
 		$this->assign ( 'event_url', event_url ( '投票', $vote_id ) );
-		
+	
 		$this->display ( T ( 'Addons://Vote@Vote/show' ) );
 	}
 	function _getVoteInfo($id) {
@@ -301,13 +301,16 @@ class VoteController extends AddonsController {
 		
 		redirect ( U ( 'show', 'id=' . $vote_id ) );
 	}
+	//已过期返回 true ,否则返回 false
 	private function _is_overtime($vote_id) {
 		// 先看看投票期限过期与否
 		$the_vote = M ( "vote" )->where ( "id=$vote_id" )->find ();
+		
+		if(!empty($the_vote['start_date']) && $the_vote ['start_date'] > NOW_TIME) return ture;
+		
 		$deadline = $the_vote ['end_date'] + 86400;
-		if ($deadline <= NOW_TIME && $the_vote ['start_date'] < NOW_TIME) {
-			return true;
-		}
+		if(!empty($the_vote['end_date']) && $deadline <= NOW_TIME) return ture;
+		
 		return false;
 	}
 	private function _is_join($vote_id, $user_id, $token) {

@@ -8,14 +8,16 @@ class WeixinAddonModel extends WeixinModel {
 	var $config = array ();
 	function reply($dataArr, $keywordArr = array()) {
 		$this->config = getAddonConfig ( 'Chat' ); // 获取后台插件的配置参数
-		                                           // dump($this->config);
-		$res = $this->_tuling ( $dataArr ['Content'] );
-		if ($res) {
+		
+		$content = $this->_tuling ( $dataArr ['Content'] );
+		if ($content) {
 			exit ();
 		}
 		
-		// 先尝试小九机器人
-		$content = $this->_xiaojo ( $dataArr ['Content'] );
+		// 先尝试小九机器人 目前已不可用
+		if (empty ( $content )) {
+			// $content = $this->_xiaojo ( $dataArr ['Content'] );
+		}
 		
 		// 再尝试小黄鸡
 		if (empty ( $content )) {
@@ -75,10 +77,22 @@ class WeixinAddonModel extends WeixinModel {
 		
 		$result = file_get_contents ( $api_url );
 		$result = json_decode ( $result, true );
-		if ($result ['code'] < 100000) {
-			return false;
+		if ($_GET ['format'] == 'test') {
+			dump ( '图灵机器人结果：' );
+			dump ( $result );
+		}
+		if ($result ['code'] > 40000) {
+			if ($result ['code'] < 40008 && ! empty ( $result ['text'] )) {
+				$this->replyText ( '图灵机器人请你注意：' . $result ['text'] );
+			} else {
+				return false;
+			}
 		}
 		switch ($result ['code']) {
+			case '200000' :
+				$text = $result ['text'] . ',<a href="' . $result ['url'] . '">点击进入</a>';
+				$this->replyText ( $text );
+				break;
 			case '200000' :
 				$text = $result ['text'] . ',<a href="' . $result ['url'] . '">点击进入</a>';
 				$this->replyText ( $text );
@@ -205,7 +219,11 @@ class WeixinAddonModel extends WeixinModel {
 				$this->replyNews ( $articles );
 				break;
 			default :
-				$this->replyText ( $result ['text'] );
+				if (empty ( $result ['text'] )) {
+					return false;
+				} else {
+					$this->replyText ( $result ['text'] );
+				}
 		}
 		
 		return true;

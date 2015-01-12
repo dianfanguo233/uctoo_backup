@@ -5,7 +5,7 @@ use Common\Controller\Addon;
 
 /**
  * 百度统计插件
- * @author weiphp.cn
+ * @author uctoo.com
  */
 
     class BaiduStatisticsAddon extends Addon{
@@ -15,7 +15,7 @@ use Common\Controller\Addon;
             'title'=>'百度统计',
             'description'=>'这是百度统计功能，只要开启插件并设置统计代码，就可以使用统计功能了',
             'status'=>1,
-            'author'=>'weiphp.cn',
+            'author'=>'uctoo.com',
             'version'=>'1.0'
         );
 

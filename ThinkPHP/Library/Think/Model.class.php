@@ -537,6 +537,7 @@ class Model {
 			unset ( $result );
 			unset ( $count_options );
 		}
+		$list_data ['count'] = intval($count);
 		
 		// 设置分页参数名称
 		$p = 'p';
@@ -821,7 +822,7 @@ class Model {
         }
         return null;
     }
-		// 获取多个记录的便捷方法，weiphp增加
+		// 获取多个记录的便捷方法，uctoo增加
 	public function getFields($field) {
 		return $this->getField ( $field, true );
 	}
@@ -942,7 +943,7 @@ class Model {
      * @return boolean
      */
     public function regex($value,$rule) {
-		// weiphp 解决设置模型字段设置多选和必填时验证失败的问题
+		// uctoo 解决设置模型字段设置多选和必填时验证失败的问题
 		if (is_array ( $value ) && $rule == 'require') {
 			return ! empty ( $value );
 		}

@@ -10,6 +10,11 @@ return array (
 				),
 				'value' => '1'  // 表单的默认值
 				),
+		'keyword' => array ( // 配置在表单中的键名 ,这个会是config[random]
+				'title' => '关键词:', // 表单的文字
+				'type' => 'text', // 表单的类型：text、textarea、checkbox、radio、select等
+				'value' => ''  // 表单的默认值
+		),		
 		'title' => array ( // 配置在表单中的键名 ,这个会是config[random]
 				'title' => '标题:', // 表单的文字
 				'type' => 'text', // 表单的类型：text、textarea、checkbox、radio、select等

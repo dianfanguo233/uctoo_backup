@@ -1,154 +1,28 @@
-<!-- start: FOOTER -->
-<footer id="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="newsletter">
-                    <h4>订阅邮件</h4>
-                    <p>
-                        订阅关于UCToo的邮件，获取最新消息。我们承诺对您的邮箱地址保密。
-                    </p>
-                    <form method="POST" action="#" id="newsletterForm">
-                        <div class="input-group">
-                            <input type="text" id="email" name="email" placeholder="输入邮箱" class="form-control">
-									<span class="input-group-btn">
-										<button type="submit" class="btn btn-default">
-                                            Go!
-                                        </button> </span>
-                        </div>
-                    </form>
-                </div>
+    <div class="footer">
+    	<div class="wrap foot_wrap">
+        	<div class="foot_div">
+            	<h6>关于我们</h6>
+                <a href="{:U('about')}">关于我们</a><br/>
+                <a href="{:U('about')}">联系方式</a><br/>
+				<!--<a href="#">友情链接</a><br/>-->
+  				<a href="{:U('license')}">授权协议</a>
+                
             </div>
-            <div class="col-md-3">
-                <h4>最新动态</h4>
-                <div class="twitter" id="tweet">
-                    <i class="fa fa-twitter"></i> UCToo 0.1版本发布，欢迎下载试用。
-                    <a href="#" class="time">
-                        2014.07.25
-                    </a>
-                </div>
+        	<div class="foot_div">
+            	<h6>帮助</h6>
+                <a href="http://bbs.uctoo.com" target="_blank">官方论坛</a><br/>
+                <!--<a href="javasctipt:;" target="_blank">官方微博</a><br/>-->
+                <a href="javascript:;">官方QQ交流群：102324323</a>
+				
             </div>
-            <div class="col-md-3">
-                <div class="contact-details">
-                    <h4>联系方式</h4>
-                    <ul class="contact">
-                        <li>
-                            <p>
-                                <i class="fa fa-map-marker"></i><strong>Address:</strong> 深圳市南山区蛇口工业六路9号创新谷
-                            </p>
-                        </li>
-                        <li>
-                            <p>
-                                <i class="fa fa-comments"></i><strong>UCToo官方QQ交流群:</strong> 102324323
-                            </p>
-                        </li>
-                        <li>
-                            <p>
-                                <i class="fa fa-envelope"></i><strong>Email:</strong>
-                                <a href="mailto:contact@uctoo.com">
-                                    contact@uctoo.com
-                                </a>
-                            </p>
-                        </li>
-                    </ul>
-                </div>
+            <div class="getqrcode">
+            	<img src="__IMG__/getqrcode.jpg"/>
+                <p>微信扫码左侧二维码<br/>并加关注UCToo官方微信公众号<br/>体验UCToo的最新功能</p>
             </div>
-            <div class="col-md-3">
-                <h4>关注UCToo</h4>
-                <div class="social-icons">
-                    <div class="getqrcode">
-                        <img src="__IMG__/fwqrcode.jpg"/>
-                        <p>微信扫码左侧二维码<br/>并加关注UCToo官方微信公众号<br/>体验UCToo的最新功能</p>
-                    </div>
-                </div>
-            </div>
+            <div class="foot_logo"></div>
         </div>
+        <p class="copyright">{:C('COPYRIGHT')} {:C('WEB_SITE_ICP')}</p>
     </div>
-    <div class="footer-copyright">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-1">
-                    <a class="logo" href="{:SITE_URL}">
-                        UCToo
-                    </a>
-                </div>
-                <div class="col-md-7">
-                    <p>
-                        &copy; Copyright 2014 by UCToo. {:C('WEB_SITE_ICP')}. All Rights Reserved.
-                    </p>
-                </div>
-                <div class="col-md-4">
-                    <nav id="sub-menu">
-                        <ul>
-                            <li>
-                                <a href="{:U('about')}">
-                                    关于UCToo
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{:U('jobs')}">
-                                    加入我们
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Sitemap
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{:U('license')}">
-                                    授权协议
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-<a id="scroll-top" href="#"><i class="fa fa-angle-up"></i></a>
-<!-- end: FOOTER -->
-<block name="mainscript">
-<!-- start: MAIN JAVASCRIPTS -->
-<!--[if lt IE 9]>-->
-<script src="__STATIC__/uctoo/plugins/respond.min.js"></script>
-<script src="__STATIC__/uctoo/plugins/excanvas.min.js"></script>
-<script src="__STATIC__/uctoo/plugins/html5shiv.js"></script>
-
-<script type="text/javascript" src="__STATIC__/uctoo/js/jquery-1.10.2.min.js"></script>
-<!--<![endif]-->
-<!--[if gte IE 9]><!-->
-
-<script type="text/javascript" src="__STATIC__/uctoo/js/jquery-2.0.3.min.js"></script>
-<!--<![endif]-->
-<script src="__STATIC__/uctoo/plugins/bootstrap/js/bootstrap.min.js"></script>
-<script src="__STATIC__/uctoo/plugins/jquery.transit/jquery.transit.js"></script>
-<script src="__STATIC__/uctoo/plugins/hover-dropdown/twitter-bootstrap-hover-dropdown.min.js"></script>
-<script src="__STATIC__/uctoo/plugins/jquery.appear/jquery.appear.js"></script>
-<script src="__STATIC__/uctoo/plugins/blockUI/jquery.blockUI.js"></script>
-<script src="__STATIC__/uctoo/plugins/jquery-cookie/jquery.cookie.js"></script>
-<script src="__STATIC__/uctoo/js/main.js"></script>
-<script type="text/javascript" src="__JS__/admin_common.js"></script>
-<!-- end: MAIN JAVASCRIPTS -->
-</block>
-<block name="pagescript">
-<!-- start: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
-<script src="__STATIC__/uctoo/plugins/revolution_slider/rs-plugin/js/jquery.themepunch.plugins.min.js"></script>
-<script src="__STATIC__/uctoo/plugins/revolution_slider/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
-<script src="__STATIC__/uctoo/plugins/flex-slider/jquery.flexslider.js"></script>
-<script src="__STATIC__/uctoo/plugins/stellar.js/jquery.stellar.min.js"></script>
-<script src="__STATIC__/uctoo/plugins/colorbox/jquery.colorbox-min.js"></script>
-<script src="__STATIC__/uctoo/js/index.js"></script>
-<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
-<script>
-    jQuery(document).ready(function() {
-        Main.init();
-        Index.init();
-        $.stellar();
-    });
-</script>
-</block>
 <!-- 页面footer钩子，一般用于加载插件JS文件和JS代码 -->
 {:hook('pageFooter', 'widget')}    
 </body>

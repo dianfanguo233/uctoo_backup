@@ -44,7 +44,7 @@ class UpdateController extends AdminController {
 	}
 	function getRemoteVersion() {
 		// cookie ( 'cookie_close_version', 0 );
-		$remote = 'http://www.weiphp.cn/index.php?s=/home/index/update_version';
+		$remote = 'http://www.uctoo.com/index.php?s=/home/index/update_version';
 		$new_version = wp_file_get_contents ( $remote );
 		$res = $new_version > C ( 'SYSTEM_UPDATRE_VERSION' ) && cookie ( 'cookie_close_version' ) != $new_version;
 		echo $res ? $new_version : 0;
@@ -88,7 +88,7 @@ class UpdateController extends AdminController {
 		parent::_initialize ();
 		set_time_limit ( 0 );
 		
-		$this->remoteBaseURL = 'http://dev.weiphp.cn'; // TODO
+		$this->remoteBaseURL = 'http://www.uctoo.com'; // TODO
 		
 		$this->updateURL = $this->remoteBaseURL . '/index.php?s=/home/index/update_json&version=' . intval ( C ( 'SYSTEM_UPDATRE_VERSION' ) );
 	}
@@ -390,8 +390,8 @@ class UpdateController extends AdminController {
 		// 获取下载地址
 		$id = intval ( $_GET ['id'] );
 		$url = $this->remoteBaseURL . '/index.php?s=admin/store/downloadApp&id=' . $id;
-		
-		$info = file_get_contents ( $url );
+// 		dump($url);exit;
+		$info = wp_file_get_contents ( $url );
 		$info = json_decode ( $info, true );
 		if (! $info ['status']) {
 			$this->error ( $info ['error'] );

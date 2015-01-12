@@ -13,7 +13,7 @@ class CustomReplyTextController extends BaseController{
 	public function lists() {
 		$map ['token'] = get_token ();
 		session ( 'common_condition', $map );
-	
+
 		$list_data = $this->_get_model_list ( $this->model );
 	
 		// 分类数据

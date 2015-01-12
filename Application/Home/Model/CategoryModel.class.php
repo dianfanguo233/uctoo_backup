@@ -100,6 +100,7 @@ class CategoryModel extends Model {
 			$id = $info ['id'];
 		}
 		$map ['module'] = empty($module) ? I ( 'module' ) : $module;
+		$map ['token'] = get_token ();
 		
 		/* 获取所有分类 */
 		$list = $this->field ( $field )->where ( $map )->order ( 'sort asc, id asc' )->select ();
@@ -151,6 +152,7 @@ class CategoryModel extends Model {
 		$info = $this->info ( $id, 'pid' );
 		$map ['pid'] = $info ['pid'];
 		$map ['module'] = I ( 'module' );
+		$map ['token'] = get_token ();
 		return $this->field ( $field )->where ( $map )->order ( 'sort' )->select ();
 	}
 	

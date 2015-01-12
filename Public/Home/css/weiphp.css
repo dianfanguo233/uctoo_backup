@@ -1,5 +1,5 @@
 /**
- * weiphp公用css
+ * uctoo公用css
  */
 /* 登录 */
 #login_body{ background:url(../images/login_bg.jpg) no-repeat center top}
@@ -128,3 +128,13 @@ background-clip: none;}
 .need_flag{ color: #F00;
 vertical-align: -6px;
 font-size: 20px;}
+/*配置步骤 */
+.setting_step{ height:44px; border:1px solid #eee; margin:30px 20px;}
+.setting_step .step{ background:#ffffff url(../images/step.png) no-repeat right 0; float:left; text-align:center; line-height:44px; color:#666; width:160px; height:44px;}
+.app_setting .step{ width:145px;}
+.setting_step .step_cur_1{ background:#44b549 url(../images/step.png) no-repeat right -88px; float:left; color:#fff}
+.setting_step .step_cur{ background:#fff url(../images/step.png) no-repeat right -44px; float:left;color:#666}
+
+.help_content{ margin:20px; background:#eee; padding:15px;}
+.help_content h3{ line-height:50px;}
+.help_content img{ margin:10px 0; box-shadow:0 2px 3px #999}

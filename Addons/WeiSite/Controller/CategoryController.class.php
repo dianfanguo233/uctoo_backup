@@ -20,10 +20,6 @@ class CategoryController extends BaseController {
 		session ( 'common_condition', $map );
 		
 		$list_data = $this->_get_model_list ( $this->model );
-		foreach ( $list_data ['list_data'] as &$vo ) {
-			$src = get_cover_url ( $vo ['icon'] );
-			$vo ['icon'] = empty($src) ? '' : '<img style="background:#ddd" src="' . $src . '" width="50px" >';
-		}
 		$this->assign ( $list_data );
 		//dump ( $list_data );
 		
@@ -59,5 +55,11 @@ class CategoryController extends BaseController {
 	// 详情
 	function detail() {
 		$this->display ();
+	}
+    // 预览
+	function preview() {
+		$param ['cate_id'] = I ( 'id', 0, 'intval' );
+		$url = addons_url ( 'WeiSite://WeiSite/lists', $param );
+		redirect ( $url );
 	}
 }

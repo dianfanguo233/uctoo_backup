@@ -1,1 +1,0 @@
-INSERT INTO `uctoo_keyword` (`keyword`, `token`, `addon`, `aim_id`, `cTime`, `keyword_lenght`, `keyword_type`, `extra_text`, `extra_int`) VALUES ('今天课表', 'get_token', 'Curriculum', '2', '2', '18', '0', '', '0');

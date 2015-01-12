@@ -129,7 +129,7 @@
 							        if(data.status){
 							        	$("#cover_id_{$field.name}").val(data.id);
 							        	src = data.url || '__ROOT__' + data.path;
-							        	$("#cover_id_{$field.name}").parent().find('.upload-img-box').html(
+							        	$("#cover_id_{$field.name}").parent().find('.upload-img-box').show().html(
 							        		'<div class="upload-pre-item"><img width="120" height="120" src="' + src + '"/></div>'
 							        	);
 										$('.weixin-cover-pic').attr('src',src);
@@ -195,7 +195,7 @@
                     <label class="item-label">文字/图片投票<span class="check-tips"></span></label>
                     	<div class="controls">
                       		<div class="check-item">
-                              <input type="radio" name="is_img" id="is_img_0" class="regular-radio" value="0" onClick="changeOption()">
+                              <input type="radio" name="is_img" id="is_img_0" checked class="regular-radio" value="0" onClick="changeOption()">
                               <label for="is_img_0"></label>文字投票
                               </div>
                               <div class="check-item">
@@ -213,6 +213,7 @@
       <tr class="add_list add_list_head" <if condition="empty($option_list)">style="display:none"</if>>
       	<td class="pic_td">图片</td>
         <td>标题</td>
+        <td>详情链接</td>
         <td>排序</td>
         <td>操作</td>
       </tr>
@@ -234,6 +235,9 @@
         <td>
         <input type="text" value="" name="name[{$vo.id}]" class="text input-large" style="width:250px">&nbsp;
         </td>
+          <td>
+              <input type="text" value="{$vo.url}" name="url[{$vo.id}]" class="text input-large" style="width:250px">&nbsp;
+          </td>
         <td>
         <input type="text" value="" name="order[{$vo.id}]" class="optionSort text input-large" style="width:80px">&nbsp;
         </td>
@@ -307,6 +311,8 @@ function addOpt(){
 		+'</div></td><td>'
 		+'<input type="text" value="" name="name['+id+']" class="text input-large" style="width:250px">'
 		+'</td><td>'
+            +'<input type="text" value="" name="url['+id+']" class="text input-large" style="width:250px">'
+            +'</td><td>'
 		+'<input type="text" value="'+i+'" name="order['+id+']" class="optionSort text input-large" style="width:80px">&nbsp;'
 		+'</td><td>'
 		+'<a href="###" onClick="delOpt(this)" class="fr btn btn-yellow" >删除</a></td></tr>';

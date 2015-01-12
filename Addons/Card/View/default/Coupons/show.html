@@ -6,10 +6,13 @@
     	<h5 class="page_title top_line">优惠券</h5>
     	<div class="single_item m_15" style="margin-top:50px">
         	<volist name='list' id="vo">
-                 <a class="p_10 fixedH" href="#">
+                 <a class="p_10 fixedH" href="{:addons_url('Coupon://Coupon/preview',array('id'=>$vo['id']))}">
                     <span class="fl"><img width="30" class="fl mr_10" src="__IMG__/m/pic_quan.png"/>{$vo.title}</span>
+                    <if condition="$vo[is_use]">
                     <span class="fr btn gray_btn">已领取</span>
-                    <!-- <span class="fr btn">领取</span> -->
+                    <else />
+                     <span class="fr btn">领取</span> 
+                    </if>
                 </a>
                 <div class="single_item_line"></div>
             </volist> 

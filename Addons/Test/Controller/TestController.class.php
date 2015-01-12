@@ -6,7 +6,7 @@ use Home\Controller\AddonsController;
 
 class TestController extends AddonsController {
 	function lists() {
-		$normal_tips = '微测试适用两种场景：<br>
+		$normal_tips = '微测试可用于性格分析等趣味测试，它可以有以下两种场景用法：<br>
 一是题目的每个选项对应着不同的得分，最后把用户的所有得分加起来看在哪个分数段，然后给出这个分类段的评价语<br>
 二是设置选择不同的选项跳转到不同的问题，前面的问题不设置分数，只有最后选择的问题设置总分，这个分数在哪个分数段，就给出这个分类段的评价语<br>';
 		$this->assign ( 'normal_tips', $normal_tips );

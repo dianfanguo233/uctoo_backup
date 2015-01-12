@@ -9,17 +9,18 @@ use User\Api\UserApi;
  * 粉丝操作
  */
 class FollowModel extends Model {
-	function init_follow($openid,$is_subscribe = true) {
+	function init_follow($openid) {
+		if (empty ( $openid ) || $openid == - 1)
+			return false;
+		
 		$data ['token'] = get_token ();
 		$data ['openid'] = $openid;
 		
 		$info = $this->where ( $data )->find ();
-
-        if ($info) {
-            if ($is_subscribe) {
-                $save ['subscribe_time'] = $info ['subscribe_time'] = time ();
-                $res = $this->where ( $data )->save ( $save );
-            }
+		
+		if ($info) {
+			$save ['subscribe_time'] = $info ['subscribe_time'] = time ();
+			$res = $this->where ( $data )->save ( $save );
 		} else {
 			$data ['subscribe_time'] = time ();
 			$uid = $this->get_uid_by_ucenter ( $data ['openid'], $data ['token'] );
@@ -34,6 +35,7 @@ class FollowModel extends Model {
 	}
 	// 自动初始化微信用户
 	function get_uid_by_ucenter($openid, $token) {
+		static $_email_int = 0;
 		$info ['openid'] = $openid;
 		$info ['token'] = $token;
 		$res = M ( 'ucenter_member' )->where ( $info )->find ();
@@ -41,12 +43,14 @@ class FollowModel extends Model {
 		if ($res)
 			return $res ['id'];
 		
-		$email = time ().rand(01,99)  . '@uctoo.com';
-		$nickname = uniqid().rand(01,99);
+		$email = time () . rand ( 01, 99 ) . $_email_int . '@uctoo.com';
+		$nickname = uniqid () . rand ( 01, 99 ) . $_email_int;
 		
 		/* 调用注册接口注册用户 */
 		$User = new UserApi ();
 		$uid = $User->register ( $nickname, '123456', $email, '', $openid, $token );
+		
+		$_email_int += 1;
 		
 		return $uid;
 	}
@@ -64,82 +68,33 @@ class FollowModel extends Model {
 		return $_followInfo [$id];
 	}
 
-    /**
-     * 登录指定用户
-     *
-     * @param integer $uid
-     *        	用户ID
-     * @return boolean ture-登录成功，false-登录失败
-     */
-    public function login($uid) {
-        /* 检测是否在当前应用注册 */
-        $map['id'] = $uid;
 
-        $user = $this->field ( true )->where($map)->find ();
+	function update_follow($openid) {
+		$token = $data ['token'] = get_token ();
+		$data ['openid'] = $openid;
+		$winfo = getWeixinUserInfo ($openid,$token); //获取用户所有信息
+		$info = $this->where ( $data )->find ();
+		//$info = M ( 'ucenter_member' )->where ( $info )->find ()
+		if ($info ) {  // 如果数据库已经有该用户信息 则更新用户资料
+			$save ['subscribe_time'] = $winfo ['subscribe_time'];
+			$save ['nickname'] = $winfo ['nickname'];
+			$save ['sex'] = $winfo ['sex'];
+			$save ['city'] = $winfo ['city'];
+			$save ['province'] = $winfo ['province'];
+			$save ['country'] = $winfo ['country'];
+			$save ['headimgurl'] = $winfo ['headimgurl'];
+			$res = $this->where ( $data )->save ( $save );
+		} else {
+			$data ['subscribe_time'] = time ();
+			$uid = $this->get_uid_by_ucenter ( $data ['openid'], $data ['token'] );
+			if ($uid > 0) {
+				$data ['id'] = $uid;
+				$res = $this->add ( $data );
+			}
 
-        if (! $user) { // 未注册
-            /* 转到帐号注册页 */
-
-                $this->error = '无用户信息，请重新登录或注册帐号！';
-            return false;
-        } elseif (1 > $user ['status']) {
-            $this->error = '用户未激活或已禁用！'; // 应用级别禁用
-            return false;
-        }
-
-        /* 登录用户 */
-        $this->autoLogin ( $user );
-
-        // 记录行为
-        action_log ( 'user_login', 'follow', $uid, $uid );
-
-        return true;
-    }
-
-    /**
-     * 注销当前用户
-     *
-     * @return void
-     */
-    public function logout() {
-        session ( 'mid', null );
-        session ( 'user_auth', null );
-        session ( 'user_auth_sign', null );
-        session ( 'token', null );
-        session ( 'openid', null );
-        session ( 'is_follow_login', null );
-    }
-
-    /**
-     * 自动登录用户
-     *
-     * @param integer $user
-     *        	用户信息数组
-     */
-    public function autoLogin($user) {
-        /* 更新登录信息 */
-        $data = array (
-            'uid' => $user ['id'],
-            'login' => array (
-                'exp',
-                '`login`+1'
-            ),
-            'last_login_time' => NOW_TIME,
-            'last_login_ip' => get_client_ip ( 1 )
-        );
-       // $this->save ( $data );
-
-        /* 记录登录SESSION和COOKIES */
-        $auth = array (
-            'uid' => $user ['id'],
-            'username' => get_username ( $user ['id'] ),
-            'last_login_time' => $data ['last_login_time']
-        );
-
-        session ( 'mid', $user ['id'] );
-        session ( 'openid', $user ['openid'] );
-        session ( 'user_auth', $auth );
-        session ( 'user_auth_sign', data_auth_sign ( $auth ) );
-    }
+			$info = $data;
+		}
+		return $info;
+	}
 }
 ?>

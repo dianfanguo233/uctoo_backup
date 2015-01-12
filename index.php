@@ -21,7 +21,7 @@ if (! empty ( $_GET ['echostr'] ) && ! empty ( $_GET ["signature"] ) && ! empty 
 	$nonce = $_GET ["nonce"];
 	
 	$tmpArr = array (
-			'UCToo',
+			'uctoo',
 			$timestamp,
 			$nonce 
 	);
@@ -37,8 +37,12 @@ if (! empty ( $_GET ['echostr'] ) && ! empty ( $_GET ["signature"] ) && ! empty 
  * 系统调试设置
  * 项目正式部署后请设置为false
  */
-define ( 'APP_DEBUG', true );
+define ( 'APP_DEBUG', false );
 
+/**
+ * 官方远程同步服务器地址
+ * 应用于后台应用商店、在线升级等功能
+ */
 define ( 'REMOTE_BASE_URL', 'http://www.uctoo.com' );
 
 // 网站根路径设置

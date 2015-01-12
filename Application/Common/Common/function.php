@@ -31,10 +31,6 @@ function is_login() {
 	}
 }
 
-function get_uid()
-{
-    return is_login();
-}
 /**
  * 检测当前用户是否为管理员
  *
@@ -111,7 +107,7 @@ function msubstr($str, $start = 0, $length, $charset = "utf-8", $suffix = true) 
 /**
  * 方法增强，根据$length自动判断是否应该显示...
  * 字符串截取，支持中文和其他编码
- * 
+ * QQ:125682133
  *
  * @access public
  * @param string $str
@@ -507,6 +503,9 @@ function time_format($time = NULL, $format = 'Y-m-d H:i') {
 function day_format($time = NULL) {
 	return time_format ( $time, 'Y-m-d' );
 }
+function hour_format($time = NULL) {
+	return time_format ( $time, 'H:i' );
+}
 /**
  * 根据用户ID获取用户名
  *
@@ -640,16 +639,22 @@ function get_category_title($id) {
 /**
  * 获取顶级模型信息
  */
-function get_top_model($model_id=null){
-    $map   = array('status' => 1, 'extend' => 0);
-    if(!is_null($model_id)){
-        $map['id']  =   array('neq',$model_id);
-    }
-    $model = M('Model')->where($map)->field(true)->select();
-    foreach ($model as $value) {
-        $list[$value['id']] = $value;
-    }
-    return $list;
+function get_top_model($model_id = null) {
+	$map = array (
+			'status' => 1,
+			'extend' => 0 
+	);
+	if (! is_null ( $model_id )) {
+		$map ['id'] = array (
+				'neq',
+				$model_id 
+		);
+	}
+	$model = M ( 'Model' )->where ( $map )->field ( true )->select ();
+	foreach ( $model as $value ) {
+		$list [$value ['id']] = $value;
+	}
+	return $list;
 }
 
 /**
@@ -975,7 +980,6 @@ function get_model_attribute($model_id, $group = true) {
 		return '';
 	}
 	
-	
 	/* 获取属性 */
 	if (! isset ( $list [$model_id] )) {
 		$map = array (
@@ -1014,11 +1018,13 @@ function get_model_attribute($model_id, $group = true) {
 			$group = json_decode ( $sort, true );
 			
 			$keys = array_keys ( $group );
-			foreach ( $group as &$value ) {
+			foreach ( $group as $k => $value ) {
 				foreach ( $value as $key => $val ) {
-					$value [$key] = $attr [$val];
+					unset ( $value [$key] );
+					$value [$val] = $attr [$val];
 					unset ( $attr [$val] );
 				}
+				$group [$k] = $value;
 			}
 			
 			if (! empty ( $attr )) {
@@ -1027,6 +1033,7 @@ function get_model_attribute($model_id, $group = true) {
 		}
 		$attr = $group;
 	}
+	
 	return $attr;
 }
 
@@ -1205,7 +1212,7 @@ function get_stemma($pids, Model &$model, $field = 'id') {
 /**
  * 判断关键词是否唯一
  *
- * @author weiphp
+ * @author uctoo
  */
 function keyword_unique($keyword) {
 	if (empty ( $keyword ))
@@ -1218,7 +1225,7 @@ function keyword_unique($keyword) {
 // 分析枚举类型配置值 格式 a:名称1,b:名称2
 //  该函数是从admin的function的文件里提取这到里
 function parse_config_attr($string) {
-	$array = preg_split ( '/[,;\r\n]+/', trim ( $string, ",;\r\n" ) );
+	$array = preg_split ( '/[;\r\n]+/', trim ( $string, ",;\r\n" ) );
 	if (strpos ( $string, ':' )) {
 		$value = array ();
 		foreach ( $array as $val ) {
@@ -1248,21 +1255,22 @@ function get_hide_attr($str) {
 function parse_field_attr($string) {
 	if (0 === strpos ( $string, ':' )) {
 		// 采用函数定义
-        //patrick 20140810 return eval ( substr ( $string, 1 ) . ';' );
-        $str = substr($string,1).';';
-        eval("\$str = $str");
-        return $str;
+		return eval ( substr ( $string, 1 ) . ';' );
 	}
-	$array = preg_split ( '/[,;\r\n]+/', trim ( $string, ",;\r\n" ) );
+	$array = preg_split ( '/[;\r\n]+/', trim ( $string, ",;\r\n" ) );
+	// dump($array);
 	if (strpos ( $string, ':' )) {
 		$value = array ();
 		foreach ( $array as $val ) {
 			list ( $k, $v ) = explode ( ':', $val );
+			empty ( $v ) && $v = $k;
+			$k = clean_hide_attr ( $k );
 			$value [$k] = $v;
 		}
 	} else {
 		$value = $array;
 	}
+	// dump($value);
 	return $value;
 }
 /* 解析列表定义规则 */
@@ -1300,7 +1308,7 @@ function get_list_field($data, $grid, $model) {
 				$val [] = $data2 [$matches [1]];
 			} else {
 				$show = isset ( $array [1] ) ? $array [1] : $value;
-				// 增加跳转方式处理 weiphp
+				// 增加跳转方式处理 uctoo
 				$target = '_self';
 				if (preg_match ( '/target=(\w+)/', $href, $matches )) {
 					$target = $matches [1];
@@ -1328,9 +1336,9 @@ function get_list_field($data, $grid, $model) {
 					$href = preg_replace ( "/&/i", "?", $href, 1 );
 				}
 				if ($show == '删除') {
-					$val [] = '<a class="confirm"   href="' . urldecode ( U ( $href ) ) . '">' . $show . '</a>';
+					$val [] = '<a class="confirm"   href="' . urldecode ( U ( $href, $GLOBALS ['get_param'] ) ) . '">' . $show . '</a>';
 				} else {
-					$val [] = '<a  target="' . $target . '" href="' . urldecode ( U ( $href ) ) . '">' . $show . '</a>';
+					$val [] = '<a  target="' . $target . '" href="' . urldecode ( U ( $href, $GLOBALS ['get_param'] ) ) . '">' . $show . '</a>';
 				}
 			}
 		}
@@ -1341,7 +1349,7 @@ function get_list_field($data, $grid, $model) {
 /**
  * 获取状态值对应的标题
  *
- * @author weiphp
+ * @author uctoo
  */
 function get_name_by_status($val, $name, $model_id) {
 	static $_name = array ();
@@ -1380,7 +1388,7 @@ function addWeixinLog($data, $data_post = '') {
 	$log ['cTime'] = time ();
 	$log ['cTime_format'] = date ( 'Y-m-d H:i:s', $log ['cTime'] );
 	$log ['data'] = is_array ( $data ) ? serialize ( $data ) : $data;
-	$log ['data_post'] = $data_post;
+	$log ['data_post'] = is_array ( $data_post ) ? serialize ( $data_post ) : $data_post;
 	M ( 'weixin_log' )->add ( $log );
 }
 /**
@@ -1433,12 +1441,13 @@ function GetCurUrl() {
 }
 // 获取当前用户的OpenId
 function get_openid($openid = NULL) {
+	$token = get_token ();
 	if ($openid !== NULL) {
-		session ( 'openid', $openid );
+		session ( 'openid_' . $token, $openid );
 	} elseif (! empty ( $_REQUEST ['openid'] )) {
-		session ( 'openid', $_REQUEST ['openid'] );
+		session ( 'openid_' . $token, $_REQUEST ['openid'] );
 	}
-	$openid = session ( 'openid' );
+	$openid = session ( 'openid_' . $token );
 	
 	$isWeixinBrowser = isWeixinBrowser ();
 	if (empty ( $openid ) && $isWeixinBrowser) {
@@ -1522,10 +1531,11 @@ function get_access_token($token = '') {
 		return 0;
 	}
 }
+
 function OAuthWeixin($callback) {
 	$isWeixinBrowser = isWeixinBrowser ();
 	$info = get_token_appinfo ();
-	if (! $isWeixinBrowser || empty ( $info ['appid'] )) {
+	if (! $isWeixinBrowser || $info ['type'] != 2 || empty ( $info ['appid'] )) {
 		redirect ( $callback . '&openid=-1' );
 	}
 	$param ['appid'] = $info ['appid'];
@@ -1553,7 +1563,7 @@ function OAuthWeixin($callback) {
  */
 function execute_sql_file($sql_path) {
 	// 读取SQL文件
-	$sql = file_get_contents ( $sql_path );
+	$sql = wp_file_get_contents ( $sql_path );
 	$sql = str_replace ( "\r", "\n", $sql );
 	$sql = explode ( ";\n", $sql );
 	
@@ -1631,9 +1641,11 @@ function getShort($str, $length = 40, $ext = '') {
 function wp_file_get_contents($url) {
 	$context = stream_context_create ( array (
 			'http' => array (
-					'timeout' => 30  // 超时时间，单位为秒
-						) 
-	) );
+					'timeout' => 30 
+			) 
+	) ) // 超时时间，单位为秒
+
+	;
 	
 	return file_get_contents ( $url, 0, $context );
 }
@@ -1657,7 +1669,6 @@ function real_strip_tags($str, $allowable_tags = "")
     $str = html_entity_decode($str, ENT_QUOTES, 'UTF-8');
     return strip_tags($str, $allowable_tags);
 }
-
 // 全局的安全过滤函数
 function safe($text, $type = 'html') {
 	// 无标签格式
@@ -1871,6 +1882,24 @@ function event_url($addon_title, $id = '0') {
 	}
 	return $event_url;
 }
+// 各插件获取关联大转盘活动的地址 暂只支持大转盘
+function xydzp_url($addon_title, $id = '0') {
+	$map ['token'] = get_token ();
+	$map ['addon_condition'] = array (
+		'exp',
+		"='[{$addon_title}:*]' or addon_condition='[{$addon_title}:{$id}]'"
+	);
+
+	$event = M ( 'Xydzp' )->where ( $map )->order ( 'id desc' )->find ();
+	$event_url = '';
+	if ($event) {
+		$param ['token'] = get_token ();
+		$param ['openid'] = get_openid ();
+		$param ['id'] = $event ['id'];
+		$event_url = addons_url ( 'Xydzp://Xydzp/show', $param );
+	}
+	return $event_url;
+}
 // 抽奖或者优惠券领取的插件条件判断
 function addon_condition_check($addon_condition) {
 	preg_match_all ( "/\[([\s\S]*):([\*,\d]*)\]/i", $addon_condition, $match );
@@ -2078,7 +2107,32 @@ function num2cn($number) {
 	// echo ( $data.' : '.$cncap.' <br/>' );
 	return $cncap;
 }
-
+function week_name($number = null) {
+	if ($number === null)
+		$number = date ( 'w' );
+	
+	$arr = array (
+			"日",
+			"一",
+			"二",
+			"三",
+			"四",
+			"五",
+			"六" 
+	);
+	
+	return '星期' . $arr [$number];
+}
+// 日期转换成星期几
+function daytoweek($day = null) {
+	$day === null && $day = date ( 'Y-m-d' );
+	if (empty ( $day ))
+		return '';
+	
+	$number = date ( 'w', strtotime ( $day ) );
+	
+	return week_name ( $number );
+}
 /**
  * select返回的数组进行整数映射转换
  *
@@ -2190,30 +2244,127 @@ function replace_url($content) {
 }
 /**
  * 验证分类是否允许发布内容
- * @param  integer $id 分类ID
- * @return boolean     true-允许发布内容，false-不允许发布内容
+ *
+ * @param integer $id
+ *        	分类ID
+ * @return boolean true-允许发布内容，false-不允许发布内容
  */
-function check_category($id){
-    if (is_array($id)) {
-        $type = get_category($id['category_id'], 'type');
-        $type = explode(",", $type);
-        return in_array($id['type'], $type);
-    } else {
-        $publish = get_category($id, 'allow_publish');
-        return $publish ? true : false;
-    }
+function check_category($id) {
+	if (is_array ( $id )) {
+		$type = get_category ( $id ['category_id'], 'type' );
+		$type = explode ( ",", $type );
+		return in_array ( $id ['type'], $type );
+	} else {
+		$publish = get_category ( $id, 'allow_publish' );
+		return $publish ? true : false;
+	}
 }
 
 /**
  * 检测分类是否绑定了指定模型
- * @param  array $info 模型ID和分类ID数组
- * @return boolean     true-绑定了模型，false-未绑定模型
+ *
+ * @param array $info
+ *        	模型ID和分类ID数组
+ * @return boolean true-绑定了模型，false-未绑定模型
  */
-function check_category_model($info){
-    $cate   =   get_category($info['category_id']);
-    $array  =   explode(',', $info['pid'] ? $cate['model_sub'] : $cate['model']);
-    return in_array($info['model_id'], $array);
+function check_category_model($info) {
+	$cate = get_category ( $info ['category_id'] );
+	$array = explode ( ',', $info ['pid'] ? $cate ['model_sub'] : $cate ['model'] );
+	return in_array ( $info ['model_id'], $array );
+}
+// 获取随机的字符串，用于token，EncodingAESKey等的生成
+function get_rand_char($length = 6) {
+	$str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+	$strLength = 61;
+	
+	for($i = 0; $i < $length; $i ++) {
+		$res .= $str [rand ( 0, $strLength )];
+	}
+	
+	return $res;
+}
+/**
+ * 根据两点间的经纬度计算距离
+ *
+ * @param float $lat
+ *        	纬度值
+ * @param float $lng
+ *        	经度值
+ */
+function getDistance($lat1, $lng1, $lat2, $lng2) {
+	$earthRadius = 6367000; // approximate radius of earth in meters
+	                        
+	// Convert these degrees to radians to work with the formula
+	$lat1 = ($lat1 * pi ()) / 180;
+	$lng1 = ($lng1 * pi ()) / 180;
+	
+	$lat2 = ($lat2 * pi ()) / 180;
+	$lng2 = ($lng2 * pi ()) / 180;
+	
+	// Using the Haversine formula http://en.wikipedia.org/wiki/Haversine_formula calculate the distance
+	
+	$calcLongitude = $lng2 - $lng1;
+	$calcLatitude = $lat2 - $lat1;
+	$stepOne = pow ( sin ( $calcLatitude / 2 ), 2 ) + cos ( $lat1 ) * cos ( $lat2 ) * pow ( sin ( $calcLongitude / 2 ), 2 );
+	$stepTwo = 2 * asin ( min ( 1, sqrt ( $stepOne ) ) );
+	$calculatedDistance = $earthRadius * $stepTwo;
+	
+	return round ( $calculatedDistance );
+}
+/**
+ * 短链接功能
+ *
+ * @param float $long_url
+ *        	长链接
+ * @return string 如果没有微信短链接接口权限或者不成功，就原样返回长链接，否则返回短链接
+ */
+function short_url($long_url) {
+	$access_token = get_access_token ( $token );
+	if (empty ( $access_token )) {
+		return $long_url;
+	}
+	
+	$url = 'https://api.weixin.qq.com/cgi-bin/shorturl?access_token=' . $access_token;
+	
+	$data ['action'] = 'long2short';
+	$data ['long_url'] = $long_url;
+	
+	$ch = curl_init ();
+	curl_setopt ( $ch, CURLOPT_URL, $url );
+	curl_setopt ( $ch, CURLOPT_CUSTOMREQUEST, "POST" );
+	curl_setopt ( $ch, CURLOPT_SSL_VERIFYPEER, FALSE );
+	curl_setopt ( $ch, CURLOPT_SSL_VERIFYHOST, FALSE );
+	curl_setopt ( $ch, CURLOPT_FOLLOWLOCATION, 1 );
+	curl_setopt ( $ch, CURLOPT_AUTOREFERER, 1 );
+	curl_setopt ( $ch, CURLOPT_POSTFIELDS, $data );
+	curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, true );
+	$res = curl_exec ( $ch );
+	curl_close ( $ch );
+	$res = json_decode ( $res, true );
+	if ($res ['errcode'] == 0) {
+		return $res ['short_url'];
+	} else {
+		return $long_url;
+	}
 }
 
-require_once(APP_PATH . '/Common/Common/api.php');
-require_once(APP_PATH . '/Common/Common/query_user.php');
+// 拉取10000个用户列表,通过openid获取微信用户基本信息
+function getWeixinUserAllInfo($token) {
+	$access_token = get_access_token ( $token );
+	if (empty ( $access_token )) {
+		return false;
+	}
+	$param ['access_token'] = $access_token;
+	$url = 'https://api.weixin.qq.com/cgi-bin/user/get?'. http_build_query ( $param );
+	$content = file_get_contents ( $url );
+	$content = json_decode ( $content, true );
+	return $content;
+}
+//处理头像
+function get_name_by_touxiang($val) {
+	if(!empty($val)){
+		return('<img height="48px" src="'.$val.'" />');
+	}else{
+		return('<img height="48px" src="'.ADDON_PUBLIC_PATH.'/face.png" />');
+	}
+}

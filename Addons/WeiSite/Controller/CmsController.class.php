@@ -133,4 +133,11 @@ class CmsController extends BaseController {
 		}
 		return $extra;
 	}
+
+	// 预览
+	function preview() {
+		$param ['id'] = I ( 'id', 0, 'intval' );
+		$url = addons_url ( 'WeiSite://WeiSite/detail', $param );
+		redirect ( $url );
+	}
 }

@@ -211,7 +211,7 @@ select[multiple] {
 }
 /* 普通表单 */
 .form-center {
-	width: 600px;
+	width: 900px;
 	margin: 0 auto;
 }
 .form-horizontal .form-item {
@@ -910,6 +910,12 @@ label.textarea ~ .check-tips {
 	width: 120px;
 	min-height: 120px;
 }
+.uploadrow2 {
+	position: relative;
+	z-index: 10;
+	width: 180px;
+	min-height: 100px;
+}
 .uploadify-button {
 	position: relative;
 	text-align: center;
@@ -964,14 +970,22 @@ label.textarea ~ .check-tips {
 	display: block;
 }
 .upload-img-box {
-
-	top:5px;
-	left:0;
+	top: 5px;
+	left: 0;
 }
 .upload_file .upload-img-box{ position:static; left:0; top:0; margin-top:10px;}
 .upload-img-box .upload-pre-item {
 	width: 120px;
 	max-height: 120px;
+	overflow: hidden;
+	text-align: center;
+	cursor: pointer;
+	transition: all .3s linear;
+	background-color: #ccc;
+}
+.upload-img-box .upload-pre-item2 {
+	width: 180px;
+	max-height: 100px;
 	overflow: hidden;
 	text-align: center;
 	cursor: pointer;

@@ -16,8 +16,8 @@ class StoreController extends AdminController {
 	protected function _initialize() {
 		$this->assign ( '__MENU__', $this->getMenus () );
 		
-		C ( 'SESSION_PREFIX', 'weiphp_home' );
-		C ( 'COOKIE_PREFIX', 'weiphp_home_' );
+		C ( 'SESSION_PREFIX', 'uctoo_home' );
+		C ( 'COOKIE_PREFIX', 'uctoo_home_' );
 		
 		$host_url = urldecode ( $_GET ['callback'] );
 		if ($host_url) {

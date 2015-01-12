@@ -34,26 +34,33 @@ class CascadeAddon extends Addon {
 	 * type=text&data=[广西[南宁,桂林], 广东[广州, 深圳[福田区, 龙岗区, 宝安区]]]
 	 */
 	public function cascade($data) {
-		parse_str ( $data ['extra'], $arr );
-		empty ( $arr ['type'] ) && $arr ['type'] = 'db';
-		
-		if ($arr ['type'] == 'db') {
-			$table = ! empty ( $arr ['table'] ) ? $arr ['table'] : 'common_category';
-			$value_field = ! empty ( $arr ['value_field'] ) ? $arr ['value_field'] : 'id';
-			$custom_field = ! empty ( $arr ['custom_field'] ) ? $arr ['custom_field'] : 'id,title,pid,sort';
-			$custom_pid = ! empty ( $arr ['custom_pid'] ) ? $arr ['custom_pid'] : 0;
+		$key = $data ['name'] . '_' . get_token ();
+		$json = S ( $key );
+		if ($json === false) {
+			parse_str ( $data ['extra'], $arr );
+			empty ( $arr ['type'] ) && $arr ['type'] = 'db';
 			
-			unset ( $arr ['type'], $arr ['table'], $arr ['value_field'], $arr ['custom_field'], $arr ['custom_pid'] );
-			// dump($arr);
-			$arr ['token'] = get_token ();
-			$list = M ( $table )->where ( $arr )->field ( $custom_field )->order ( 'pid asc, sort asc' )->select ();
-			// dump($list);
-			$tree = $this->makeTree ( $list, $custom_pid, $value_field );
-		} else {
-			$tree = $this->str2json ( $arr ['data'] );
+			if ($arr ['type'] == 'db') {
+				$table = ! empty ( $arr ['table'] ) ? $arr ['table'] : 'common_category';
+				$value_field = ! empty ( $arr ['value_field'] ) ? $arr ['value_field'] : 'id';
+				$custom_field = ! empty ( $arr ['custom_field'] ) ? $arr ['custom_field'] : 'id,title,pid,sort';
+				$custom_pid = ! empty ( $arr ['custom_pid'] ) ? $arr ['custom_pid'] : 0;
+				
+				unset ( $arr ['type'], $arr ['table'], $arr ['value_field'], $arr ['custom_field'], $arr ['custom_pid'] );
+				// dump($arr);
+				$arr ['token'] = get_token ();
+				$list = M ( $table )->where ( $arr )->field ( $custom_field )->order ( 'pid asc, sort asc' )->select ();
+				// lastsql();
+				// dump($list);
+				$tree = $this->makeTree ( $list, $custom_pid, $value_field );
+			} else {
+				$tree = $this->str2json ( $arr ['data'] );
+			}
+			// dump ( $tree );
+			$json = json_encode ( $tree );
+			
+			S ( $key, $json, 86400 );
 		}
-		// dump ( $tree );
-		$json = json_encode ( $tree );
 		// dump ( $json );
 		$this->assign ( 'json', $json );
 		

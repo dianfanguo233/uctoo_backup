@@ -8,35 +8,29 @@ namespace Home\Controller;
  */
 class WeixinController extends HomeController {
 	var $token;
-	private $data = array();
+	private $data = array ();
 	public function index() {
-		//删除微信传递的token干扰
-		unset($_REQUEST['token']);
-			
+		// 删除微信传递的token干扰
+		unset ( $_REQUEST ['token'] );
+		
 		$weixin = D ( 'Weixin' );
 		// 获取数据
 		$data = $weixin->getData ();
-		 $this->data =$data;
+		$this->data = $data;
 		if (! empty ( $data ['ToUserName'] )) {
 			get_token ( $data ['ToUserName'] );
 		}
 		if (! empty ( $data ['FromUserName'] )) {
-			session ( 'openid', $data ['FromUserName'] );
+		    get_openid($data ['FromUserName']);
 		}
 		
 		$this->token = $data ['ToUserName'];
 		
-		$this->initFollow ($weixin);
-		//同步旧粉丝，被动添加，用户只有主动发送信息时才触发
-		D ( 'Common/Follow' )->init_follow ( get_openid() );
+		$this->initFollow ( $weixin, $data );
+		
 		// 记录日志
 		addWeixinLog ( $data, $GLOBALS ['HTTP_RAW_POST_DATA'] );
-
-        //在交互时自动注册粉丝 防止之前关注的粉丝在follow表中没有记录，从而导致get_mid得到的是一个负整数
-        //同时要修改FollowModel.class.php的init_follow方法
-        //by Mekal 2014-7-31
-        $info = D ( 'Common/Follow' )->init_follow ( $data ['FromUserName'] ,false);
-
+		
 		// 回复数据
 		$this->reply ( $data, $weixin );
 		
@@ -61,23 +55,28 @@ class WeixinController extends HomeController {
 		 * subscribe : 关注公众号
 		 * unsubscribe : 取消关注公众号
 		 * scan : 扫描带参数二维码事件
-		 * location : 上报地理位置事件
 		 * click : 自定义菜单事件
 		 */
 		if ($data ['MsgType'] == 'event') {
 			$event = strtolower ( $data ['Event'] );
+		
 			foreach ( $addon_list as $vo ) {
 				require_once ONETHINK_ADDON_PATH . $vo ['name'] . '/Model/WeixinAddonModel.class.php';
 				$model = D ( 'Addons://' . $vo ['name'] . '/WeixinAddon' );
 				! method_exists ( $model, $event ) || $model->$event ( $data );
 			}
-			if ($event == 'click' && ! empty ( $data ['EventKey'] )) {
+			if ($event == 'subscribe') {
+				$config = getAddonConfig ( 'Wecome' );
+				if ($config ['type'] == 2) {
+					$key = $data ['Content'] = $config ['keyword'];
+				}
+			}else if ($event == 'click' && ! empty ( $data ['EventKey'] )) {
 				$key = $data ['Content'] = $data ['EventKey'];
 			} else {
 				return true;
 			}
 		}
-		
+
 		// location : 上报地理位置事件 感谢网友【blue7wings】和【strivi】提供的方案
 		if ($data ['MsgType'] == 'location') {
 			$event = strtolower ( $data ['MsgType'] );
@@ -85,17 +84,6 @@ class WeixinController extends HomeController {
 				require_once ONETHINK_ADDON_PATH . $vo ['name'] . '/Model/WeixinAddonModel.class.php';
 				$model = D ( 'Addons://' . $vo ['name'] . '/WeixinAddon' );
 				! method_exists ( $model, $event ) || $model->$event ( $data );
-			}
-		}
-		
-		//增加语音转换关键词查询 by ylweb 
-		if ($data ['MsgType'] == 'voice') {
-			$weixin = D ( 'Weixin' );
-			if(!empty($data ['Recognition'])){
-				$key = $data ['Recognition'];
-				//$weixin->replyText ($data ['Recognition']);
-			}else{
-				$weixin->replyText ('你说什么？不好意思，我没听清楚，再来一遍！'); exit;
 			}
 		}
 		
@@ -143,11 +131,12 @@ class WeixinController extends HomeController {
 				'exp',
 				"='0' or token='{$this->token}'" 
 		);
+		
 		if (! isset ( $addons [$key] )) {
 			$like ['keyword'] = $key;
 			$like ['keyword_type'] = 0;
 			$keywordArr = M ( 'keyword' )->where ( $like )->order ( 'id desc' )->find ();
-			
+			addWeixinLog ( M ()->getLastSql (), 'addon1' );
 			if (! empty ( $keywordArr ['addon'] )) {
 				$addons [$key] = $keywordArr ['addon'];
 				$this->request_count ( $keywordArr );
@@ -166,7 +155,7 @@ class WeixinController extends HomeController {
 				$this->_contain_keyword ( $keywordInfo, $key, $addons, $keywordArr );
 			}
 		}
-		
+		addWeixinLog ( M ()->getLastSql (), 'addon2' );
 		// 通过通配符，查找默认处理方式
 		// by 肥仔聪要淡定 2014.6.8
 		if (! isset ( $addons [$key] )) {
@@ -179,12 +168,7 @@ class WeixinController extends HomeController {
 				$this->request_count ( $keywordArr );
 			}
 		}
-
-		//增加语音转换关键词查询 by ylweb 
-		if (! isset ( $addons [$key] ) && $data ['MsgType'] == 'voice') {
-			$weixin->replyText ('你说什么？不好意思，我没听清楚，再来一遍！'); exit;
-		}
-		
+		addWeixinLog ( M ()->getLastSql (), 'addon3' );
 		// 以上都无法定位插件时，如果开启了智能聊天，则默认使用智能聊天插件
 		if (! isset ( $addons [$key] ) && isset ( $addon_list ['Chat'] )) {
 			
@@ -201,7 +185,7 @@ class WeixinController extends HomeController {
 		if (! isset ( $addons [$key] ) || ! file_exists ( ONETHINK_ADDON_PATH . $addons [$key] . '/Model/WeixinAddonModel.class.php' )) {
 			return false;
 		}
-		
+		addWeixinLog ( $addons [$key], 'addon2' );
 		// 加载相应的插件来处理并反馈信息
 		require_once ONETHINK_ADDON_PATH . $addons [$key] . '/Model/WeixinAddonModel.class.php';
 		$model = D ( 'Addons://' . $addons [$key] . '/WeixinAddon' );

@@ -33,10 +33,9 @@ class WeixinAddonModel extends WeixinModel {
 				);
 				$res = $this->replyNews ( $articles );
 				break;
-// 			case '2' :
-// 				$media_id = 1;
-// 				$res = $this->replyImage ( $media_id );
-// 				break;
+			case '2' :
+				return false;
+				break;
 			default :
 				$res = $this->replyText ( $config ['description'] );
 		}

@@ -27,10 +27,10 @@ class CouponController extends AddonsController {
 			$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );
 			$data || $this->error ( '数据不存在！' );
 			
-		$token = get_token ();
-		if (isset ( $data ['token'] ) && $token != $data ['token'] && defined ( 'ADDON_PUBLIC_PATH' )) {
-			$this->error ( '非法访问！' );
-		}			
+			$token = get_token ();
+			if (isset ( $data ['token'] ) && $token != $data ['token'] && defined ( 'ADDON_PUBLIC_PATH' )) {
+				$this->error ( '非法访问！' );
+			}
 			
 			$this->assign ( 'fields', $fields );
 			$this->assign ( 'data', $data );
@@ -81,6 +81,11 @@ class CouponController extends AddonsController {
 	}
 	// 开始领取页面
 	function prev() {
+		$map2 ['target_id'] = I ( 'id', 0, 'intval' );
+		$map2 ['uid'] = $this->mid;
+		$list = M ( 'sn_code' )->where ( $map2 )->select ();
+		$this->assign ( 'my_sn_list', $list );
+		
 		$this->_detail ();
 		$this->display ( 'prev' );
 	}
@@ -94,7 +99,7 @@ class CouponController extends AddonsController {
 		$map2 ['target_id'] = I ( 'id', 0, 'intval' );
 		$map2 ['uid'] = $this->mid;
 		$list = M ( 'sn_code' )->where ( $map2 )->select ();
-// 		dump($list);
+		// dump($list);
 		foreach ( $list as $vo ) {
 			$my_count += 1;
 			$vo ['id'] == $sn_id && $sn = $vo;
@@ -104,7 +109,7 @@ class CouponController extends AddonsController {
 			exit ();
 		}
 		$this->assign ( 'sn', $sn );
-// 		dump($sn);
+		// dump($sn);
 		
 		$this->_detail ( $my_count );
 		
@@ -150,7 +155,7 @@ class CouponController extends AddonsController {
 		$follow = M ( 'follow' )->where ( $map )->find ();
 		$is_admin = is_login ();
 		
-		if (!empty($data ['end_time']) && $data ['end_time'] <= time ()) {
+		if (! empty ( $data ['end_time'] ) && $data ['end_time'] <= time ()) {
 			$error = '您来晚啦';
 		} else if ($data ['max_num'] > 0 && $data ['max_num'] <= $my_count) {
 			$error = '您的领取名额已用完啦';
@@ -198,11 +203,14 @@ class CouponController extends AddonsController {
 		
 		$data ['prize_id'] = 0;
 		$data ['prize_title'] = '';
-		unset($data['id']);
+		unset ( $data ['id'] );
 		// dump ( $data );
 		
 		$res = M ( 'sn_code' )->add ( $data );
 		if ($res) {
+			// 更新获取数
+			M ( "coupon" )->where ( 'id=' . $id )->setInc ( "collect_count" );
+			
 			// 扣除积分
 			if (! empty ( $data ['credit_bug'] )) {
 				$credit ['score'] = $data ['credit_bug'];

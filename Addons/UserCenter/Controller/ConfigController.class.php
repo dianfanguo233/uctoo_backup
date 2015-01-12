@@ -74,7 +74,6 @@ class ConfigController extends AddonsController
             $this->display();
         }
 
-        $this->display ();
     }
 
     

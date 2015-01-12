@@ -31,7 +31,7 @@ class CategoryController extends HomeController {
 		$this->assign ( 'nav', $nav );
 		
 		$this->model = $this->getModel ( 'common_category' );
-		$_GET['sidenav'] = 'home_cascade';
+		$_GET ['sidenav'] = 'home_cascade';
 	}
 	public function lists() {
 		$tree = D ( 'Category' )->getTree ( 0 );
@@ -41,13 +41,17 @@ class CategoryController extends HomeController {
 		C ( '_SYS_GET_CATEGORY_TREE_', true ); // 标记系统获取分类树模板
 		
 		$map ['name'] = I ( 'module' );
-		$group = M ( 'common_category_group' )->where ( $map )->find (  );
+		$map ['token'] = get_token ();
+		$group = M ( 'common_category_group' )->where ( $map )->find ();
 		$level_path = '';
-		for($i = 1; $i < $group['level']; $i ++) {
+		for($i = 1; $i < $group ['level']; $i ++) {
 			$level_path .= ' dd';
 		}
 		$this->assign ( 'level_path', $level_path ); // 最多允许增加的层级
 		$this->assign ( 'group', $group );
+		
+		$key = $map ['name'] . '_' . $map ['token'];
+		S ( $key, null );
 		
 		$this->display ( 'Addons/category' );
 	}
@@ -95,7 +99,7 @@ class CategoryController extends HomeController {
 			vendor ( 'PHPExcel.PHPExcel_IOFactory' );
 			vendor ( 'PHPExcel.Reader.Excel5' );
 			
-			$format = strtolower ( $extend [count ( $extend ) - 1] ) == 'xls' ? 'Excel5' : 'excel2007';
+			$format = strtolower ( $extend ) == 'xls' ? 'Excel5' : 'excel2007';
 			$objReader = \PHPExcel_IOFactory::createReader ( $format );
 			$objPHPExcel = $objReader->load ( $filename );
 			$objPHPExcel->setActiveSheetIndex ( 0 );
@@ -132,8 +136,9 @@ class CategoryController extends HomeController {
 			$this->meta_title = '导入数据';
 			
 			$this->assign ( 'post_url', U ( 'inputData', 'module=' . $module ) );
+			$this->assign ( 'import_template', 'category.xls' );
 			
-			$this->display ( 'Addons/add' );
+			$this->display ( T ( 'Addons/import' ) );
 		}
 	}
 	

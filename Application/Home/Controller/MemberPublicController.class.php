@@ -33,10 +33,14 @@ class MemberPublicController extends HomeController {
 		$res ['class'] = ACTION_NAME != 'help' ? 'current' : '';
 		$nav [] = $res;
 		
-		$res ['title'] = '接口配置帮助';
-		$res ['url'] = U ( 'help' );
-		$res ['class'] = ACTION_NAME == 'help' ? 'current' : '';
-		$nav [] = $res;
+		if (ACTION_NAME == 'help') {
+			$res ['title'] = '接口配置帮助';
+			$res ['url'] = U ( 'help', array (
+					'public_id' => $_GET ['public_id'] 
+			) );
+			$res ['class'] = 'current';
+			$nav [] = $res;
+		}
 		
 		$this->assign ( 'nav', $nav );
 	}
@@ -44,6 +48,9 @@ class MemberPublicController extends HomeController {
 		$this->view->display ( 'Addons:' . ACTION_NAME );
 	}
 	function help() {
+		if (empty ( $_GET ['public_id'] )) {
+			$this->error ( '公众号参数非法' );
+		}
 		$this->display ( 'Index/help' );
 	}
 	/**
@@ -186,63 +193,99 @@ class MemberPublicController extends HomeController {
 		}
 	}
 	public function edit($model = null, $id = 0) {
-		$model = $this->model;
 		$id || $id = I ( 'id' );
+		redirect ( U ( 'add', array (
+				'id' => $id 
+		) ) );
+	}
+	public function add($model = null) {
+		$id = I ( 'id', 0, 'intval' );
+		$this->assign ( 'id', $id );
 		
+		$model = $this->model;
 		if (IS_POST) {
+			foreach ( $_POST as &$v ) {
+				$v = trim ( $v );
+			}
+			$_POST ['token'] = $_POST ['public_id'];
+			$_POST ['group_id'] = intval ( C ( 'DEFAULT_PUBLIC_GROUP_ID' ) );
+			$_POST ['uid'] = $this->mid;
+			
 			$Model = D ( parse_name ( get_table_name ( $model ['id'] ), 1 ) );
 			// 获取模型的字段信息
 			$Model = $this->checkAttr ( $Model, $model ['id'] );
-			if ($Model->create () && $Model->save ()) {
-				$this->success ( '保存' . $model ['title'] . '成功！', U ( 'lists?model=' . $model ['name'] ) );
+			if (empty ( $id )) {
+				if ($Model->create () && $id = $Model->add ()) {
+					// 增加公众号与用户的关联关系
+					$data ['uid'] = $this->mid;
+					$data ['mp_id'] = $id;
+					$data ['is_creator'] = 1;
+					M ( 'member_public_link' )->add ( $data );
+					
+					$this->success ( '添加基本信息成功！', U ( 'step_1?id=' . $id ) );
+				} else {
+					$this->error ( $Model->getError () );
+				}
+			} else {
+				$_POST ['id'] = $id;
+				$Model->create () && $res = $Model->save ();
+				if ($res) {
+					$this->success ( '保存基本信息成功！', U ( 'step_1?id=' . $id ) );
+				} elseif ($res === 0) {
+					$this->success ( ' ', U ( 'step_1?id=' . $id ) );
+				} else {
+					$this->error ( $Model->getError () );
+				}
+			}
+		} else {
+			if (empty ( $id )) {
+				$allow_add_count = getPublicMax ( $this->mid );
+				$has_add_count = M ( 'member_public_link' )->where ( "uid='{$this->mid}'" )->getField ( 'sum(is_creator)' );
+				if ($allow_add_count <= $has_add_count) {
+					$this->error ( '您最多只能创建 ' . $allow_add_count . ' 个公众号！' );
+					exit ();
+				}
+			} else {
+				$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );
+			}
+			$data ['type'] = intval ( $data ['type'] );
+			$this->assign ( 'info', $data );
+			
+			$this->display ( 'step_0' );
+		}
+	}
+	function step_1() {
+		$id = I ( 'id' );
+		$this->assign ( 'id', $id );
+		
+		$this->display ( 'step_1' );
+	}
+	function step_2() {
+		$model = $this->model;
+		$id = I ( 'get.id' );
+		$this->assign ( 'id', $id );
+		
+		if (IS_POST) {
+			$_POST ['id'] = $id;
+			foreach ( $_POST as &$v ) {
+				$v = trim ( $v );
+			}
+			
+			$Model = D ( parse_name ( get_table_name ( $model ['id'] ), 1 ) );
+			// 获取模型的字段信息
+			$Model = $this->checkAttr ( $Model, $model ['id'] );
+			if ($Model->create () && false !== $Model->save ()) {
+				$this->success ( '保存成功！', U ( 'lists?model=' . $model ['name'] ) );
 			} else {
 				$this->error ( $Model->getError () );
 			}
 		} else {
-			$fields = get_model_attribute ( $model ['id'] );
-			
-			// 获取数据
 			$data = M ( get_table_name ( $model ['id'] ) )->find ( $id );
 			$data || $this->error ( '数据不存在！' );
 			
-			$this->assign ( 'fields', $fields );
-			$this->assign ( 'data', $data );
-			$this->meta_title = '编辑' . $model ['title'];
-			$this->_display ( $model ['template_edit'] ? $model ['template_edit'] : '' );
-		}
-	}
-	public function add($model = null) {
-		$model = $this->model;
-		if (IS_POST) {
-			$_POST ['token'] = $_POST ['public_id'];
-			$_POST ['group_id'] = intval ( C ( 'DEFAULT_PUBLIC_GROUP_ID' ) );
-			$Model = D ( parse_name ( get_table_name ( $model ['id'] ), 1 ) );
-			// 获取模型的字段信息
-			$Model = $this->checkAttr ( $Model, $model ['id'] );
-			if ($Model->create () && $id = $Model->add ()) {
-				// 增加公众号与用户的关联关系
-				$data ['uid'] = $this->mid;
-				$data ['mp_id'] = $id;
-				$data ['is_creator'] = 1;
-				M ( 'member_public_link' )->add ( $data );
-				
-				$this->success ( '添加' . $model ['title'] . '成功！', U ( 'lists?model=' . $model ['name'] ) );
-			} else {
-				$this->error ( $Model->getError () );
-			}
-		} else {
-			$allow_add_count = getPublicMax ( $this->mid );
-			$has_add_count = M ( 'member_public_link' )->where ( "uid='{$this->mid}'" )->getField ( 'sum(is_creator)' );
-			if ($allow_add_count <= $has_add_count) {
-				$this->error ( '您最多只能创建 ' . $allow_add_count . ' 个公众号！' );
-				exit ();
-			}
+			$this->assign ( 'info', $data );
 			
-			$fields = get_model_attribute ( $model ['id'] );
-			
-			$this->assign ( 'fields', $fields );
-			$this->meta_title = '新增' . $model ['title'];
-			$this->_display ( $model ['template_add'] ? $model ['template_add'] : '' );
+			$this->display ( 'step_2' );
 		}
 	}
 	protected function checkAttr($Model, $model_id) {
@@ -257,7 +300,7 @@ class MemberPublicController extends HomeController {
 				);
 			}
 			// 自动验证规则
-			if (! empty ( $attr ['validate_rule'] ) || $attr['validate_type']=='unique') {
+			if (! empty ( $attr ['validate_rule'] ) || $attr ['validate_type'] == 'unique') {
 				$validate [] = array (
 						$attr ['name'],
 						$attr ['validate_rule'],
@@ -299,12 +342,12 @@ class MemberPublicController extends HomeController {
 		
 		unset ( $map );
 		$map ['uid'] = session ( 'mid' );
-		$res = M ( 'member_public_link' )->where ( $map )->setField ( 'is_use', 0 );
+		M ( 'member_public_link' )->where ( $map )->setField ( 'is_use', 0 );
 		
 		$map ['mp_id'] = $info ['id'];
-		$res = M ( 'member_public_link' )->where ( $map )->setField ( 'is_use', 1 );
+		M ( 'member_public_link' )->where ( $map )->setField ( 'is_use', 1 );
 		
-		session ( 'token', $info ['public_id'] );
+		get_token ( $info ['public_id'] );
 		
 		redirect ( U ( 'lists' ) );
 	}
