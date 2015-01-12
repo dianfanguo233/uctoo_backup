@@ -9,7 +9,7 @@ use Home\Model\WeixinModel;
  */
 class WeixinAddonModel extends WeixinModel {
 	function reply($dataArr, $keywordArr = array()) {
-		//$config = getAddonConfig ( 'Jssdk' ); // 获取后台插件的配置参数
+		$config = getAddonConfig ( 'Jssdk' ); // 获取后台插件的配置参数
 
 		// 其中token和openid这两个参数一定要传，否则程序不知道是哪个微信用户进入了系统
 		$param ['token'] = get_token ();
@@ -19,9 +19,9 @@ class WeixinAddonModel extends WeixinModel {
 
 		// 组装微信需要的图文数据，格式是固定的
 		$articles [0] = array (
-			'Title' => $info ['title'],
-			'Description' => $info ['description'],
-			'PicUrl' => SITE_URL . '/Addons/Jssdk/View/default/Public/images/logo.png',
+			'Title' => 'UCToo微信JSSDK演示案例',
+			'Description' => '微信开放平台JSSDK演示案例合辑',
+			'PicUrl' => SITE_URL . '/Addons/Jssdk/View/default/Public/images/logo.jpg',
 			'Url' => $url
 		);
 		$this->replyNews ( $articles );
