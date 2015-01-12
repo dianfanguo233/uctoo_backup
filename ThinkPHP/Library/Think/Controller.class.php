@@ -87,7 +87,7 @@ abstract class Controller {
 				'm' => 1,
 				'id' => 1 
 		);
-		$this->get_param = array_diff_key ( $_GET, $diff );
+		$GLOBALS ['get_param'] = $this->get_param = array_diff_key ( $_GET, $diff );
 		$this->assign ( 'get_param', $this->get_param );
 		
 		// js,css的版本
@@ -146,6 +146,10 @@ abstract class Controller {
 		// 管理中心里的公众号列表
 		if ($this->mid) {
 			$link = M ( 'member_public_link' )->where ( 'uid=' . $this->mid )->order ( 'is_use desc' )->select ();
+			foreach ( $link as $l ) {
+				$mp_ids [] = $l ['mp_id'];
+				$is_use [$l ['mp_id']] = $l ['is_use'];
+			}
 			$mp_ids = getSubByKey ( $link, 'mp_id' );
 			if (! empty ( $mp_ids )) {
 				/**
@@ -159,11 +163,12 @@ abstract class Controller {
 				);
 				
 				$member_public_list = M ( 'member_public' )->where ( $map )->order ( 'FIND_IN_SET(id,"' . $mp_ids . '")' )->select ();
-				$this->assign ( 'member_public', $member_public_list [0] );
+				$member_public = $member_public_list [0];
+				$this->assign ( 'member_public', $member_public );
 				
 				$token = get_token ();
-				if ($member_public_list [0] ['public_id'] && ($token == '' || $token == - 1)) {
-					session ( 'token', $member_public_list [0] ['public_id'] );
+				if ($member_public ['public_id'] && ($is_use [$member_public ['id']] == 0 || $token == '' || $token == - 1)) {
+					get_token ( $member_public ['public_id'] );
 				}
 				
 				unset ( $member_public_list [0] );
@@ -174,7 +179,7 @@ abstract class Controller {
 		}
 	}
 	// 公众号粉丝信息初始化
-	function initFollow($dao = false) {
+	function initFollow($dao = false, $data = array()) {
 		$map ['token'] = get_token ();
 		if ($dao === false) {
 			$public_name = M ( 'member_public' )->where ( $map )->getField ( 'public_name' );
@@ -193,19 +198,25 @@ abstract class Controller {
 		// 当前粉丝信息
 		$map ['openid'] = get_openid ();
 		$user = M ( 'follow' )->where ( $map )->find ();
+		if (! $user && ! empty ( $map ['token'] ) && $map ['token'] != '-1' && ! empty ( $map ['openid'] ) && $map ['openid'] != '-1') {
+			D ( 'Common/Follow' )->init_follow ( $map ['openid'] );
+			$user = M ( 'follow' )->where ( $map )->find ();
+		}
 		
 		// 绑定配置
 		$config = getAddonConfig ( 'UserCenter' );
-		if ($config ['need_bind'] == 1 && ($user ['id'] > 0 && $user ['status'] < 2) && ! empty ( $map ['token'] ) && ! empty ( $map ['openid'] ) && $map ['token'] != - 1 && $map ['token'] != - 1) {
-			
-			$bind_url = addons_url ( 'UserCenter://UserCenter/edit', $map );
+		$guestAccess = strtolower ( CONTROLLER_NAME ) != 'weixin';
+		$isWeixnLogin = ! empty ( $map ['token'] ) && ! empty ( $map ['openid'] ) && $map ['token'] != - 1 && $map ['token'] != - 1;
+		$userNeed = ($user ['id'] > 0 && $user ['status'] < 2) || (empty ( $user ) && $guestAccess);
+		if ($isWeixnLogin && $config ['need_bind'] == 1 && $userNeed) {
+			$bind_url = addons_url ( 'UserCenter://UserCenter/userCenter', $map );
 			if ($dao === false) {
 				if ($config ['bind_start'] != 1 && strtolower ( $_REQUEST ['_addons'] ) != 'usercenter') {
 					Cookie ( '__forward__', $_SERVER ['REQUEST_URI'] );
 					redirect ( $bind_url );
 				}
 			} else {
-				if ($config ['bind_start'] != 0) {
+				if ($config ['bind_start'] != 0 && strtolower ( $data ['Event'] ) != 'subscribe') {
 					$dao->replyText ( '请先<a href="' . $bind_url . '">绑定帐号</a>再使用' );
 					exit ();
 				}
@@ -446,23 +457,28 @@ abstract class Controller {
 			$type = C ( 'DEFAULT_AJAX_RETURN' );
 		switch (strtoupper ( $type )) {
 			case 'JSON' :
+				
 				// 返回JSON数据格式到客户端 包含状态信息
 				header ( 'Content-Type:application/json; charset=utf-8' );
 				exit ( json_encode ( $data ) );
 			case 'XML' :
+				
 				// 返回xml格式数据
 				header ( 'Content-Type:text/xml; charset=utf-8' );
 				exit ( xml_encode ( $data ) );
 			case 'JSONP' :
+				
 				// 返回JSON数据格式到客户端 包含状态信息
 				header ( 'Content-Type:application/json; charset=utf-8' );
 				$handler = isset ( $_GET [C ( 'VAR_JSONP_HANDLER' )] ) ? $_GET [C ( 'VAR_JSONP_HANDLER' )] : C ( 'DEFAULT_JSONP_HANDLER' );
 				exit ( $handler . '(' . json_encode ( $data ) . ');' );
 			case 'EVAL' :
+				
 				// 返回可执行的js脚本
 				header ( 'Content-Type:text/html; charset=utf-8' );
 				exit ( $data );
 			default :
+				
 				// 用于扩展其他返回格式数据
 				Hook::listen ( 'ajax_return', $data );
 		}

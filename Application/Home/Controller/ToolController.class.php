@@ -13,8 +13,8 @@ namespace Home\Controller;
  * 主要获取首页聚合数据
  */
 class ToolController extends HomeController {
-	var $db2 = 'uctoo';
-	var $db1 = 'dev_uctoo';
+	var $db2 = '`update`'; // 要更新的数据库
+	var $db1 = '`dev_uctoo`'; // 源数据库
 	function index() {
 		$tables = array (
 				'uctoo_auth_rule' => 'name',
@@ -78,7 +78,7 @@ class ToolController extends HomeController {
 			if (isset ( $arr1 [$vo ['model_name']] [$vo ['name']] ))
 				continue;
 			
-			$delArr [] = "DELETE a FROM wp_attribute a, wp_model m WHERE a.model_id=m.id and m.`name`='{$vo [model_name]}' and a.`name`='{$vo [name]}';";
+			$delArr [] = "DELETE a FROM uctoo_attribute a, uctoo_model m WHERE a.model_id=m.id and m.`name`='{$vo [model_name]}' and a.`name`='{$vo [name]}';";
 		}
 		
 		if (! empty ( $insertArr )) {

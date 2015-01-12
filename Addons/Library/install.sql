@@ -1,1 +1,0 @@
-INSERT INTO `uctoo_keyword` (`keyword`, `token`, `addon`, `aim_id`, `cTime`, `keyword_lenght`, `keyword_type`, `extra_text`, `extra_int`) VALUES ('借书信息', 'get_token', 'Library', '2', '1', '18', '0', '', '0');

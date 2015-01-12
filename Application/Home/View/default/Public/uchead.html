@@ -1,0 +1,27 @@
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta content="遵循Apache2开源协议,免费提供使用,微信功能插件化开发,多公众号管理,配置简单" name="keywords"/>
+<meta content="UCToo 开源微信公众平台开发框架微信功能插件化开发,多公众号管理,配置简单" name="description"/>
+<link rel="alternate icon" type="image/png" href="{:SITE_URL}/favicon.ico">
+<title><php>echo empty($page_title) ? C('WEB_SITE_TITLE') : $page_title;</php></title>
+<link rel="stylesheet" href="__STATIC__/amazeui/assets/css/amazeui.min.css"/>
+<block name="style"></block>
+<!--[if lt IE 9]>
+<script type="text/javascript" src="__STATIC__/jquery-1.10.2.min.js"></script>
+<![endif]-->
+<!--[if gte IE 9]><!-->
+<script type="text/javascript" src="__STATIC__/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" src="__STATIC__/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="__STATIC__/uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="__JS__/dialog.js?v={:SITE_VERSION}"></script>
+<script type="text/javascript" src="__JS__/admin_common.js?v={:SITE_VERSION}"></script>
+<script type="text/javascript" src="__JS__/admin_image.js?v={:SITE_VERSION}"></script>
+<script type="text/javascript">
+var  STATIC = "__STATIC__";
+var  ROOT = "__ROOT__";
+</script>
+<!-- 页面header钩子，一般用于加载插件CSS文件和代码 -->
+{:hook('pageHeader')}

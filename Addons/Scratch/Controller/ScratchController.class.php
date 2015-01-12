@@ -221,6 +221,9 @@ class ScratchController extends AddonsController {
 		
 		$res = M ( 'sn_code' )->add ( $data );
 		if ($res) {
+			// 更新获取数
+			M ( "scratch" )->where ( 'id=' . $data ['target_id'] )->setInc ( "collect_count" );
+			
 			// 扣除积分
 			$data = M ( 'scratch' )->find ( $data ['target_id'] );
 			if (! empty ( $data ['credit_bug'] )) {

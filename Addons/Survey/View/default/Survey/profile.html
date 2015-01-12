@@ -23,5 +23,20 @@
             </form>
 	</div>
     <p class="copyright">{$system_copy_right}</p>
+    <script type="text/javascript">
+$('#submit').click(function(){
+   // $('#form').submit();
+   //判断
+   if($('input[name="nickname"]').size()>0 && ( $('input[name="nickname"]').val().length<2 || !(/^[\u4e00-\u9fa5]+$/.test($('input[name="nickname"]').val())))){
+   		 $.Dialog.fail("名字限2个以上的中文字符!");
+		 return false;
+   }
+   if($('input[name="mobile"]').size()>0 && $('input[name="mobile"]').val().length!=11){
+   		 $.Dialog.fail("请填写正确的手机号码!");
+		 return false;
+   }
+   
+});
+</script>
 </body>
 </html>

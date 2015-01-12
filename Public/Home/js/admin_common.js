@@ -16,6 +16,14 @@
 			}
 		});
 	});
+	
+	$('.data-table .confirm').click(function(){
+		if(window.confirm("确认要执行删除操作吗？")){
+			return true;
+		}else{
+			return false;
+		}	
+	})
 
     //ajax get请求
     $('.ajax-get').click(function(){
@@ -370,10 +378,9 @@ function change_event(obj){
 	
 	var arr = new Array();
     arr = hiderel.split(",");
-    $.each(arr, function (index, tx) {		
+    $.each(arr, function (index, tx) {	
 		var arr2 = new Array();
 		arr2 = tx.split("@");
-
 		if(arr2[1]=='hide'){
 		    $('.toggle-'+arr2[0]).hide();
 		}else{

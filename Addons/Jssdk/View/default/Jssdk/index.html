@@ -1,0 +1,195 @@
+<extend name="Base/ucmobile_base" />
+<!-- addons模块css -->
+<block name="style">
+  <link rel="stylesheet" href="{:ADDON_PUBLIC_PATH}/css/app.css">
+</block>
+<block name="body">
+<div class="wxapi_container">
+  <div class="wxapi_index_container">
+    <ul  class="am-list am-list-striped">
+      <li class="label_item wxapi_index_item"><a class="label_inner" href="#menu-basic">基础接口</a></li>
+      <li class="label_item wxapi_index_item"><a class="label_inner" href="#menu-share">分享接口</a></li>
+      <li class="label_item wxapi_index_item"><a class="label_inner" href="#menu-image">图像接口</a></li>
+      <li class="label_item wxapi_index_item"><a class="label_inner" href="#menu-voice">音频接口</a></li>
+      <li class="label_item wxapi_index_item"><a class="label_inner" href="#menu-smart">智能接口</a></li>
+      <li class="label_item wxapi_index_item"><a class="label_inner" href="#menu-device">设备信息接口</a></li>
+      <li class="label_item wxapi_index_item"><a class="label_inner" href="#menu-location">地理位置接口</a></li>
+      <li class="label_item wxapi_index_item"><a class="label_inner" href="#menu-webview">界面操作接口</a></li>
+      <li class="label_item wxapi_index_item"><a class="label_inner" href="#menu-scan">微信扫一扫接口</a></li>
+      <li class="label_item wxapi_index_item"><a class="label_inner" href="#menu-shopping">微信小店接口</a></li>
+      <li class="label_item wxapi_index_item"><a class="label_inner" href="#menu-card">微信卡券接口</a></li>
+      <li class="label_item wxapi_index_item"><a class="label_inner" href="#menu-pay">微信支付接口</a></li>
+    </ul>
+  </div>
+  <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+  <div class="lbox_close wxapi_form">
+    <article class="am-article">
+      <div class="am-article-hd"><h3 id="menu-basic">基础接口</h3>
+        <p class="am-article-meta">判断当前客户端是否支持指定JS接口</p>
+      </div>
+    <button class="am-btn am-btn-primary am-btn-block" id="checkJsApi">checkJsApi</button>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+    <article class="am-article">       <div class="am-article-hd"><h3 id="menu-share">分享接口</h3>
+    <p class="am-article-meta">获取“分享到朋友圈”按钮点击状态及自定义分享内容接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="onMenuShareTimeline">onMenuShareTimeline</button>
+    <p class="am-article-meta">获取“分享给朋友”按钮点击状态及自定义分享内容接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="onMenuShareAppMessage">onMenuShareAppMessage</button>
+    <p class="am-article-meta">获取“分享到QQ”按钮点击状态及自定义分享内容接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="onMenuShareQQ">onMenuShareQQ</button>
+    <p class="am-article-meta">获取“分享到腾讯微博”按钮点击状态及自定义分享内容接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="onMenuShareWeibo">onMenuShareWeibo</button>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+    <article class="am-article">       <div class="am-article-hd"><h3 id="menu-image">图像接口</h3>
+    <p class="am-article-meta">拍照或从手机相册中选图接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="chooseImage">chooseImage</button>
+    <p class="am-article-meta">预览图片接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="previewImage">previewImage</button>
+    <p class="am-article-meta">上传图片接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="uploadImage">uploadImage</button>
+    <p class="am-article-meta">下载图片接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="downloadImage">downloadImage</button>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+    <article class="am-article">       <div class="am-article-hd"><h3 id="menu-voice">音频接口</h3>
+    <p class="am-article-meta">开始录音接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="startRecord">startRecord</button>
+    <p class="am-article-meta">停止录音接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="stopRecord">stopRecord</button>
+    <p class="am-article-meta">播放语音接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="playVoice">playVoice</button>
+    <p class="am-article-meta">暂停播放接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="pauseVoice">pauseVoice</button>
+    <p class="am-article-meta">停止播放接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="stopVoice">stopVoice</button>
+    <p class="am-article-meta">上传语音接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="uploadVoice">uploadVoice</button>
+    <p class="am-article-meta">下载语音接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="downloadVoice">downloadVoice</button>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+    <article class="am-article">       <div class="am-article-hd"><h3 id="menu-smart">智能接口</h3>
+    <p class="am-article-meta">识别音频并返回识别结果接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="translateVoice">translateVoice</button>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+    <article class="am-article">       <div class="am-article-hd"><h3 id="menu-device">设备信息接口</h3>
+    <p class="am-article-meta">获取网络状态接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="getNetworkType">getNetworkType</button>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+    <article class="am-article">       <div class="am-article-hd"><h3 id="menu-location">地理位置接口</h3>
+    <p class="am-article-meta">使用微信内置地图查看位置接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="openLocation">openLocation</button>
+    <p class="am-article-meta">获取地理位置接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="getLocation">getLocation</button>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+    <article class="am-article">       <div class="am-article-hd"><h3 id="menu-webview">界面操作接口</h3>
+    <p class="am-article-meta">隐藏右上角菜单接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="hideOptionMenu">hideOptionMenu</button>
+    <p class="am-article-meta">显示右上角菜单接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="showOptionMenu">showOptionMenu</button>
+    <p class="am-article-meta">关闭当前网页窗口接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="closeWindow">closeWindow</button>
+    <p class="am-article-meta">批量隐藏功能按钮接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="hideMenuItems">hideMenuItems</button>
+    <p class="am-article-meta">批量显示功能按钮接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="showMenuItems">showMenuItems</button>
+    <p class="am-article-meta">隐藏所有非基础按钮接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="hideAllNonBaseMenuItem">hideAllNonBaseMenuItem</button>
+    <p class="am-article-meta">显示所有功能按钮接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="showAllNonBaseMenuItem">showAllNonBaseMenuItem</button>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+    <article class="am-article">       <div class="am-article-hd"><h3 id="menu-scan">微信扫一扫</h3>
+    <p class="am-article-meta">调起微信扫一扫接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="scanQRCode0">scanQRCode(微信处理结果)</button>
+    <button class="am-btn am-btn-primary am-btn-block" id="scanQRCode1">scanQRCode(直接返回结果)</button>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+    <article class="am-article">       <div class="am-article-hd"><h3 id="menu-shopping">微信小店接口</h3>
+    <p class="am-article-meta">跳转微信商品页接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="openProductSpecificView">openProductSpecificView</button>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+    <article class="am-article">       <div class="am-article-hd"><h3 id="menu-card">微信卡券接口</h3>
+    <p class="am-article-meta">批量添加卡券接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="addCard">addCard</button>
+    <p class="am-article-meta">调起适用于门店的卡券列表并获取用户选择列表</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="chooseCard">chooseCard</button>
+    <p class="am-article-meta">查看微信卡包中的卡券接口</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="openCard">openCard</button>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+    <article class="am-article">       <div class="am-article-hd"><h3 id="menu-pay">微信支付接口</h3>
+    <p class="am-article-meta">发起一个微信支付请求</p>
+    <button class="am-btn am-btn-primary am-btn-block" id="chooseWXPay">chooseWXPay</button>
+    </article>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+      <article class="am-article">       <div class="am-article-hd"><h3 id="menu-pay">微信官方JSSDK演示页面</h3>
+        <p class="am-article-meta">微信官方所下载的JSSDK示例代码的坑请小心慢填 >_< </p>
+        <a class="am-btn am-btn-link" href="http://demo.open.weixin.qq.com/jssdk/">微信官方演示页面链接</a>
+      </article>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-default"/>
+      <article class="am-article">       <div class="am-article-hd"><h3 id="menu-pay">微信官方JSSDK开发文档</h3>
+        <p class="am-article-meta">好像文档也有坑？ >_< </p>
+        <a class="am-btn am-btn-link" href="http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html">官方文档</a>
+      </article>
+  </div>
+</div>
+</block><!--body end-->
+<block name="script">
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+  <script>
+    wx.config({
+      debug: true,
+      appId: '{$signPackage['appId']}',
+      timestamp: {$signPackage['timestamp']},
+      nonceStr: '{$signPackage['nonceStr']}',
+      signature: '{$signPackage['signature']}',
+      jsApiList: [
+        // 所有要调用的 API 都要加到这个列表中
+        'checkJsApi',
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'onMenuShareQQ',
+        'onMenuShareWeibo',
+        'hideMenuItems',
+        'showMenuItems',
+        'hideAllNonBaseMenuItem',
+        'showAllNonBaseMenuItem',
+        'translateVoice',
+        'startRecord',
+        'stopRecord',
+        'onRecordEnd',
+        'playVoice',
+        'pauseVoice',
+        'stopVoice',
+        'uploadVoice',
+        'downloadVoice',
+        'chooseImage',
+        'previewImage',
+        'uploadImage',
+        'downloadImage',
+        'getNetworkType',
+        'openLocation',
+        'getLocation',
+        'hideOptionMenu',
+        'showOptionMenu',
+        'closeWindow',
+        'scanQRCode',
+        'chooseWXPay',
+        'openProductSpecificView',
+        'addCard',
+        'chooseCard',
+        'openCard'
+      ]
+    });
+
+  </script>
+  <script src="{:ADDON_PUBLIC_PATH}/js/api-6.1.js"> </script>
+</block>
