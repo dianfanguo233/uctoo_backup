@@ -14,3 +14,11 @@
 9.增加粉丝用户中心功能。
 10.增加服务号/认证订阅号一键获取公众号原有粉丝信息功能。
 11.加入微信JS SDK。
+12.集成地图数据类型。http://www.topthink.com/topic/2783.html
+13.集成SocketLog,方便调试。https://github.com/luofei614/SocketLog
+
+
+微信支付
+http://www.thinkphp.cn/topic/25908.html
+微信类
+https://github.com/dodgepudding/wechat-php-sdk

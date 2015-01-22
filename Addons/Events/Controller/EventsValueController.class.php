@@ -3,6 +3,7 @@
 namespace Addons\Events\Controller;
 
 use Addons\Events\Controller\BaseController;
+use Com\JsSdk;
 
 class EventsValueController extends BaseController {
 	var $model;
@@ -14,7 +15,7 @@ class EventsValueController extends BaseController {
 		
 		$param ['events_id'] = $this->events_id = intval ( $_REQUEST ['events_id'] );
 		
-		$res ['title'] = '通用表单';
+		$res ['title'] = '活动表单';
 		$res ['url'] = addons_url ( 'Events://Events/lists' );
 		$res ['class'] = '';
 		$nav [] = $res;
@@ -27,7 +28,7 @@ class EventsValueController extends BaseController {
 		$this->assign ( 'nav', $nav );
 	}
 	
-	// 通用插件的列表模型
+	// 活动插件的列表模型
 	public function lists() {
 		// 解析列表规则
 		$fields [] = 'openid';
@@ -119,19 +120,25 @@ class EventsValueController extends BaseController {
 		$this->display ();
 	}
 	
-	// 通用插件的编辑模型
+	// 活动插件的编辑模型
 	public function edit() {
 		$this->add ();
 	}
 	
-	// 通用插件的增加模型
+	// 活动插件的增加模型
 	public function add() {
 		$id = I ( 'id', 0 );
 		
 		$events = M ( 'events' )->find ( $this->events_id );
 		$events ['cover'] = ! empty ( $events ['cover'] ) ? get_cover_url ( $events ['cover'] ) : ADDON_PUBLIC_PATH . '/background.png';
+		if($events ['map']){
+			$mapPoint = json_decode ( $events ['map'], true );
+			$events ['longitude'] = $mapPoint['longitude'];
+			$events ['latitude'] = $mapPoint['latitude'];
+		}
 		$this->assign ( 'events', $events );
-		
+
+
 		if (! empty ( $id )) {
 			$act = 'save';
 			
@@ -164,7 +171,22 @@ class EventsValueController extends BaseController {
 		$map ['events_id'] = $this->events_id;
 		$map ['token'] = get_token ();
 		$fields [1] = M ( 'events_attribute' )->where ( $map )->order ( 'sort asc, id asc' )->select ();
-		
+
+		//JSSDK
+		$shareparam ['token'] = $map ['token'];
+		$shareparam ['openid'] = get_openid ();
+		$shareparam ['events_id'] = $this->events_id;
+		$url = addons_url ( 'Events://EventsValue/add', $shareparam );
+		$this->assign ( 'share_url', $url );
+
+		$info = get_token_appinfo ( $token );
+
+		$jssdk = new JSSDK($info ['appid'], $info ['secret']);
+		$jssdk->debug = false;	//启用本地调试模式,将官方的两个json文件放到入口文件index.php同级目录即可!
+		$signPackage = $jssdk->GetSignPackage();
+		$this->assign ( 'info', $info );
+		$this->assign ( 'signPackage', $signPackage );
+
 		if (IS_POST) {
 			foreach ( $fields [1] as $vo ) {
 				$error_tip = ! empty ( $vo ['error_info'] ) ? $vo ['error_info'] : '请正确输入' . $vo ['title'] . '的值';
@@ -221,8 +243,20 @@ class EventsValueController extends BaseController {
 		
 		$this->display ();
 	}
-	
-	// 通用插件的删除模型
+	function map() {   //暂时没用此方法，先以弹出层实现
+		$events = M ( 'events' )->find ( $this->events_id );
+		$events ['cover'] = ! empty ( $events ['cover'] ) ? get_cover_url ( $events ['cover'] ) : ADDON_PUBLIC_PATH . '/background.png';
+		if($events ['map']){
+			$mapPoint = json_decode ( $events ['map'], true );
+			$events ['longitude'] = $mapPoint['longitude'];
+			$events ['latitude'] = $mapPoint['latitude'];
+		}
+
+		$this->assign ( 'events', $events );
+
+		$this->display ();
+	}
+	// 活动插件的删除模型
 	public function del() {
 		parent::common_del ( $this->model );
 	}

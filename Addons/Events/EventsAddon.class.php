@@ -4,7 +4,7 @@ namespace Addons\Events;
 use Common\Controller\Addon;
 
 /**
- * 通用表单插件
+ * 活动表单插件
  * @author uctoo
  */
 

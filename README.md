@@ -15,3 +15,5 @@
 9.增加粉丝用户中心功能。<br />
 10.增加服务号/认证订阅号一键获取公众号原有粉丝信息功能。<br />
 11.加入微信JS SDK。<br />
+12.集成地图数据类型。http://www.topthink.com/topic/2783.html
+13.集成SocketLog,方便调试。https://github.com/luofei614/SocketLog

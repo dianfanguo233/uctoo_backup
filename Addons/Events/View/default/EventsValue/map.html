@@ -1,0 +1,49 @@
+<extend name="Base/ucmobile_base" />
+<!-- addons模块css -->
+<block name="style">
+ <link href="__STATIC__/datetimepicker/css/datetimepicker.css?v={:SITE_VERSION}" rel="stylesheet" type="text/css">
+  <php>if(C('COLOR_STYLE')=='blue_color') echo '
+    <link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css?v={:SITE_VERSION}" rel="stylesheet" type="text/css">
+    ';</php>
+  <link href="__STATIC__/datetimepicker/css/dropdown.css?v={:SITE_VERSION}" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="{:ADDON_PUBLIC_PATH}/css/app.css">
+</block>
+<block name="body">
+    <header data-am-widget="header" class="am-header am-header-default">
+        <div class="am-header-left am-header-nav">
+            <a href="#" class="">
+                <i class="am-header-icon am-icon-home"></i>
+            </a>
+            <a href="#phone-link" class="">
+                <i class="am-header-icon am-icon-phone"></i>
+            </a>
+        </div>
+        <h1 class="am-header-title">
+            <a href="#title-link">微活动</a>
+        </h1>
+        <div class="am-header-right am-header-nav">
+           <a href="{:addons_url ( 'UserCenter://UserCenter/userCenter' )}" class="">
+              <i class="am-header-icon am-icon-user"></i>
+            </a>
+            <a href="#cart-link" class="">
+                <i class="am-header-icon am-icon-shopping-cart"></i>
+            </a>
+        </div>
+    </header>
+    <div data-am-widget="map" class="am-map am-map-default" data-name="{$events.title}"
+         data-address="{$events.address}" data-longitude="{$events.longitude}" data-latitude="{$events.latitude}"
+         data-scaleControl="" data-zoomControl="true" data-setZoom="17" data-icon="http://amuituku.qiniudn.com/mapicon.png">
+        <div id="bd-map"></div>
+    </div>
+    <div class="tb">
+        <a href="javascript:;" onClick="history.go(-1);" class="btn-return m_10 flex_1">返回</a>
+    </div>
+
+ </block><!--body end-->
+ <block name="script">
+ <script type="text/javascript">
+
+
+</script> 
+</block>
+

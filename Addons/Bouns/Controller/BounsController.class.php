@@ -69,7 +69,8 @@ class BounsController extends AddonsController {
 	
 	// 增加或者编辑时公共部分
 	function _deal_data() {
-		$normal_tips = '插件场景限制参数说明：格式：[插件名:id],如<br/>
+		$normal_tips = '本插件使用了JSSDK，请确认已在mp.weixin.qq.com->公众号设置->功能设置->JS接口安全域名,添加了你的域名<br/>
+                插件场景限制参数说明：格式：[插件名:id],如<br/>
 				[投票:10]，表示对ID为10的投票投完对能领取<br/>
 				[投票:*]，表示只要投过票就可以领取<br/>
 				[微调研:15]，表示完成ID为15的调研就能领取<br/>
@@ -88,6 +89,7 @@ class BounsController extends AddonsController {
 		$this->assign ( 'my_sn_list', $list );
 		$param ['token'] = get_token ();
 		$param ['openid'] = get_openid ();
+		$param ['id'] = $map2 ['target_id'];
 		$url = addons_url ( 'Bouns://Bouns/prev', $param );
 		$this->assign ( 'share_url', $url );
 		$this->_detail ();

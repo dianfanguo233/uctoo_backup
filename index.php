@@ -1,4 +1,13 @@
 <?php
+//slog uctoo add
+/*
+include './SocketLog.class.php';
+slog(array(
+	'error_handler'=>true,
+	'optimize'=>true,
+	'show_included_files'=>true,
+),'set_config');
+*/
 // +----------------------------------------------------------------------
 // | OneThink [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------

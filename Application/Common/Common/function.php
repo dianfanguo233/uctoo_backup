@@ -2368,3 +2368,4 @@ function get_name_by_touxiang($val) {
 		return('<img height="48px" src="'.ADDON_PUBLIC_PATH.'/face.png" />');
 	}
 }
+

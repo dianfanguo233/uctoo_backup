@@ -33,7 +33,8 @@ function get_attribute_type($type=''){
     	'editor'    =>  array('编辑器','text NOT NULL'),
     	'picture'   =>  array('上传图片','int(10) UNSIGNED NOT NULL'),
     	'file'    	=>  array('上传附件','int(10) UNSIGNED NOT NULL'),
-		'cascade'    	=>  array('级联','varchar(255) NOT NULL'),
+		'cascade'  	=>  array('级联','varchar(255) NOT NULL'),
+        'map'   	=>  array('地图','varchar(255) NOT NULL'),
     );
     return $type?$_type[$type][0]:$_type;
 }

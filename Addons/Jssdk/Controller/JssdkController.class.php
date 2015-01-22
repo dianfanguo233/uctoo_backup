@@ -11,6 +11,7 @@ class JssdkController extends AddonsController{
 
         $param ['token'] = get_token ();
         $param ['openid'] = get_openid ();
+        //$id = 1;                                            //如有数据id分享url中应加入id参数
         $url = addons_url ( 'Jssdk://Jssdk/index', $param );  //分享的url需要和WeixinAddonModel中的组装回复url保持相同
         $this->assign ( 'share_url', $url );
 

@@ -14,7 +14,7 @@ class EventsAttributeController extends BaseController {
 		
 		$param ['events_id'] = $this->events_id = intval ( $_REQUEST ['events_id'] );
 		
-		$res ['title'] = '通用表单';
+		$res ['title'] = '活动表单';
 		$res ['url'] = addons_url ( 'Events://Events/lists' );
 		$res ['class'] = '';
 		$nav [] = $res;
@@ -26,17 +26,19 @@ class EventsAttributeController extends BaseController {
 		
 		$this->assign ( 'nav', $nav );
 	}
-	// 通用插件的列表模型
+	// 活动插件的列表模型
 	public function lists() {
-		$param ['events_id'] = $this->events_id;
+		$map ['events_id'] = $param ['events_id'] = $this->events_id;
 		$param ['model'] = $this->model ['id'];
 		$add_url = U ( 'add', $param );
 		$this->assign ( 'add_url', $add_url );
-		
+/*  TODO:如果表单没字段，自动创建默认的活动表单字段，例如姓名、电话等
+
+*/
 		parent::common_lists ( $this->model, 0, '', 'sort asc, id asc' );
 	}
 	
-	// 通用插件的编辑模型
+	// 活动插件的编辑模型
 	public function edit() {
 		$id = I ( 'id' );
 		
@@ -59,7 +61,7 @@ class EventsAttributeController extends BaseController {
 		parent::common_edit ( $this->model, $id );
 	}
 	
-	// 通用插件的增加模型
+	// 活动插件的增加模型
 	public function add() {
 		if (IS_POST) {
 			$Model = D ( parse_name ( get_table_name ( $this->model ['id'] ), 1 ) );
@@ -88,7 +90,7 @@ class EventsAttributeController extends BaseController {
 		parent::common_add ( $this->model );
 	}
 	
-	// 通用插件的删除模型
+	// 活动插件的删除模型
 	public function del() {
 		parent::common_del ( $this->model );
 	}

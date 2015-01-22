@@ -60,7 +60,15 @@
                         <case value="cascade">
                         <div id="cascade_{$field.name}"></div>
                         {:hook('cascade', array('name'=>$field['name'],'value'=>$data[$field['name']],'extra'=>$field['extra']))}
-                        </case>                         
+                        </case>
+                        <case value="map">
+                          <div id="map_{$field.name}">
+                          <input type="hidden" id="longitude" />
+                          <input type="hidden" id="latitude" />
+                            <input type="map" class="text input-large" readonly="readonly" id="{$field.name}" name="{$field.name}" value='{$data[$field["name"]]}'>
+                            {:hook('EasyGo', array('name'=>$field['name'],'value'=>I($field[name], $field[value]),'extra'=>$field['extra']))}
+                          </div>
+                        </case>
                         <case value="radio">
                           <volist name=":parse_field_attr($field['extra'])" id="vo">
                             <label class="radio"> <input type="radio" value="{$key}" name="{$field.name}" 

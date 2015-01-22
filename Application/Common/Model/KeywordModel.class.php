@@ -53,7 +53,7 @@ class KeywordModel extends Model {
 	/**
 	 * 按目标条件统一更新关键词
 	 */
-	function upateByAddon($addon, $aim_id = 0, $save = array()) {
+	function updateByAddon($addon, $aim_id = 0, $save = array()) {
 		$map ['addon'] = $addon;
 		if ($aim_id) {
 			$map ['aim_id'] = intval ( $aim_id );

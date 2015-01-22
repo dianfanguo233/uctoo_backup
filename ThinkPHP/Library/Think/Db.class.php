@@ -248,6 +248,9 @@ class Db {
      * @access protected
      */
     protected function debug() {
+        //slog uctoo add
+       // slog($this->queryStr,$this->_linkID);
+
         $this->modelSql[$this->model]   =  $this->queryStr;
         $this->model  =   '_think_';
         // 记录操作结束时间
