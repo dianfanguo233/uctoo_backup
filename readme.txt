@@ -16,6 +16,8 @@
 11.加入微信JS SDK。
 12.集成地图数据类型。http://www.topthink.com/topic/2783.html
 13.集成SocketLog,方便调试。https://github.com/luofei614/SocketLog
+14.增加微预约，微商城模块。
+15.加入微信支付。
 
 
 微信支付

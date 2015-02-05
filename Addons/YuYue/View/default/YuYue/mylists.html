@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>我的预约记录</title>
+  <style type="text/css">
+    ul{
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 20px;
+    }
+    li:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      border-top-color: #428bca;
+      font-weight: bold;
+    }
+    li:last-child {
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+      border-bottom-color: #428bca;
+    }
+    .title {
+      color: #fff;
+      background-color: #428bca;
+      border-color: #428bca;
+    }
+    li{
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: -1px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-left-color: #428bca;
+      border-right-color: #428bca;
+      color: #555;
+    }
+
+  </style>
+</head>
+<body>
+<h3>预约记录</h3>
+  <volist name="list_data" id="data">
+    <ul>
+      <li class="title">预约号：{$data.id}</li>
+      <li>预约时间：{$data.yTime|date="Y-m-d H:i",###}</li>
+      <li>预约项目：{$data.item}</li>
+      <li>预约门店：{$data.market}</li>
+      <li>预约人数：{$data.number}</li>
+      <li>提交时间：{$data.cTime|date="Y-m-d H:i",###}</li>
+    </ul>
+  </volist>
+</body>
+</html>

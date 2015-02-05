@@ -1,19 +1,20 @@
-ע������
+注意事项
 
-����Ϊ0.2RC�汾����ӭ��Ұ�װʹ�á�<br />
-������Ϣ���ע�ٷ���վ��http://www.uctoo.com ��<br />
-�����߽���Ⱥ 102324323   ��ע���Ŵ���Ͷ�����ںŲ鿴������ʾ<br />
+本包为0.2RC版本，欢迎大家安装使用。
+更多信息请关注官方网站（http://www.uctoo.com）
 
-1.ǰ�˿�������amazeui��http://amazeui.org/ ����<br />
-2.����΢��������Ԥ����<br />
-3.����΢����->���¹���Ԥ���������Զ���ظ�->ͼ�Ļظ�Ԥ����<br />
-4.ͶƱѡ�������������ӡ�<br />
-5.�Ż�ͶƱѡ�к�ȡ��ѡ��Ч����<br />
-6.�޸����Բ����ȡ���ò�������<br />
-7.����΢���ģ�顣<br />
-8.����΢�ģ�顣<br />
-9.���ӷ�˿�û����Ĺ��ܡ�<br />
-10.���ӷ����/��֤���ĺ�һ����ȡ���ں�ԭ�з�˿��Ϣ���ܡ�<br />
-11.����΢��JS SDK��<br />
-12.���ɵ�ͼ�������͡�http://www.topthink.com/topic/2783.html
-13.����SocketLog,������ԡ�https://github.com/luofei614/SocketLog
+1.前端开发采用amazeui（http://amazeui.org/）。
+2.增加微官网分类预览。
+3.增加微官网->文章管理预览，增加自定义回复->图文回复预览。
+4.投票选项增加详情链接。
+5.优化投票选中和取消选中效果。
+6.修复友言插件获取配置参数错误。
+7.增加微红包模块。
+8.增加微活动模块。
+9.增加粉丝用户中心功能。
+10.增加服务号/认证订阅号一键获取公众号原有粉丝信息功能。
+11.加入微信JS SDK。
+12.集成地图数据类型。http://www.topthink.com/topic/2783.html
+13.集成SocketLog,方便调试。https://github.com/luofei614/SocketLog
+14.增加微预约，微商城模块。
+15.加入微信支付。

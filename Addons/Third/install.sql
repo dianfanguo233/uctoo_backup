@@ -48,27 +48,27 @@ DELETE from uctoo_keyword where addon='Third' and keyword='快递';
 DELETE from uctoo_keyword where addon='Third' and keyword='天气';
 DELETE from uctoo_keyword where addon='Third' and keyword='算命';
 
-INSERT INTO `uctoo_third` ( `keyword`, `apisite`, `output_format`, `title`, `requesttype`, `parameters`, `count`, `defaultpic`, `priority`, `keyword_type`, `isfilter`, `type`, `remark`, `status`, `Token`) VALUES ('笑话', 'http://[site]/index.php?s=/addon/Third/API/getjoke.html', '0', '笑话', '1', '', '1', '0', '0', '1', '0', '0', '发送“笑话”看笑话去', '0', '0');
+INSERT INTO `uctoo_third` ( `keyword`, `apisite`, `output_format`, `title`, `requesttype`, `parameters`, `count`, `defaultpic`, `priority`, `keyword_type`, `isfilter`, `type`, `remark`, `status`, `Token`) VALUES ('笑话', 'http://[site]/index.php/addon/Third/API/getjoke.html', '0', '笑话', '1', '', '1', '0', '0', '1', '0', '0', '发送“笑话”看笑话去', '0', '0');
 INSERT INTO `uctoo_keyword` (`keyword`, `token`, `addon`, `aim_id`, `cTime`, `keyword_length`, `keyword_type`, `extra_text`, `extra_int`, `request_count`) VALUES ( '笑话', '0', 'Third', '', '1406330808', '6', '0', '', '0', '15');
 UPDATE `uctoo_keyword` SET aim_id= (SELECT MAX(id) FROM `uctoo_third`) where addon='Third' and keyword='笑话';
 
-INSERT INTO `uctoo_third` ( `keyword`, `apisite`, `output_format`, `title`, `requesttype`, `parameters`, `count`, `defaultpic`, `priority`, `keyword_type`, `isfilter`, `type`, `remark`, `status`, `Token`) VALUES ('火车', 'http://[site]/index.php?s=/addon/Third/API/getCoachInfo.html', '0', '火车查询', '1', '', '1', '0', '0', '1', '0', '0', '发送“火车+出发站+到+终点”查询火车信息，如：火车上海到杭州', '0', '0');
+INSERT INTO `uctoo_third` ( `keyword`, `apisite`, `output_format`, `title`, `requesttype`, `parameters`, `count`, `defaultpic`, `priority`, `keyword_type`, `isfilter`, `type`, `remark`, `status`, `Token`) VALUES ('火车', 'http://[site]/index.php/addon/Third/API/getCoachInfo.html', '0', '火车查询', '1', '', '1', '0', '0', '1', '0', '0', '发送“火车+出发站+到+终点”查询火车信息，如：火车上海到杭州', '0', '0');
 INSERT INTO `uctoo_keyword` ( `keyword`, `token`, `addon`, `aim_id`, `cTime`, `keyword_length`, `keyword_type`, `extra_text`, `extra_int`, `request_count`) VALUES ( '火车', '0', 'Third', '', '1406330808', '6', '1', '', '0', '9');
 UPDATE `uctoo_keyword` SET aim_id= (SELECT MAX(id) FROM `uctoo_third`) where addon='Third' and keyword='火车';
 
-INSERT INTO `uctoo_third` ( `keyword`, `apisite`, `output_format`, `title`, `requesttype`, `parameters`, `count`, `defaultpic`, `priority`, `keyword_type`, `isfilter`, `type`, `remark`, `status`, `Token`) VALUES ('翻译', 'http://[site]/index.php?s=/addon/Third/API/fanyi.html', '0', '智能翻译', '1', '', '1', '0', '0', '1', '0', '0', '发送“翻译+内容”', '0', '0');
+INSERT INTO `uctoo_third` ( `keyword`, `apisite`, `output_format`, `title`, `requesttype`, `parameters`, `count`, `defaultpic`, `priority`, `keyword_type`, `isfilter`, `type`, `remark`, `status`, `Token`) VALUES ('翻译', 'http://[site]/index.php/addon/Third/API/fanyi.html', '0', '智能翻译', '1', '', '1', '0', '0', '1', '0', '0', '发送“翻译+内容”', '0', '0');
 INSERT INTO `uctoo_keyword` ( `keyword`, `token`, `addon`, `aim_id`, `cTime`, `keyword_length`, `keyword_type`, `extra_text`, `extra_int`, `request_count`) VALUES ( '翻译', '0', 'Third', '', '1406330808', '6', '1', '', '0', '9');
 UPDATE `uctoo_keyword` SET aim_id= (SELECT MAX(id) FROM `uctoo_third`) where addon='Third' and keyword='翻译';
 
-INSERT INTO `uctoo_third` ( `keyword`, `apisite`, `output_format`, `title`, `requesttype`, `parameters`, `count`, `defaultpic`, `priority`, `keyword_type`, `isfilter`, `type`, `remark`, `status`, `Token`) VALUES ('快递', 'http://[site]/index.php?s=/addon/Third/API/kuaidi.html', '0', '快递查询', '1', '', '1', '0', '0', '1', '0', '0', '发送“快递+快递单号”', '0', '0');
+INSERT INTO `uctoo_third` ( `keyword`, `apisite`, `output_format`, `title`, `requesttype`, `parameters`, `count`, `defaultpic`, `priority`, `keyword_type`, `isfilter`, `type`, `remark`, `status`, `Token`) VALUES ('快递', 'http://[site]/index.php/addon/Third/API/kuaidi.html', '0', '快递查询', '1', '', '1', '0', '0', '1', '0', '0', '发送“快递+快递单号”', '0', '0');
 INSERT INTO `uctoo_keyword` (`keyword`, `token`, `addon`, `aim_id`, `cTime`, `keyword_length`, `keyword_type`, `extra_text`, `extra_int`, `request_count`) VALUES ( '快递', '0', 'Third', '', '1406330808', '6', '1', '', '0', '9');
 UPDATE `uctoo_keyword` SET aim_id= (SELECT MAX(id) FROM `uctoo_third`) where addon='Third' and keyword='快递';
 
-INSERT INTO `uctoo_third` ( `keyword`, `apisite`, `output_format`, `title`, `requesttype`, `parameters`, `count`, `defaultpic`, `priority`, `keyword_type`, `isfilter`, `type`, `remark`, `status`, `Token`) VALUES ('天气', 'http://[site]/index.php?s=/addon/Third/API/getWeather.html', '0', '天气查询', '1', '', '1', '0', '0', '1', '0', '0', '发送“天气+城市名”，如“天气佛山”', '0', '0');
+INSERT INTO `uctoo_third` ( `keyword`, `apisite`, `output_format`, `title`, `requesttype`, `parameters`, `count`, `defaultpic`, `priority`, `keyword_type`, `isfilter`, `type`, `remark`, `status`, `Token`) VALUES ('天气', 'http://[site]/index.php/addon/Third/API/getWeather.html', '0', '天气查询', '1', '', '1', '0', '0', '1', '0', '0', '发送“天气+城市名”，如“天气佛山”', '0', '0');
 INSERT INTO `uctoo_keyword` ( `keyword`, `token`, `addon`, `aim_id`, `cTime`, `keyword_length`, `keyword_type`, `extra_text`, `extra_int`, `request_count`) VALUES ( '天气', '0', 'Third', '', '1406330808', '6', '1', '', '0', '9');
 UPDATE `uctoo_keyword` SET aim_id= (SELECT MAX(id) FROM `uctoo_third`) where addon='Third' and keyword='天气';
 
-INSERT INTO `uctoo_third` (`keyword`, `apisite`, `output_format`, `title`, `requesttype`, `parameters`, `count`, `defaultpic`, `priority`, `keyword_type`, `isfilter`, `type`, `remark`, `status`, `Token`) VALUES ('算命', 'http://[site]/index.php?s=/addon/Third/API/suanming.html', '0', '名字算命', '1', '', '1', '0', '0', '1', '0', '0', '发送“算命+名字”，如算命张三', '0', '0');
+INSERT INTO `uctoo_third` (`keyword`, `apisite`, `output_format`, `title`, `requesttype`, `parameters`, `count`, `defaultpic`, `priority`, `keyword_type`, `isfilter`, `type`, `remark`, `status`, `Token`) VALUES ('算命', 'http://[site]/index.php/addon/Third/API/suanming.html', '0', '名字算命', '1', '', '1', '0', '0', '1', '0', '0', '发送“算命+名字”，如算命张三', '0', '0');
 INSERT INTO `uctoo_keyword` ( `keyword`, `token`, `addon`, `aim_id`, `cTime`, `keyword_length`, `keyword_type`, `extra_text`, `extra_int`, `request_count`) VALUES ( '算命', '0', 'Third', '', '1406330808', '6', '1', '', '0', '9');
 UPDATE `uctoo_keyword` SET aim_id= (SELECT MAX(id) FROM `uctoo_third`) where addon='Third' and keyword='算命';
 

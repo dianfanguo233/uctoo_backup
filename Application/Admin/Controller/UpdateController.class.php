@@ -44,7 +44,7 @@ class UpdateController extends AdminController {
 	}
 	function getRemoteVersion() {
 		// cookie ( 'cookie_close_version', 0 );
-		$remote = 'http://www.uctoo.com/index.php?s=/home/index/update_version';
+		$remote = 'http://www.uctoo.com/index.php/home/index/update_version';
 		$new_version = wp_file_get_contents ( $remote );
 		$res = $new_version > C ( 'SYSTEM_UPDATRE_VERSION' ) && cookie ( 'cookie_close_version' ) != $new_version;
 		echo $res ? $new_version : 0;
@@ -90,13 +90,13 @@ class UpdateController extends AdminController {
 		
 		$this->remoteBaseURL = 'http://www.uctoo.com'; // TODO
 		
-		$this->updateURL = $this->remoteBaseURL . '/index.php?s=/home/index/update_json&version=' . intval ( C ( 'SYSTEM_UPDATRE_VERSION' ) );
+		$this->updateURL = $this->remoteBaseURL . '/index.php/home/index/update_json&version=' . intval ( C ( 'SYSTEM_UPDATRE_VERSION' ) );
 	}
 	
 	// 查询是否有更新版本
 	function step01_checkVersionByAjax() {
 		// 获取官方升级信息
-		$url = $this->remoteBaseURL . '/index.php?s=/home/index/update_json&version=' . intval ( C ( 'SYSTEM_UPDATRE_VERSION' ) );
+		$url = $this->remoteBaseURL . '/index.php/home/index/update_json&version=' . intval ( C ( 'SYSTEM_UPDATRE_VERSION' ) );
 		
 		$list = wp_file_get_contents ( $url );
 		$list = json_decode ( $list, true );
@@ -115,7 +115,7 @@ class UpdateController extends AdminController {
 		Vendor ( 'Update' );
 		$updateClass = new \Update ();
 		
-		$packageURL = $this->remoteBaseURL . '/index.php?s=/home/index/download_update_package.html&version=' . $version;
+		$packageURL = $this->remoteBaseURL . '/index.php/home/index/download_update_package.html&version=' . $version;
 		
 		echo $updateClass->downloadFile ( $packageURL );
 	}
@@ -389,7 +389,7 @@ class UpdateController extends AdminController {
 		header ( "content-Type: text/html; charset=utf-8" );
 		// 获取下载地址
 		$id = intval ( $_GET ['id'] );
-		$url = $this->remoteBaseURL . '/index.php?s=admin/store/downloadApp&id=' . $id;
+		$url = $this->remoteBaseURL . '/index.php/admin/store/downloadApp&id=' . $id;
 // 		dump($url);exit;
 		$info = wp_file_get_contents ( $url );
 		$info = json_decode ( $info, true );

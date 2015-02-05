@@ -20,8 +20,8 @@ class WeixinAddonModel extends WeixinModel {
 
         // 组装微信需要的图文数据，格式是固定的
         $articles [0] = array (
-            'Title' => $info ['title'],
-            'Description' => $info ['description'],
+            'Title' => '微信用户中心',
+            'Description' => '',
             'PicUrl' => SITE_URL . '/Addons/UserCenter/View/default/Public/uccover.png',
             'Url' => $url
         );

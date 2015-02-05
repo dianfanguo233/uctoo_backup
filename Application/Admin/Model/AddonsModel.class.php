@@ -74,7 +74,6 @@ class AddonsModel extends Model {
 			if (! isset ( $addons [$value] )) {
 				$class = get_addon_class ( $value );
 				if (! class_exists ( $class )) { // 实例化插件失败忽略执行
-					\Think\Log::record ( '插件' . $value . '的入口文件不存在！' );
 					continue;
 				}
 				$obj = new $class ();

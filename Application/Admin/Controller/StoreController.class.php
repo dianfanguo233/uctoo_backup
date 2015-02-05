@@ -28,37 +28,37 @@ class StoreController extends AdminController {
 	function index() {
 		switch ($_GET ['type']) {
 			case 'addon' :
-				$remote_url = '/index.php?s=/Admin/Store/lists&type=0';
+				$remote_url = '/index.php/Admin/Store/lists&type=0';
 				break;
 			case 'template' :
-				$remote_url = '/index.php?s=/Admin/Store/lists&type=1';
+				$remote_url = '/index.php/Admin/Store/lists&type=1';
 				break;
 			case 'material' :
-				$remote_url = '/index.php?s=/Admin/Store/lists&type=2';
+				$remote_url = '/index.php/Admin/Store/lists&type=2';
 				break;
 			case 'diy' :
-				$remote_url = '/index.php?s=/Admin/Store/lists&type=1';
+				$remote_url = '/index.php/Admin/Store/lists&type=1';
 				break;
 			case 'developer' :
-				$remote_url = '/index.php?s=/home/Developer/myApps';
+				$remote_url = '/index.php/home/Developer/myApps';
 				break;
 			case 'help' :
-				$remote_url = '/index.php?s=/Admin/Store/help';
+				$remote_url = '/index.php/Admin/Store/help';
 				break;
 			case 'home' :
-				$remote_url = '/index.php?s=/Admin/Store/home';
+				$remote_url = '/index.php/Admin/Store/home';
 				break;
 			case 'recharge' :
-				$remote_url = '/index.php?s=/Admin/Store/recharge';
+				$remote_url = '/index.php/Admin/Store/recharge';
 				break;
 			case 'bug' :
-				$remote_url = '/index.php?s=/Admin/Store/bug';
+				$remote_url = '/index.php/Admin/Store/bug';
 				break;
 			case 'online_recharge' :
-				$remote_url = '/index.php?s=/Admin/Store/online_recharge';
+				$remote_url = '/index.php/Admin/Store/online_recharge';
 				break;
 			default :
-				$remote_url = '/index.php?s=/Admin/Store/main';
+				$remote_url = '/index.php/Admin/Store/main';
 		}
 		
 		$this->assign ( 'remote_url', REMOTE_BASE_URL . $remote_url );

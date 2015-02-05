@@ -1,0 +1,170 @@
+<extend name="Base/common" />
+<block name="body">
+  <div class="span9 page_message">
+    <section id="contents">
+      <include file="Addons/_nav" />  
+      <div class="tab-content"> 
+        <!--属性开始-->
+        <form action="<empty name="info.id">{:U('attradd')}<else />{:U('attredit')}</empty>" method="post" class="form-horizontal" id="form">
+          <notempty name="info.id"><input type="hidden" name="id" value="{$info.id}" /></notempty>
+          <input type="hidden" name="gid" value="{$tp.gid}" />
+          <div class="form-item cf">
+              <label class="item-label">属性：<span class="check-tips">可以在编辑商品的时候关联</span></label>
+              <div class="controls">
+                  <select name="aid">
+                      <foreach name="tp.attr" item="v">
+                      <option value="{$v.id}" <eq name="v.id" value="$info['aid']">selected="selected"</eq>>{$v.name}</option>
+                      </foreach>
+                  </select>
+              </div>
+          </div>
+          <div class="form-item cf">
+            <label class="item-label">属性值：<span class="check-tips"></span></label>
+            <div class="controls">
+              <input type="text"  class="text input-large" name="value" value="{$info.value}" />
+            </div>
+          </div>
+          <div class="form-item cf">
+              <label class="item-label">属性价格变动：<span class="check-tips">加价为正数，减价为负数。</span></label>
+              <div class="controls">
+                  <input type="text"  class="text input-large" name="price" value="{$info.price}" />&nbsp;元
+              </div>
+          </div>
+          <div class="form-item cf">
+              <label class="item-label">价格类型：<span class="check-tips">原价类型影响原价计算，配件价类型影响配件价计算</span></label>
+              <div class="controls">
+                  <select name="pricetype">
+                      <option value="0" <eq name="info.pricetype" value="0">selected</eq> >原价</option>
+                      <option value="1" <eq name="info.pricetype" value="1">selected</eq> >配件价</option>
+                  </select>
+              </div>
+          </div>
+          <div class="form-item cf">
+              <label class="item-label">属性显示的产品图片：<span class="check-tips"></span></label>
+              <div class="controls">
+                  <div class="controls">
+
+                      <input type="file" id="upload_picture_icon">
+                      <input type="hidden" name="icon" id="cover_id_icon" value="{$info.icon}"/>
+                      <div class="upload-img-box" rel='img'>
+                          <notempty name="info.icon">
+                              <div class="upload-pre-item"><img src="__ROOT__{$info.icon|get_cover='path'}"/></div>
+                          </notempty>
+                      </div>
+                  </div>
+                  <script type="text/javascript">
+                      //上传图片
+                      /* 初始化上传插件 */
+                      $("#upload_picture_icon").uploadify({
+                          "height"          : 30,
+                          "swf"             : "__STATIC__/uploadify/uploadify.swf",
+                          "fileObjName"     : "download",
+                          "buttonText"      : "上传图片",
+                          "uploader"        : "{:U('home/File/uploadPicture',array('session_id'=>session_id()))}",
+                          "width"           : 120,
+                          'removeTimeout'	  : 1,
+                          'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+                          "onUploadSuccess" : uploadPictureicon
+                      });
+                      function uploadPictureicon(file, data){
+                          var data = $.parseJSON(data);
+                          var src = '';
+                          if(data.status){
+                              $("#cover_id_icon").val(data.id);
+                              src = data.url || '__ROOT__' + data.path;
+                              $("#cover_id_icon").parent().find('.upload-img-box').html(
+                                      '<div class="upload-pre-item"><img src="' + src + '"/></div>'
+                              );
+                          } else {
+                              updateAlert(data.info);
+                              setTimeout(function(){
+                                  $('#top-alert').find('button').click();
+                                  $(that).removeClass('disabled').prop('disabled',false);
+                              },1500);
+                          }
+                      }
+                  </script>
+              </div>
+          </div>
+          <div class="form-item cf">
+              <label class="item-label">属性项的缩略图：<span class="check-tips"></span></label>
+              <div class="controls">
+                  <div class="controls">
+
+                      <input type="file" id="upload_picture_thumbnail">
+                      <input type="hidden" name="thumbnail" id="cover_id_thumbnail" value="{$info.thumbnail}"/>
+                      <div class="upload-img-box" rel='img'>
+                          <notempty name="info.thumbnail">
+                              <div class="upload-pre-item"><img src="__ROOT__{$info.thumbnail|get_cover='path'}"/></div>
+                          </notempty>
+                      </div>
+                  </div>
+                  <script type="text/javascript">
+                      //上传图片
+                      /* 初始化上传插件 */
+                      $("#upload_picture_thumbnail").uploadify({
+                          "height"          : 30,
+                          "swf"             : "__STATIC__/uploadify/uploadify.swf",
+                          "fileObjName"     : "download",
+                          "buttonText"      : "上传图片",
+                          "uploader"        : "{:U('home/File/uploadPicture',array('session_id'=>session_id()))}",
+                          "width"           : 120,
+                          'removeTimeout'	  : 1,
+                          'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+                          "onUploadSuccess" : uploadPictureicon
+                      });
+                      function uploadPictureicon(file, data){
+                          var data = $.parseJSON(data);
+                          var src = '';
+                          if(data.status){
+                              $("#cover_id_thumbnail").val(data.id);
+                              src = data.url || '__ROOT__' + data.path;
+                              $("#cover_id_thumbnail").parent().find('.upload-img-box').html(
+                                      '<div class="upload-pre-item"><img src="' + src + '"/></div>'
+                              );
+                          } else {
+                              updateAlert(data.info);
+                              setTimeout(function(){
+                                  $('#top-alert').find('button').click();
+                                  $(that).removeClass('disabled').prop('disabled',false);
+                              },1500);
+                          }
+                      }
+                  </script>
+              </div>
+          </div>
+          <div class="form-item cf">
+            <label class="item-label">属性描述：<span class="check-tips">&nbsp;</span></label>
+            <div class="controls">
+              <label class="textarea input-large">
+                <textarea name="desc" style="width:600px;">{$info.desc}</textarea>
+              </label>
+            </div>
+          </div>
+          <div class="form-item cf">
+            <button class="btn submit-btn ajax-post" id="submit" type="submit" target-form="form-horizontal">确 定</button>     
+           <button class="btn" type="button" onclick="javascript:history.back(-1);return false;" target-form="form-horizontal">返 回</button>
+          </div>
+        </form>
+        <!--属性结束-->
+        <!-- 预览 -->
+        <include file="Addons/weixinPreview" />  
+      </div>
+    </section>
+  </div>
+</block>
+<block name="script">
+  <link href="__STATIC__/datetimepicker/css/datetimepicker.css?v={:SITE_VERSION}" rel="stylesheet" type="text/css">
+  <php>if(C('COLOR_STYLE')=='blue_color') echo '
+    <link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css?v={:SITE_VERSION}" rel="stylesheet" type="text/css">
+    ';</php>
+  <link href="__STATIC__/datetimepicker/css/dropdown.css?v={:SITE_VERSION}" rel="stylesheet" type="text/css">
+  <script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script> 
+  <script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js?v={:SITE_VERSION}" charset="UTF-8"></script> 
+<script type="text/javascript">
+// $('#submit').click(function(){
+//   alert(123);
+//     $('#form').submit();
+// });
+</script> 
+</block>

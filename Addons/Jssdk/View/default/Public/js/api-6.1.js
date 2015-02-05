@@ -430,14 +430,15 @@ wx.ready(function () {
 
   // 10 微信支付接口
   // 10.1 发起一个支付请求
-  document.querySelector('#chooseWXPay').onclick = function () {
-    wx.chooseWXPay({
-      timestamp: 1414723227,
-      nonceStr: 'noncestr',
-      package: 'addition=action_id%3dgaby1234%26limit_pay%3d&bank_type=WX&body=innertest&fee_type=1&input_charset=GBK&notify_url=http%3A%2F%2F120.204.206.246%2Fcgi-bin%2Fmmsupport-bin%2Fnotifypay&out_trade_no=1414723227818375338&partner=1900000109&spbill_create_ip=127.0.0.1&total_fee=1&sign=432B647FE95C7BF73BCD177CEECBEF8D',
-      paySign: 'bd5b1933cda6e9548862944836a9b52e8c9a2b69'
-    });
-  };
+  //   document.querySelector('#chooseWXPay').onclick = function () {
+  //   wx.chooseWXPay({
+  //     timestamp: 1414723227,
+  //     nonceStr: 'noncestr',
+  //     package: 'addition=action_id%3dgaby1234%26limit_pay%3d&bank_type=WX&body=innertest&fee_type=1&input_charset=GBK&notify_url=http%3A%2F%2F120.204.206.246%2Fcgi-bin%2Fmmsupport-bin%2Fnotifypay&out_trade_no=1414723227818375338&partner=1900000109&spbill_create_ip=127.0.0.1&total_fee=1&sign=432B647FE95C7BF73BCD177CEECBEF8D',
+  //     paySign: 'bd5b1933cda6e9548862944836a9b52e8c9a2b69'
+  //   });
+  // };
+
 
   // 11.3  跳转微信商品页
   document.querySelector('#openProductSpecificView').onclick = function () {
@@ -490,7 +491,7 @@ wx.ready(function () {
   var shareData = {
     title: 'UCToo微信JS-SDK Demo',
     desc: 'UCToo微信JS-SDK,帮助第三方为用户提供更优质的移动web服务',
-    link: 'http://dev.uctoo.com/index.php?s=/addon/Jssdk/Jssdk/index.html',
+    link: 'http://dev.uctoo.com/index.php/addon/Jssdk/Jssdk/index.html',
     imgUrl: 'http://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRt8Qia4lv7k3M9J1SKqKCImxJCt7j9rHYicKDI45jRPBxdzdyREWnk0ia0N5TMnMfth7SdxtzMvVgXg/0'
   };
   wx.onMenuShareAppMessage(shareData);
