@@ -156,7 +156,9 @@ class MallController extends AddonsController{
 		$map["openid"] = $result["openid"];
 		$map["out_trade_no"] = $result["out_trade_no"];
 
-		$orderdata = M ( "ml_mall_order_his" )->where ( $map )->order ( 'id DESC' )->find();
+        while (true) {  //alarmnotify和orderpaid调用时序无保证，未将历史订单的支付流水写入订单表就一直循环
+
+            $orderdata = M("ml_mall_order_his")->where($map)->order('id DESC')->find();
 
 		if($orderdata["id"] != ""){
 			//已经记录过的订单数据
@@ -176,16 +178,18 @@ class MallController extends AddonsController{
 				return arrayToXml($respdata);
 			}
 
-		}else{
-			$order = M ( "ml_mall_order_his" );
-			/* 保存附件 */
-			if($order->create($result) && $order->add()){
-				$resp = true;
-			} else {
-				$resp = false;
-				$respdata["return_msg"] = "保存订单数据错误";
-			}
-		}
+            } else {  //微信支付返回的支付流水写入历史表
+                $order = M("ml_mall_order_his");
+                /* 保存附件 */
+                if ($order->create($result) && $order->add()) {
+                    $resp = true;
+                } else {
+                    $resp = false;
+                    $respdata["return_msg"] = "保存订单数据错误";
+                }
+            }
+
+        }
 	}
 
 	/*******************************订单***********************************/

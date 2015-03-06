@@ -16,7 +16,9 @@ class WeixinModel extends Model {
 		
 		$content = wp_file_get_contents ( 'php://input' );
 		! empty ( $content ) || die ( '这是微信请求的接口地址，直接在浏览器里无效' );
-		
+
+		\Think\Log::record('WeixinModel construct:'.$content .'member_public de info:'.xmlToArray($content) );
+
 		if ($_GET ['encrypt_type'] == 'aes') {
 			vendor ( 'WXBiz.wxBizMsgCrypt' );
 			
@@ -26,6 +28,7 @@ class WeixinModel extends Model {
 			
 			$map ['id'] = I ( 'get.id' );
 			$info = M ( 'member_public' )->where ( $map )->find ();
+			\Think\Log::record('WeixinModel construct:mapid'.$map ['id'] .'member_public de info:'.arrayToXml($info) );
 			get_token ( $info ['token'] ); // 设置token
 			
 			$this->wxcpt = new \WXBizMsgCrypt ( 'uctoo', $info ['encodingaeskey'], $info ['appid'] );

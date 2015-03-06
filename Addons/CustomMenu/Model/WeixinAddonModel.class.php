@@ -34,11 +34,11 @@ class WeixinAddonModel extends WeixinModel {
 	}
 	
 	// 自定义菜单关键词事件
-	public function click() {
+	public function click($data) {
 		return true;
 	}
-	// 自定义菜单连接事件
+	// 自定义菜单链接事件，自动加token和openid参数，出错了不管
 	public function view($data) {
-		redirect ( $data ['EventKey'] );
+		redirect ( $data ['EventKey']  );
 	}
 }

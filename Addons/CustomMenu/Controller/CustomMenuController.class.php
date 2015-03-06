@@ -21,7 +21,7 @@ class CustomMenuController extends AddonsController {
 		
 		$this->display ();
 	}
-	function get_data($map) {
+	function get_data($map  = array ()) {
 		$map ['token'] = get_token ();
 		$list = M ( 'custom_menu' )->where ( $map )->order ( 'pid asc, sort asc' )->select ();
 		

@@ -201,9 +201,9 @@
     });
 
     $("#chooseWXPay").bind("click", function(){
-      wx.chooseWXPay(
+      wx.chooseWXPay({
               {$jsApiParameters}
-      );
+      });
     });
   </script>
   <script src="{:ADDON_PUBLIC_PATH}/js/api-6.1.js"> </script>

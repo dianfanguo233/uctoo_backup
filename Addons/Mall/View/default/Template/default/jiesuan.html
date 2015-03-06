@@ -366,13 +366,25 @@
 						if ($.trim(userPhone) == "") {
 							showTip('请填写您的手机号码');
 							return false;
-						}					
-						var patrn = /^0?(13[0-9]|15[0123456789]|18[0123456789]|14[0123456789])[0-9]{8}$/;
+						}
+                    var userAddress = $("#address").val();
+                    if ($.trim(userAddress) == "") {
+                        showTip('请填写您的地址');
+                        return false;
+                    }
+                    var patrn = /^0?(13[0-9]|15[0123456789]|18[0123456789]|14[0123456789])[0-9]{8}$/;
 						if (!patrn.exec($.trim(userPhone))) {
 							showTip('手机号格式错误');
 							return false;
 						}
-					}
+                    }
+                    if(!isaddcontact) {
+                        var userContactid = $('#contactid_{$contact.id}').val();
+                        if ($.trim(userContactid) == "") {
+                            showTip('请填写联系方式');
+                            return false;
+                        }
+                    }
 					return true;
 				}
 				function tables() {

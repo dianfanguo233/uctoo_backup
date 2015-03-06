@@ -48,8 +48,14 @@ class WeixinAddonModel extends WeixinModel {
 	}
 	
 	// 自定义菜单事件
-	public function click() {
-		return true;
+	public function click($data) {
+		\Think\Log::record('jssdkarray:'.$data.'custommenu de click:'.arrayToXml($data) );
+	}
+
+	// 自定义菜单连接事件
+	public function view($data) {
+		\Think\Log::record('jssdkviewarray:'.$data.'custommenu de click:'.arrayToXml($data) );
+		redirect ( $data ['EventKey'] );
 	}
 }
         	

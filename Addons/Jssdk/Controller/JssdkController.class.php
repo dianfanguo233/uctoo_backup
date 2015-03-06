@@ -26,8 +26,8 @@ class JssdkController extends AddonsController{
 
         //微信支付部分
         //此处可以动态获取数据库中的MCHID和KEY
-        $jssdk->MCHID = "";                            // 动态MCHID;微信支付分配的商户号
-        $jssdk->KEY = "";        // 动态KEY;
+        $jssdk->MCHID = "1228598202";                            // 动态MCHID;微信支付分配的商户号
+        $jssdk->KEY = "neowwwUCToocom1715weixinzhifuKey";        // 动态KEY;
 
         //=========步骤2：使用统一支付接口，获取prepay_id============
         //使用统一支付接口
@@ -77,7 +77,6 @@ class JssdkController extends AddonsController{
 
         $this->assign("jsApiParameters",$jsApiParameters);        //向页面传整理好的调起支付参数
 
-
         $this->display ();
     }
 
@@ -101,6 +100,51 @@ class JssdkController extends AddonsController{
         }
 
         echo "ok";
+    }
+
+    public function alarmnotify(){
+        $post_data = $GLOBALS ['HTTP_RAW_POST_DATA'];
+
+        $result = xmlToArray($post_data);
+        $resp = true;
+        $respdata["return_code"] = "SUCCESS";
+        $respdata["return_msg"] = "";
+
+        $map["appid"] = $result["appid"];
+        $map["mch_id"] = $result["mch_id"];
+        $map["openid"] = $result["openid"];
+        $map["out_trade_no"] = $result["out_trade_no"];
+
+        $orderdata = M ( "ml_mall_order_his" )->where ( $map )->order ( 'id DESC' )->find();
+
+        if($orderdata["id"] != ""){
+            //已经记录过的订单数据
+
+            $map1["openid"] = $orderdata["openid"];
+            $map1["dcnum"] = $orderdata["out_trade_no"];
+
+            //TODO:进行安全校验，修订订单支付状态
+            $dddata = M ("ml_mall_order")->where ($map1)->order ( 'id asc' )->find ();
+            if($dddata["statekz"] == "0" || $dddata["statekz"] == "1"){
+                //未支付，设置为已支付，没有记录交易流水的将交易流水写入订单表
+                M ("ml_mall_order")->where ($map1)->save(array("statekz"=>1,"transaction_id"=>$orderdata["transaction_id"]));
+            }
+            if($resp == true){//根据不同的错误设置返回数据
+                return arrayToXml($respdata);
+            }else{
+                return arrayToXml($respdata);
+            }
+
+        }else{
+            $order = M ( "ml_mall_order_his" );
+            /* 保存支付流水 */
+            if($order->create($result) && $order->add()){
+                $resp = true;
+            } else {
+                $resp = false;
+                $respdata["return_msg"] = "保存订单数据错误";
+            }
+        }
     }
 
 }
