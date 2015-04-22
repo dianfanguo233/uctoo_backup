@@ -13,14 +13,14 @@ UCToo主要定位于提供一个可快速进行微应用开发的起始项目，
 系统融合了众多优秀开源项目，采纳通用技术，每周持续集成业界最佳实线。UCToo开发团队扩展了微信应用开发相关功能，对接了微信公众平台和开放平台的所有接口，使其允许在任何类型的微信应用项目中使用。
 
 本包为0.5Beta版本，欢迎大家安装使用。<br />
-更多信息请关注官方网站（http://www.uctoo.com）及"互联网+"开源社区（http://forum.uctoo.com），开发者交流QQ群102324323<br />
+更多信息请关注官方网站 http://www.uctoo.com <br /> 及"互联网+"开源社区 http://forum.uctoo.com ，开发者交流QQ群102324323<br />
 
-1.移动端前端开发采用amazeui（http://amazeui.org/）。<br />
-2.PC端前端开发采用zui（http://www.zui.sexy/）。<br />
-3.开发框架采用ThinkPHP（http://thinkphp.cn）。<br />
-4.用户中心采用Ocenter（http://ocenter.cn）。<br />
-5.微信类采用 https://github.com/dodgepudding/wechat-php-sdk。<br />
-6.实现了Ucenter单点登录，同步帐号注册。（http://faq.comsenz.com/library/UCenter/introduction/introduction_brief.htm）<br />
+1.移动端前端开发采用amazeui http://amazeui.org/ 。<br />
+2.PC端前端开发采用zui http://www.zui.sexy/ 。<br />
+3.开发框架采用ThinkPHP http://thinkphp.cn 。<br />
+4.用户中心采用Ocenter http://ocenter.cn 。<br />
+5.微信类采用 https://github.com/dodgepudding/wechat-php-sdk <br />
+6.实现了Ucenter单点登录，同步帐号注册。 http://faq.comsenz.com/library/UCenter/introduction/introduction_brief.htm <br />
 7.实现了微信公众平台对接的中控服务器逻辑，并可灵活自定义与微信公众平台的各种业务交互。<br />
 8.采用CBD（核心Core+行为Behavior+驱动Driver）架构模式，在系统需要扩展的位置通过一行代码即可集成一项完整的模块功能。<br />
 9.实现了微信公众平台应用模块化开发，各种增值应用都可以独立安装及卸载。<br />
