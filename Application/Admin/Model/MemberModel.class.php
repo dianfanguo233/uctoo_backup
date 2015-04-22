@@ -41,7 +41,7 @@ class MemberModel extends Model {
         }
 
         //记录行为
-        action_log('admin_login', 'member', $uid, $uid);
+        action_log('user_login', 'member', $uid, $uid);
 
         /* 登录用户 */
         $this->autoLogin($user);
@@ -71,10 +71,15 @@ class MemberModel extends Model {
         );
         $this->save($data);
 
+        $map ['public_id'] = $user['token'];
+        $info = D ( 'Mpbase/MemberPublic' )->where ( $map )->find ();
+
         /* 记录登录SESSION和COOKIES */
         $auth = array(
             'uid'             => $user['uid'],
             'username'        => $user['nickname'],
+            'token'        => $user['token'],
+            'public_name'        => $info['public_name'],
             'last_login_time' => $user['last_login_time'],
         );
 

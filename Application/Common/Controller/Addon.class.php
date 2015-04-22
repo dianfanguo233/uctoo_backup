@@ -110,10 +110,35 @@ abstract class Addon{
      * 获取插件的配置数组
      */
     final public function getConfig($name=''){
+        static $_config = array();
         if(empty($name)){
             $name = $this->getName();
         }
-        return getAddonConfig($name);
+        if(isset($_config[$name])){
+            return $_config[$name];
+        }
+        $config =   array();
+        $map['name']    =   $name;
+        $map['status']  =   1;
+        $config  =   M('Addons')->where($map)->getField('config');
+        if($config){
+            $config   =   json_decode($config, true);
+        }else{
+            $temp_arr = include $this->config_file;
+            foreach ($temp_arr as $key => $value) {
+                if($value['type'] == 'group'){
+                    foreach ($value['options'] as $gkey => $gvalue) {
+                        foreach ($gvalue['options'] as $ikey => $ivalue) {
+                            $config[$ikey] = $ivalue['value'];
+                        }
+                    }
+                }else{
+                    $config[$key] = $temp_arr[$key]['value'];
+                }
+            }
+        }
+        $_config[$name]     =   $config;
+        return $config;
     }
 
     //必须实现安装

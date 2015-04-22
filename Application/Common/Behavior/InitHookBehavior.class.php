@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006-2014 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006-2013 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -18,8 +18,8 @@ class InitHookBehavior extends Behavior {
 
     // 行为扩展的执行入口必须是run
     public function run(&$content){
-        if(isset($_GET['m']) && $_GET['m'] === 'Install') return;
-        
+        if(defined('BIND_MODULE') && BIND_MODULE === 'Install') return;
+
         $data = S('hooks');
         if(!$data){
             $hooks = M('Hooks')->getField('name,addons');
@@ -31,7 +31,7 @@ class InitHookBehavior extends Behavior {
                     $data = M('Addons')->where($map)->getField('id,name');
                     if($data){
                         $addons = array_intersect($names, $data);
-                        Hook::add($key,$addons);
+                        Hook::add($key,array_map('get_addon_class',$addons));
                     }
                 }
             }

@@ -21,10 +21,6 @@ namespace Think;
  * 
  * 4，支持规则表达式。
  *      在think_auth_rule 表中定义一条规则时，如果type为1， condition字段就可以定义规则表达式。 如定义{score}>5  and {score}<100  表示用户的分数在5-100之间时这条规则才会通过。
- * @category ORG
- * @package ORG
- * @subpackage Util
- * @author luofei614<weibo.com/luofei614>
  */
 
 //数据库
@@ -38,6 +34,7 @@ CREATE TABLE `think_auth_rule` (
     `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,  
     `name` char(80) NOT NULL DEFAULT '',  
     `title` char(20) NOT NULL DEFAULT '',  
+    `type` tinyint(1) NOT NULL DEFAULT '1',    
     `status` tinyint(1) NOT NULL DEFAULT '1',  
     `condition` char(100) NOT NULL DEFAULT '',  # 规则附件条件,满足附加条件的规则,才认为是有效的规则
     PRIMARY KEY (`id`),  
@@ -105,6 +102,7 @@ class Auth{
         if (!$this->_config['AUTH_ON'])
             return true;
         $authList = $this->getAuthList($uid,$type); //获取用户需要验证的所有有效规则列表
+
         if (is_string($name)) {
             $name = strtolower($name);
             if (strpos($name, ',') !== false) {
@@ -125,6 +123,7 @@ class Auth{
                 $auth = preg_replace('/\?.*$/U','',$auth);
                 if ( in_array($auth,$name) && $intersect==$param ) {  //如果节点相符且url参数满足
                     $list[] = $auth ;
+
                 }
             }else if (in_array($auth , $name)){
                 $list[] = $auth ;

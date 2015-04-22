@@ -21,18 +21,12 @@ class PublicController extends \Think\Controller {
      * @author 麦当苗儿 <zuojiazi@vip.qq.com>
      */
     public function login($username = null, $password = null, $verify = null){
-    	/* 读取数据库中的配置 */
-    	$config	=	S('DB_CONFIG_DATA');
-    	if(!$config){
-    		$config	=	D('Config')->lists();
-    		S('DB_CONFIG_DATA',$config);
-    	}
-    	C($config); //添加配置
-    	    	
         if(IS_POST){
             /* 检测验证码 TODO: */
-            if(C('WEB_SITE_VERIFY') && !check_verify($verify)){
-                $this->error('验证码输入错误！');
+            if (APP_DEBUG==false){
+                if(!check_verify($verify)){
+                    $this->error('验证码输入错误！');
+                }
             }
 
             /* 调用UC登录接口登录 */
@@ -60,6 +54,14 @@ class PublicController extends \Think\Controller {
             if(is_login()){
                 $this->redirect('Index/index');
             }else{
+                /* 读取数据库中的配置 */
+                $config	=	S('DB_CONFIG_DATA');
+                if(!$config){
+                    $config	=	D('Config')->lists();
+                    S('DB_CONFIG_DATA',$config);
+                }
+                C($config); //添加配置
+                
                 $this->display();
             }
         }
@@ -77,8 +79,9 @@ class PublicController extends \Think\Controller {
     }
 
     public function verify(){
-        $verify = new \Think\Verify();
-        $verify->entry(1);
+        verify();
+       // $verify = new \Think\Verify();
+       // $verify->entry(1);
     }
 
 }

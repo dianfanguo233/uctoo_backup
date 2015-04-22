@@ -39,14 +39,14 @@ class Gd{
      */
     public function open($imgname){
         //检测图像文件
-        if(!is_file($imgname)) throw new Exception('不存在的图像文件');
+        if(!is_file($imgname)) E('不存在的图像文件');
 
         //获取图像信息
         $info = getimagesize($imgname);
 
         //检测图像合法性
         if(false === $info || (IMAGETYPE_GIF === $info[2] && empty($info['bits']))){
-            throw new Exception('非法图像文件');
+            E('非法图像文件');
         }
 
         //设置图像信息
@@ -75,11 +75,10 @@ class Gd{
      * 保存图像
      * @param  string  $imgname   图像保存名称
      * @param  string  $type      图像类型
-     * @param  integer $quality   图像质量     
      * @param  boolean $interlace 是否对JPEG类型图像设置隔行扫描
      */
-    public function save($imgname, $type = null, $quality=80,$interlace = true){
-        if(empty($this->img)) throw new Exception('没有可以被保存的图像资源');
+    public function save($imgname, $type = null, $interlace = true){
+        if(empty($this->img)) return '';// E('没有可以被保存的图像资源');
 
         //自动获取图像类型
         if(is_null($type)){
@@ -87,16 +86,24 @@ class Gd{
         } else {
             $type = strtolower($type);
         }
-        //保存图像
+
+        //JPEG图像设置隔行扫描
         if('jpeg' == $type || 'jpg' == $type){
-            //JPEG图像设置隔行扫描
+            $type = 'jpeg';
             imageinterlace($this->img, $interlace);
-            imagejpeg($this->img, $imgname,$quality);
-        }elseif('gif' == $type && !empty($this->gif)){
+        }
+
+        //保存图像
+        if('gif' == $type && !empty($this->gif)){
             $this->gif->save($imgname);
-        }else{
-            $fun  =   'image'.$type;
-            $fun($this->img, $imgname);
+        } else {
+            $fun = "image{$type}";
+            if($type=='jpg' || $type=='jpeg'){
+                $fun($this->img, $imgname,100);
+            }else{
+                $fun($this->img, $imgname);
+            }
+
         }
     }
 
@@ -105,7 +112,7 @@ class Gd{
      * @return integer 图像宽度
      */
     public function width(){
-        if(empty($this->img)) throw new Exception('没有指定图像资源');
+        if(empty($this->img)) E('没有指定图像资源');
         return $this->info['width'];
     }
 
@@ -114,7 +121,7 @@ class Gd{
      * @return integer 图像高度
      */
     public function height(){
-        if(empty($this->img)) throw new Exception('没有指定图像资源');
+        if(empty($this->img)) E('没有指定图像资源');
         return $this->info['height'];
     }
 
@@ -123,7 +130,7 @@ class Gd{
      * @return string 图像类型
      */
     public function type(){
-        if(empty($this->img)) throw new Exception('没有指定图像资源');
+        if(empty($this->img)) E('没有指定图像资源');
         return $this->info['type'];
     }
 
@@ -132,7 +139,7 @@ class Gd{
      * @return string 图像MIME类型
      */
     public function mime(){
-        if(empty($this->img)) throw new Exception('没有指定图像资源');
+        if(empty($this->img)) E('没有指定图像资源');
         return $this->info['mime'];
     }
 
@@ -141,7 +148,7 @@ class Gd{
      * @return array 图像尺寸
      */
     public function size(){
-        if(empty($this->img)) throw new Exception('没有指定图像资源');
+        if(empty($this->img)) E('没有指定图像资源');
         return array($this->info['width'], $this->info['height']);
     }
 
@@ -155,7 +162,7 @@ class Gd{
      * @param  integer $height 图像保存高度
      */
     public function crop($w, $h, $x = 0, $y = 0, $width = null, $height = null){
-        if(empty($this->img)) throw new Exception('没有可以被裁剪的图像资源');
+        if(empty($this->img)) E('没有可以被裁剪的图像资源');
 
         //设置保存尺寸
         empty($width)  && $width  = $w;
@@ -187,7 +194,7 @@ class Gd{
      * @param  integer $type   缩略图裁剪类型
      */
     public function thumb($width, $height, $type = Image::IMAGE_THUMB_SCALE){
-        if(empty($this->img)) throw new Exception('没有可以被缩略的图像资源');
+        if(empty($this->img)) return'';// E('没有可以被缩略的图像资源');
 
         //原图宽度和高度
         $w = $this->info['width'];
@@ -196,7 +203,7 @@ class Gd{
         /* 计算缩略图生成的必要参数 */
         switch ($type) {
             /* 等比例缩放 */
-            case Image::IMAGE_THUMB_SCALING:
+            case Image::IMAGE_THUMB_SCALE:
                 //原图尺寸小于缩略图尺寸则不进行缩略
                 if($w < $width && $h < $height) return;
 
@@ -282,7 +289,7 @@ class Gd{
                 break;
 
             default:
-                throw new Exception('不支持的缩略图裁剪类型');
+                E('不支持的缩略图裁剪类型');
         }
 
         /* 裁剪图像 */
@@ -297,13 +304,13 @@ class Gd{
      */
     public function water($source, $locate = Image::IMAGE_WATER_SOUTHEAST,$alpha=80){
         //资源检测
-        if(empty($this->img)) throw new Exception('没有可以被添加水印的图像资源');
-        if(!is_file($source)) throw new Exception('水印图像不存在');
+        if(empty($this->img)) E('没有可以被添加水印的图像资源');
+        if(!is_file($source)) E('水印图像不存在');
 
         //获取水印图像信息
         $info = getimagesize($source);
         if(false === $info || (IMAGETYPE_GIF === $info[2] && empty($info['bits']))){
-            throw new Exception('非法水印文件');
+            E('非法水印文件');
         }
 
         //创建水印图像资源
@@ -373,7 +380,7 @@ class Gd{
                 if(is_array($locate)){
                     list($x, $y) = $locate;
                 } else {
-                    throw new Exception('不支持的水印位置类型');
+                    E('不支持的水印位置类型');
                 }
         }
 
@@ -409,8 +416,8 @@ class Gd{
     public function text($text, $font, $size, $color = '#00000000', 
         $locate = Image::IMAGE_WATER_SOUTHEAST, $offset = 0, $angle = 0){
         //资源检测
-        if(empty($this->img)) throw new Exception('没有可以被写入文字的图像资源');
-        if(!is_file($font)) throw new Exception("不存在的字体文件：{$font}");
+        if(empty($this->img)) E('没有可以被写入文字的图像资源');
+        if(!is_file($font)) E("不存在的字体文件：{$font}");
 
         //获取文字信息
         $info = imagettfbbox($size, $angle, $font, $text);
@@ -483,7 +490,7 @@ class Gd{
                     $x += $posx;
                     $y += $posy;
                 } else {
-                    throw new Exception('不支持的文字位置类型');
+                    E('不支持的文字位置类型');
                 }
         }
 
@@ -504,7 +511,7 @@ class Gd{
                 $color[3] = 0;
             }
         } elseif (!is_array($color)) {
-            throw new Exception('错误的颜色值');
+            E('错误的颜色值');
         }
 
         do{

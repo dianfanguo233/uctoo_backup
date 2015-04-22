@@ -9,19 +9,12 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 namespace Behavior;
-use Think\Behavior;
 use Think\Log;
-defined('THINK_PATH') or exit();
 /**
  * 系统行为扩展：页面Trace显示输出
  */
-class ShowPageTraceBehavior extends Behavior {
-    // 行为参数定义
-    protected $options   =  array(
-        'SHOW_PAGE_TRACE'   => false,   // 显示页面Trace信息
-        'TRACE_PAGE_TABS'   => array('BASE'=>'基本','FILE'=>'文件','INFO'=>'流程','ERR|NOTIC'=>'错误','SQL'=>'SQL','DEBUG'=>'调试'), // 页面Trace可定制的选项卡 
-        'PAGE_TRACE_SAVE'   => false,
-    );
+class ShowPageTraceBehavior {
+    protected $tracePageTabs =  array('BASE'=>'基本','FILE'=>'文件','INFO'=>'流程','ERR|NOTIC'=>'错误','SQL'=>'SQL','DEBUG'=>'调试');
 
     // 行为扩展的执行入口必须是run
     public function run(&$params){
@@ -50,7 +43,7 @@ class ShowPageTraceBehavior extends Behavior {
             '查询信息'  =>  N('db_query').' queries '.N('db_write').' writes ',
             '文件加载'  =>  count(get_included_files()),
             '缓存信息'  =>  N('cache_read').' gets '.N('cache_write').' writes ',
-            '配置加载'  =>  count(c()),
+            '配置加载'  =>  count(C()),
             '会话信息'  =>  'SESSION_ID='.session_id(),
             );
         // 读取应用定义的Trace文件
@@ -59,7 +52,7 @@ class ShowPageTraceBehavior extends Behavior {
             $base   =   array_merge($base,include $traceFile);
         }
         $debug  =   trace();
-        $tabs   =   C('TRACE_PAGE_TABS');
+        $tabs   =   C('TRACE_PAGE_TABS',null,$this->tracePageTabs);
         foreach ($tabs as $name=>$title){
             switch(strtoupper($name)) {
                 case 'BASE':// 基本信息
@@ -71,9 +64,9 @@ class ShowPageTraceBehavior extends Behavior {
                 default:// 调试信息
                     $name       =   strtoupper($name);
                     if(strpos($name,'|')) {// 多组信息
-                        $names  =   explode('|',$name);
+                        $array  =   explode('|',$name);
                         $result =   array();
-                        foreach($names as $name){
+                        foreach($array as $name){
                             $result   +=   isset($debug[$name])?$debug[$name]:array();
                         }
                         $trace[$title]  =   $result;
@@ -92,7 +85,7 @@ class ShowPageTraceBehavior extends Behavior {
             }
             $content    =   date('[ c ]').' '.get_client_ip().' '.$_SERVER['REQUEST_URI']."\r\n";
             foreach ($trace as $key=>$val){
-                if(!isset($array) || in_array_case($key,$array)) {
+                if(!isset($array) || in_array($key,$array)) {
                     $content    .=  '[ '.$key." ]\r\n";
                     if(is_array($val)) {
                         foreach ($val as $k=>$v){

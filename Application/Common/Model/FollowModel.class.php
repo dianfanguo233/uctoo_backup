@@ -1,100 +1,117 @@
 <?php
+/**
+ * 所属项目 OnePlus.
+ * 开发者: 陈一枭
+ * 创建日期: 3/21/14
+ * 创建时间: 10:17 AM
+ * 版权所有 想天工作室(www.ourstu.com)
+ */
 
 namespace Common\Model;
 
+
 use Think\Model;
-use User\Api\UserApi;
 
-/**
- * 粉丝操作
- */
-class FollowModel extends Model {
-	function init_follow($openid) {
-		if (empty ( $openid ) || $openid == - 1)
-			return false;
-		
-		$data ['token'] = get_token ();
-		$data ['openid'] = $openid;
-		
-		$info = $this->where ( $data )->find ();
-		
-		if ($info) {
-			$save ['subscribe_time'] = $info ['subscribe_time'] = time ();
-			$res = $this->where ( $data )->save ( $save );
-		} else {
-			$data ['subscribe_time'] = time ();
-			$uid = $this->get_uid_by_ucenter ( $data ['openid'], $data ['token'] );
-			if ($uid > 0) {
-				$data ['id'] = $uid;
-				$res = $this->add ( $data );
-			}
-			
-			$info = $data;
-		}
-		return $info;
-	}
-	// 自动初始化微信用户
-	function get_uid_by_ucenter($openid, $token) {
-		static $_email_int = 0;
-		$info ['openid'] = $openid;
-		$info ['token'] = $token;
-		$res = M ( 'ucenter_member' )->where ( $info )->find ();
-		
-		if ($res)
-			return $res ['id'];
-		
-		$email = time () . rand ( 01, 99 ) . $_email_int . '@uctoo.com';
-		$nickname = uniqid () . rand ( 01, 99 ) . $_email_int;
-		
-		/* 调用注册接口注册用户 */
-		$User = new UserApi ();
-		$uid = $User->register ( $nickname, '123456', $email, '', $openid, $token );
-		
-		$_email_int += 1;
-		
-		return $uid;
-	}
-	
-	/**
-	 * 获取粉丝全部信息
-	 */
-	public function getFollowInfo($id) {
-		static $_followInfo;
-		if (isset ( $_followInfo [$id] )) {
-			return $_followInfo [$id];
-		}
-		
-		$_followInfo [$id] = $this->find ( $id );
-		return $_followInfo [$id];
-	}
+class FollowModel extends Model
+{
+
+    protected $_auto = array(
+        array('create_time', NOW_TIME, self::MODEL_INSERT));
+
+    /**关注
+     * @param $uid
+     * @return int|mixed
+     */
+    public function follow($uid)
+    {
+        $follow['who_follow'] = is_login();
+        $follow['follow_who'] = $uid;
+        if($follow['who_follow']==$follow['follow_who'] ){
+            //禁止关注和被关注都为同一个人的情况。
+            return 0;
+        }
+        if ($this->where($follow)->count() > 0) {
+            return 0;
+        }
+        $follow = $this->create($follow);
+
+        clean_query_user_cache($uid,'fans');
+        clean_query_user_cache(is_login(),'following');
+        S('atUsersJson_'.is_login(),null);
+        /**
+         * @param $to_uid 接受消息的用户ID
+         * @param string $content 内容
+         * @param string $title 标题，默认为  您有新的消息
+         * @param $url 链接地址，不提供则默认进入消息中心
+         * @param $int $from_uid 发起消息的用户，根据用户自动确定左侧图标，如果为用户，则左侧显示头像
+         * @param int $type 消息类型，0系统，1用户，2应用
+         */
+        $user = query_user(array('id', 'username', 'space_url'));
+
+        D('Message')->sendMessage($uid, $user['username'] . ' 关注了你。', '粉丝数增加', $user['space_url'], is_login(), 0);
+        return $this->add($follow);
+    }
+
+    /**取消关注
+     * @param $uid
+     * @return mixed
+     */
+    public function unfollow($uid)
+    {
+        $follow['who_follow'] = is_login();
+        $follow['follow_who'] = $uid;
+        clean_query_user_cache($uid,'fans');
+        clean_query_user_cache(is_login(),'following');
+        S('atUsersJson_'.is_login(),null);
+        $user = query_user(array('id', 'username', 'space_url'));
+        D('Message')->sendMessage($uid, $user['username'] . '取消了对你的关注', '粉丝数减少', $user['space_url'], is_login(), 0);
+        return $this->where($follow)->delete();
+    }
+
+    public function getFans($uid, $page,$fields,&$totalCount)
+    {
+        $map['follow_who'] = $uid;
+        $fans = $this->where($map)->field('who_follow')->order('create_time desc')->page($page, 10)->select();
+        $totalCount = $this->where($map)->field('who_follow')->order('create_time desc')->count();
+        foreach ($fans as &$user) {
+            $user['user'] = query_user($fields, $user['who_follow']);
+        }
+        unset($user);
+        return $fans;
+    }
+    public function getFollowing($uid, $page,$fields,&$totalCount)
+    {
+        $map['who_follow'] = $uid;
+        $fans = $this->where($map)->field('follow_who')->order('create_time desc')->page($page, 10)->select();
+        $totalCount = $this->where($map)->field('follow_who')->order('create_time desc')->count();
+
+        foreach ($fans as &$user) {
+            $user['user'] = query_user($fields, $user['follow_who']);
+        }
+        unset($user);
+        return $fans;
+    }
 
 
-	function update_follow($openid) {
-		$token = $data ['token'] = get_token ();
-		$data ['openid'] = $openid;
-		$winfo = getWeixinUserInfo ($openid,$token); //获取用户所有信息
-		$info = $this->where ( $data )->find ();
-		//$info = M ( 'ucenter_member' )->where ( $info )->find ()
-		if ($info ) {  // 如果数据库已经有该用户信息 则更新用户资料
-			$save ['subscribe_time'] = $winfo ['subscribe_time'];
-			$save ['nickname'] = $winfo ['nickname'];
-			$save ['sex'] = $winfo ['sex'];
-			$save ['city'] = $winfo ['city'];
-			$save ['province'] = $winfo ['province'];
-			$save ['country'] = $winfo ['country'];
-			$save ['headimgurl'] = $winfo ['headimgurl'];
-			$res = $this->where ( $data )->save ( $save );
-		} else {
-			$data ['subscribe_time'] = time ();
-			$uid = $this->get_uid_by_ucenter ( $data ['openid'], $data ['token'] );
-			if ($uid > 0) {
-				$data ['id'] = $uid;
-				$res = $this->add ( $data );
-			}
+    /**显示全部的好友
+     * @param int $uid
+     * @return mixed
+     * @auth 陈一枭
+     */
+    public function getAllFriends($uid=0){
+        if($uid==0){
+            $uid=is_login();
+        }
+        $model_follow=D('Follow');
+        $i_follow=$model_follow->where(array('who_follow'=>$uid))->limit(999)->select();
+        foreach($i_follow as $key=>$user){
+            if($model_follow->where(array('follow_who'=>$uid,'who_follow'=>$user['follow_who']))->count()){
+                continue;
+            }else{
+                unset($i_follow[$key]);
+            }
+        }
+        return $i_follow;
+    }
 
-			$info = $data;
-		}
-		return $info;
-	}
-}
-?>
+} 

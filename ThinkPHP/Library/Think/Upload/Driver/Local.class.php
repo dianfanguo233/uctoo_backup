@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006-2014 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006-2013 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -36,7 +36,6 @@ class Local{
      * @return boolean true-检测通过，false-检测失败
      */
     public function checkRootPath(){
-		$this->checkSavePath($this->rootPath);
         if(!(is_dir($this->rootPath) && is_writable($this->rootPath))){
             $this->error = '上传根目录不存在！请尝试手动创建:'.$this->rootPath;
             return false;
@@ -70,7 +69,7 @@ class Local{
      * @param  boolean $replace 同名文件是否覆盖
      * @return boolean          保存状态，true-成功，false-失败
      */
-    public function save($file, $replace) {
+    public function save($file, $replace=true) {
         $filename = $this->rootPath . $file['savepath'] . $file['savename'];
 
         /* 不覆盖同名文件 */ 
@@ -84,7 +83,7 @@ class Local{
             $this->error = '文件上传保存错误！';
             return false;
         }
-        
+
         return true;
     }
 
@@ -115,4 +114,7 @@ class Local{
         return $this->error;
     }
 
+    public function info($filename){
+        return true;
+    }
 }

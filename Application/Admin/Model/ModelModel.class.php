@@ -22,7 +22,7 @@ class ModelModel extends Model{
         array('name', '', '标识已经存在', self::VALUE_VALIDATE, 'unique', self::MODEL_BOTH),
         array('title', 'require', '标题不能为空', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
         array('title', '1,30', '标题长度不能超过30个字符', self::MUST_VALIDATE, 'length', self::MODEL_BOTH),
-    	//array('list_grid', 'require', '列表定义不能为空', self::MUST_VALIDATE , 'regex', self::MODEL_UPDATE),
+    	array('list_grid', 'require', '列表定义不能为空', self::MUST_VALIDATE , 'regex', self::MODEL_UPDATE),
     );
 
     /* 自动完成规则 */
@@ -31,7 +31,7 @@ class ModelModel extends Model{
         array('create_time', NOW_TIME, self::MODEL_INSERT),
         array('update_time', NOW_TIME, self::MODEL_BOTH),
         array('status', '1', self::MODEL_INSERT, 'string'),
-    	array('field_sort', 'getSortFields', self::MODEL_BOTH, 'callback'),
+    	array('field_sort', 'getFields', self::MODEL_BOTH, 'callback'),
     );
 
     /**
@@ -54,31 +54,11 @@ class ModelModel extends Model{
                 return false;
             }
         } else { //更新数据
-        	$model = $this->find($data['id']); //先取旧的模型名
-        	
-            $status = $this->save($data); //更新基础内容
+            $status = $this->save(); //更新基础内容
             if(false === $status){
                 $this->error = '更新模型出错！';
                 return false;
-			} elseif ($model ['name'] != $data ['name']) {
-				// 同时更新模型对应的数据表，先判断数据表是否存在
-				if ($model ['extend'] == 0) { // 独立模型表名
-					$table_name = C ( 'DB_PREFIX' ) . strtolower ( $model ['name'] );
-					$new_table_name = C ( 'DB_PREFIX' ) . strtolower ( $data ['name'] );
-				} else { // 继承模型表名
-					$extend_model = $this->where ( array (
-							'id' => $model ['extend'] 
-					) )->field ( 'name,extend' )->find ();
-					$table_name = C ( 'DB_PREFIX' ) . strtolower ( $extend_model ['name'] ) . '_' . strtolower ( $model ['name'] );
-					$new_table_name = C ( 'DB_PREFIX' ) . strtolower ( $extend_model ['name'] ) . '_' . strtolower ( $data ['name'] );
-				}
-				$sql = "SHOW TABLES LIKE '{$table_name}'";
-				$res = M ()->query ( $sql );
-				if (count ( $res )) {
-					$sql = "ALTER TABLE `{$table_name}` RENAME TO `{$new_table_name}`";
-					$this->execute ( $sql );
-				}
-			}
+            }
         }
 		// 清除模型缓存数据
 		S('DOCUMENT_MODEL_LIST', null);
@@ -94,7 +74,7 @@ class ModelModel extends Model{
      * 处理字段排序数据
      * @author huajie <banhuajie@163.com>
      */
-    public function getSortFields($fields){
+    protected function getFields($fields){
     	return empty($fields) ? '' : json_encode($fields);
     }
 
@@ -160,12 +140,12 @@ class ModelModel extends Model{
     	//删除属性数据
     	M('Attribute')->where(array('model_id'=>$id))->delete();
     	//删除模型数据
-    	$res = $this->delete($id);
+    	$this->delete($id);
     	//删除该表
     	$sql = <<<sql
 				DROP TABLE {$table_name};
 sql;
-    	M()->execute($sql);
+    	$res = M()->execute($sql);
     	return $res !== false;
     }
 }

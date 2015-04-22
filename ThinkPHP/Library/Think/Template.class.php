@@ -48,7 +48,7 @@ class  Template {
         return str_replace(
             array('{','}','(',')','|','[',']','-','+','*','.','^','?'),
             array('\{','\}','\(','\)','\|','\[','\]','\-','\+','\*','\.','\^','\?'),
-            $str);        
+            $str);
     }
 
     // 模板变量获取和设置
@@ -86,6 +86,7 @@ class  Template {
      * @throws ThinkExecption
      */
     public function loadTemplate ($tmplTemplateFile,$prefix='') {
+
         if(is_file($tmplTemplateFile)) {
             $this->templateFile    =  $tmplTemplateFile;
             // 读取模板文件内容
@@ -107,6 +108,7 @@ class  Template {
         }
         // 编译模板内容
         $tmplContent =  $this->compiler($tmplContent);
+        if(strval($this->config['cache_path'])!='')
         Storage::put($tmplCacheFile,trim($tmplContent),'tpl');
         return $tmplCacheFile;
     }
@@ -240,14 +242,14 @@ class  Template {
     // 解析模板中的extend标签
     protected function parseExtend($content) {
         $begin      =   $this->config['taglib_begin'];
-        $end        =   $this->config['taglib_end'];        
+        $end        =   $this->config['taglib_end'];
         // 读取模板中的继承标签
         $find       =   preg_match('/'.$begin.'extend\s(.+?)\s*?\/'.$end.'/is',$content,$matches);
         if($find) {
             //替换extend标签
             $content    =   str_replace($matches[0],'',$content);
             // 记录页面中的block标签
-            preg_replace_callback('/'.$begin.'block\sname=(.+?)\s*?'.$end.'(.*?)'.$begin.'\/block'.$end.'/is', array($this, 'parseBlock'),$content);
+            preg_replace_callback('/'.$begin.'block\sname=[\'"](.+?)[\'"]\s*?'.$end.'(.*?)'.$begin.'\/block'.$end.'/is', array($this, 'parseBlock'),$content);
             // 读取继承模板
             $array      =   $this->parseXmlAttrs($matches[1]);
             $content    =   $this->parseTemplateName($array['name']);
@@ -255,7 +257,7 @@ class  Template {
             // 替换block标签
             $content = $this->replaceBlock($content);
         }else{
-            $content    =   preg_replace_callback('/'.$begin.'block\sname=(.+?)\s*?'.$end.'(.*?)'.$begin.'\/block'.$end.'/is', function($match){return stripslashes($match[2]);}, $content);            
+            $content    =   preg_replace_callback('/'.$begin.'block\sname=[\'"](.+?)[\'"]\s*?'.$end.'(.*?)'.$begin.'\/block'.$end.'/is', function($match){return stripslashes($match[2]);}, $content);
         }
         return $content;
     }
@@ -333,14 +335,14 @@ class  Template {
         static $parse = 0;
         $begin = $this->config['taglib_begin'];
         $end   = $this->config['taglib_end'];
-        $reg   = '/('.$begin.'block\sname=(.+?)\s*?'.$end.')(.*?)'.$begin.'\/block'.$end.'/is';
+        $reg   = '/('.$begin.'block\sname=[\'"](.+?)[\'"]\s*?'.$end.')(.*?)'.$begin.'\/block'.$end.'/is';
         if(is_string($content)){
             do{
                 $content = preg_replace_callback($reg, array($this, 'replaceBlock'), $content);
             } while ($parse && $parse--);
             return $content;
         } elseif(is_array($content)){
-            if(preg_match('/'.$begin.'block\sname=(.+?)\s*?'.$end.'/is', $content[3])){ //存在嵌套，进一步解析
+            if(preg_match('/'.$begin.'block\sname=[\'"](.+?)[\'"]\s*?'.$end.'/is', $content[3])){ //存在嵌套，进一步解析
                 $parse = 1;
                 $content[3] = preg_replace_callback($reg, array($this, 'replaceBlock'), "{$content[3]}{$begin}/block{$end}");
                 return $content[1] . $content[3];
@@ -378,7 +380,7 @@ class  Template {
      * @access public
      * @param string $tagLib 要解析的标签库
      * @param string $content 要解析的模板内容
-     * @param boolean $hide 是否隐藏标签库前缀
+     * @param boolen $hide 是否隐藏标签库前缀
      * @return string
      */
     public function parseTagLib($tagLib,&$content,$hide=false) {
@@ -389,7 +391,7 @@ class  Template {
             $className  =   $tagLib;
             $tagLib     =   substr($tagLib,strrpos($tagLib,'\\')+1);
         }else{
-            $className  =   'Think\\Template\TagLib\\'.ucwords($tagLib);            
+            $className  =   'Think\\Template\TagLib\\'.ucwords($tagLib);
         }
         $tLib       =   \Think\Think::instance($className);
         $that       =   $this;
@@ -679,13 +681,13 @@ class  Template {
      * @access private
      * @param string $tmplPublicName  模板文件名
      * @return string
-     */    
+     */
     private function parseTemplateName($templateName){
         if(substr($templateName,0,1)=='$')
             //支持加载变量文件名
             $templateName = $this->get(substr($templateName,1));
         $array  =   explode(',',$templateName);
-        $parseStr   =   ''; 
+        $parseStr   =   '';
         foreach ($array as $templateName){
             if(empty($templateName)) continue;
             if(false === strpos($templateName,$this->config['template_suffix'])) {
@@ -696,5 +698,5 @@ class  Template {
             $parseStr .= file_get_contents($templateName);
         }
         return $parseStr;
-    }    
+    }
 }

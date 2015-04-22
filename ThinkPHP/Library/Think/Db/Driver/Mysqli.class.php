@@ -23,7 +23,7 @@ class Mysqli extends Db{
      */
     public function __construct($config=''){
         if ( !extension_loaded('mysqli') ) {
-            E(L('_NOT_SUPPORT_').':mysqli');
+            E(L('_NOT_SUPPERT_').':mysqli');
         }
         if(!empty($config)) {
             $this->config   =   $config;
@@ -46,7 +46,7 @@ class Mysqli extends Db{
             $dbVersion = $this->linkID[$linkNum]->server_version;
             
             // 设置数据库编码
-            $this->linkID[$linkNum]->query("SET NAMES '".C('DB_CHARSET')."'");
+            $this->linkID[$linkNum]->query("SET NAMES '".$config['charset']."'");
             //设置 sql_model
             if($dbVersion >'5.0.1'){
                 $this->linkID[$linkNum]->query("SET sql_mode=''");
@@ -64,7 +64,9 @@ class Mysqli extends Db{
      * @access public
      */
     public function free() {
-        $this->queryID->free_result();
+        if(is_object($this->queryID)){
+            $this->queryID->free_result();
+        }
         $this->queryID = null;
     }
 
@@ -146,7 +148,7 @@ class Mysqli extends Db{
     /**
      * 用于非自动提交状态下面的查询提交
      * @access public
-     * @return boolean
+     * @return boolen
      */
     public function commit() {
         if ($this->transTimes > 0) {
@@ -164,7 +166,7 @@ class Mysqli extends Db{
     /**
      * 事务回滚
      * @access public
-     * @return boolean
+     * @return boolen
      */
     public function rollback() {
         if ($this->transTimes > 0) {
@@ -335,7 +337,7 @@ class Mysqli extends Db{
      */
     protected function parseKey(&$key) {
         $key   =  trim($key);
-        if(!preg_match('/[,\'\"\*\(\)`.\s]/',$key)) {
+        if(!is_numeric($key) && !preg_match('/[,\'\"\*\(\)`.\s]/',$key)) {
            $key = '`'.$key.'`';
         }
         return $key;

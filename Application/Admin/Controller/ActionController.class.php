@@ -15,8 +15,6 @@ namespace Admin\Controller;
  */
 class ActionController extends AdminController {
 
-    static protected $allow = array();
-
     /**
      * 行为日志列表
      * @author huajie <banhuajie@163.com>
@@ -30,6 +28,7 @@ class ActionController extends AdminController {
             $model_id                  =   get_document_field($value['model'],"name","id");
             $list[$key]['model_id']    =   $model_id ? $model_id : 0;
         }
+
         $this->assign('_list', $list);
         $this->meta_title = '行为日志';
         $this->display();

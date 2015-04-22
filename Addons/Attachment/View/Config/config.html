@@ -3,7 +3,7 @@
 <block name="body">
 	<div class="main-title"> <h2>保存配置</h2> </div> 
 	<div class="data-table">
-		<form action="{:addons_url('Attachment://Attachment/saveConfig?id='.I('id'))}" class="form-horizontal config-form">
+		<form action="{:addons_url('Attachment://Attachment/saveConfig?id='.$_GET['id'])}" class="form-horizontal config-form">
 			<fieldset>
 				<legend>全局配置</legend>
 				<div class="form-item">

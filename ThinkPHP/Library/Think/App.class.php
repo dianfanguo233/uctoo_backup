@@ -30,6 +30,7 @@ class App {
         define('IS_POST',       REQUEST_METHOD =='POST' ? true : false);
         define('IS_PUT',        REQUEST_METHOD =='PUT' ? true : false);
         define('IS_DELETE',     REQUEST_METHOD =='DELETE' ? true : false);
+        define('IS_AJAX',       ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || !empty($_POST[C('VAR_AJAX_SUBMIT')]) || !empty($_GET[C('VAR_AJAX_SUBMIT')])) ? true : false);
 
         // URL调度
         Dispatcher::dispatch();
@@ -37,10 +38,8 @@ class App {
         // URL调度结束标签
         Hook::listen('url_dispatch');         
 
-        define('IS_AJAX',       ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || !empty($_POST[C('VAR_AJAX_SUBMIT')]) || !empty($_GET[C('VAR_AJAX_SUBMIT')])) ? true : false);
-
         // 日志目录转换为绝对路径
-        C('LOG_PATH',realpath(LOG_PATH).'/');
+        C('LOG_PATH',   realpath(LOG_PATH).'/'.MODULE_NAME.'/');
         // TMPL_EXCEPTION_FILE 改为绝对地址
         C('TMPL_EXCEPTION_FILE',realpath(C('TMPL_EXCEPTION_FILE')));
         return ;
@@ -52,11 +51,33 @@ class App {
      * @return void
      */
     static public function exec() {
+    
         if(!preg_match('/^[A-Za-z](\/|\w)*$/',CONTROLLER_NAME)){ // 安全检测
             $module  =  false;
+        }elseif(C('ACTION_BIND_CLASS')){
+            // 操作绑定到类：模块\Controller\控制器\操作
+            $layer  =   C('DEFAULT_C_LAYER');
+            if(is_dir(MODULE_PATH.$layer.'/'.CONTROLLER_NAME)){
+                $namespace  =   MODULE_NAME.'\\'.$layer.'\\'.CONTROLLER_NAME.'\\';
+            }else{
+                // 空控制器
+                $namespace  =   MODULE_NAME.'\\'.$layer.'\\_empty\\';                    
+            }
+            $actionName     =   strtolower(ACTION_NAME);
+            if(class_exists($namespace.$actionName)){
+                $class   =  $namespace.$actionName;
+            }elseif(class_exists($namespace.'_empty')){
+                // 空操作
+                $class   =  $namespace.'_empty';
+            }else{
+                E(L('_ERROR_ACTION_').':'.ACTION_NAME);
+            }
+            $module  =  new $class;
+            // 操作绑定到类后 固定执行run入口
+            $action  =  'run';
         }else{
-            //创建Action控制器实例
-            $module  =  A(CONTROLLER_NAME);
+            //创建控制器实例
+            $module  =  controller(CONTROLLER_NAME,CONTROLLER_PATH);                
         }
 
         if(!$module) {
@@ -71,9 +92,11 @@ class App {
                 E(L('_CONTROLLER_NOT_EXIST_').':'.CONTROLLER_NAME);
             }
         }
+
         // 获取当前操作名 支持动态路由
-        $action     =   C('ACTION_NAME')?C('ACTION_NAME'):ACTION_NAME;
-        $action    .=   C('ACTION_SUFFIX');
+        if(!isset($action)){
+            $action    =   ACTION_NAME.C('ACTION_SUFFIX');  
+        }
         try{
             if(!preg_match('/^[A-Za-z](\w)*$/',$action)){
                 // 非法操作
@@ -91,7 +114,7 @@ class App {
                     }
                 }
                 // URL参数绑定检测
-                if(C('URL_PARAMS_BIND') && $method->getNumberOfParameters()>0){
+                if($method->getNumberOfParameters()>0 && C('URL_PARAMS_BIND')){
                     switch($_SERVER['REQUEST_METHOD']) {
                         case 'POST':
                             $vars    =  array_merge($_GET,$_POST);
@@ -115,6 +138,17 @@ class App {
                         }else{
                             E(L('_PARAM_ERROR_').':'.$name);
                         }   
+                    }
+                    // 开启绑定参数过滤机制
+                    if(C('URL_PARAMS_SAFE')){
+                        array_walk_recursive($args,'filter_exp');
+                        $filters     =   C('URL_PARAMS_FILTER')?:C('DEFAULT_FILTER');
+                        if($filters) {
+                            $filters    =   explode(',',$filters);
+                            foreach($filters as $filter){
+                                $args   =   array_map_recursive($filter,$args); // 参数过滤
+                            }
+                        }                        
                     }
                     $method->invokeArgs($module,$args);
                 }else{

@@ -14,12 +14,48 @@
  */
 
 /**
+ * 获取和设置配置参数 支持批量定义
+ * @param string|array $name 配置变量
+ * @param mixed $value 配置值
+ * @param mixed $default 默认值
+ * @return mixed
+ */
+function C($name=null, $value=null,$default=null) {
+    static $_config = array();
+    // 无参数时获取所有
+    if (empty($name)) {
+        return $_config;
+    }
+    // 优先执行设置获取或赋值
+    if (is_string($name)) {
+        if (!strpos($name, '.')) {
+            $name = strtoupper($name);
+            if (is_null($value))
+                return isset($_config[$name]) ? $_config[$name] : $default;
+            $_config[$name] = $value;
+            return;
+        }
+        // 二维数组设置和获取支持
+        $name = explode('.', $name);
+        $name[0]   =  strtoupper($name[0]);
+        if (is_null($value))
+            return isset($_config[$name[0]][$name[1]]) ? $_config[$name[0]][$name[1]] : $default;
+        $_config[$name[0]][$name[1]] = $value;
+        return;
+    }
+    // 批量设置
+    if (is_array($name)){
+        $_config = array_merge($_config, array_change_key_case($name,CASE_UPPER));
+        return;
+    }
+    return null; // 避免非法参数
+}
 
 /**
  * 加载配置文件 支持格式转换 仅支持一级配置
  * @param string $file 配置文件名
  * @param string $parse 配置解析方法 有些格式需要用户自己解析
- * @return array
+ * @return void
  */
 function load_config($file,$parse=CONF_PARSE){
     $ext  = pathinfo($file,PATHINFO_EXTENSION);
@@ -30,7 +66,7 @@ function load_config($file,$parse=CONF_PARSE){
             return parse_ini_file($file);
         case 'yaml':
             return yaml_parse_file($file);
-        case 'xml': 
+        case 'xml':
             return (array)simplexml_load_file($file);
         case 'json':
             return json_decode(file_get_contents($file), true);
@@ -38,7 +74,7 @@ function load_config($file,$parse=CONF_PARSE){
             if(function_exists($parse)){
                 return $parse($file);
             }else{
-                E(L('_NOT_SUPPORT_').':'.$ext);
+                E(L('_NOT_SUPPERT_').':'.$ext);
             }
     }
 }
@@ -59,7 +95,6 @@ if (!function_exists('yaml_parse_file')) {
  * 抛出异常处理
  * @param string $msg 异常消息
  * @param integer $code 异常代码 默认为0
- * @throws Think\Exception
  * @return void
  */
 function E($msg, $code=0) {
@@ -101,7 +136,6 @@ function G($start,$end='',$dec=4) {
         $_info[$start]  =  microtime(TRUE);
         if(MEMORY_LIMIT_ON) $_mem[$start]           =  memory_get_usage();
     }
-    return null;
 }
 
 /**
@@ -127,15 +161,15 @@ function L($name=null, $value=null) {
             foreach($replace as &$v){
                 $v = '{$'.$v.'}';
             }
-            return str_replace($replace,$value,isset($_lang[$name]) ? $_lang[$name] : $name);        
+            return str_replace($replace,$value,isset($_lang[$name]) ? $_lang[$name] : $name);
         }
         $_lang[$name] = $value; // 语言定义
-        return null;
+        return;
     }
     // 批量定义
     if (is_array($name))
         $_lang = array_merge($_lang, array_change_key_case($name, CASE_UPPER));
-    return null;
+    return;
 }
 
 /**
@@ -144,7 +178,7 @@ function L($name=null, $value=null) {
  * @param string $label 标签
  * @param string $level 日志级别
  * @param boolean $record 是否记录日志
- * @return void|array
+ * @return void
  */
 function trace($value='[think]',$label='',$level='DEBUG',$record=false) {
     return Think\Think::trace($value,$label,$level,$record);
@@ -172,7 +206,7 @@ function compile($filename) {
 
 /**
  * 获取模版文件 格式 资源://模块@主题/控制器/操作
- * @param string $template 模版资源地址
+ * @param string $name 模版资源地址
  * @param string $layer 视图层（目录）名称
  * @return string
  */
@@ -192,10 +226,10 @@ function T($template='',$layer=''){
     $auto   =   C('AUTOLOAD_NAMESPACE');
     if($auto && isset($auto[$extend])){ // 扩展资源
         $baseUrl    =   $auto[$extend].$module.$layer.'/';
-    }elseif(C('VIEW_PATH')){ 
+    }elseif(C('VIEW_PATH')){
         // 改变模块视图目录
         $baseUrl    =   C('VIEW_PATH');
-    }elseif(defined('TMPL_PATH')){ 
+    }elseif(defined('TMPL_PATH')){
         // 指定全局视图目录
         $baseUrl    =   TMPL_PATH.$module;
     }else{
@@ -215,7 +249,18 @@ function T($template='',$layer=''){
     }elseif('/' != $depr){
         $file   =   substr_count($file,'/')>1 ? substr_replace($file,$depr,strrpos($file,'/'),1) : str_replace('/', $depr, $file);
     }
-    return $baseUrl.($theme?$theme.'/':'').$file.C('TMPL_TEMPLATE_SUFFIX');
+
+    /*OpenCenter新增对common下的模板检测*/
+    //如果模版存在，则返回该模版
+    $result = $baseUrl.($theme?$theme.'/':'').$file.C('TMPL_TEMPLATE_SUFFIX');
+    if(file_exists($result)) {
+        return $result;
+    }
+    //如果模版不存在，则返回公共目录下的模版
+    $baseUrl = APP_PATH.'Common/View/'.($theme?$theme.'/':'');
+    $result = $baseUrl.$file.C('TMPL_TEMPLATE_SUFFIX');
+    return $result;
+    /*ThinkOX新增对common下的模板检测end*/
 }
 
 /**
@@ -254,11 +299,11 @@ function I($name,$default='',$filter=null,$datas=null) {
                     $input  =  $_GET;
             }
             break;
-        case 'path'    :   
+        case 'path'    :
             $input  =   array();
             if(!empty($_SERVER['PATH_INFO'])){
                 $depr   =   C('URL_PATHINFO_DEPR');
-                $input  =   explode($depr,trim($_SERVER['PATH_INFO'],$depr));            
+                $input  =   explode($depr,trim($_SERVER['PATH_INFO'],$depr));
             }
             break;
         case 'request' :   $input =& $_REQUEST;   break;
@@ -292,7 +337,7 @@ function I($name,$default='',$filter=null,$datas=null) {
             }elseif(is_int($filters)){
                 $filters    =   array($filters);
             }
-            
+
             foreach($filters as $filter){
                 if(function_exists($filter)) {
                     $data   =   is_array($data)?array_map_recursive($filter,$data):$filter($data); // 参数过滤
@@ -314,11 +359,11 @@ function array_map_recursive($filter, $data) {
     $result = array();
     foreach ($data as $key => $val) {
         $result[$key] = is_array($val)
-         ? array_map_recursive($filter, $val)
-         : call_user_func($filter, $val);
+            ? array_map_recursive($filter, $val)
+            : call_user_func($filter, $val);
     }
     return $result;
- }
+}
 
 /**
  * 设置和获取统计数据
@@ -331,7 +376,6 @@ function array_map_recursive($filter, $data) {
  * </code>
  * @param string $key 标识位置
  * @param integer $step 步进值
- * @param boolean $save 是否保存结果
  * @return mixed
  */
 function N($key, $step=0,$save=false) {
@@ -339,15 +383,13 @@ function N($key, $step=0,$save=false) {
     if (!isset($_num[$key])) {
         $_num[$key] = (false !== $save)? S('N_'.$key) :  0;
     }
-    if (empty($step)){
+    if (empty($step))
         return $_num[$key];
-    }else{
-        $_num[$key] = $_num[$key] + (int)$step;
-    }
+    else
+        $_num[$key] = $_num[$key] + (int) $step;
     if(false !== $save){ // 保存结果
         S('N_'.$key,$_num[$key],$save);
     }
-    return null;
 }
 
 /**
@@ -433,7 +475,6 @@ function import($class, $baseUrl = '', $ext=EXT) {
         // 如果类不存在 则导入类库文件
         return require_cache($classfile);
     }
-    return null;
 }
 
 /**
@@ -478,7 +519,7 @@ function vendor($class, $baseUrl = '', $ext='.php') {
  * 实例化模型类 格式 [资源://][模块/]模型
  * @param string $name 资源地址
  * @param string $layer 模型层名称
- * @return Think\Model
+ * @return Model
  */
 function D($name='',$layer='') {
     if(empty($name)) return new Think\Model;
@@ -498,7 +539,7 @@ function D($name='',$layer='') {
         }
         $model      =   class_exists($class)? new $class($name) : new Think\Model($name);
     }else {
-        Think\Log::record('D方法实例化没找到模型类'.$class,Think\Log::NOTICE);
+        \Think\Log::record('D方法实例化没找到模型类'.$class,Think\Log::NOTICE);
         $model      =   new Think\Model(basename($name));
     }
     $_model[$name.$layer]  =  $model;
@@ -510,7 +551,7 @@ function D($name='',$layer='') {
  * @param string $name Model名称 支持指定基础模型 例如 MongoModel:User
  * @param string $tablePrefix 表前缀
  * @param mixed $connection 数据库连接信息
- * @return Think\Model
+ * @return Model
  */
 function M($name='', $tablePrefix='',$connection='') {
     static $_model  = array();
@@ -530,7 +571,6 @@ function M($name='', $tablePrefix='',$connection='') {
  * 例如 module/controller addon://module/behavior
  * @param string $name 资源地址 格式：[扩展://][模块/]资源名
  * @param string $layer 分层名称
- * @param integer $level 控制器层次
  * @return string
  */
 function parse_res_name($name,$layer,$level=1){
@@ -545,13 +585,18 @@ function parse_res_name($name,$layer,$level=1){
         $module =   defined('MODULE_NAME') ? MODULE_NAME : '' ;
     }
     $array  =   explode('/',$name);
-    $class  =   $module.'\\'.$layer;
-    foreach($array as $name){
-        $class  .=   '\\'.parse_name($name, 1);
-    }
-    // 导入资源类库
-    if($extend){ // 扩展资源
-        $class      =   $extend.'\\'.$class;
+    if(!C('APP_USE_NAMESPACE')){
+        $class  =   parse_name($name, 1);
+        import($module.'/'.$layer.'/'.$class.$layer);
+    }else{
+        $class  =   $module.'\\'.$layer;
+        foreach($array as $name){
+            $class  .=   '\\'.parse_name($name, 1);
+        }
+        // 导入资源类库
+        if($extend){ // 扩展资源
+            $class      =   $extend.'\\'.$class;
+        }
     }
     return $class.$layer;
 }
@@ -560,7 +605,7 @@ function parse_res_name($name,$layer,$level=1){
  * 用于实例化访问控制器
  * @param string $name 控制器名
  * @param string $path 控制器命名空间（路径）
- * @return Think\Controller|false
+ * @return Controller|false
  */
 function controller($name,$path=''){
     $layer  =   C('DEFAULT_C_LAYER');
@@ -587,17 +632,20 @@ function controller($name,$path=''){
  * @param string $name 资源地址
  * @param string $layer 控制层名称
  * @param integer $level 控制器层次
- * @return Think\Controller|false
+ * @return Controller|false
  */
 function A($name,$layer='',$level=0) {
+
     static $_action = array();
-    $layer  =   $layer? : C('DEFAULT_C_LAYER');
-    $level  =   $level? : ($layer == C('DEFAULT_C_LAYER')?C('CONTROLLER_LEVEL'):1);
+    $layer  =   $layer? $layer: C('DEFAULT_C_LAYER');
+    $level  =   $level? $level : ($layer == C('DEFAULT_C_LAYER')?C('CONTROLLER_LEVEL'):1);
+
     if(isset($_action[$name.$layer]))
         return $_action[$name.$layer];
-    
+
     $class  =   parse_res_name($name,$layer,$level);
     if(class_exists($class)) {
+
         $action             =   new $class();
         $_action[$name.$layer]     =   $action;
         return $action;
@@ -605,7 +653,6 @@ function A($name,$layer='',$level=0) {
         return false;
     }
 }
-
 
 /**
  * 远程调用控制器的操作方法 URL 参数格式 [资源://][模块/]控制器/操作
@@ -633,26 +680,24 @@ function R($url,$vars=array(),$layer='') {
  * 处理标签扩展
  * @param string $tag 标签名称
  * @param mixed $params 传入参数
- * @return void
+ * @return mixed
  */
 function tag($tag, &$params=NULL) {
-    return \Think\Hook::listen($tag,$params);
+    \Think\Hook::listen($tag,$params);
 }
 
 /**
  * 执行某个行为
  * @param string $name 行为名称
- * @param string $tag 标签名称（行为类无需传入） 
+ * @param string $tag 标签名称（行为类无需传入）
  * @param Mixed $params 传入的参数
  * @return void
  */
-function B($name, &$params=NULL) {
-    if(strpos($name,'/')){
-        list($name,$tag) = explode('/',$name);
-    }else{
-        $tag     =   'run';
+function B($name, $tag='',&$params=NULL) {
+    if(''==$tag){
+        $name   .=  'Behavior';
     }
-    return \Think\Hook::exec($name,$tag,$params);
+    \Think\Hook::exec($name,$tag,$params);
 }
 
 /**
@@ -713,7 +758,7 @@ function strip_whitespace($content) {
  * @return void
  */
 function throw_exception($msg, $type='Think\\Exception', $code=0) {
-    Think\Log::record('建议使用E方法替代throw_exception',Think\Log::NOTICE);
+    \Think\Log::record('建议使用E方法替代throw_exception',Think\Log::NOTICE);
     if (class_exists($type, false))
         throw new $type($msg, $code);
     else
@@ -774,31 +819,19 @@ function layout($layout) {
  * URL组装 支持不同URL模式
  * @param string $url URL表达式，格式：'[模块/控制器/操作#锚点@域名]?参数1=值1&参数2=值2...'
  * @param string|array $vars 传入的参数，支持数组和字符串
- * @param string|boolean $suffix 伪静态后缀，默认为true表示获取配置值
+ * @param string $suffix 伪静态后缀，默认为true表示获取配置值
  * @param boolean $domain 是否显示域名
  * @return string
  */
-function U($url='',$vars='',$suffix=true,$domain=true) {
+function U($url='',$vars='',$suffix=true,$domain=false) {
     // 解析URL
     $info   =  parse_url($url);
-		
-		// uctoo 增加插件地址支持
-	if (isset ( $_GET ['_addons'] ) && strpos ( $info ['path'], '/' ) === false) {
-		$info['query'] = '_addons='.$_GET['_addons'].'&_controller='.$_GET['_controller'].'&_action='.$info['path'].'&'.$info['query'];
-		$info['path'] = 'home/addons/execute';
-// 		$addons = $_GET ['_addons'];
-// 		$controller = $_GET ['_controller'];
-// 		$action = $info ['path'];
-// 		$qurl = $addons == $controller ? "/ad/$addons/$action" : "/ad/$addons/$controller/$action";
-// 		$info ['path'] = $qurl;
-	}
-    
     $url    =  !empty($info['path'])?$info['path']:ACTION_NAME;
     if(isset($info['fragment'])) { // 解析锚点
         $anchor =   $info['fragment'];
         if(false !== strpos($anchor,'?')) { // 解析参数
             list($anchor,$info['query']) = explode('?',$anchor,2);
-        }        
+        }
         if(false !== strpos($anchor,'@')) { // 解析域名
             list($anchor,$host)    =   explode('@',$anchor, 2);
         }
@@ -834,9 +867,10 @@ function U($url='',$vars='',$suffix=true,$domain=true) {
         parse_str($info['query'],$params);
         $vars = array_merge($params,$vars);
     }
-    
+
     // URL组装
-    $depr = C('URL_PATHINFO_DEPR');
+    $depr       =   C('URL_PATHINFO_DEPR');
+    $urlCase    =   C('URL_CASE_INSENSITIVE');
     if($url) {
         if(0=== strpos($url,'/')) {// 定义路由
             $route      =   true;
@@ -852,71 +886,160 @@ function U($url='',$vars='',$suffix=true,$domain=true) {
             $url        =   trim($url,$depr);
             $path       =   explode($depr,$url);
             $var        =   array();
-            $var[C('VAR_ACTION')]       =   !empty($path)?array_pop($path):ACTION_NAME;
-            $var[C('VAR_CONTROLLER')]   =   !empty($path)?array_pop($path):CONTROLLER_NAME;
+            $varModule      =   C('VAR_MODULE');
+            $varController  =   C('VAR_CONTROLLER');
+            $varAction      =   C('VAR_ACTION');
+            $var[$varAction]       =   !empty($path)?array_pop($path):ACTION_NAME;
+            $var[$varController]   =   !empty($path)?array_pop($path):CONTROLLER_NAME;
             if($maps = C('URL_ACTION_MAP')) {
-                if(isset($maps[strtolower($var[C('VAR_CONTROLLER')])])) {
-                    $maps    =   $maps[strtolower($var[C('VAR_CONTROLLER')])];
-                    if($action = array_search(strtolower($var[C('VAR_ACTION')]),$maps)){
-                        $var[C('VAR_ACTION')] = $action;
+                if(isset($maps[strtolower($var[$varController])])) {
+                    $maps    =   $maps[strtolower($var[$varController])];
+                    if($action = array_search(strtolower($var[$varAction]),$maps)){
+                        $var[$varAction] = $action;
                     }
                 }
             }
             if($maps = C('URL_CONTROLLER_MAP')) {
-                if($controller = array_search(strtolower($var[C('VAR_CONTROLLER')]),$maps)){
-                    $var[C('VAR_CONTROLLER')] = $controller;
+                if($controller = array_search(strtolower($var[$varController]),$maps)){
+                    $var[$varController] = $controller;
                 }
             }
-            if(C('URL_CASE_INSENSITIVE')) {
-                $var[C('VAR_CONTROLLER')]   =   parse_name($var[C('VAR_CONTROLLER')]);
+            if($urlCase) {
+                $var[$varController]   =   parse_name($var[$varController]);
             }
             $module =   '';
-            
+
             if(!empty($path)) {
-                $var[C('VAR_MODULE')]    =   array_pop($path);
+                $var[$varModule]    =   implode($depr,$path);
             }else{
                 if(C('MULTI_MODULE')) {
                     if(MODULE_NAME != C('DEFAULT_MODULE') || !C('MODULE_ALLOW_LIST')){
-                        $var[C('VAR_MODULE')]=   MODULE_NAME;
+                        $var[$varModule]=   MODULE_NAME;
                     }
                 }
             }
             if($maps = C('URL_MODULE_MAP')) {
-                if($_module = array_search(strtolower($var[C('VAR_MODULE')]),$maps)){
-                    $var[C('VAR_MODULE')] = $_module;
+                if($_module = array_search(strtolower($var[$varModule]),$maps)){
+                    $var[$varModule] = $_module;
                 }
             }
-            if(isset($var[C('VAR_MODULE')])){
-                $module =   $var[C('VAR_MODULE')];
-                unset($var[C('VAR_MODULE')]);
+            if(isset($var[$varModule])){
+                $module =   $var[$varModule];
+                unset($var[$varModule]);
             }
-            
+
         }
     }
 
     if(C('URL_MODEL') == 0) { // 普通模式URL转换
         $url        =   __APP__.'?'.C('VAR_MODULE')."={$module}&".http_build_query(array_reverse($var));
-        if(C('URL_CASE_INSENSITIVE')){
+        if($urlCase){
             $url    =   strtolower($url);
-        }        
+        }
         if(!empty($vars)) {
             $vars   =   http_build_query($vars);
             $url   .=   '&'.$vars;
         }
-    }else{ // PATHINFO模式或者兼容URL模式
-        $module =   defined('BIND_MODULE') ? '' : $module;
+    }//伪静态路由规则优化 start 2014-8-29-添加
+    elseif (C('URL_MODEL') == 2) { //开启路由和Rewrite
+        //载入路由
+        $router_ruler = C('router');
+        $router_key = $module . '/' . $var[$varController] . '/' . $var[$varAction];
+        $router_key = strtolower($router_key);
+
+        if (isset($router_ruler[$router_key])) { //路由命中
+            //填充路由参数
+            if (false == strpos($router_ruler[$router_key], '://')) {
+                $url = __APP__ . '/' . $router_ruler[$router_key];
+            } else {
+                $url = $router_ruler[$router_key];
+            }
+
+            //填充附加参数
+            if($urlCase){
+                $url    =   strtolower($url);
+            }
+            if (!empty($vars)) { // 添加参数
+                $url_record = $url;
+                $other_vars = '';
+                foreach ($vars as $var => $val) {
+                    if (strpos($url, '[' . $var . ']')) {
+                        if ($val !== '') {
+                            $url = str_replace('[' . $var . ']', $val, $url);
+                        }
+                    } else {
+                        if ('' !== trim($val)) {
+                            $other_vars .= $depr . $var . $depr . urlencode($val);
+                        }
+                    }
+                }
+                $url= preg_replace('/(.*)?\_$/i', '$1', $url);
+                if ($other_vars != '') {
+                    if ($url_record == $url) {
+                        $url .=  '_' . $other_vars;
+                    } else {
+                        $url .=  $other_vars;
+                    }
+                }
+                if ($suffix) {
+                    $suffix = $suffix === true ? C('URL_HTML_SUFFIX') : $suffix;
+                    if ($pos = strpos($suffix, '|')) {
+                        $suffix = substr($suffix, 0, $pos);
+                    }
+                    if ($suffix && '/' != substr($url, -1)) {
+                        $url .= '.' . ltrim($suffix, '.');
+                    }
+                }
+            }else{
+                $url= preg_replace('/(.*)?\_$/i', '$1', $url);
+            }
+            $url = preg_replace('/\[PAGE\]/', '{[PAGE]}', $url);
+            $url = preg_replace('/\/[a-z]\_\[.*?\]/i', '', $url);
+            $url = preg_replace('/\_[a-z]\_\[.*?\](\/)?/i', '', $url);
+            $url = preg_replace('/\_\[.*?\](\/)?/i', '', $url);
+            $url = preg_replace('/\/\[.*?\]/i', '', $url);
+            $url = preg_replace('/\{\[PAGE\]\}/',urlencode('[PAGE]'), $url);
+        } else { //路由没有命中
+            if (isset($route)) {
+                $url = __APP__ . '/' . rtrim($url, $depr);
+            } else {
+                $module = defined('BIND_MODULE') ? '' : $module;
+                $url = __APP__ . '/' . ($module ? $module . MODULE_PATHINFO_DEPR : '') . implode($depr, array_reverse($var));
+            }
+            if ($urlCase) {
+                $url = strtolower($url);
+            }
+            if (!empty($vars)) { // 添加参数
+                foreach ($vars as $var => $val) {
+                    if ('' !== trim($val)) $url .= $depr . $var . $depr . urlencode($val);
+                }
+            }
+            if ($suffix) {
+                $suffix = $suffix === true ? C('URL_HTML_SUFFIX') : $suffix;
+                if ($pos = strpos($suffix, '|')) {
+                    $suffix = substr($suffix, 0, $pos);
+                }
+                if ($suffix && '/' != substr($url, -1)) {
+                    $url .= '.' . ltrim($suffix, '.');
+                }
+            }
+        }
+    }
+    //伪静态路由规则优化 end 2014-8-29-添加
+    else{ // PATHINFO模式或者兼容URL模式
         if(isset($route)) {
-            $url    =   __APP__.'/'.($module?$module.MODULE_PATHINFO_DEPR:'').rtrim($url,$depr);
+            $url    =   __APP__.'/'.rtrim($url,$depr);
         }else{
+            $module =   (defined('BIND_MODULE') && BIND_MODULE==$module )? '' : $module;
             $url    =   __APP__.'/'.($module?$module.MODULE_PATHINFO_DEPR:'').implode($depr,array_reverse($var));
         }
-        if(C('URL_CASE_INSENSITIVE')){
+        if($urlCase){
             $url    =   strtolower($url);
         }
         if(!empty($vars)) { // 添加参数
             foreach ($vars as $var => $val){
                 if('' !== trim($val))   $url .= $depr . $var . $depr . urlencode($val);
-            }                
+            }
         }
         if($suffix) {
             $suffix   =  $suffix===true?C('URL_HTML_SUFFIX'):$suffix;
@@ -934,13 +1057,6 @@ function U($url='',$vars='',$suffix=true,$domain=true) {
     if($domain) {
         $url   =  (is_ssl()?'https://':'http://').$domain.$url;
     }
-    
-    //缩短插件的URL uctoo修改
-	$re = C('URL_ROUTE_RULES');
-	if ( C('URL_ROUTER_ON') && isset($re['Addons/execute/:_addons/:_controller/:_action'])) {
-		$url = str_ireplace(array('home/addons/execute','_addons/','_controller/','_action/'), array('addon',''), $url);
-	}
-
     return $url;
 }
 
@@ -951,10 +1067,7 @@ function U($url='',$vars='',$suffix=true,$domain=true) {
  * @return void
  */
 function W($name, $data=array()) {
-	if(isset($data['one_param'])){
-		$data = array($data);
-	}
-    return R($name,$data,'Widget');
+    R($name,$data,'Widget');
 }
 
 /**
@@ -1056,7 +1169,7 @@ function F($name, $value='', $path=DATA_PATH) {
             Think\Storage::put($filename,serialize($value),'F');
             // 缓存数据
             $_cache[$name]  =   $value;
-            return null;
+            return ;
         }
     }
     // 获取缓存数据
@@ -1167,16 +1280,16 @@ function session($name='',$value='') {
             $class  =   strpos($type,'\\')? $type : 'Think\\Session\\Driver\\'. ucwords(strtolower($type));
             $hander =   new $class();
             session_set_save_handler(
-                array(&$hander,"open"), 
-                array(&$hander,"close"), 
-                array(&$hander,"read"), 
-                array(&$hander,"write"), 
-                array(&$hander,"destroy"), 
-                array(&$hander,"gc")); 
+                array(&$hander,"open"),
+                array(&$hander,"close"),
+                array(&$hander,"read"),
+                array(&$hander,"write"),
+                array(&$hander,"destroy"),
+                array(&$hander,"gc"));
         }
         // 启动session
         if(C('SESSION_AUTO_START'))  session_start();
-    }elseif('' === $value){ 
+    }elseif('' === $value){
         if(''===$name){
             // 获取全部的session
             return $prefix ? $_SESSION[$prefix] : $_SESSION;
@@ -1209,17 +1322,17 @@ function session($name='',$value='') {
         }elseif($prefix){ // 获取session
             if(strpos($name,'.')){
                 list($name1,$name2) =   explode('.',$name);
-                return isset($_SESSION[$prefix][$name1][$name2])?$_SESSION[$prefix][$name1][$name2]:null;  
+                return isset($_SESSION[$prefix][$name1][$name2])?$_SESSION[$prefix][$name1][$name2]:null;
             }else{
-                return isset($_SESSION[$prefix][$name])?$_SESSION[$prefix][$name]:null;                
-            }            
+                return isset($_SESSION[$prefix][$name])?$_SESSION[$prefix][$name]:null;
+            }
         }else{
             if(strpos($name,'.')){
                 list($name1,$name2) =   explode('.',$name);
-                return isset($_SESSION[$name1][$name2])?$_SESSION[$name1][$name2]:null;  
+                return isset($_SESSION[$name1][$name2])?$_SESSION[$name1][$name2]:null;
             }else{
                 return isset($_SESSION[$name])?$_SESSION[$name]:null;
-            }            
+            }
         }
     }elseif(is_null($value)){ // 删除session
         if($prefix){
@@ -1244,7 +1357,7 @@ function session($name='',$value='') {
  * Cookie 设置、获取、删除
  * @param string $name cookie名称
  * @param mixed $value cookie值
- * @param mixed $option cookie参数
+ * @param mixed $options cookie参数
  * @return mixed
  */
 function cookie($name='', $value='', $option=null) {
@@ -1345,13 +1458,13 @@ function load_ext_file($path) {
 /**
  * 获取客户端IP地址
  * @param integer $type 返回类型 0 返回IP地址 1 返回IPV4地址数字
- * @param boolean $adv 是否进行高级模式获取（有可能被伪装） 
+ * @param boolean $adv 是否进行高级模式获取（有可能被伪装）
  * @return mixed
  */
 function get_client_ip($type = 0,$adv=false) {
     $type       =  $type ? 1 : 0;
-    static $ip  =   NULL;
-    if ($ip !== NULL) return $ip[$type];
+    //static $ip  =   NULL;
+   // if ($ip !== NULL) return $ip[$type];
     if($adv){
         if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $arr    =   explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
@@ -1365,6 +1478,9 @@ function get_client_ip($type = 0,$adv=false) {
         }
     }elseif (isset($_SERVER['REMOTE_ADDR'])) {
         $ip     =   $_SERVER['REMOTE_ADDR'];
+        if($ip == '127.0.0.1'){
+            $ip = get_client_ip(1,true);
+        }
     }
     // IP地址合法验证
     $long = sprintf("%u",ip2long($ip));
@@ -1379,53 +1495,53 @@ function get_client_ip($type = 0,$adv=false) {
  */
 function send_http_status($code) {
     static $_status = array(
-            // Informational 1xx
-            100 => 'Continue',
-            101 => 'Switching Protocols',
-            // Success 2xx
-            200 => 'OK',
-            201 => 'Created',
-            202 => 'Accepted',
-            203 => 'Non-Authoritative Information',
-            204 => 'No Content',
-            205 => 'Reset Content',
-            206 => 'Partial Content',
-            // Redirection 3xx
-            300 => 'Multiple Choices',
-            301 => 'Moved Permanently',
-            302 => 'Moved Temporarily ',  // 1.1
-            303 => 'See Other',
-            304 => 'Not Modified',
-            305 => 'Use Proxy',
-            // 306 is deprecated but reserved
-            307 => 'Temporary Redirect',
-            // Client Error 4xx
-            400 => 'Bad Request',
-            401 => 'Unauthorized',
-            402 => 'Payment Required',
-            403 => 'Forbidden',
-            404 => 'Not Found',
-            405 => 'Method Not Allowed',
-            406 => 'Not Acceptable',
-            407 => 'Proxy Authentication Required',
-            408 => 'Request Timeout',
-            409 => 'Conflict',
-            410 => 'Gone',
-            411 => 'Length Required',
-            412 => 'Precondition Failed',
-            413 => 'Request Entity Too Large',
-            414 => 'Request-URI Too Long',
-            415 => 'Unsupported Media Type',
-            416 => 'Requested Range Not Satisfiable',
-            417 => 'Expectation Failed',
-            // Server Error 5xx
-            500 => 'Internal Server Error',
-            501 => 'Not Implemented',
-            502 => 'Bad Gateway',
-            503 => 'Service Unavailable',
-            504 => 'Gateway Timeout',
-            505 => 'HTTP Version Not Supported',
-            509 => 'Bandwidth Limit Exceeded'
+        // Informational 1xx
+        100 => 'Continue',
+        101 => 'Switching Protocols',
+        // Success 2xx
+        200 => 'OK',
+        201 => 'Created',
+        202 => 'Accepted',
+        203 => 'Non-Authoritative Information',
+        204 => 'No Content',
+        205 => 'Reset Content',
+        206 => 'Partial Content',
+        // Redirection 3xx
+        300 => 'Multiple Choices',
+        301 => 'Moved Permanently',
+        302 => 'Moved Temporarily ',  // 1.1
+        303 => 'See Other',
+        304 => 'Not Modified',
+        305 => 'Use Proxy',
+        // 306 is deprecated but reserved
+        307 => 'Temporary Redirect',
+        // Client Error 4xx
+        400 => 'Bad Request',
+        401 => 'Unauthorized',
+        402 => 'Payment Required',
+        403 => 'Forbidden',
+        404 => 'Not Found',
+        405 => 'Method Not Allowed',
+        406 => 'Not Acceptable',
+        407 => 'Proxy Authentication Required',
+        408 => 'Request Timeout',
+        409 => 'Conflict',
+        410 => 'Gone',
+        411 => 'Length Required',
+        412 => 'Precondition Failed',
+        413 => 'Request Entity Too Large',
+        414 => 'Request-URI Too Long',
+        415 => 'Unsupported Media Type',
+        416 => 'Requested Range Not Satisfiable',
+        417 => 'Expectation Failed',
+        // Server Error 5xx
+        500 => 'Internal Server Error',
+        501 => 'Not Implemented',
+        502 => 'Bad Gateway',
+        503 => 'Service Unavailable',
+        504 => 'Gateway Timeout',
+        505 => 'HTTP Version Not Supported',
+        509 => 'Bandwidth Limit Exceeded'
     );
     if(isset($_status[$code])) {
         header('HTTP/1.1 '.$code.' '.$_status[$code]);
@@ -1444,42 +1560,4 @@ function filter_exp(&$value){
 // 不区分大小写的in_array实现
 function in_array_case($value,$array){
     return in_array(strtolower($value),array_map('strtolower',$array));
-}
-
-/**
- * 获取插件的配置数组
- */
-function getAddonConfig($name) {
-	static $_config = array ();
-	if (isset ( $_config [$name] )) {
-		return $_config [$name];
-	}
-	
-	$config = array ();
-	
-	$token = get_token ();
-	if (! empty ( $token )) {
-		$map ['token'] = $token;
-		$addon_config = M ( 'member_public' )->where ( $map )->getField ( 'addon_config' );
-		$addon_config = json_decode ( $addon_config, true );
-		if (isset ( $addon_config [$name] ))
-			$config = $addon_config [$name];
-		unset ( $map ['token'] );
-	}
-	
-	if (empty ( $config )) {
-		$map ['name'] = $name;
-		$map ['status'] = 1;
-		$config = M ( 'Addons' )->where ( $map )->getField ( 'config' );
-		$config = json_decode ( $config, true );
-	}
-	
-	if (!$config) {
-		$temp_arr = include_once ONETHINK_ADDON_PATH . $name . '/config.php';
-		foreach ( $temp_arr as $key => $value ) {
-			$config [$key] = $temp_arr [$key] ['value'];
-		}
-	}
-	$_config [$name] = $config;
-	return $config;
 }

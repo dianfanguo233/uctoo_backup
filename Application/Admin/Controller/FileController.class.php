@@ -28,8 +28,8 @@ class FileController extends AdminController {
 
         /* 记录附件信息 */
         if($info){
-        	$return['status'] = 1;
-        	$return = array_merge($info['download'], $return);
+            $return['data'] = think_encrypt(json_encode($info['download']));
+            $return['info'] = $info['download']['name'];
         } else {
             $return['status'] = 0;
             $return['info']   = $File->getError();
@@ -71,10 +71,10 @@ class FileController extends AdminController {
             C('PICTURE_UPLOAD_DRIVER'),
             C("UPLOAD_{$pic_driver}_CONFIG")
         ); //TODO:上传到远程服务器
-
         /* 记录图片信息 */
         if($info){
             $return['status'] = 1;
+            empty($info['download']) && $info['download']= $info['file'];
             $return = array_merge($info['download'], $return);
         } else {
             $return['status'] = 0;

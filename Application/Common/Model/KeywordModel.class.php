@@ -8,6 +8,10 @@ use Think\Model;
  * 关键词操作
  */
 class KeywordModel extends Model {
+
+    protected $_auto = array(
+        array('cTime', NOW_TIME, self::MODEL_INSERT));
+
 	/**
 	 * 保存关键词
 	 * 注意：在aim_id==0的情况下编辑关键词时，由于无法定位到具体的关键词，所以插件需要自行删除旧的关键词
@@ -61,5 +65,10 @@ class KeywordModel extends Model {
 		
 		return $this->where ( $map )->save ( $save );
 	}
+
+    public function edit($data)
+    {
+        $res = $this->save($data);
+        return $res;
+    }
 }
-?>

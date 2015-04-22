@@ -20,7 +20,7 @@ define('MEMORY_LIMIT_ON',function_exists('memory_get_usage'));
 if(MEMORY_LIMIT_ON) $GLOBALS['_startUseMems'] = memory_get_usage();
 
 // 版本信息
-const THINK_VERSION     =   '3.2.0';
+const THINK_VERSION     =   '3.2.2';
 
 // URL 模式定义
 const URL_COMMON        =   0;  //普通模式
@@ -32,10 +32,10 @@ const URL_COMPAT        =   3;  // 兼容模式
 const EXT               =   '.class.php'; 
 
 // 系统常量定义
-defined('THINK_PATH') 	or define('THINK_PATH',     __DIR__.'/');
-defined('APP_PATH') 	or define('APP_PATH',       dirname($_SERVER['SCRIPT_FILENAME']).'/');
+defined('THINK_PATH')   or define('THINK_PATH',     __DIR__.'/');
+defined('APP_PATH')     or define('APP_PATH',       dirname($_SERVER['SCRIPT_FILENAME']).'/');
 defined('APP_STATUS')   or define('APP_STATUS',     ''); // 应用状态 加载对应的配置文件
-defined('APP_DEBUG') 	or define('APP_DEBUG',      false); // 是否调试模式
+defined('APP_DEBUG')    or define('APP_DEBUG',      false); // 是否调试模式
 
 if(function_exists('saeAutoLoader')){// 自动识别SAE环境
     defined('APP_MODE')     or define('APP_MODE',      'sae');
@@ -49,7 +49,7 @@ defined('RUNTIME_PATH') or define('RUNTIME_PATH',   APP_PATH.'Runtime/');   // �
 defined('LIB_PATH')     or define('LIB_PATH',       realpath(THINK_PATH.'Library').'/'); // 系统核心类库目录
 defined('CORE_PATH')    or define('CORE_PATH',      LIB_PATH.'Think/'); // Think类库目录
 defined('BEHAVIOR_PATH')or define('BEHAVIOR_PATH',  LIB_PATH.'Behavior/'); // 行为类库目录
-defined('EXTEND_PATH')  or define('EXTEND_PATH',    THINK_PATH.'Extend/'); // 系统扩展目录
+defined('MODE_PATH')    or define('MODE_PATH',      THINK_PATH.'Mode/'); // 系统应用模式目录
 defined('VENDOR_PATH')  or define('VENDOR_PATH',    LIB_PATH.'Vendor/'); // 第三方类库目录
 defined('COMMON_PATH')  or define('COMMON_PATH',    APP_PATH.'Common/'); // 应用公共目录
 defined('CONF_PATH')    or define('CONF_PATH',      COMMON_PATH.'Conf/'); // 应用配置目录
@@ -59,6 +59,8 @@ defined('LOG_PATH')     or define('LOG_PATH',       RUNTIME_PATH.'Logs/'); // �
 defined('TEMP_PATH')    or define('TEMP_PATH',      RUNTIME_PATH.'Temp/'); // 应用缓存目录
 defined('DATA_PATH')    or define('DATA_PATH',      RUNTIME_PATH.'Data/'); // 应用数据目录
 defined('CACHE_PATH')   or define('CACHE_PATH',     RUNTIME_PATH.'Cache/'); // 应用模板缓存目录
+defined('CONF_EXT')     or define('CONF_EXT',       '.php'); // 配置文件后缀
+defined('CONF_PARSE')   or define('CONF_PARSE',     '');    // 配置文件解析方法
 
 // 系统信息
 if(version_compare(PHP_VERSION,'5.4.0','<')) {
@@ -87,44 +89,7 @@ if(!IS_CLI) {
         define('__ROOT__',  (($_root=='/' || $_root=='\\')?'':$_root));
     }
 }
-define('SITE_DOMAIN'	,	strip_tags($_SERVER['HTTP_HOST']));
-define('SITE_URL'		,	'http://'.SITE_DOMAIN.__ROOT__);
-/**
- * 获取和设置配置参数 支持批量定义
- * @param string|array $name 配置变量
- * @param mixed $value 配置值
- * @return mixed
- */
-function C($name=null, $value=null,$default=null) {
-    static $_config = array();
-    // 无参数时获取所有
-    if (empty($name)) {
-        return $_config;
-    }
-    // 优先执行设置获取或赋值
-    if (is_string($name)) {
-        if (!strpos($name, '.')) {
-            $name = strtoupper($name);
-            if (is_null($value))
-                return isset($_config[$name]) ? $_config[$name] : $default;
-            $_config[$name] = $value;
-            return null;
-        }
-        // 二维数组设置和获取支持
-        $name = explode('.', $name);
-        $name[0]   =  strtoupper($name[0]);
-        if (is_null($value))
-            return isset($_config[$name[0]][$name[1]]) ? $_config[$name[0]][$name[1]] : $default;
-        $_config[$name[0]][$name[1]] = $value;
-        return null;
-    }
-    // 批量设置
-    if (is_array($name)){
-        $_config = array_merge($_config, array_change_key_case($name,CASE_UPPER));
-        return null;
-    }
-    return null; // 避免非法参数
-}
+
 // 加载核心Think类
 require CORE_PATH.'Think'.EXT;
 // 应用初始化 

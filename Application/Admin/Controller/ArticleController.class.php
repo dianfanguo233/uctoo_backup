@@ -12,6 +12,7 @@ use Think\Page;
 
 /**
  * 后台内容控制器
+ * @author huajie <banhuajie@163.com>
  */
 class ArticleController extends AdminController {
 
@@ -27,6 +28,8 @@ class ArticleController extends AdminController {
      *      返回true则表示当前访问有权限
      *      返回false则表示当前访问无权限
      *      返回null，则会进入checkRule根据节点授权判断权限
+     *
+     * @author 朱亚杰  <xcoolcc@gmail.com>
      */
     protected function checkDynamic(){
         if(IS_ROOT){

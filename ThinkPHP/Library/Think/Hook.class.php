@@ -79,7 +79,7 @@ class Hook {
      * @return void
      */
     static public function listen($tag, &$params=NULL) {
-        if(isset(self::$tags[$tag])) {
+          if(isset(self::$tags[$tag])) {
             if(APP_DEBUG) {
                 G($tag.'Start');
                 trace('[ '.$tag.' ] --START--','','INFO');
@@ -111,15 +111,11 @@ class Hook {
      * @return void
      */
     static public function exec($name, $tag,&$params=NULL) {
-        if(false === strpos($name,'\\')) {
-            // 插件（多个入口）
-            $class   =  "Addons\\{$name}\\{$name}Addon";
-        }else{
-            // 行为扩展（只有一个run入口方法）
-            $class   =  $name.'Behavior';
+        if('Behavior' == substr($name,-8) ){
+            // 行为扩展必须用run入口方法
             $tag    =   'run';
         }
-        $addon   = new $class();
+        $addon   = new $name();
         return $addon->$tag($params);
     }
 }

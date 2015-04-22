@@ -30,6 +30,7 @@ class Pdo extends Db{
             if(empty($this->config['params'])) {
                 $this->config['params'] =   array();
             }
+            $this->dbType = $this->_getDsnType($config['dsn']);            
         }
 
     }
@@ -44,6 +45,9 @@ class Pdo extends Db{
             if($this->pconnect) {
                 $config['params'][\PDO::ATTR_PERSISTENT] = true;
             }
+            if(version_compare(PHP_VERSION,'5.3.6','<=')){ //禁用模拟预处理语句
+                $config['params'][\PDO::ATTR_EMULATE_PREPARES]  =   false;
+            }
             //$config['params'][PDO::ATTR_CASE] = C("DB_CASE_LOWER")?PDO::CASE_LOWER:PDO::CASE_UPPER;
             try{
                 $this->linkID[$linkNum] = new \PDO( $config['dsn'], $config['username'], $config['password'],$config['params']);
@@ -56,7 +60,7 @@ class Pdo extends Db{
                 // 由于PDO对于以上的数据库支持不够完美，所以屏蔽了 如果仍然希望使用PDO 可以注释下面一行代码
                 E('由于目前PDO暂时不能完美支持'.$this->dbType.' 请使用官方的'.$this->dbType.'驱动');
             }
-            $this->linkID[$linkNum]->exec('SET NAMES '.C('DB_CHARSET'));
+            $this->linkID[$linkNum]->exec('SET NAMES '.$config['charset']);
             // 标记连接成功
             $this->connected    =   true;
             // 注销数据库连接配置信息
@@ -166,7 +170,7 @@ class Pdo extends Db{
             }else{
               $val  = array($key,$val);
             }
-            call_user_func_array(array($this->PDOStatement,'bindParam'),$val);
+            call_user_func_array(array($this->PDOStatement,'bindValue'),$val);
         }      
     }
 
@@ -189,7 +193,7 @@ class Pdo extends Db{
     /**
      * 用于非自动提交状态下面的查询提交
      * @access public
-     * @return boolean
+     * @return boolen
      */
     public function commit() {
         if ($this->transTimes > 0) {
@@ -206,7 +210,7 @@ class Pdo extends Db{
     /**
      * 事务回滚
      * @access public
-     * @return boolean
+     * @return boolen
      */
     public function rollback() {
         if ($this->transTimes > 0) {
@@ -384,7 +388,7 @@ class Pdo extends Db{
      * @return string
      */
     protected function parseKey(&$key) {
-        if($this->dbType=='MYSQL'){
+        if(!is_numeric($key) && $this->dbType=='MYSQL'){
             $key   =  trim($key);
             if(!preg_match('/[,\'\"\*\(\)`.\s]/',$key)) {
                $key = '`'.$key.'`';
@@ -432,11 +436,11 @@ class Pdo extends Db{
      */
     public function escapeString($str) {
          switch($this->dbType) {
-            case 'PGSQL':
             case 'MSSQL':
             case 'SQLSRV':
             case 'MYSQL':
                 return addslashes($str);
+            case 'PGSQL':                
             case 'IBASE':                
             case 'SQLITE':
             case 'ORACLE':

@@ -1,13 +1,13 @@
 <?php
 //slog uctoo add
-/*
-include './SocketLog.class.php';
-slog(array(
-	'error_handler'=>true,
-	'optimize'=>true,
-	'show_included_files'=>true,
-),'set_config');
-*/
+
+//include './SocketLog.class.php';
+//slog(array(
+//	'error_handler'=>true,
+//	'optimize'=>true,
+//	'show_included_files'=>true,
+//),'set_config');
+
 // +----------------------------------------------------------------------
 // | OneThink [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -15,63 +15,59 @@ slog(array(
 // +----------------------------------------------------------------------
 // | Author: 麦当苗儿 <zuojiazi@vip.qq.com> <http://www.zjzit.cn>
 // +----------------------------------------------------------------------
-error_reporting ( E_ERROR );
-date_default_timezone_set ( 'PRC' );
-if(version_compare(PHP_VERSION,'5.3.0','<'))  die('Your PHP Version is '.PHP_VERSION.', But UCToo require PHP > 5.3.0 !');
 
-
-/**
- * 微信接入验证
- * 在入口进行验证而不是放到框架里验证，主要是解决验证URL超时的问题
- */
-if (! empty ( $_GET ['echostr'] ) && ! empty ( $_GET ["signature"] ) && ! empty ( $_GET ["nonce"] )) {
-	$signature = $_GET ["signature"];
-	$timestamp = $_GET ["timestamp"];
-	$nonce = $_GET ["nonce"];
-	
-	$tmpArr = array (
-			'uctoo',
-			$timestamp,
-			$nonce 
-	);
-	sort ( $tmpArr, SORT_STRING );
-	$tmpStr = sha1 ( implode ( $tmpArr ) );
-	
-	if ($tmpStr == $signature) {
-		echo $_GET ["echostr"];
-	}
-	exit ();
+function reset_session_path()
+{
+    $root = str_replace("\\", '/', dirname(__FILE__));
+    $savePath = $root . "/tmp/";
+    session_save_path($savePath);
 }
+
+//reset_session_path();  //如果您的服务器无法安装或者无法登陆，又或者后台验证码无限错误，请尝试取消本行起始两条左斜杠，让本行代码生效，以修改session存储的路径
+
+
+if (version_compare(PHP_VERSION, '5.3.0', '<')) die('require PHP > 5.3.0 !');
+
+/*移除magic_quotes_gpc参数影响*/
+if (get_magic_quotes_gpc()) {
+    function stripslashes_deep($value)
+    {
+        $value = is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value);
+        return $value;
+    }
+
+    $_POST = array_map('stripslashes_deep', $_POST);
+    $_GET = array_map('stripslashes_deep', $_GET);
+    $_COOKIE = array_map('stripslashes_deep', $_COOKIE);
+    $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
+}
+/*移除magic_quotes_gpc参数影响end*/
+
+
+
+
 /**
  * 系统调试设置
  * 项目正式部署后请设置为false
  */
-define ( 'APP_DEBUG', false );
+define ('APP_DEBUG', true);
 
-/**
- * 官方远程同步服务器地址
- * 应用于后台应用商店、在线升级等功能
- */
-define ( 'REMOTE_BASE_URL', 'http://www.uctoo.com' );
-
-// 网站根路径设置
-define ( 'SITE_PATH', dirname ( __FILE__ ) );
 /**
  * 应用目录设置
  * 安全期间，建议安装调试完成后移动到非WEB目录
  */
-define ( 'APP_PATH', './Application/' );
+define ('APP_PATH', './Application/');
 
-if (! is_file ( APP_PATH . 'User/Conf/config.php' )) {
-	header ( 'Location: ./install.php' );
-	exit ();
+if (!is_file( 'Conf/user.php')) {
+    header('Location: ./install.php');
+    exit;
 }
 
 /**
  * 缓存目录设置
  * 此目录必须可写，建议移动到非WEB目录
  */
-define ( 'RUNTIME_PATH', './Runtime/' );
+define ('RUNTIME_PATH', './Runtime/');
 
 /**
  * 引入核心入口

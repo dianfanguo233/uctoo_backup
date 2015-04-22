@@ -15,12 +15,10 @@ namespace Admin\Controller;
  */
 class AddonsController extends AdminController {
 
-    static protected $deny  = array('addhook','edithook','delhook','updateHook');
-
     public function _initialize(){
-		$this->assign('_extra_menu',array(
-			'已装插件后台'=> D('Addons')->getAdminList(),
-		));
+        $this->assign('_extra_menu',array(
+            '已装插件后台'=> D('Addons')->getAdminList(),
+        ));
         parent::_initialize();
     }
 
@@ -29,18 +27,15 @@ class AddonsController extends AdminController {
         if(!is_writable(ONETHINK_ADDON_PATH))
             $this->error('您没有创建目录写入权限，无法使用此功能');
 
-        $hooks = M('Hooks')->where('name!="weixin"')->field('name,description')->select();
+        $hooks = M('Hooks')->field('name,description')->select();
         $this->assign('Hooks',$hooks);
         $this->meta_title = '创建向导';
-        $this->assign('type', I('type', 0, 'intval'));
         $this->display('create');
     }
 
     //预览
     public function preview($output = true){
         $data                   =   $_POST;
-        $data['has_adminlist']  =   intval($data['has_adminlist']);
-        $data['type']           =   intval($data['type']);
         $data['info']['status'] =   (int)$data['info']['status'];
         $extend                 =   array();
         $custom_config          =   trim($data['custom_config']);
@@ -62,7 +57,7 @@ str;
             {$admin_list}
         );
 str;
-           $extend[] = $admin_list;
+            $extend[] = $admin_list;
         }
 
         $custom_adminlist = trim($data['custom_adminlist']);
@@ -106,25 +101,16 @@ use Common\Controller\Addon;
             'description'=>'{$data['info']['description']}',
             'status'=>{$data['info']['status']},
             'author'=>'{$data['info']['author']}',
-            'version'=>'{$data['info']['version']}',
-            'has_adminlist'=>{$data['has_adminlist']},
-            'type'=>{$data['type']}         
+            'version'=>'{$data['info']['version']}'
         );{$extend}
 
-	public function install() {
-		\$install_sql = './Addons/{$data['info']['name']}/install.sql';
-		if (file_exists ( \$install_sql )) {
-			execute_sql_file ( \$install_sql );
-		}
-		return true;
-	}
-	public function uninstall() {
-		\$uninstall_sql = './Addons/{$data['info']['name']}/uninstall.sql';
-		if (file_exists ( \$uninstall_sql )) {
-			execute_sql_file ( \$uninstall_sql );
-		}
-		return true;
-	}
+        public function install(){
+            return true;
+        }
+
+        public function uninstall(){
+            return true;
+        }
 
 {$hook}
     }
@@ -159,17 +145,14 @@ str;
         $files[]        =   $addon_dir;
         $addon_name     =   "{$data['info']['name']}Addon.class.php";
         $files[]        =   "{$addon_dir}{$addon_name}";
-        if($data['has_config'] == 1)
-            $files[]    =   $addon_dir.'config.php';
+        if($data['has_config'] == 1);//如果有配置文件
+        $files[]    =   $addon_dir.'config.php';
 
-        if ($data ['has_outurl'] || $data ['type'] == 1) {
+        if($data['has_outurl']){
             $files[]    =   "{$addon_dir}Controller/";
             $files[]    =   "{$addon_dir}Controller/{$data['info']['name']}Controller.class.php";
             $files[]    =   "{$addon_dir}Model/";
             $files[]    =   "{$addon_dir}Model/{$data['info']['name']}Model.class.php";
-            $files[]    =   "{$addon_dir}View/";
-            $files[]    =   "{$addon_dir}View/default/";
-            $files[]    =   "{$addon_dir}View/default/{$data['info']['name']}/";
         }
         $custom_config  =   trim($data['custom_config']);
         if($custom_config)
@@ -178,7 +161,7 @@ str;
         $custom_adminlist = trim($data['custom_adminlist']);
         if($custom_adminlist)
             $data[]     =   "{$addon_dir}{$custom_adminlist}";
-        
+
         create_dir_or_files($files);
 
         //写文件
@@ -206,113 +189,71 @@ use Think\Model;
  * {$data['info']['name']}模型
  */
 class {$data['info']['name']}Model extends Model{
+    public \$model = array(
+        'title'=>'',//新增[title]、编辑[title]、删除[title]的提示
+        'template_add'=>'',//自定义新增模板自定义html edit.html 会读取插件根目录的模板
+        'template_edit'=>'',//自定义编辑模板html
+        'search_key'=>'',// 搜索的字段名，默认是title
+        'extend'=>1,
+    );
 
+    public \$_fields = array(
+        'id'=>array(
+            'name'=>'id',//字段名
+            'title'=>'ID',//显示标题
+            'type'=>'num',//字段类型
+            'remark'=>'',// 备注，相当于配置里的tip
+            'is_show'=>3,// 1-始终显示 2-新增显示 3-编辑显示 0-不显示
+            'value'=>0,//默认值
+        ),
+        'title'=>array(
+            'name'=>'title',
+            'title'=>'书名',
+            'type'=>'string',
+            'remark'=>'',
+            'is_show'=>1,
+            'value'=>0,
+            'is_must'=>1,
+        ),
+    );
 }
 
 str;
             file_put_contents("{$addon_dir}Model/{$data['info']['name']}Model.class.php", $addonModel);
         }
-        if($data['type']==1){
-        	$addonModel = <<<str
-<?php
-        	
-namespace Addons\\{$data['info']['name']}\Model;
-use Home\Model\WeixinModel;
-        	
-/**
- * {$data['info']['name']}的微信模型
- */
-class WeixinAddonModel extends WeixinModel{
-	function reply(\$dataArr, \$keywordArr = array()) {
-		\$config = getAddonConfig ( '{$data['info']['name']}' ); // 获取后台插件的配置参数	
-		//dump(\$config);
-
-	} 
-
-	// 关注公众号事件
-	public function subscribe() {
-		return true;
-	}
-	
-	// 取消关注公众号事件
-	public function unsubscribe() {
-		return true;
-	}
-	
-	// 扫描带参数二维码事件
-	public function scan() {
-		return true;
-	}
-	
-	// 上报地理位置事件
-	public function location() {
-		return true;
-	}
-	
-	// 自定义菜单事件
-	public function click() {
-		return true;
-	}	
-}
-        	
-str;
-        	file_put_contents("{$addon_dir}Model/WeixinAddonModel.class.php", $addonModel);
-        }
 
         if($data['has_config'] == 1)
             file_put_contents("{$addon_dir}config.php", $data['config']);
 
-        if($data['type']==1){
-        	$this->success('创建成功',U('weixin'));
-        }else{
-        	$this->success('创建成功',U('index'));
-        }
+        $this->success('创建成功',U('index'));
     }
 
     /**
      * 插件列表
      */
-    public function index($type=0){
-    	$this->meta_title = '插件列表';
-    	if($type==1){
-    		$this->meta_title = '微信插件列表';
-    	}
-    	$this->assign('type', $type);
-    	
-        $list       =   D('Addons')->getList('', $type);
+    public function index(){
+        $this->meta_title = '插件列表';
+        $list       =   D('Addons')->getList();
         $request    =   (array)I('request.');
         $total      =   $list? count($list) : 1 ;
         $listRows   =   C('LIST_ROWS') > 0 ? C('LIST_ROWS') : 20;
         $page       =   new \Think\Page($total, $listRows, $request);
         $voList     =   array_slice($list, $page->firstRow, $page->listRows);
         $p          =   $page->show();
-			
-			// 分类
-		$categorys = M ( 'addon_category' )->select ();
-		foreach ( $categorys as $vo ) {
-			$cateArr [$vo ['id']] = $vo ['title'];
-		}
-		foreach ( $voList as &$v ) {
-			$v ['cate_id'] = $cateArr [$v ['cate_id']];
-		}
-        
         $this->assign('_list', $voList);
-        $this->assign('_page', $p? $p: '');        
+        $this->assign('_page', $p? $p: '');
         // 记录当前列表页的cookie
         Cookie('__forward__',$_SERVER['REQUEST_URI']);
         $this->display();
     }
-    /**
-     * 微信插件列表
-     */
-    public function weixin(){
-    	$this->index(1);
-    }
+
     /**
      * 插件后台显示页面
      * @param string $name 插件名
      */
     public function adminList($name){
+        // 记录当前列表页的cookie
+        Cookie('__forward__',$_SERVER['REQUEST_URI']);
         $class = get_addon_class($name);
         if(!class_exists($class))
             $this->error('插件不存在');
@@ -324,16 +265,16 @@ str;
         $this->meta_title = $addon->info['title'];
         extract($param);
         $this->assign('title', $addon->info['title']);
-        if($addon->custom_adminlist)
-            $this->assign('custom_adminlist', $this->fetch($addon->addon_path.$addon->custom_adminlist));
         $this->assign($param);
         if(!isset($fields))
             $fields = '*';
         if(!isset($map))
             $map = array();
         if(isset($model))
-            $list = $this->lists(D("Addons://{$model}/{$model}")->field($fields),$map);
+            $list = $this->lists(D("Addons://{$model}/{$model}")->field($fields),$map,$order);
         $this->assign('_list', $list);
+        if($addon->custom_adminlist)
+            $this->assign('custom_adminlist', $this->fetch($addon->addon_path.$addon->custom_adminlist));
         $this->display();
     }
 
@@ -378,11 +319,11 @@ str;
             $db_config = json_decode($db_config, true);
             foreach ($addon['config'] as $key => $value) {
                 if($value['type'] != 'group'){
-                    !isset($db_config[$key]) || $addon['config'][$key]['value'] = $db_config[$key];
+                    $addon['config'][$key]['value'] = $db_config[$key];
                 }else{
                     foreach ($value['options'] as $gourp => $options) {
                         foreach ($options['options'] as $gkey => $value) {
-                            !isset($db_config[$gkey]) || $addon['config'][$key]['options'][$gourp]['options'][$gkey]['value'] = $db_config[$gkey];
+                            $addon['config'][$key]['options'][$gourp]['options'][$gkey]['value'] = $db_config[$gkey];
                         }
                     }
                 }
@@ -399,8 +340,11 @@ str;
      */
     public function saveConfig(){
         $id     =   (int)I('id');
-        $config =   $_POST['config'];
+        $config =   I('config');
         $flag = M('Addons')->where("id={$id}")->setField('config',json_encode($config));
+        if(isset($config['addons_cache'])){//清除缓存
+            S($config['addons_cache'],null);
+        }
         if($flag !== false){
             $this->success('保存成功', Cookie('__forward__'));
         }else{
@@ -427,12 +371,13 @@ str;
         }
         $addonsModel    =   D('Addons');
         $data           =   $addonsModel->create($info);
+        if(is_array($addons->admin_list) && $addons->admin_list !== array()){
+            $data['has_adminlist'] = 1;
+        }else{
+            $data['has_adminlist'] = 0;
+        }
         if(!$data)
-        	$this->error($addonsModel->getError());
-        
-        //isset($data['has_adminlist']) || $data['has_adminlist'] = intval(is_array($addons->admin_list) && $addons->admin_list !== array());
-        isset($data['type']) || $data ['type'] = intval ( file_exists ( ONETHINK_ADDON_PATH . $data ['name'] . '/Model/WeixinAddonModel.class.php' ) );
-
+            $this->error($addonsModel->getError());
         if($addonsModel->add($data)){
             $config         =   array('config'=>json_encode($addons->getConfig()));
             $addonsModel->where("name='{$addon_name}'")->save($config);
@@ -523,7 +468,7 @@ str;
             if($data['id']){
                 $flag = $hookModel->save($data);
                 if($flag !== false)
-                    $this->success('更新成功', Cookie('__forward__'));
+                    $this->success('更新成功', Cookie('__SELF__'));
                 else
                     $this->error('更新失败');
             }else{
@@ -544,10 +489,99 @@ str;
             $_controller    =   parse_name($_controller,1);
         }
 
+        $TMPL_PARSE_STRING = C('TMPL_PARSE_STRING');
+        $TMPL_PARSE_STRING['__ADDONROOT__'] = __ROOT__ . "/Addons/{$_addons}";
+        C('TMPL_PARSE_STRING', $TMPL_PARSE_STRING);
+
+
         if(!empty($_addons) && !empty($_controller) && !empty($_action)){
+
             $Addons = A("Addons://{$_addons}/{$_controller}")->$_action();
         } else {
             $this->error('没有指定插件名称，控制器或操作！');
+        }
+    }
+
+    public function edit($name, $id = 0){
+        $this->assign('name', $name);
+        $class = get_addon_class($name);
+        if(!class_exists($class))
+            $this->error('插件不存在');
+        $addon = new $class();
+        $this->assign('addon', $addon);
+        $param = $addon->admin_list;
+        if(!$param)
+            $this->error('插件列表信息不正确');
+        extract($param);
+        $this->assign('title', $addon->info['title']);
+        if(isset($model)){
+            $addonModel = D("Addons://{$name}/{$model}");
+            if(!$addonModel)
+                $this->error('模型无法实列化');
+            $model = $addonModel->model;
+            $this->assign('model', $model);
+        }
+        if($id){
+            $data = $addonModel->find($id);
+            $data || $this->error('数据不存在！');
+            $this->assign('data', $data);
+        }
+
+        if(IS_POST){
+            // 获取模型的字段信息
+            if(!$addonModel->create())
+                $this->error($addonModel->getError());
+
+            if($id){
+                $flag = $addonModel->save();
+                if($flag !== false)
+                    $this->success("编辑{$model['title']}成功！", Cookie('__forward__'));
+                else
+                    $this->error($addonModel->getError());
+            }else{
+                $flag = $addonModel->add();
+                if($flag)
+                    $this->success("添加{$model['title']}成功！", Cookie('__forward__'));
+            }
+            $this->error($addonModel->getError());
+        } else {
+            $fields = $addonModel->_fields;
+            $this->assign('fields', $fields);
+            $this->meta_title = $id? '编辑'.$model['title']:'新增'.$model['title'];
+            if($id)
+                $template = $model['template_edit']? $model['template_edit']: '';
+            else
+                $template = $model['template_add']? $model['template_add']: '';
+            $this->display($addon->addon_path.$template);
+        }
+    }
+
+    public function del($id = '', $name){
+        $ids = array_unique((array)I('ids',0));
+
+        if ( empty($ids) ) {
+            $this->error('请选择要操作的数据!');
+        }
+
+        $class = get_addon_class($name);
+        if(!class_exists($class))
+            $this->error('插件不存在');
+        $addon = new $class();
+        $param = $addon->admin_list;
+        if(!$param)
+            $this->error('插件列表信息不正确');
+        extract($param);
+        if(isset($model)){
+            $addonModel = D("Addons://{$name}/{$model}");
+            if(!$addonModel)
+                $this->error('模型无法实列化');
+        }
+
+        $map = array('id' => array('in', $ids) );
+        if($addonModel->where($map)->delete()){
+            $this->success('删除成功');
+        } else {
+            $this->error('删除失败！');
         }
     }
 

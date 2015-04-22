@@ -24,7 +24,7 @@ class Mysql extends Db{
      */
     public function __construct($config=''){
         if ( !extension_loaded('mysql') ) {
-            E(L('_NOT_SUPPORT_').':mysql');
+            E(L('_NOT_SUPPERT_').':mysql');
         }
         if(!empty($config)) {
             $this->config   =   $config;
@@ -51,13 +51,12 @@ class Mysql extends Db{
             }else{
                 $this->linkID[$linkNum] = mysql_connect( $host, $config['username'], $config['password'],true,131072);
             }
-            //dump($host);dump($config['username']);dump($config['password']);exit;
             if ( !$this->linkID[$linkNum] || (!empty($config['database']) && !mysql_select_db($config['database'], $this->linkID[$linkNum])) ) {
                 E(mysql_error());
             }
             $dbVersion = mysql_get_server_info($this->linkID[$linkNum]);
             //使用UTF8存取数据库
-            mysql_query("SET NAMES '".C('DB_CHARSET')."'", $this->linkID[$linkNum]);
+            mysql_query("SET NAMES '".$config['charset']."'", $this->linkID[$linkNum]);
             //设置 sql_model
             if($dbVersion >'5.0.1'){
                 mysql_query("SET sql_mode=''",$this->linkID[$linkNum]);
@@ -155,7 +154,7 @@ class Mysql extends Db{
     /**
      * 用于非自动提交状态下面的查询提交
      * @access public
-     * @return boolean
+     * @return boolen
      */
     public function commit() {
         if ($this->transTimes > 0) {
@@ -172,7 +171,7 @@ class Mysql extends Db{
     /**
      * 事务回滚
      * @access public
-     * @return boolean
+     * @return boolen
      */
     public function rollback() {
         if ($this->transTimes > 0) {
@@ -340,7 +339,7 @@ class Mysql extends Db{
      */
     protected function parseKey(&$key) {
         $key   =  trim($key);
-        if(!preg_match('/[,\'\"\*\(\)`.\s]/',$key)) {
+        if(!is_numeric($key) && !preg_match('/[,\'\"\*\(\)`.\s]/',$key)) {
            $key = '`'.$key.'`';
         }
         return $key;

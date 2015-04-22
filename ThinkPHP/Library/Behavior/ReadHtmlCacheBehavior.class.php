@@ -9,20 +9,11 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 namespace Behavior;
-use Think\Behavior;
 use Think\Storage;
-defined('THINK_PATH') or exit();
 /**
  * 系统行为扩展：静态缓存读取
  */
-class ReadHtmlCacheBehavior extends Behavior {
-    protected $options   =  array(
-            'HTML_CACHE_ON'     =>  false,
-            'HTML_CACHE_TIME'   =>  60,
-            'HTML_CACHE_RULES'  =>  array(),
-            'HTML_FILE_SUFFIX'  =>  '.html',
-        );
-
+class ReadHtmlCacheBehavior {
     // 行为扩展的执行入口必须是run
     public function run(&$params){
         // 开启静态缓存
@@ -110,7 +101,7 @@ class ReadHtmlCacheBehavior extends Behavior {
     static public function checkHTMLCache($cacheFile='',$cacheTime='') {
         if(!is_file($cacheFile) && 'sae' != APP_MODE ){
             return false;
-        }elseif (filemtime(C('TEMPLATE_NAME')) > Storage::get($cacheFile,'mtime','html')) {
+        }elseif (filemtime(\Think\Think::instance('Think\View')->parseTemplate()) > Storage::get($cacheFile,'mtime','html')) {
             // 模板文件如果更新静态文件需要更新
             return false;
         }elseif(!is_numeric($cacheTime) && function_exists($cacheTime)){

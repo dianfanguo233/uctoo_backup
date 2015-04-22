@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="__STATIC__/uploadify/uploadify.css?v={:SITE_VERSION}" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/uploadify/uploadify.css" />
 <div class="cols">
 	<div class="infolabel"><i class="must">*</i>附&#12288;&#12288;件</div>
 	<div class="item">
@@ -23,6 +23,9 @@
         'formData'        : {'XDEBUG_SESSION_START':'netbeans-xdebug'},
         "onUploadSuccess" : uploadSuccess,
         "successTimeout"  : 36000,
+        'onFallback' : function() {
+            alert('未检测到兼容版本的Flash.');
+        }
     });
 
 	/* 文件上传成功回调函数 */

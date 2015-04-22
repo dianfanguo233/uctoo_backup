@@ -22,7 +22,8 @@ if($_REQUEST['session_id']) {
 }
 
 //调用Application/Api应用
-$_GET['m'] = 'App';
+// 绑定访问Admin模块
+define('BIND_MODULE','App');
 define ( 'APP_PATH', './Application/' );
 define ( 'RUNTIME_PATH', './Runtime/' );
 require './ThinkPHP/ThinkPHP.php';

@@ -89,7 +89,7 @@ class ModelApi {
 
         $attr = array();
         foreach ($list[$model_id] as $value) {
-            $attr[$value['name']] = $value;
+            $attr[$value['id']] = $value;
         }
 
         if($group){

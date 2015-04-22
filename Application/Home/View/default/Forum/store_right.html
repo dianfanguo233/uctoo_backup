@@ -1,9 +1,0 @@
-<div class="r">
-  <h3><span class="gray fl">主题数:{$topic_count}</span> <a href="{:U('home/forum/form',array('cid'=>I('cid'),'model'=>$model[id]))}" class="public_btn fr"> + 发表</a></h3>
-  <ul class="sidebar">
-
-    <volist name='cateArr' id='vo'>
-      <li> <a href="{:U('home/forum/store','cid='.$vo['cid'])}">{$vo.name}</a> </li>
-    </volist>
-  </ul>
-</div>
