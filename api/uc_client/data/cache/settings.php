@@ -14,7 +14,7 @@ $_CACHE['settings'] = array (
   'pmcenter' => '1',
   'sendpmseccode' => '1',
   'pmsendregdays' => '0',
-  'maildefault' => 'username@21cn.com',
+  'maildefault' => 'webmaster@uctoo.com',
   'mailsend' => '1',
   'mailserver' => 'smtp.21cn.com',
   'mailport' => '25',
@@ -25,6 +25,7 @@ $_CACHE['settings'] = array (
   'maildelimiter' => '0',
   'mailusername' => '1',
   'mailsilent' => '1',
+  'login_failedtime' => '5',
   'version' => '1.6.0',
 );
 

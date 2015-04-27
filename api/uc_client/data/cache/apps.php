@@ -3,13 +3,13 @@ $_CACHE['apps'] = array (
   1 => 
   array (
     'appid' => '1',
-    'type' => 'UCHOME',
-    'name' => '个人家园',
-    'url' => 'http://localhost/ucenter/uc_home',
+    'type' => 'DISCUZX',
+    'name' => 'Discuz! Board',
+    'url' => 'http://forum.uctoo.com',
     'ip' => '',
     'viewprourl' => '',
     'apifilename' => 'uc.php',
-    'charset' => 'utf-8',
+    'charset' => '',
     'synlogin' => '1',
     'extra' => '',
     'recvnote' => '1',
@@ -18,8 +18,8 @@ $_CACHE['apps'] = array (
   array (
     'appid' => '2',
     'type' => 'OTHER',
-    'name' => 'thinkox',
-    'url' => 'http://localhost/thinkox-0.1-stable-xiao',
+    'name' => 'uctoo',
+    'url' => 'http://test.uctoo.com',
     'ip' => '',
     'viewprourl' => '',
     'apifilename' => 'uc.php',
@@ -32,23 +32,5 @@ $_CACHE['apps'] = array (
     ),
     'recvnote' => '1',
   ),
-  3 => 
-  array (
-    'appid' => '3',
-    'type' => 'OTHER',
-    'name' => 'thinksns',
-    'url' => 'http://localhost/ThinkSNS_V3.1_20131108_28822',
-    'ip' => '',
-    'viewprourl' => '',
-    'apifilename' => 'uc.php',
-    'charset' => '',
-    'synlogin' => '1',
-    'extra' => 
-    array (
-      'apppath' => '',
-      'extraurl' => '			',
-    ),
-    'recvnote' => '1',
-  ),
-  'UC_API' => 'http://localhost/ucenter',
+  'UC_API' => 'http://forum.uctoo.com/uc_server',
 );

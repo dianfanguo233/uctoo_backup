@@ -24,5 +24,5 @@ return array(
 
     'icon' => 'cog',
 
-    'can_uninstall' => 1
+    'can_uninstall' => 0
 );

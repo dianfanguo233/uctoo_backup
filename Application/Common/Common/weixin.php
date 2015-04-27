@@ -4,7 +4,7 @@
  * User: uctoo
  * Date: 15-4-7
  * Time: 上午11:26
- * @author:patrick(王智鹏) admin@uctoo.com
+ * @author:patrick admin@uctoo.com
  */
 
 function addWeixinLog($data, $data_post = '') {

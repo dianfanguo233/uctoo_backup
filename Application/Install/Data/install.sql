@@ -518,7 +518,7 @@ INSERT INTO `uctoo_auth_rule` (`id`, `module`, `type`, `name`, `title`, `status`
 ('377', 'admin', '1', 'Admin/Mpbase/delMp', '删除公众号', '-1', ''),
 ('370', 'admin', '1', 'Admin/Issue/setIssueContentStatus', '设置专辑状态', '-1', ''),
 ('371', 'admin', '2', 'Admin/Mpbase/index', '基础设置', '1', ''),
-('371', 'admin', '2', 'Admin/Mpbase/index', '基础设置', '1', ''),
+('372', 'admin', '1', 'Admin/Mpbase/editMp', '编辑公众号', '-1', ''),
 ('373', 'admin', '1', 'Admin/Mpbase/index', '公众号管理', '1', ''),
 ('374', 'admin', '1', 'Admin/Mpbase/config', '管理基本设置', '1', ''),
 ('375', 'admin', '1', 'Admin/Mpbase/doEditMp', '操作编辑公众号', '-1', ''),
@@ -1028,8 +1028,9 @@ INSERT INTO `uctoo_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `g
 (139, '编辑自定义菜单', 135, 0, 'Admin/Custommenu/add', 1, '', '公众号', 0, ''),
 (140, '自定义菜单管理', 135, 0, 'Admin/Custommenu/index', 0, '', '公众号', 0, ''),
 (141, '自定义菜单操作', 135, 0, 'Admin/Custommenu/operate', 1, '', '公众号', 0, ''),
-(142, '关键词管理', 135, 3, 'Keyword/index', 0, '', '公众号', 0, '');
-
+(142, '关键词管理', 135, 3, 'Keyword/index', 0, '', '公众号', 0, ''),
+(143, '切换公众号', '135', '0', 'Mpbase/change', '1', '', '公众号', '0', ''),
+(144, '删除公众号', '135', '0', 'Mpbase/del', '1', '', '公众号', '0', '');
 
 
 
@@ -1415,6 +1416,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_sso_app` (
   `config` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 DROP TABLE IF EXISTS `uctoo_role_config`;
 CREATE TABLE IF NOT EXISTS `uctoo_role_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
