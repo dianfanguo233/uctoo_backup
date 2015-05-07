@@ -1,5 +1,5 @@
 <?php
-//UC通信接口基类,抽象类，必须继承使用，原作者wiki挂了
+//UC通信接口基类,抽象类，必须继承使用
 namespace Ucenter\Api;
 use Think\Controller;
 abstract class Uc extends Controller{

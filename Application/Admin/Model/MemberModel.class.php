@@ -71,6 +71,7 @@ class MemberModel extends Model {
         );
         $this->save($data);
 
+        $map ['uid'] = UID;
         $map ['public_id'] = $user['token'];
         $info = D ( 'Mpbase/MemberPublic' )->where ( $map )->find ();
 
@@ -79,6 +80,7 @@ class MemberModel extends Model {
             'uid'             => $user['uid'],
             'username'        => $user['nickname'],
             'token'        => $user['token'],
+            'mp_id'        => $info['id'],
             'public_name'        => $info['public_name'],
             'last_login_time' => $user['last_login_time'],
         );

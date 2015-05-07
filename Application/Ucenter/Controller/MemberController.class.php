@@ -205,7 +205,8 @@ class MemberController extends Controller
             }
 
             //根据用户名获取用户UID
-            $user = UCenterMember()->where(array('username' => $username, 'email' => $email, 'status' => 1))->find();
+            //$user = UCenterMember()->where(array('username' => $username, 'email' => $email, 'status' => 1))->find();
+            $user = UCenterMember()->where(array('email' => $email, 'status' => 1))->find();
             $uid = $user['id'];
             if (!$uid) {
                 $this->error("用户名或邮箱错误");
@@ -215,7 +216,7 @@ class MemberController extends Controller
             $verify = $this->getResetPasswordVerifyCode($uid);
 
             //发送验证邮箱
-            $url = 'http://' . $_SERVER['HTTP_HOST'] . U('Home/User/reset?uid=' . $uid . '&verify=' . $verify);
+            $url = 'http://' . $_SERVER['HTTP_HOST'] . U('Home/Member/reset?uid=' . $uid . '&verify=' . $verify);
             $content = C('USER_RESPASS') . "<br/>" . $url . "<br/>" . C('WEB_SITE') . "系统自动发送--请勿直接回复<br/>" . date('Y-m-d H:i:s', TIME()) . "</p>";
             send_mail($email, C('WEB_SITE') . "密码找回", $content);
             $this->success('密码找回邮件发送成功', U('Ucenter/Member/login'));

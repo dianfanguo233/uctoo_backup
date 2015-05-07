@@ -28,7 +28,7 @@ CREATE TABLE `uctoo_member_public` (
 -- Records of uctoo_member_public
 -- ----------------------------
 
-INSERT INTO `uctoo_menu` (`title`, `pid`, `sort`, `url`, `hide`, `tip`, `group`, `is_dev`) VALUES
+INSERT INTO `uctoo_menu` (`title`, `pid`, `sort`, `url`, `hide`, `tip`, `group`, `is_dev`, `icon`) VALUES
 ( '基础设置', 0, 0, 'Mpbase/index', 1, '', '', 0, '');
 
 set @tmp_id=0;

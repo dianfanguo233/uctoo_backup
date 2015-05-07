@@ -89,9 +89,9 @@ INSERT INTO `uctoo_addons` ( `name`, `title`, `description`, `status`, `config`,
 ( 'SyncLogin', '同步登陆', '同步登陆', 1, '{"type":null,"meta":"","bind":"0","QqKEY":"","QqSecret":"","SinaKEY":"","SinaSecret":""}', 'xjw129xjt', '0.1', 1406598876, 0),
 ( 'LocalComment', '本地评论', '本地评论插件，不依赖社会化评论平台', 1, '{"can_guest_comment":"1"}', 'caipeichao', '0.1', 1399440324, 0),
 ( 'Keyword', '关键词', '关键词数据管理和微信关键词消息处理行为插件', '1', '{\"random\":\"1\"}', 'UCToo', '0.1', '1429325806', '1'),
-( 'Welcome', '欢迎语', '用户关注公众号时发送的欢迎信息，支持文本，图片，图文的信息', '1', '{\"type\":\"1\",\"keyword\":\"\",\"title\":\"\",\"description\":\"\",\"pic_url\":\"\",\"url\":\"\"}', 'UCToo', '0.1', '1429585560', '0');
-
-
+( 'Welcome', '欢迎语', '用户关注公众号时发送的欢迎信息，支持文本，图片，图文的信息', '1', '{\"type\":\"1\",\"keyword\":\"\",\"title\":\"\",\"description\":\"\",\"pic_url\":\"\",\"url\":\"\"}', 'UCToo', '0.1', '1429585560', '0'),
+('Weicj', '微场景', '微场景为产品、品牌以及事件的展示搭建了一个舞台，通过图片和音乐渲染氛围展示想传达的内容，并引导客户。可与其他插件配合使用以达到更好的营销效果。', '1', 'null', 'UCToo', '0.1', '1430374002', '0'),
+('Ucuser', '微会员', '微会员管理和微信公众号粉丝初始化行为', '1', '{\"random\":\"1\"}', 'UCToo', '0.1', '1430793843', '1');
 DROP TABLE  IF EXISTS `uctoo_attachment`;
 CREATE TABLE IF NOT EXISTS `uctoo_attachment` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -110,6 +110,36 @@ CREATE TABLE IF NOT EXISTS `uctoo_attachment` (
   PRIMARY KEY (`id`),
   KEY `idx_record_status` (`record_id`,`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='附件表' AUTO_INCREMENT=1 ;
+
+
+-- ----------------------------
+-- Table structure for uctoo_attribute
+-- ----------------------------
+DROP TABLE IF EXISTS `uctoo_attribute`;
+CREATE TABLE `uctoo_attribute` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '字段名',
+  `title` varchar(100) NOT NULL DEFAULT '' COMMENT '字段注释',
+  `field` varchar(100) NOT NULL DEFAULT '' COMMENT '字段定义',
+  `type` varchar(20) NOT NULL DEFAULT '' COMMENT '数据类型',
+  `value` varchar(100) NOT NULL DEFAULT '' COMMENT '字段默认值',
+  `remark` varchar(100) NOT NULL DEFAULT '' COMMENT '备注',
+  `is_show` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '是否显示',
+  `extra` varchar(255) NOT NULL DEFAULT '' COMMENT '参数',
+  `model_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '模型id',
+  `is_must` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否必填',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
+  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `validate_rule` varchar(255) NOT NULL,
+  `validate_time` tinyint(1) unsigned NOT NULL,
+  `error_info` varchar(100) NOT NULL,
+  `validate_type` varchar(25) NOT NULL,
+  `auto_rule` varchar(100) NOT NULL,
+  `auto_time` tinyint(1) unsigned NOT NULL,
+  `auto_type` varchar(25) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=174 DEFAULT CHARSET=utf8 COMMENT='模型属性表';
 
 DROP TABLE  IF EXISTS `uctoo_auth_extend`;
 CREATE TABLE IF NOT EXISTS `uctoo_auth_extend` (
@@ -772,7 +802,10 @@ INSERT INTO `uctoo_hooks` (`name`, `description`, `type`, `update_time`, `addons
 ( 'weiboSide', '微博侧边钩子', 1, 1417063425, 'Retopic'),
 ( 'personalMenus', '顶部导航栏个人下拉菜单', 1, 1417146501, ''),
 ( 'dealPicture', '上传图片处理', 2, 1417139975, ''),
-( 'ucenterSideMenu', '用户中心左侧菜单', 1, 1417161205, '');
+( 'ucenterSideMenu', '用户中心左侧菜单', 1, 1417161205, ''),
+( 'weixin', '微信插件默认处理的钩子', '2', '1428547125', ''),
+( 'keyword', '关键词', '2', '1430792771', 'Keyword'),
+( 'init_ucuser', '初始化粉丝信息', '2', '1430793836', 'Ucuser');
 
 DROP TABLE  IF EXISTS `uctoo_local_comment`;
 CREATE TABLE IF NOT EXISTS `uctoo_local_comment` (
@@ -796,7 +829,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_local_comment` (
 DROP TABLE IF EXISTS `uctoo_keyword`;
 CREATE TABLE `uctoo_keyword` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `mp_id` int(10) NOT NULL COMMENT '用户ID',
+  `mp_id` int(10) NOT NULL COMMENT '公众号ID',
   `keyword` varchar(100) NOT NULL COMMENT '关键词',
   `token` varchar(100) NOT NULL COMMENT 'Token',
   `addon` varchar(255) NOT NULL COMMENT '关键词所属插件',
@@ -817,7 +850,6 @@ CREATE TABLE `uctoo_keyword` (
 -- ----------------------------
 
 
-
 DROP TABLE  IF EXISTS `uctoo_member`;
 CREATE TABLE IF NOT EXISTS `uctoo_member` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
@@ -831,8 +863,8 @@ CREATE TABLE IF NOT EXISTS `uctoo_member` (
   `last_login_ip` bigint(20) NOT NULL DEFAULT '0' COMMENT '最后登录IP',
   `last_login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后登录时间',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '会员状态',
-  `last_login_role` INT( 11 ) NOT NULL,
-  `show_role` INT( 11 ) NOT NULL COMMENT  '个人主页显示角色',
+  `last_login_role` int( 11 ) NOT NULL,
+  `show_role` int( 11 ) NOT NULL COMMENT  '个人主页显示角色',
   `signature` text NOT NULL,
   `pos_province` int(11) NOT NULL,
   `pos_city` int(11) NOT NULL,
@@ -1030,8 +1062,10 @@ INSERT INTO `uctoo_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `g
 (141, '自定义菜单操作', 135, 0, 'Admin/Custommenu/operate', 1, '', '公众号', 0, ''),
 (142, '关键词管理', 135, 3, 'Keyword/index', 0, '', '公众号', 0, ''),
 (143, '切换公众号', '135', '0', 'Mpbase/change', '1', '', '公众号', '0', ''),
-(144, '删除公众号', '135', '0', 'Mpbase/del', '1', '', '公众号', '0', '');
-
+(144, '删除公众号', '135', '0', 'Mpbase/del', '1', '', '公众号', '0', ''),
+(145, '微场景', '135', '4', 'Admin/Weicja/index', '0', '', '公众号', '0', ''),
+(146, '微会员', '0', '10', 'Ucuser/index', '1', '', '', '0', ''),
+(147, '微会员信息', '146', '0', 'Ucuser/index', '0', '', '微会员管理', '0', '');
 
 
 DROP TABLE  IF EXISTS `uctoo_message`;
@@ -1054,6 +1088,35 @@ CREATE TABLE IF NOT EXISTS `uctoo_message` (
   `status` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='thinkox新增消息表' AUTO_INCREMENT=1 ;
+
+
+-- ----------------------------
+-- Table structure for uctoo_model
+-- ----------------------------
+DROP TABLE IF EXISTS `uctoo_model`;
+CREATE TABLE `uctoo_model` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '模型ID',
+  `name` char(30) NOT NULL DEFAULT '' COMMENT '模型标识',
+  `title` char(30) NOT NULL DEFAULT '' COMMENT '模型名称',
+  `extend` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '继承的模型',
+  `relation` varchar(30) NOT NULL DEFAULT '' COMMENT '继承与被继承模型的关联字段',
+  `need_pk` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '新建表时是否需要主键字段',
+  `field_sort` text NOT NULL COMMENT '表单字段排序',
+  `field_group` varchar(255) NOT NULL DEFAULT '1:基础' COMMENT '字段分组',
+  `attribute_list` text NOT NULL COMMENT '属性列表（表的字段）',
+  `template_list` varchar(100) NOT NULL DEFAULT '' COMMENT '列表模板',
+  `template_add` varchar(100) NOT NULL DEFAULT '' COMMENT '新增模板',
+  `template_edit` varchar(100) NOT NULL DEFAULT '' COMMENT '编辑模板',
+  `list_grid` text NOT NULL COMMENT '列表定义',
+  `list_row` smallint(2) unsigned NOT NULL DEFAULT '10' COMMENT '列表数据长度',
+  `search_key` varchar(50) NOT NULL DEFAULT '' COMMENT '默认搜索字段',
+  `search_list` varchar(255) NOT NULL DEFAULT '' COMMENT '高级搜索的字段',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
+  `engine_type` varchar(25) NOT NULL DEFAULT 'MyISAM' COMMENT '数据库引擎',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=97 DEFAULT CHARSET=utf8 COMMENT='文档模型表';
 
 
 DROP TABLE  IF EXISTS `uctoo_module`;
@@ -1196,21 +1259,21 @@ CREATE TABLE IF NOT EXISTS `uctoo_seo_rule` (
 
 INSERT INTO `uctoo_seo_rule` (`id`, `title`, `app`, `controller`, `action`, `status`, `seo_keywords`, `seo_description`, `seo_title`, `sort`) VALUES
 (1, '整站标题', '', '', '', 1, '', '', 'UCToo', 7),
-(2, '论坛版块页', 'forum', 'index', 'forum', -1, '{$forum.title} ', '{$forum.title} ', '{$forum.title} —— ThinkOX论坛', 2),
+(2, '论坛版块页', 'forum', 'index', 'forum', -1, '{$forum.title} ', '{$forum.title} ', '{$forum.title} —— UCToo开源社区', 2),
 (3, 'UCToo首页', '', 'Index', 'index', 1, 'UCToo', 'UCToo首页', 'UCToo开源微信应用社区', 5),
 (4, '微博详情页', '', 'Index', 'weiboDetail', 1, '{$weibo.title|op_t},UCToo,oc,微博', '{$weibo.content|op_t}\r\n', '{$weibo.content|op_t}——UCToo微博', 6),
 (5, '用户中心', 'Ucenter', 'index', 'index', 1, '{$user_info.nickname|op_t},UCToo', '{$user_info.username|op_t}的个人主页', '{$user_info.nickname|op_t}的个人主页', 3),
 (6, '会员页面', 'people', 'index', 'index', 1, '会员', '会员', '会员', 4),
-(7, '论坛帖子详情页', 'forum', 'index', 'detail', -1, '{$post.title|op_t},论坛,thinkox', '{$post.title|op_t}', '{$post.title|op_t} —— ThinkOX论坛', 1),
-(8, '商城首页', 'shop', 'index', 'index', -1, '商城,积分', '积分商城', '商城首页——ThinkOX', 0),
-(9, '商城商品详情页', 'shop', 'index', 'goodsdetail', -1, '{$content.goods_name|op_t},商城', '{$content.goods_name|op_t}', '{$content.goods_name|op_t}——ThinkOX商城', 0),
-(10, '资讯首页', 'blog', 'index', 'index', -1, '资讯首页', '资讯首页\r\n', '资讯——ThinkOX', 0),
+(7, '论坛帖子详情页', 'forum', 'index', 'detail', -1, '{$post.title|op_t},论坛,UCToo', '{$post.title|op_t}', '{$post.title|op_t} —— UCToo论坛', 1),
+(8, '商城首页', 'shop', 'index', 'index', -1, '商城,积分', '积分商城', '商城首页——UCToo', 0),
+(9, '商城商品详情页', 'shop', 'index', 'goodsdetail', -1, '{$content.goods_name|op_t},商城', '{$content.goods_name|op_t}', '{$content.goods_name|op_t}——UCToo商城', 0),
+(10, '资讯首页', 'blog', 'index', 'index', -1, '资讯首页', '资讯首页\r\n', '资讯——UCToo', 0),
 (11, '资讯列表页', 'blog', 'article', 'lists', -1, '{$category.title|op_t}', '{$category.title|op_t}', '{$category.title|op_t}', 0),
-(12, '资讯文章页', 'blog', 'article', 'detail', -1, '{$info.title|op_t}', '{$info.title|op_t}', '{$info.title|op_t}——ThinkOX', 0),
-(13, '活动首页', 'event', 'index', 'index', -1, '活动', '活动首页', '活动首页——ThinkOX', 0),
-(14, '活动详情页', 'event', 'index', 'detail', -1, '{$content.title|op_t}', '{$content.title|op_t}', '{$content.title|op_t}——ThinkOX', 0),
-(15, '专辑首页', 'issue', 'index', 'index', -1, '专辑', '专辑首页', '专辑首页——ThinkOX', 0),
-(16, '专辑详情页', 'issue', 'index', 'issuecontentdetail', -1, '{$content.title|op_t}', '{$content.title|op_t}', '{$content.title|op_t}——ThinkOX', 0);
+(12, '资讯文章页', 'blog', 'article', 'detail', -1, '{$info.title|op_t}', '{$info.title|op_t}', '{$info.title|op_t}——UCToo', 0),
+(13, '活动首页', 'event', 'index', 'index', -1, '活动', '活动首页', '活动首页——UCToo', 0),
+(14, '活动详情页', 'event', 'index', 'detail', -1, '{$content.title|op_t}', '{$content.title|op_t}', '{$content.title|op_t}——UCToo', 0),
+(15, '专辑首页', 'issue', 'index', 'index', -1, '专辑', '专辑首页', '专辑首页——UCToo', 0),
+(16, '专辑详情页', 'issue', 'index', 'issuecontentdetail', -1, '{$content.title|op_t}', '{$content.title|op_t}', '{$content.title|op_t}——UCToo', 0);
 
 DROP TABLE  IF EXISTS `uctoo_super_links`;
 CREATE TABLE IF NOT EXISTS `uctoo_super_links` (
@@ -1346,6 +1409,42 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucenter_setting` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='设置表' AUTO_INCREMENT=1 ;
 
+DROP TABLE  IF EXISTS `uctoo_ucuser`;
+CREATE TABLE IF NOT EXISTS `uctoo_ucuser` (
+  `uid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `mp_id` int(10) NOT NULL COMMENT '公众号ID',
+  `subscribe` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否订阅了公众号',
+  `openid` varchar(255) NOT NULL COMMENT 'OpenId用户的标识，对当前公众号唯一',
+  `nickname` char(16) NOT NULL DEFAULT '' COMMENT '昵称',
+  `sex` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '用户的性别，值为1时是男性，值为2时是女性，值为0时是未知',
+  `city` int(11) NOT NULL COMMENT '城市',
+  `country` int(11) NOT NULL COMMENT '国家',
+  `province` int(11) NOT NULL COMMENT '省份',
+  `language` varchar(50) NOT NULL DEFAULT 'zh_CN' COMMENT '语言',
+  `headimgurl` varchar(255) NOT NULL COMMENT '头像',
+  `subscribe_time` int(10) NOT NULL COMMENT '关注时间',
+  `unionid` int(10) DEFAULT NULL COMMENT '只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段',
+  `birthday` date NOT NULL DEFAULT '0000-00-00' COMMENT '生日',
+  `qq` char(10) NOT NULL DEFAULT '' COMMENT 'qq号',
+  `login` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录次数',
+  `reg_ip` bigint(20) NOT NULL DEFAULT '0' COMMENT '注册IP',
+  `reg_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '注册时间',
+  `last_login_ip` bigint(20) NOT NULL DEFAULT '0' COMMENT '最后登录IP',
+  `last_login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后登录时间',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '会员状态',
+  `last_login_role` INT( 11 ) NOT NULL,
+  `show_role` INT( 11 ) NOT NULL COMMENT  '个人主页显示角色',
+  `signature` text NOT NULL,
+  `score1` float DEFAULT NULL COMMENT '用户积分',
+  `score2` float DEFAULT NULL COMMENT 'score2',
+  `score3` float DEFAULT NULL COMMENT 'score3',
+  `score4` float DEFAULT NULL COMMENT 'score4',
+  PRIMARY KEY (`uid`),
+  KEY `status` (`status`),
+  KEY `openid` (`openid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='微会员表' AUTO_INCREMENT=100 ;
+
+
 DROP TABLE  IF EXISTS `uctoo_url`;
 CREATE TABLE IF NOT EXISTS `uctoo_url` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '链接唯一标识',
@@ -1448,6 +1547,23 @@ CREATE TABLE IF NOT EXISTS `uctoo_user_role` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='用户角色关联' AUTO_INCREMENT=1 ;
 
+DROP TABLE IF EXISTS `uctoo_role`;
+CREATE TABLE IF NOT EXISTS `uctoo_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL COMMENT '角色组id',
+  `name` varchar(25) NOT NULL COMMENT '英文标识',
+  `title` varchar(25) NOT NULL COMMENT '中文标题',
+  `description` varchar(500) NOT NULL COMMENT '描述',
+  `user_groups` varchar(200) NOT NULL COMMENT '默认用户组ids',
+  `invite` tinyint(4) NOT NULL COMMENT '预留字段(类型：是否需要邀请注册等)',
+  `audit` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否需要审核',
+  `sort` int(10) NOT NULL DEFAULT '0',
+  `status` tinyint(2) NOT NULL,
+  `create_time` int(11) NOT NULL,
+  `update_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='角色表' AUTO_INCREMENT=1 ;
+
 -- ----------------------------
 -- Table structure for uctoo_verify
 -- ----------------------------
@@ -1465,6 +1581,30 @@ CREATE TABLE `uctoo_verify` (
 -- ----------------------------
 -- Records of uctoo_verify
 -- ----------------------------
+-- ----------------------------
+-- Table structure for uctoo_weicj
+-- ----------------------------
+DROP TABLE IF EXISTS `uctoo_weicj`;
+CREATE TABLE `uctoo_weicj` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `url` varchar(255) NOT NULL COMMENT '自定义回复的url',
+  `keyword_type` tinyint(2) NOT NULL DEFAULT '0' COMMENT '关键词类型',
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `intro` text NOT NULL COMMENT '封面简介',
+  `pic3` int(10) unsigned NOT NULL COMMENT '场景图三',
+  `cover` int(10) unsigned NOT NULL COMMENT '封面图片',
+  `pic2` int(10) unsigned NOT NULL COMMENT '场景图二',
+  `mp_id` int(10) NOT NULL COMMENT '公众号ID',
+  `pic1` int(10) unsigned NOT NULL COMMENT '场景图一',
+  `pic4` int(10) unsigned NOT NULL COMMENT '场景图四',
+  `pic5` int(10) unsigned NOT NULL COMMENT '场景图五',
+  `pic6` int(10) unsigned NOT NULL COMMENT '场景图六',
+  `clickpic` int(10) unsigned NOT NULL COMMENT '场景跳转图',
+  `andio` int(10) unsigned NOT NULL COMMENT '背景音乐',
+  `cjurl` varchar(255) NOT NULL DEFAULT 'http://' COMMENT '场景跳转URL',
+  `audio2` varchar(255) NOT NULL COMMENT '背景音乐（网络地址）',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Table structure for uctoo_weixin_log
@@ -1478,3 +1618,23 @@ CREATE TABLE `uctoo_weixin_log` (
   `data_post` text,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7213 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+-- ----------------------------
+-- Table structure for uctoo_welcome
+-- ----------------------------
+DROP TABLE IF EXISTS `uctoo_welcome`;
+CREATE TABLE `uctoo_welcome` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `keyword` varchar(100) NOT NULL COMMENT '关键词',
+  `keyword_type` tinyint(2) DEFAULT NULL COMMENT '关键词类型',
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `intro` text COMMENT '简介',
+  `cate_id` int(10) unsigned DEFAULT '0' COMMENT '所属类别',
+  `cover` int(10) unsigned DEFAULT NULL COMMENT '封面图片',
+  `content` text NOT NULL COMMENT '内容',
+  `cTime` int(10) DEFAULT NULL COMMENT '发布时间',
+  `sort` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '排序号',
+  `view_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '浏览数',
+  `token` varchar(255) NOT NULL COMMENT 'Token',
+  `url` varchar(255) DEFAULT NULL COMMENT '跳转url',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;

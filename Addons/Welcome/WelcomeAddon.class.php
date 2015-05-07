@@ -37,9 +37,6 @@ use Common\Controller\Addon;
             return true;
         }
 
-        //实现的weixin钩子方法
-        public function weixin($param){
-            trace('wechat：weixin'.$param,'微信','DEBUG',true);
-        }
+
 
     }

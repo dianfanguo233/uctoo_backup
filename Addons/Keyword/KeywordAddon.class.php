@@ -19,7 +19,6 @@ use Common\Controller\Addon;
             'version'=>'0.1'
         );
 
-        public $custom_config = 'mode=1';
 
         public $admin_list = array(
             'model'=>'Keyword',		//要查的表
@@ -43,7 +42,7 @@ use Common\Controller\Addon;
             return true;
         }
 
-        //实现的keyword钩子方法
+        //实现的keyword钩子方法，对关键词进行匹配，根据具体处理业务的addon数据或配置，组装回复给用户的内容
         public function keyword($params){
 
             if($params['mp_id']){
@@ -58,8 +57,9 @@ use Common\Controller\Addon;
 
                     $reData[0]['Title'] = $aimData['title'];
                     $reData[0]['Description'] = $aimData['intro'];
-                    $reData[0]['PicUrl'] = 'http://images.domain.com/templates/domaincom/logo.png'; // get_cover($aimData['cover'],'path');  //http://images.domain.com/templates/domaincom/logo.png
+                    $reData[0]['PicUrl'] = get_cover_url($aimData['cover']) ; //'http://images.domain.com/templates/domaincom/logo.png'; // //   //http://images.domain.com/templates/domaincom/logo.png
                     $reData[0]['Url'] = $aimData['url'];
+                    trace('wechat：keyword'.get_cover_url($aimData['cover']),'微信','DEBUG',true);
 
                     $params['weObj']->news($reData);
                 }else{                                                       //TODO:没有指定模型，就用addon的配置信息组装回复的内容

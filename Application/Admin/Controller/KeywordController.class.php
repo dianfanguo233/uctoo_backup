@@ -48,7 +48,7 @@ class KeywordController extends AdminController
 
     /**
      * 删除公众号
-     * @param null $id
+     * @param null $ids
      * @author patrick<contact@uctoo.com>
      */
     public function del($ids = null){

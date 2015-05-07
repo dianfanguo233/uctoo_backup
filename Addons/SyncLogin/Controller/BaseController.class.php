@@ -253,7 +253,7 @@ class BaseController extends AddonsController
             $config = D('Config')->where(array('name' => 'USER_REG_WEIBO_CONTENT'))->find();
             $reg_weibo = $config['value']; //用户注册的微博内容
             if ($reg_weibo != '' && $config) { //为空不发微博
-                D('Weibo/Weibo')->addWeibo($uid, $reg_weibo);
+//                D('Weibo/Weibo')->addWeibo($uid, $reg_weibo);
             }
         }
         $this->loginWithoutpwd($uid);

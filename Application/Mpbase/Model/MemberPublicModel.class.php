@@ -19,7 +19,7 @@ class MemberPublicModel extends Model {
 
     public function getMpType($key = null){
         $array = array(1 => '普通订阅号', 2 => '认证订阅号/普通服务号', 3 => '认证服务号', 4 => '企业号');
-        return empty($key)?$array:$array[$key];
+        return !isset($key)?$array:$array[$key];
     }
 
     public function addMp($data)

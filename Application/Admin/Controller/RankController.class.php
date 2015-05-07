@@ -248,7 +248,7 @@ class RankController extends AdminController
                     $this->sendMessage($data, $content);
                     //写入数据库
                     $model = D('Weibo/Weibo');
-                    $result = $model->addWeibo(is_login(), $content1);
+//                    $result = $model->addWeibo(is_login(), $content1);
                 }
             }
             $this->success($is_Edit ? '编辑关联成功' : '添加关联成功', U('Rank/userRankList?id=' . $uid));
@@ -321,7 +321,7 @@ class RankController extends AdminController
                     $this->sendMessage($data, $content);
                     //写入数据库
                     $model = D('Weibo/Weibo');
-                    $result = $model->addWeibo(is_login(), $content1);
+//                    $result = $model->addWeibo(is_login(), $content1);
                 }
             }
             $this->success($is_Edit ? '编辑关联成功' : '添加关联成功', U('Rank/userRankList?id=' . $uid));
@@ -455,7 +455,7 @@ class RankController extends AdminController
                 $this->sendMessage($rank_user, $content,'头衔申请审核通过');
                 //发微博
                 $model_weibo = D('Weibo/Weibo');
-                $result = $model_weibo->addWeibo(is_login(), $content1);
+//                $result = $model_weibo->addWeibo(is_login(), $content1);
             }
         }else if($status=-1){
             foreach($ids as $val){

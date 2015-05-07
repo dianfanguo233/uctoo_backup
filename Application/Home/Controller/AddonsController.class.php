@@ -34,6 +34,8 @@ class AddonsController extends Controller{
             $_controller = parse_name($_controller,1);
         }
 
+        defined ( 'ADDON_PUBLIC_PATH' ) or define ( 'ADDON_PUBLIC_PATH', __ROOT__ . '/Addons/' . $_addons . '/View/default/Public' );
+
         $TMPL_PARSE_STRING = C('TMPL_PARSE_STRING');
         $TMPL_PARSE_STRING['__ADDONROOT__'] = __ROOT__ . "/Addons/{$_addons}";
         C('TMPL_PARSE_STRING', $TMPL_PARSE_STRING);

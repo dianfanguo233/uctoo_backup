@@ -52,10 +52,23 @@ class WeixinController extends Controller {
         $weObj->getRev();
         $data = $weObj->getRevData();
         $type = $weObj->getRevType();
+        $ToUserName = $weObj->getRevTo();
+        $FromUserName = $weObj->getRevFrom();
         $params['weObj'] = &$weObj;
         $params['mp_id'] = $id;
-        //与微信交互的中控服务器逻辑可以自己定义，这里实现一个通用的
+        $params['weOptions'] = $this->options;
+        
+        //如果被动响应可获得用户信息就记录下
+        if (! empty ( $ToUserName )) {
+            get_token ( $ToUserName );
+        }
+        if (! empty ( $FromUserName )) {
+          $oid =  get_openid($FromUserName);
+        }
+        
+        hook('init_ucuser',$params);   //把消息分发到addons/ucuser/init_ucuser的方法中,初始化公众号粉丝信息
 
+        //与微信交互的中控服务器逻辑可以自己定义，这里实现一个通用的
         switch ($type) {
             //事件
             case TPWechat::MSGTYPE_EVENT:         //先处理事件型消息
@@ -157,7 +170,7 @@ class WeixinController extends Controller {
 
                 break;
         }
-        hook('weixin',$params);   //把消息分发到实现了weixin方法的addons中
+
         // 记录日志
         addWeixinLog ( $data, $GLOBALS ['HTTP_RAW_POST_DATA'] );
 	}
