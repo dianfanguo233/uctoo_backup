@@ -52,6 +52,8 @@ if (get_magic_quotes_gpc()) {
  */
 define ('APP_DEBUG', true);
 
+//mp.weixin.qq.com，开发者中心，服务器配置，Token(令牌)
+define ('APP_TOKEN', 'uctoo');
 /**
  * 应用目录设置
  * 安全期间，建议安装调试完成后移动到非WEB目录

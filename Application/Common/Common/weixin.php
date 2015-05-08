@@ -100,7 +100,7 @@ function get_openid($openid = NULL) {
         $info = get_mpid_appinfo ();
         trace('wechat：OAuthWeixin'.$info['id'],'微信','DEBUG',true);
 
-        $options['token'] = 'uctoo';
+        $options['token'] = APP_TOKEN;
         $options['appid'] = $info['appid'];    //初始化options信息
         $options['appsecret'] = $info['secret'];
         $options['encodingaeskey'] = $info['encodingaeskey'];

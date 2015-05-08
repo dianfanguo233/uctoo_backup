@@ -91,7 +91,7 @@ class WeicjaController extends AdminController
                     $data['id'] = $res;
                     $data['url'] = "http://".$_SERVER ['HTTP_HOST'].addons_url ( 'Weicj://Weicj/index',array('id'=>$res,'mp_id'=> $data['mp_id']) );  //分享链接里一定加mp_id
                     $data['url'] = str_replace("/admin/addon", "/home/addon", $data['url']);   //哎呀，管理类中生成的url得替换成前台的，好麻烦
-                    $res = $model->edit($data);
+                    $res = $model->save($data);
                 }
             }
             $this->success(($id == 0 ? '添加' : '编辑') . '成功', $id == 0 ? U('', array('id' => $res)) : '');
@@ -118,7 +118,7 @@ class WeicjaController extends AdminController
                     ->keySingleImage('clickpic', '跳转图片', '跳转场景图片或按钮')->keyText('cjurl', '跳转网址', '跳转网址必须以http://开头')
                     ->keyText('audio2', '背景音乐网址', '网址必须以http://开头，仅支持mp3格式')
                     ->data($weicj)
-                    ->buttonSubmit(U('edit'))->buttonBack()
+                    ->buttonSubmit(U('save'))->buttonBack()
                     ->display();
 
         }

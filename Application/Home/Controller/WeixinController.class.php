@@ -20,7 +20,7 @@ use Com\TPWechat;
 class WeixinController extends Controller {
 
     private $options = array(
-          'token'=>'uctoo', //填写你设定的key
+          'token'=>APP_TOKEN, //填写你设定的key
           'encodingaeskey'=>'', //填写加密用的EncodingAESKey
           'appid'=>'', //填写高级调用功能的app id
           'appsecret'=>'' //填写高级调用功能的密钥
