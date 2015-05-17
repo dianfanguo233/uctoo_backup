@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_issue_content` (
   `update_time` int(11) NOT NULL,
   `status` tinyint(11) NOT NULL,
   `url` varchar(200) NOT NULL,
+  `sort` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='专辑内容表' AUTO_INCREMENT=29 ;
 

@@ -40,7 +40,23 @@
 		<script src="{:ADDON_PUBLIC_PATH}/js/player.js"></script>
 		<script src="{:ADDON_PUBLIC_PATH}/js/stackBlur.js"></script>
 		<script src="{:ADDON_PUBLIC_PATH}/js/app.js"></script>
-		
+		<if condition="is_administrator()">
+		<link rel="stylesheet" href="__AUI__/css/amazeui.min.css">
+        <link rel="stylesheet" href="__AUI__/css/app.css">
+	
+	    <!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="__AUI__/js/polyfill/rem.min.js"></script>
+<script src="__AUI__/js/polyfill/respond.min.js"></script>
+<script src="__AUI__/js/amazeui.legacy.js"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="__AUI__/js/jquery.min.js"></script>
+<script src="__AUI__/js/amazeui.js"></script>
+<!--<![endif]-->
+		</if>
 	</head>
 	<body onselectstart="return true;" ondragstart="return false;">
 		<div class="container">
@@ -76,5 +92,21 @@
 			<div class="lottery" id="lottery"></div>
 			<div class="download_mask" id="downloadMask"><i></i></div>
 		</div>
+		<if condition="is_administrator()">
+                                    <!-- 超管在管理后台预览时可以看到微场景分享二维码 -->
+<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default "
+     id="">
+  <ul class="am-navbar-nav am-cf am-avg-sm-4">
+    
+    <li data-am-navbar-qrcode>
+      <a href="###">
+        <span class="am-icon-qrcode"></span>
+        <span class="am-navbar-label">二维码</span>
+      </a>
+    </li>
+   
+  </ul>
+</div>
+        </if>
 	</body>
 </html>

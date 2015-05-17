@@ -1057,6 +1057,11 @@ function U($url='',$vars='',$suffix=true,$domain=false) {
     if($domain) {
         $url   =  (is_ssl()?'https://':'http://').$domain.$url;
     }
+    //缩短插件的URL uctoo修改
+	$re = C('URL_ROUTE_RULES');
+	if ( C('URL_ROUTER_ON') && isset($re['Addons/execute/:_addons/:_controller/:_action'])) {
+		$url = str_ireplace(array('home/addons/execute','_addons/','_controller/','_action/'), array('addon',''), $url);
+	}
     return $url;
 }
 

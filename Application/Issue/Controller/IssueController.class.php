@@ -163,7 +163,7 @@ class IssueController extends AdminController
 
         $builder->title('内容管理')
             ->setStatusUrl(U('setIssueContentStatus'))->buttonDisable('','审核不通过')->buttonDelete()
-            ->keyId()->keyLink('title', '标题','Issue/Index/issueContentDetail?id=###')->keyUid()->keyCreateTime()->keyStatus()
+            ->keyId()->keyText('issue_id','分类')->keyLink('title', '标题','Issue/Index/issueContentDetail?id=###')->keyUid()->keyCreateTime()->keyStatus()
             ->data($list)
             ->pagination($totalCount, $r)
             ->display();

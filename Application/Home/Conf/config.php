@@ -106,7 +106,8 @@ return array(
         '__IMG__' => __ROOT__ . '/Application/Home'   . '/Static/images',
         '__CSS__' => __ROOT__ . '/Application/Home'   . '/Static/css',
         '__JS__' => __ROOT__ . '/Application/Home'  . '/Static/js',
-        '__ZUI__' => __ROOT__ . '/Public/zui'
+        '__ZUI__' => __ROOT__ . '/Public/zui',
+        '__AUI__'=>__ROOT__.'/Public/amazeui/assets'
     ),
 
 );

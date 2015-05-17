@@ -29,4 +29,11 @@ class IndexController extends HomeController
         $this->display();
     }
 
+    function help() {
+        if (empty ( $_GET ['id'] )) {
+            $this->error ( '公众号参数非法' );
+        }
+        $this->display ( );
+    }
+
 }

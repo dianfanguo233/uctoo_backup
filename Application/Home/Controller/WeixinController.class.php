@@ -59,6 +59,9 @@ class WeixinController extends Controller {
         $params['weOptions'] = $this->options;
         
         //如果被动响应可获得用户信息就记录下
+	if (! empty ( $id )) {                    //设置当前上下文的公众号id
+            $mp_id =  get_mpid($id);
+        }
         if (! empty ( $ToUserName )) {
             get_token ( $ToUserName );
         }

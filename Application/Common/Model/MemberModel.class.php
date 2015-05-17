@@ -177,6 +177,11 @@ class MemberModel extends Model
         $audit=D('UserRole')->where($map)->getField('status');
         //判断角色用户是否审核 end
 
+        $umap ['uid'] = $user['uid'];
+        $umap ['public_id'] = $user['token'];
+        $info = D ( 'Mpbase/MemberPublic' )->where ( $umap )->find ();
+        get_mpid($info ['id']);                                               //设置当前下上文mp_id
+        
         /* 记录登录SESSION和COOKIES */
         $auth = array(
             'uid' => $user['uid'],
@@ -184,6 +189,9 @@ class MemberModel extends Model
             'last_login_time' => $user['last_login_time'],
             'role_id'=>$user['last_login_role'],
             'audit'=>$audit,
+            'mp_id'=>$info ['id'],
+            'token'=>$info['public_id'],
+            'public_name'=>$info['public_name'],
         );
 
         session('user_auth', $auth);

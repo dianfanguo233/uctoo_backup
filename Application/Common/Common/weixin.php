@@ -92,8 +92,8 @@ function get_openid($openid = NULL) {
     $openid = session ( 'openid_' . $mp_id );
     trace($mp_id.'wechat：openid'.$openid,'微信','DEBUG',true);
     $isWeixinBrowser = isWeixinBrowser ();
-    //下面这段应该逻辑没问题，未严格测试先注释掉20150507，暂不支持分享链接可以不带openid的功能
- /*   if ( $openid <= 0 && $isWeixinBrowser) {
+    //下面这段应该逻辑没问题，如果公众号配置信息错误或者没有snsapi_base作用域的获取信息权限可能会出现死循环，注释掉以下if可治愈
+    if ( $openid <= 0 && $isWeixinBrowser) {
         trace('wechat：openid1'.$openid,'微信','DEBUG',true);
         $callback = GetCurUrl ();
        // OAuthWeixin ( $callback );
@@ -108,7 +108,7 @@ function get_openid($openid = NULL) {
         $openid =  $auth->open_id;
         trace('wechat：openid3'.$openid,'微信','DEBUG',true);
     }
-*/
+
     if (empty ( $openid )) {
         return - 1;
     }
@@ -159,7 +159,7 @@ function get_mpid($mp_id = NULL) {
         $mp_id = session('user_auth.mp_id');
     }
     if (empty ( $mp_id )) {
-        $map['uid'] = UID;
+        $map['uid'] = is_login();
         $map['public_id'] = get_token();
         $mp =  D('Mpbase/MemberPublic')->where($map)->find();  //所登陆会员帐号当前管理的公众号
         $mp_id = $mp['id'];

@@ -116,20 +116,29 @@ class Dispatcher {
             define('__INFO__','');
             define('__EXT__','');
         }else{
-            define('__INFO__',trim($_SERVER['PATH_INFO'],'/'));
+            //=====uctoo 修改 支持 index.php/addon/Vote/Vote/lists 这样的插件短地址
+		$info = trim ( $_SERVER ['PATH_INFO'], '/' );
+		
+		$re = C('URL_ROUTE_RULES');
+		if (substr ( $info, 0, 6 ) == 'addon/' && C('URL_ROUTER_ON') && isset($re['Addons/execute/:_addons/:_controller/:_action'])) {
+			$info = str_replace ( 'addon/', 'Home/Addons/execute/', $info );
+		}
+		
+		define ( '__INFO__', $info );
             // URL后缀
             define('__EXT__', strtolower(pathinfo($_SERVER['PATH_INFO'],PATHINFO_EXTENSION)));
-            $_SERVER['PATH_INFO'] = __INFO__;
+            $_SERVER['PATH_INFO'] = __INFO__;     
             if (__INFO__ && !defined('BIND_MODULE') && C('MULTI_MODULE')){ // 获取模块名
-                $paths      =   explode($depr,__INFO__,2);
-                $allowList  =   C('MODULE_ALLOW_LIST'); // 允许的模块列表
-                $module     =   preg_replace('/\.' . __EXT__ . '$/i', '',$paths[0]);
-                if( empty($allowList) || (is_array($allowList) && in_array_case($module, $allowList))){
-                    $_GET[$varModule]       =   $module;
-                    $_SERVER['PATH_INFO']   =   isset($paths[1])?$paths[1]:'';
+                    $paths      =   explode($depr,__INFO__,2);
+                    $allowList  =   C('MODULE_ALLOW_LIST'); // 允许的模块列表
+                    $module     =   preg_replace('/\.' . __EXT__ . '$/i', '',$paths[0]);
+                    if( empty($allowList) || (is_array($allowList) && in_array_case($module, $allowList))){
+                        $_GET[$varModule]       =   $module;
+                        $_SERVER['PATH_INFO']   =   isset($paths[1])?$paths[1]:'';
+                    }
                 }
-            }
-        }
+            }             
+
 
         // URL常量
         define('__SELF__',strip_tags($_SERVER[C('URL_REQUEST_URI')]));
@@ -178,7 +187,6 @@ class Dispatcher {
                 C(api('Config/lists'));//合并入后台设置
             }
 	        $urlMode        =   C('URL_MODEL');
-            //dump($urlMode);exit;
 	        if($urlMode == URL_COMPAT ){// 兼容模式判断
 	            define('PHP_FILE',_PHP_FILE_.'?'.$varPath.'=');
 	        }elseif($urlMode == URL_REWRITE ) {

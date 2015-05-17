@@ -369,6 +369,32 @@ abstract class Controller
         // 执行后续操作
         Hook::listen('action_end');
     }
+
+        /**
+     * check_rule  检查权限
+     * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
+     */
+    public function check_rule($rule ='',$except_uid =-1,$msg = ''){
+        if (!check_auth($rule,$except_uid)) {
+            $this->error(empty($msg)?'您无操作权限。':$msg);
+        }
+    }
+
+     /**
+     * check_action_limit 行为限制
+     * @param null $action
+     * @param null $model
+     * @param null $record_id
+     * @param null $user_id
+     * @param bool $ip
+     * @author 郑钟良<zzl@ourstu.com>
+     */
+    public function check_action_limit($action = null, $model = null, $record_id = null, $user_id = null, $ip = false){
+        $return = check_action_limit($action, $model, $record_id, $user_id, $ip);
+        if ($return && !$return['state']) {
+            $this->error($return['info'],$return['url']);
+        }
+    }
 }
 
 // 设置控制器别名 便于升级

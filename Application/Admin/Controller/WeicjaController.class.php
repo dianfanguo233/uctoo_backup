@@ -22,12 +22,13 @@ class WeicjaController extends AdminController
     public function index($page=1,$r=20)
     {
         //读取数据
-        $model = M('Weicj');
+        $model = D('Weicj');
         $map['mp_id'] = get_mpid();
         $list = $model->where($map)->page($page, $r)->order('id asc')->select();
         foreach ($list as &$val) {
 
         }
+        $url = $list['url'];
         $totalCount = $model->count();
         //显示页面
         $builder = new AdminListBuilder();
@@ -35,7 +36,7 @@ class WeicjaController extends AdminController
             ->title('微场景列表')
             ->buttonNew(U('edit'))->button('删除',array('class' => 'btn ajax-post tox-confirm', 'data-confirm' => '您确实要删除关键词吗？', 'url' => U('del'), 'target-form' => 'ids'))
             ->keyId()->keyText('title', '标题')->keyText('intro', '简介')->keyText('cjurl', '跳转url')
-            ->keyDoActionEdit('edit?id=###')->keyDoAction('del?ids=###', '删除')
+            ->keyDoAction('preview?id=###', '预览')->keyDoActionEdit('edit?id=###')->keyDoAction('del?ids=###', '删除')
             ->data($list)
             ->pagination($totalCount, $r)
             ->display();
@@ -51,7 +52,7 @@ class WeicjaController extends AdminController
         if (!$ids) {
             $this->error('请选择数据');
         }
-        $model =  M('Weicj');
+        $model =  D('Weicj');
         $res = $model->delete($ids);
         if ($res) {
             $this->success('删除成功');
@@ -60,9 +61,27 @@ class WeicjaController extends AdminController
         }
     }
 
+    /**
+     * 预览微场景
+     * @param null $id
+     * @author patrick<contact@uctoo.com>
+     */
+    public function preview($id = null){
+        if (!$id) {
+            $this->error('请选择数据');
+        }
+        $model =  D('Weicj');
+        $res = $model->find($id);
+        if ($res) {
+            redirect($res['url']);
+        } else {
+            $this->error('预览失败');
+        }
+    }
+
     public function edit($id = null)
     {
-        $model = M('Weicj');
+        $model = D('Weicj');
         if (IS_POST) {   //提交表单
             $data['mp_id'] = I('post.mp_id', '', 'op_t');
             $data['url'] = I('post.url', '', 'op_t');
@@ -118,7 +137,7 @@ class WeicjaController extends AdminController
                     ->keySingleImage('clickpic', '跳转图片', '跳转场景图片或按钮')->keyText('cjurl', '跳转网址', '跳转网址必须以http://开头')
                     ->keyText('audio2', '背景音乐网址', '网址必须以http://开头，仅支持mp3格式')
                     ->data($weicj)
-                    ->buttonSubmit(U('save'))->buttonBack()
+                    ->buttonSubmit(U('edit'))->buttonBack()
                     ->display();
 
         }

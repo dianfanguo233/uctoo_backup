@@ -35,7 +35,10 @@ class AddonsController extends Controller{
         }
 
         defined ( 'ADDON_PUBLIC_PATH' ) or define ( 'ADDON_PUBLIC_PATH', __ROOT__ . '/Addons/' . $_addons . '/View/default/Public' );
-
+		defined ( '_ADDONS' ) or define ( '_ADDONS', $_addons );
+		defined ( '_CONTROLLER' ) or define ( '_CONTROLLER', $_controller );
+		defined ( '_ACTION' ) or define ( '_ACTION', $_action );
+		
         $TMPL_PARSE_STRING = C('TMPL_PARSE_STRING');
         $TMPL_PARSE_STRING['__ADDONROOT__'] = __ROOT__ . "/Addons/{$_addons}";
         C('TMPL_PARSE_STRING', $TMPL_PARSE_STRING);
@@ -45,6 +48,51 @@ class AddonsController extends Controller{
         } else {
             $this->error('没有指定插件名称，控制器或操作！');
         }
+    }
+
+    /**
+     * 重写模板显示 调用内置的模板引擎显示方法，
+     *
+     * @access protected
+     * @param string $templateFile
+     *        	指定要调用的模板文件
+     *        	默认为空 由系统自动定位模板文件
+     *        	支持格式: 空, index, UserCenter/index 和 完整的地址
+     * @param string $charset
+     *        	输出编码
+     * @param string $contentType
+     *        	输出类型
+     * @param string $content
+     *        	输出内容
+     * @param string $prefix
+     *        	模板缓存前缀
+     * @return void
+     */
+    protected function display($templateFile = '', $charset = '', $contentType = '', $content = '', $prefix = '') {
+        $templateFile = $this->getAddonTemplate ( $templateFile );
+        $this->view->display ( $templateFile, $charset, $contentType, $content, $prefix );
+    }
+    function getAddonTemplate($templateFile = '') {
+        if (file_exists ( $templateFile )) {
+            return $templateFile;
+        }
+        // dump ( $templateFile );
+        $oldFile = $templateFile;
+        if (empty ( $templateFile )) {
+            $templateFile = T ( 'Addons://' . _ADDONS . '@' . _CONTROLLER . '/' . _ACTION );
+        } elseif (stripos ( $templateFile, '/Addons/' ) === false && stripos ( $templateFile, THINK_PATH ) === false) {
+            if (stripos ( $templateFile, '/' ) === false) { // 如index
+                $templateFile = T ( 'Addons://' . _ADDONS . '@' . _CONTROLLER . '/' . $templateFile );
+            } elseif (stripos ( $templateFile, '@' ) === false) { // // 如 UserCenter/index
+                $templateFile = T ( 'Addons://' . _ADDONS . '@' . $templateFile );
+            }
+        }
+
+        if (stripos ( $templateFile, '/Addons/' ) !== false && ! file_exists ( $templateFile )) {
+            $templateFile = ! empty ( $oldFile ) && stripos ( $oldFile, '/' ) === false ? $oldFile : _ACTION;
+        }
+        // dump ( $templateFile );//exit;
+        return $templateFile;
     }
 
 }

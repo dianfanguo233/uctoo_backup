@@ -10,11 +10,8 @@ class Wxauth {
 	public $wxuser;
 	
 	public function __construct($options){
-        trace('wechat：re2'.arr2str($options),'微信','DEBUG',true);
 		$this->options = $options;
-        trace('wechat：re3'.arr2str($this->options),'微信','DEBUG',true);
 		$this->wxoauth();
-        trace('wechat：re4','微信','DEBUG',true);
 	}
 	
 	public function wxoauth(){
@@ -97,7 +94,7 @@ class Wxauth {
 			trace('wechat：re8'.$url,'微信','DEBUG',true);
 			$oauth_url = $we_obj->getOauthRedirect($url,"wxbase",$scope);
 			trace('wechat：re9'.$oauth_url,'微信','DEBUG',true);
-			header('Location: ' . $oauth_url);
+			redirect ( $oauth_url );
 		}
 	}
 }

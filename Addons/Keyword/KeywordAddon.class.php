@@ -57,13 +57,22 @@ use Common\Controller\Addon;
 
                     $reData[0]['Title'] = $aimData['title'];
                     $reData[0]['Description'] = $aimData['intro'];
-                    $reData[0]['PicUrl'] = get_cover_url($aimData['cover']) ; //'http://images.domain.com/templates/domaincom/logo.png'; // //   //http://images.domain.com/templates/domaincom/logo.png
+                    $reData[0]['PicUrl'] = get_cover_url($aimData['cover']) ; //'http://images.domain.com/templates/domaincom/logo.png';
                     $reData[0]['Url'] = $aimData['url'];
                     trace('wechat：keyword'.get_cover_url($aimData['cover']),'微信','DEBUG',true);
 
                     $params['weObj']->news($reData);
-                }else{                                                       //TODO:没有指定模型，就用addon的配置信息组装回复的内容
+                }elseif ($Keyword['addon']){                                 //TODO:没有指定模型，就用addon的配置信息组装回复的内容
+                    $amap['name'] =  $Keyword['addon'];
+                    $aimData = M('Addons')->where($amap)->find();             //插件信息组装回复，当然插件需要先安装了
+       
+                    $reData[0]['Title'] = $aimData['title'];
+                    $reData[0]['Description'] = $aimData['description'];
 
+                    $reData[0]['PicUrl'] = get_addoncover_url( $Keyword['addon'] ); //插件目录下放个回复封面图片例如jssdk插件中的cover.png
+                    $param['mp_id'] = $params['mp_id'];
+                    $reData[0]['Url'] = get_addonreply_url($Keyword['addon'],$param);
+                    $params['weObj']->news($reData);
                 }
 
             }else{

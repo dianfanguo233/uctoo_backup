@@ -47,6 +47,7 @@ class MpbaseController extends AdminController
             ->buttonNew(U('Mpbase/edit'))
             ->setStatusUrl(U('setStatus'))->buttonEnable()->buttonDisable()->button('删除',array('class' => 'btn ajax-post tox-confirm', 'data-confirm' => '您确实要删除公众号吗？（删除后对应的公众号配置将会清空，不可恢复，请谨慎删除！）', 'url' => U('del'), 'target-form' => 'ids'))
             ->keyId()->keyUid()->keyText('public_name', '名称')->keyText('wechat', '微信号')->keyText('public_id', '原始ID')->keyText('type','公众号类型')->keyStatus()->keyDoActionEdit('edit?id=###')->keyDoAction('del?ids=###', '删除')->keyDoAction('change?id=###', '切换为当前公众号')
+            ->keyDoAction('Home/Index/help?id=###', '接口配置')
             ->data($list)
             ->pagination($totalCount, $r)
             ->display();
@@ -140,16 +141,14 @@ class MpbaseController extends AdminController
         $map ['uid'] = UID;
         $res =  M ( 'Member' )->where ( $map )->setField ( 'token', $info['public_id'] );
 
-        if ($res) {
+
             $user = session('user_auth');
             $user['token'] = $info['public_id'];
             $user['public_name'] = $info['public_name'];
             session('user_auth', $user);
             session('user_auth_sign', data_auth_sign($user));
             $this->success('切换公众号成功！');
-        } else {
-            $this->error('切换公众号失败！');
-        }
+
 
         redirect ( U ( 'index' ) );
     }

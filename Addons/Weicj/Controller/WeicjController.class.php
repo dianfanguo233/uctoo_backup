@@ -32,7 +32,7 @@ class WeicjController extends AddonsController{
 		$this->assign('info',$info);
 
 		//$templateFile = $this->model ['template_list'] ? $this->model ['template_list'] : '';
-		$this->display ( T('Addons://Weicj@Weicj/index') );
+		$this->display ( );
 	}
 
 }

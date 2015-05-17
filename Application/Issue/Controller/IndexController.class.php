@@ -4,6 +4,7 @@
 namespace Issue\Controller;
 
 use Think\Controller;
+use Vendor\simple_html_dom;
 
 
 class IndexController extends Controller
@@ -15,7 +16,10 @@ class IndexController extends Controller
     public function _initialize()
     {
         $tree = D('Issue')->getTree();
+        $list = D('Issue')->getList();
+
         $this->assign('tree', $tree);
+        $this->assign('list', $list);
     }
 
     public function index($page = 1, $issue_id = 0)
@@ -32,7 +36,37 @@ class IndexController extends Controller
             $map['issue_id'] = array('in', implode(',', $ids));
         }
         $map['status'] = 1;
-        $content = D('IssueContent')->where($map)->order('create_time desc')->page($page, 16)->select();
+        $content = D('IssueContent')->where($map)->order('sort desc')->page($page, 64)->select();
+        $totalCount = D('IssueContent')->where($map)->count();
+        foreach ($content as &$v) {
+            $v['user'] = query_user(array('id', 'nickname', 'space_url', 'space_link', 'avatar128', 'rank_html'), $v['uid']);
+            $v['issue'] = D('Issue')->field('id,title')->find($v['issue_id']);
+        }
+        unset($v);
+        $this->assign('contents', $content);
+        $this->assign('totalPageCount', $totalCount);
+        $this->assign('top_issue', $issue['pid'] == 0 ? $issue['id'] : $issue['pid']);
+
+        $this->assign('issue_id', $issue_id);
+        $this->setTitle('专辑');
+        $this->display();
+    }
+
+    public function indexa($page = 1, $issue_id = 0)
+    {
+        $issue_id = intval($issue_id);
+        $issue = D('Issue')->find($issue_id);
+        if (!$issue_id == 0) {
+            $issue_id = intval($issue_id);
+            $issues = D('Issue')->where("id=%d OR pid=%d", array($issue_id, $issue_id))->limit(999)->select();
+            $ids = array();
+            foreach ($issues as $v) {
+                $ids[] = $v['id'];
+            }
+            $map['issue_id'] = array('in', implode(',', $ids));
+        }
+        $map['status'] = 1;
+        $content = D('IssueContent')->where($map)->order('sort desc')->page($page, 64)->select();
         $totalCount = D('IssueContent')->where($map)->count();
         foreach ($content as &$v) {
             $v['user'] = query_user(array('id', 'nickname', 'space_url', 'space_link', 'avatar128', 'rank_html'), $v['uid']);
@@ -129,6 +163,34 @@ class IndexController extends Controller
         $this->assign('issue_id', $issue['id']);
         $issue_content['user'] = query_user(array('id', 'nickname', 'space_url', 'space_link', 'avatar64', 'rank_html', 'signature'), $issue_content['uid']);
         $this->assign('content', $issue_content);
+        $this->setTitle('{$content.title|op_t}' . '——专辑');
+        $this->setKeywords($issue_content['title']);
+        $this->display();
+    }
+
+    public function contentDetail($id = 0)
+    {
+
+        $issue_content = D('IssueContent')->find($id);
+        if (!$issue_content) {
+            $this->error('404 not found');
+        }
+        D('IssueContent')->where(array('id' => $id))->setInc('view_count');
+        $issue = D('Issue')->find($issue_content['issue_id']);
+
+        // 新建一个Dom实例
+        $html = new simple_html_dom();
+        $html->load($issue_content['content']);
+        foreach($html->find('p') as $k => $vo){           //每段分开成数组
+            $pra[$k] = $vo;
+        }
+
+
+        $this->assign('top_issue', $issue['pid'] == 0 ? $issue['id'] : $issue['pid']);
+        $this->assign('issue_id', $issue['id']);
+        $issue_content['user'] = query_user(array('id', 'nickname', 'space_url', 'space_link', 'avatar64', 'rank_html', 'signature'), $issue_content['uid']);
+        $this->assign('content', $issue_content);
+        $this->assign('pra', $pra);
         $this->setTitle('{$content.title|op_t}' . '——专辑');
         $this->setKeywords($issue_content['title']);
         $this->display();

@@ -444,25 +444,31 @@ function get_addon_config($name)
  * @param array  $param 参数
  * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
-function addons_url($url, $param = array())
-{
-    $url = parse_url($url);
-    $case = C('URL_CASE_INSENSITIVE');
-    $addons = $case ? parse_name($url['scheme']) : $url['scheme'];
-    $controller = $case ? parse_name($url['host']) : $url['host'];
-    $action = trim($case ? strtolower($url['path']) : $url['path'], '/');
-
-    /* 解析URL带的参数 */
-    if (isset($url['query'])) {
-        parse_str($url['query'], $query);
-        $param = array_merge($query, $param);
-    }
-
-    /* 基础参数 */
-    $params = array(
-        '_addons' => $addons,
-        '_controller' => $controller,
-        '_action' => $action,
+function addons_url($url, $param = array()) {
+	//修复如user_center://user_center/add 识别错误的问题
+	$urlArr = explode ( '://', $url );
+	if (stripos ( $urlArr [0], '_' ) !== false) {
+		$addons = $urlArr [0];
+		$url = 'http://' . $urlArr [1];
+	}
+	$url = parse_url ( $url );
+	$case = C ( 'URL_CASE_INSENSITIVE' );
+	! $addons || $url ['scheme'] = $addons;
+	$addons = $case ? parse_name ( $url ['scheme'] ) : $url ['scheme'];
+	$controller = $case ? parse_name ( $url ['host'] ) : $url ['host'];
+	$action = trim ( $case ? strtolower ( $url ['path'] ) : $url ['path'], '/' );
+	
+	/* 解析URL带的参数 */
+	if (isset ( $url ['query'] )) {
+		parse_str ( $url ['query'], $query );
+		$param = array_merge ( $query, $param );
+	}
+	
+	/* 基础参数 */
+	$params = array (
+			'_addons' => ucfirst ( $addons ),
+			'_controller' => ucfirst ( $controller ),
+			'_action' => $action 
     );
     $params = array_merge($params, $param); //添加额外参数
     if (strtolower(MODULE_NAME) == 'admin') {
@@ -473,6 +479,7 @@ function addons_url($url, $param = array())
     }
 
 }
+
 
 /**
  * 时间戳格式化
