@@ -2,15 +2,38 @@
 
 namespace Addons\Weicj\Controller;
 use Home\Controller\AddonsController;
+use Com\TPWechat;
+use Com\JsSdkPay;
+use Com\ErrCode;
 
 class WeicjController extends AddonsController{
 
 
-		public function index(){
+              public function index(){
+                $params['mp_id'] = $map['mp_id'] = get_mpid();
+		$map['id'] = I('id');
 
-		$params['mp_id'] = $map['id'] = I('id');
 		hook('init_ucuser',$params);   //把消息分发到addons/ucuser/init_ucuser的方法中,初始化公众号粉丝信息
+	
+	$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $this->assign ( 'share_url', $url );
 
+        $info = get_mpid_appinfo ( $params ['mp_id'] );
+
+        $options['appid'] = $info['appid'];    //初始化options信息
+        $options['appsecret'] = $info['secret'];
+        $options['encodingaeskey'] = $info['encodingaeskey'];
+        $weObj = new TPWechat($options);
+
+        $auth = $weObj->checkAuth();
+        $js_ticket = $weObj->getJsTicket();
+        if (!$js_ticket) {
+            $this->error('获取js_ticket失败！错误码：'.$weObj->errCode.' 错误原因：'.ErrCode::getErrText($weObj->errCode));
+        }
+        $js_sign = $weObj->getJsSign($url);
+
+        $this->assign ( 'js_sign', $js_sign );
+			
 		$info = M('weicj')->where($map)->find();
 
 		$info['pic1'] = get_cover_url($info['pic1']);
