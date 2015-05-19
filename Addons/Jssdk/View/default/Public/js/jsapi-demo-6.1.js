@@ -1,5 +1,5 @@
 wx.ready(function () {
-	alert("启动jsapi!");
+
   // 1 判断当前版本是否支持指定 JS 接口，支持批量判断
   document.querySelector('#checkJsApi').onclick = function () {
     wx.checkJsApi({
@@ -51,110 +51,7 @@ wx.ready(function () {
     });
   };
 
-  // 2. 分享接口
-  // 2.1 监听“分享给朋友”，按钮点击、自定义分享内容及分享结果接口
-  document.querySelector('#onMenuShareAppMessage').onclick = function () {
-    wx.onMenuShareAppMessage({
-      title: 'wechat-php-sdk博客',
-      desc: '微信公众平台php开发包,细化各项接口操作,支持链式调用。项目创建人：dodgepudding 项目地址：https://github.com/dodgepudding/wechat-php-sdk',
-      link: 'http://binsee.github.io/wechat-php-sdk/',
-      imgUrl: 'http://binsee.github.io/wechat-php-sdk/img/author.jpg',
-      trigger: function (res) {
-      	alert("点击分享：" +JSON.stringify(res));
-          // 用户确认分享后执行的回调函数
-      },
-      success: function (res) {
-      	alert("分享成功：" +JSON.stringify(res));
-          // 用户确认分享后执行的回调函数
-      },
-      cancel: function (res) {
-      	alert("取消分享：" +JSON.stringify(res));
-          // 用户取消分享后执行的回调函数
-      },
-      fail:function (res) {
-      	alert("分享失败：" +JSON.stringify(res));
-      }
-    });
-    alert('已注册获取“发送给朋友”状态事件');
-  };
-
-  // 2.2 监听“分享到朋友圈”按钮点击、自定义分享内容及分享结果接口
-  document.querySelector('#onMenuShareTimeline').onclick = function () {
-    wx.onMenuShareTimeline({
-      title: 'wechat-php-sdk博客',
-      desc: '微信公众平台php开发包,细化各项接口操作,支持链式调用。项目创建人：dodgepudding 项目地址：https://github.com/dodgepudding/wechat-php-sdk',
-      link: 'http://binsee.github.io/wechat-php-sdk/',
-      imgUrl: 'http://binsee.github.io/wechat-php-sdk/img/author.jpg',
-      trigger: function (res) {
-        	alert("点击分享：" +JSON.stringify(res));
-            // 用户确认分享后执行的回调函数
-        },
-        success: function (res) {
-        	alert("分享成功：" +JSON.stringify(res));
-            // 用户确认分享后执行的回调函数
-        },
-        cancel: function (res) {
-        	alert("取消分享：" +JSON.stringify(res));
-            // 用户取消分享后执行的回调函数
-        },
-        fail:function (res) {
-        	alert("分享失败：" +JSON.stringify(res));
-        }
-    });
-    alert('已注册获取“分享到朋友圈”状态事件');
-  };
-
-  // 2.3 监听“分享到QQ”按钮点击、自定义分享内容及分享结果接口
-  document.querySelector('#onMenuShareQQ').onclick = function () {
-    wx.onMenuShareQQ({
-      title: 'wechat-php-sdk博客',
-      desc: '微信公众平台php开发包,细化各项接口操作,支持链式调用。项目创建人：dodgepudding 项目地址：https://github.com/dodgepudding/wechat-php-sdk',
-      link: 'http://binsee.github.io/wechat-php-sdk/',
-      imgUrl: 'http://binsee.github.io/wechat-php-sdk/img/author.jpg',
-      trigger: function (res) {
-      	alert("点击分享：" +JSON.stringify(res));
-          // 用户确认分享后执行的回调函数
-      },
-      success: function (res) {
-      	alert("分享成功：" +JSON.stringify(res));
-          // 用户确认分享后执行的回调函数
-      },
-      cancel: function (res) {
-      	alert("取消分享：" +JSON.stringify(res));
-          // 用户取消分享后执行的回调函数
-      },
-      fail:function (res) {
-      	alert("分享失败：" +JSON.stringify(res));
-      }
-    });
-    alert('已注册获取“分享到 QQ”状态事件');
-  };
   
-  // 2.4 监听“分享到微博”按钮点击、自定义分享内容及分享结果接口
-  document.querySelector('#onMenuShareWeibo').onclick = function () {
-    wx.onMenuShareWeibo({
-      title: 'wechat-php-sdk博客',
-      desc: '微信公众平台php开发包,细化各项接口操作,支持链式调用。项目创建人：dodgepudding 项目地址：https://github.com/dodgepudding/wechat-php-sdk',
-      link: 'http://binsee.github.io/wechat-php-sdk/',
-      imgUrl: 'http://binsee.github.io/wechat-php-sdk/img/author.jpg',
-      trigger: function (res) {
-        	alert("点击分享：" +JSON.stringify(res));
-            // 用户确认分享后执行的回调函数
-        },
-        success: function (res) {
-        	alert("分享成功：" +JSON.stringify(res));
-            // 用户确认分享后执行的回调函数
-        },
-        cancel: function (res) {
-        	alert("取消分享：" +JSON.stringify(res));
-            // 用户取消分享后执行的回调函数
-        },
-        fail:function (res) {
-        	alert("分享失败：" +JSON.stringify(res));
-        }
-    });
-    alert('已注册获取“分享到微博”状态事件');
-  };
 
 
   // 3 智能接口
@@ -478,16 +375,7 @@ wx.ready(function () {
     });
   };
 
-  // 10 微信支付接口
-  // 10.1 发起一个支付请求
- // document.querySelector('#chooseWXPay').onclick = function () {
-  //  wx.chooseWXPay({
-  //    timestamp: 1414723227,
-  //    nonceStr: 'noncestr',
-  //    package: 'addition=action_id%3dgaby1234%26limit_pay%3d&bank_type=WX&body=innertest&fee_type=1&input_charset=GBK&notify_url=http%3A%2F%2F120.204.206.246%2Fcgi-bin%2Fmmsupport-bin%2Fnotifypay&out_trade_no=1414723227818375338&partner=1900000109&spbill_create_ip=127.0.0.1&total_fee=1&sign=432B647FE95C7BF73BCD177CEECBEF8D',
-  //    paySign: 'bd5b1933cda6e9548862944836a9b52e8c9a2b69'
-  //  });
- // };
+
 
   // 11.3  跳转微信商品页
   document.querySelector('#openProductSpecificView').onclick = function () {

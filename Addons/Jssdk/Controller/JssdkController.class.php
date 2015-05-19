@@ -35,6 +35,9 @@ class JssdkController extends AddonsController{
 
         $this->assign ( 'js_sign', $js_sign );
 
+        $addon_config = get_addon_config('Jssdk');
+        $this->assign ( 'addon_config', $addon_config );
+
         //微信支付部分
         //此处可以动态获取数据库中的MCHID和KEY
         $jssdkpay = new JsSdkPay($options);

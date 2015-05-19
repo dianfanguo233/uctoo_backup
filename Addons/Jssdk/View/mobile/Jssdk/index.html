@@ -113,7 +113,7 @@
       <button class="btn btn_primary" id="openCard">openCard</button>
 
     <h3 id="menu-pay">微信支付接口</h3>
-    <span class="desc">发起一个微信支付请求</span>
+    <span class="desc">打赏UCToo开源项目1元</span>
     <button class="btn btn_primary" id="chooseWXPay">chooseWXPay</button>
   </div>
 </div>
@@ -122,7 +122,7 @@
 
   <script>
     wx.config({
-      debug: true,
+      debug: false,
       appId: '{$js_sign['appid']}',
       timestamp: {$js_sign['timestamp']},
       nonceStr: '{$js_sign['noncestr']}',
@@ -165,12 +165,121 @@
         'openCard'
       ]
     });
+	
+	wx.ready(function () {
+      // 在这里调用 API
+	  // 10 微信支付接口
+  // 10.1 发起一个支付请求
+
   document.querySelector('#chooseWXPay').onclick = function () {
     wx.chooseWXPay({
               {$jsApiParameters}
       });
   };
+  // 2. 分享接口
+  // 2.1 监听“分享给朋友”，按钮点击、自定义分享内容及分享结果接口
+  
+    wx.onMenuShareAppMessage({
+      title: 'UCToo 微信Jssdk演示',
+      desc: '微信公众平台php开发包,细化各项接口操作,支持链式调用。',
+      link: '{$share_url}',
+      imgUrl: '{:get_addoncover_url( "Jssdk" )}',
+      trigger: function (res) {
+      	alert("点击分享：" +JSON.stringify(res));
+          // 用户确认分享后执行的回调函数
+      },
+      success: function (res) {
+      	alert("分享成功：" +JSON.stringify(res));
+          // 用户确认分享后执行的回调函数
+      },
+      cancel: function (res) {
+      	alert("取消分享：" +JSON.stringify(res));
+          // 用户取消分享后执行的回调函数
+      },
+      fail:function (res) {
+      	alert("分享失败：" +JSON.stringify(res));
+      }
+    });
+    
 
+  // 2.2 监听“分享到朋友圈”按钮点击、自定义分享内容及分享结果接口
+ 
+    wx.onMenuShareTimeline({
+      title: 'UCToo 微信Jssdk演示',
+      desc: '微信公众平台php开发包,细化各项接口操作,支持链式调用。',
+      link: '{$share_url}',
+      imgUrl: '{:get_addoncover_url( "Jssdk" )}',
+      trigger: function (res) {
+        	alert("点击分享：" +JSON.stringify(res));
+            // 用户确认分享后执行的回调函数
+        },
+        success: function (res) {
+        	alert("分享成功：" +JSON.stringify(res));
+            // 用户确认分享后执行的回调函数
+        },
+        cancel: function (res) {
+        	alert("取消分享：" +JSON.stringify(res));
+            // 用户取消分享后执行的回调函数
+        },
+        fail:function (res) {
+        	alert("分享失败：" +JSON.stringify(res));
+        }
+    });
+    
+
+  // 2.3 监听“分享到QQ”按钮点击、自定义分享内容及分享结果接口
+  
+    wx.onMenuShareQQ({
+      title: 'UCToo 微信Jssdk演示',
+      desc: '微信公众平台php开发包,细化各项接口操作,支持链式调用。',
+      link: '{$share_url}',
+      imgUrl: '{:get_addoncover_url( "Jssdk" )}',
+      trigger: function (res) {
+      	alert("点击分享：" +JSON.stringify(res));
+          // 用户确认分享后执行的回调函数
+      },
+      success: function (res) {
+      	alert("分享成功：" +JSON.stringify(res));
+          // 用户确认分享后执行的回调函数
+      },
+      cancel: function (res) {
+      	alert("取消分享：" +JSON.stringify(res));
+          // 用户取消分享后执行的回调函数
+      },
+      fail:function (res) {
+      	alert("分享失败：" +JSON.stringify(res));
+      }
+    });
+    
+  
+  // 2.4 监听“分享到微博”按钮点击、自定义分享内容及分享结果接口
+  
+    wx.onMenuShareWeibo({
+      title: 'UCToo 微信Jssdk演示',
+      desc: '微信公众平台php开发包,细化各项接口操作,支持链式调用。',
+      link: '{$share_url}',
+      imgUrl: '{:get_addoncover_url( "Jssdk" )}',
+      trigger: function (res) {
+        	alert("点击分享：" +JSON.stringify(res));
+            // 用户确认分享后执行的回调函数
+        },
+        success: function (res) {
+        	alert("分享成功：" +JSON.stringify(res));
+            // 用户确认分享后执行的回调函数
+        },
+        cancel: function (res) {
+        	alert("取消分享：" +JSON.stringify(res));
+            // 用户取消分享后执行的回调函数
+        },
+        fail:function (res) {
+        	alert("分享失败：" +JSON.stringify(res));
+        }
+    });
+    
+});
+    wx.error(function (res) {
+      alert(res.errMsg);
+    });
 </script>
   <script src="{:ADDON_PUBLIC_PATH}/js/jsapi-demo-6.1.js"> </script>
   </body>
