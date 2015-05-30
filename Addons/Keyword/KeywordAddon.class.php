@@ -59,7 +59,6 @@ use Common\Controller\Addon;
                     $reData[0]['Description'] = $aimData['intro'];
                     $reData[0]['PicUrl'] = get_cover_url($aimData['cover']) ; //'http://images.domain.com/templates/domaincom/logo.png';
                     $reData[0]['Url'] = $aimData['url'];
-                    trace('wechat：keyword'.get_cover_url($aimData['cover']),'微信','DEBUG',true);
 
                     $params['weObj']->news($reData);
                 }elseif ($Keyword['addon']){                                 //TODO:没有指定模型，就用addon的配置信息组装回复的内容

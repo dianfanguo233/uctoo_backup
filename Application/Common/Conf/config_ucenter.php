@@ -1,7 +1,7 @@
 <?php
 
 
-define('UC_SYNC', 1);//Ucenter登陆开关，设为1代表开启Ucenter
+define('UC_SYNC', 0);//Ucenter登陆开关，设为1代表开启Ucenter
 
 define('UC_CONNECT', 'mysql');
 define('UC_DBHOST', 'localhost');

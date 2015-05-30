@@ -90,15 +90,14 @@ function get_openid($openid = NULL) {
         session ( 'openid_' . $mp_id, $_REQUEST ['openid'] );
     }
     $openid = session ( 'openid_' . $mp_id );
-    trace($mp_id.'wechat：openid'.$openid,'微信','DEBUG',true);
+
     $isWeixinBrowser = isWeixinBrowser ();
     //下面这段应该逻辑没问题，如果公众号配置信息错误或者没有snsapi_base作用域的获取信息权限可能会出现死循环，注释掉以下if可治愈
     if ( $openid <= 0 && $isWeixinBrowser) {
-        trace('wechat：openid1'.$openid,'微信','DEBUG',true);
+
         $callback = GetCurUrl ();
        // OAuthWeixin ( $callback );
         $info = get_mpid_appinfo ();
-        trace('wechat：OAuthWeixin'.$info['id'],'微信','DEBUG',true);
 
         $options['token'] = APP_TOKEN;
         $options['appid'] = $info['appid'];    //初始化options信息
@@ -106,20 +105,20 @@ function get_openid($openid = NULL) {
         $options['encodingaeskey'] = $info['encodingaeskey'];
         $auth = new Com\Wxauth($options);
         $openid =  $auth->open_id;
-        trace('wechat：openid3'.$openid,'微信','DEBUG',true);
+
     }
 
     if (empty ( $openid )) {
         return - 1;
     }
-    trace($mp_id.'wechat：openid2'.$openid,'微信','DEBUG',true);
+
     return $openid;
 }
 
 function OAuthWeixin($callback) {
     $isWeixinBrowser = isWeixinBrowser ();
     $info = get_mpid_appinfo ();
-    trace('wechat：OAuthWeixin'.$info['id'],'微信','DEBUG',true);
+
     if (! $isWeixinBrowser || $info ['type'] != 2 || empty ( $info ['appid'] )) {
         redirect ( $callback . '&openid=-1' );
     }
@@ -131,7 +130,6 @@ function OAuthWeixin($callback) {
         $param ['scope'] = 'snsapi_base';
         $param ['state'] = 123;
         $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?' . http_build_query ( $param ) . '#wechat_redirect';
-        trace('OAuthWeixin111'.$url,'微信','DEBUG',true);
         redirect ( $url );
     } elseif ($_GET ['state']) {
         $param ['secret'] = $info ['secret'];
@@ -141,8 +139,7 @@ function OAuthWeixin($callback) {
         $url = 'https://api.weixin.qq.com/sns/oauth2/access_token?' . http_build_query ( $param );
         $content = file_get_contents ( $url );
         $content = json_decode ( $content, true );
-        trace('wechat：OAuthWeixin222'.arr2str($param),'微信','DEBUG',true);
-        trace('wechat：OAuthWeixin333'.$content ['openid'] ,'微信','DEBUG',true);
+
         redirect ( $callback . '&openid=' . $content ['openid'] );
     }
 }
@@ -169,4 +166,45 @@ function get_mpid($mp_id = NULL) {
     }
 
     return $mp_id;
+}
+
+
+//根据uid获取粉丝用户信息
+function get_uid_ucuser($uid = 0) {
+  $model = D('Ucuser');
+  $user = $model->find($uid);
+  return $user;
+}
+
+// 获取当前粉丝用户uid,和 hook('init_ucuser',$params)作用基本相同。
+function get_ucuser_uid($uid = 0) {
+    $mp_id = get_mpid ();
+    if ($uid !== NULL) {
+        session ( 'uid_' . $mp_id, $uid );
+    } elseif (! empty ( $_REQUEST ['uid'] )) {
+        session ( 'uid_' . $mp_id, $_REQUEST ['uid'] );
+    }                                                                    //以上是带uid参数调用函数时设置session中的uid
+    $uid = session ( 'uid_' . $mp_id );
+
+    $isWeixinBrowser = isWeixinBrowser ();
+    //下面这段应该逻辑没问题，如果公众号配置信息错误或者没有snsapi_base作用域的获取信息权限可能会出现死循环，注释掉以下if可治愈
+    if ( $uid <= 0 && $isWeixinBrowser) {
+        $map['openid'] = get_openid();
+        $map['mp_id'] = $mp_id;
+        $ucuser = D('Ucuser');
+        $data = $ucuser->where($map)->find();
+        if(!$data){                                             //公众号没有这个粉丝信息，就注册一个
+            $uid =  $ucuser->registerUser($map['mp_id'],$map['openid']);
+            session ( 'uid_' . $mp_id, $uid );
+
+        }else{
+            $uid =  $data['uid'];
+            session ( 'uid_' . $mp_id, $uid );
+        }
+    }
+    if (empty ( $uid )) {
+        return - 1;
+    }
+
+    return $uid;
 }

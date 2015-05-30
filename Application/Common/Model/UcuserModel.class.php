@@ -13,7 +13,8 @@ namespace Common\Model;
 
 use Think\Model;
 
-
+require_once(APP_PATH . 'User/Conf/config.php');
+require_once(APP_PATH . 'User/Common/common.php');
 /**
  * 微信用户模型，也就是公众号粉丝
  */
@@ -29,6 +30,7 @@ class UcuserModel extends Model
         array('update_time', NOW_TIME),
         array('status', 1, self::MODEL_INSERT),
         array('score1', 0, self::MODEL_INSERT),
+        array('password', 'think_ucenter_md5', self::MODEL_BOTH, 'function', UC_AUTH_KEY),
     );
 
     protected $_validate = array(
@@ -39,6 +41,14 @@ class UcuserModel extends Model
         array('nickname', 'checkDenyNickname', -31, self::EXISTS_VALIDATE, 'callback'), //昵称禁止注册
         array('nickname', 'checkNickname', -32, self::EXISTS_VALIDATE, 'callback'),
         array('nickname', '', -30, self::EXISTS_VALIDATE, 'unique'), //昵称被占用
+
+        /* 验证密码 */
+        array('password', '6,30', -4, self::EXISTS_VALIDATE, 'length'), //密码长度不合法
+
+        /* 验证手机号码 */
+        array('mobile', '/^(1[3|4|5|8])[0-9]{9}$/', -9, self::EXISTS_VALIDATE), //手机格式不正确 TODO:
+        array('mobile', 'checkDenyMobile', -10, self::EXISTS_VALIDATE, 'callback'), //手机禁止注册
+        array('mobile', '', -11, self::EXISTS_VALIDATE, 'unique'), //手机号被占用
 
     );
 
@@ -74,6 +84,22 @@ class UcuserModel extends Model
         return true;
     }
 
+    /**
+     * 检测手机是不是被禁止注册
+     * @param  string $mobile 手机
+     * @return boolean        ture - 未禁用，false - 禁止注册
+     */
+    protected function checkDenyMobile($mobile)
+    {
+        return true; //TODO: 暂不限制，下一个版本完善
+    }
+
+    /**
+     * 初始化一个新用户
+     * @param  string $mp_id 公众号mp_id
+     * @param  string $openid 用户openid
+     * @return integer          注册成功-用户uid，注册失败-错误编号
+     */
     public function registerUser($mp_id = '',$openid = '')
     {
         /* 在当前应用中注册用户 */
@@ -92,16 +118,55 @@ class UcuserModel extends Model
     }
 
     /**
+     * 注册一个新用户,其实已经注册了只是完善用户信息
+     * @param  integer $uid 用户UID
+     * @param  string $nickname 昵称
+     * @param  string $password 用户密码
+     * @param  string $email 用户邮箱
+     * @param  string $mobile 用户手机号码
+     * @return integer          注册成功-用户信息，注册失败-错误编号
+     */
+    public function register($uid ,$password, $email, $mobile)
+    {
+        $user = $this->find($uid);
+        $data = array(
+            'uid' => $uid,
+            'password' => $password,
+            'email' => $email,
+            'mobile' => $mobile,
+        );
+
+        if(empty($user['password']) && empty($user['email']) && empty($user['mobile']) ){       // 没注册过
+            /* 完善用户信息 */
+            if ($this->create($data) && $this->save()) {
+                return true;
+            } else {
+                return $this->getError(); //错误详情见自动验证注释
+            }
+        }else {
+                    return -2; //密码错误
+        }
+    }
+
+    /**
      * 登录指定用户
-     * @param  integer $uid 用户ID
+     * @param  integer $uid 用户UID
+     * @param  string  $mobile 用户名
+     * @param  string  $password 用户密码
      * @param bool $remember
      * @param int $role_id 有值代表强制登录这个角色
      * @return boolean      ture-登录成功，false-登录失败
      */
-    public function login($uid, $remember = false,$role_id=0)
+    public function login($uid,$mobile = '', $password = '', $remember = false,$role_id=0)
     {
         /* 检测是否在当前应用注册 */
-        $user = $this->field(true)->find($uid);
+        $map['uid'] = $uid;
+        $map['mobile'] = $mobile;
+
+        /* 获取用户数据 */
+        $user = $this->where($map)->find();
+        trace('wechat：modellogin'. arr2str($user),'微信','DEBUG',true);
+
         if($role_id!=0){
             $user['last_login_role']=$role_id;
         }else{
@@ -109,6 +174,27 @@ class UcuserModel extends Model
                 $user['last_login_role']=$user['show_role'];
             }
         }
+
+        $return = check_action_limit('input_password','ucuser',$user['uid'],$user['uid']);
+        if($return && !$return['state']){
+            return $return['info'];
+        }
+
+        if (is_array($user) && $user['status']) {
+            /* 验证用户密码 */
+            trace(UC_AUTH_KEY.'wechat：modellogin'. $password,'微信','DEBUG',true);
+            if (think_ucenter_md5($password, UC_AUTH_KEY) === $user['password']) {
+                $this->updateLogin($user['uid']); //更新用户登录信息
+                trace('wechat：modelloginvvv'.arr2str($user),'微信','DEBUG',true);
+                return $user['uid']; //登录成功，返回用户UID
+            } else {
+
+                return -2; //密码错误
+            }
+        } else {
+            return -1; //用户不存在或被禁用
+        }
+
         session('temp_login_uid', $uid);
         session('temp_login_role_id', $user['last_login_role']);
 
@@ -119,28 +205,17 @@ class UcuserModel extends Model
             exit(json_encode($data));
         }
 
-        if (1 != $user['status']) {
+        if (1 > $user['status']) {
             $this->error = '用户未激活或已禁用！'; //应用级别禁用
             return false;
         }
 
-        $step = D('UserRole')->where(array('uid' => $uid,'role_id'=>$user['last_login_role']))->getField('step');
-        if (!empty($step) && $step != 'finish') {
-            header('Content-Type:application/json; charset=utf-8');
-            $data['status'] = 1;
-            //执行步骤在start的时候执行下一步，否则执行此步骤
-            $go = $step=='start'?get_next_step($step):check_step($step);
-            $data['url'] = U('Ucenter/Member/step',array('step'=>$go));
-
-            exit(json_encode($data));
-        }
         /* 登录用户 */
         $this->autoLogin($user, $remember);
 
         session('temp_login_uid',null);
         session('temp_login_role_id', null);
-        //记录行为
-        action_log('user_login', 'Ucuser', $uid, $uid);
+
         return true;
     }
 
@@ -148,11 +223,31 @@ class UcuserModel extends Model
      * 注销当前用户
      * @return void
      */
-    public function logout()
+    public function logout($uid = 0)
     {
         session('user_auth', null);
         session('user_auth_sign', null);
         cookie('UCTOO_LOGGED_USER', NULL);
+        $data = array(
+            'uid' => $uid,
+            'login' => 0,                                              //登录状态设置为0
+        );
+        $this->save($data);
+    }
+
+    /**
+     * 更新用户登录信息
+     * @param  integer $uid 用户ID
+     */
+    protected function updateLogin($uid)
+    {
+        $data = array(
+            'uid' => $uid,
+            'last_login_time' => NOW_TIME,
+            'last_login_ip' => get_client_ip(1),
+            'login' => 1,                                              //登录状态设置为1
+        );
+        $this->save($data);
     }
 
     /**
@@ -165,7 +260,6 @@ class UcuserModel extends Model
         /* 更新登录信息 */
         $data = array(
             'uid' => $user['uid'],
-            'login' => array('exp', '`login`+1'),
             'last_login_time' => NOW_TIME,
             'last_login_ip' => get_client_ip(1),
             'last_login_role'=>$user['last_login_role'],
@@ -207,7 +301,6 @@ class UcuserModel extends Model
 
     public function need_login()
     {
-
         if ($uid = $this->getCookieUid()) {
             $this->login($uid);
             return true;
@@ -482,5 +575,72 @@ class UcuserModel extends Model
             }
         }
         return $change;
+    }
+
+
+
+
+
+    public function getErrorMessage($error_code = null)
+    {
+
+        $error = $error_code == null ? $this->error : $error_code;
+        switch ($error) {
+            case -1:
+                $error = '用户名长度必须在16个字符以内！';
+                break;
+            case -2:
+                $error = '用户名被禁止注册！';
+                break;
+            case -3:
+                $error = '用户名被占用！';
+                break;
+            case -4:
+                $error = '密码长度必须在6-30个字符之间！';
+                break;
+            case -41:
+                $error = '用户旧密码不正确';
+                break;
+            case -5:
+                $error = '邮箱格式不正确！';
+                break;
+            case -6:
+                $error = '邮箱长度必须在1-32个字符之间！';
+                break;
+            case -7:
+                $error = '邮箱被禁止注册！';
+                break;
+            case -8:
+                $error = '邮箱被占用！';
+                break;
+            case -9:
+                $error = '手机格式不正确！';
+                break;
+            case -10:
+                $error = '手机被禁止注册！';
+                break;
+            case -11:
+                $error = '手机号被占用！';
+                break;
+            case -12:
+                $error = '用户名必须以中文或字母开始，只能包含拼音数字，字母，汉字！';
+                break;
+            case -31:
+                $error = '昵称禁止注册';
+                break;
+            case -33:
+                $error = '昵称长度不合法';
+                break;
+            case -32:
+                $error = '昵称不合法';
+                break;
+            case -30:
+                $error = '昵称已被占用';
+                break;
+
+            default:
+                $error = '未知错误';
+        }
+        return $error;
     }
 }

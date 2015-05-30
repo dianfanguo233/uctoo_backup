@@ -91,7 +91,9 @@ INSERT INTO `uctoo_addons` ( `name`, `title`, `description`, `status`, `config`,
 ( 'Keyword', '关键词', '关键词数据管理和微信关键词消息处理行为插件', '1', '{\"random\":\"1\"}', 'UCToo', '0.1', '1429325806', '1'),
 ( 'Welcome', '欢迎语', '用户关注公众号时发送的欢迎信息，支持文本，图片，图文的信息', '1', '{\"type\":\"1\",\"keyword\":\"\",\"title\":\"\",\"description\":\"\",\"pic_url\":\"\",\"url\":\"\"}', 'UCToo', '0.1', '1429585560', '0'),
 ('Weicj', '微场景', '微场景为产品、品牌以及事件的展示搭建了一个舞台，通过图片和音乐渲染氛围展示想传达的内容，并引导客户。可与其他插件配合使用以达到更好的营销效果。', '1', 'null', 'UCToo', '0.1', '1430374002', '0'),
-('Ucuser', '微会员', '微会员管理和微信公众号粉丝初始化行为', '1', '{\"random\":\"1\"}', 'UCToo', '0.1', '1430793843', '1');
+('Ucuser', '微会员', '微会员管理和微信公众号粉丝初始化行为', '1', '{\"random\":\"1\"}', 'UCToo', '0.1', '1430793843', '1'),
+('ToMobile', '转向手机页面', '转向手机页面，切换到手机页面', '1', '{\"to_mobile_type\":\"2\",\"js_to_mobile_type\":\"1\",\"js_url\":\"m.flutesing.com\",\"js_replace_url\":\"127.0.0.1|www.flutesing.com|flutesing.com\",\"mobile_theme\":\"mobile\"}', 'flutesing<www.flutesing.com>', '2014.5.25', '1431066151', '0'),
+('Jssdk', '微信JSSDK演示案例', '微信开放平台JSSDK演示案例合辑', '1', 'null', 'uctoo', '0.1', '1431657126', '0');
 DROP TABLE  IF EXISTS `uctoo_attachment`;
 CREATE TABLE IF NOT EXISTS `uctoo_attachment` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -177,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_auth_group` (
 
 
 INSERT INTO `uctoo_auth_group` (`id`, `module`, `type`, `title`, `description`, `status`, `rules`) VALUES
-(1, 'admin', 1, '普通用户', '', 1, ''),
+(1, 'admin', 1, '普通用户', '', 1, ',1,235,236,237,246,253,254,286,321,370,371,373,374,376,378,380,381,382,383,384,387,388,389'),
 (2, 'admin', 1, 'VIP', '', 1, ''),
 (3, 'admin', '1', '公众号管理用户组', '', '1', ',368,369,235,236,237,246,253,254,281,286,321,370,377,379,1,313,315,316,322,371,373,376,378,380,381,382,383,384');
 
@@ -558,7 +560,12 @@ INSERT INTO `uctoo_auth_rule` (`id`, `module`, `type`, `name`, `title`, `status`
 ('381', 'admin', '1', 'Admin/Custommenu/operate', '自定义菜单操作', '1', ''),
 ('382', 'admin', '1', 'Admin/Custommenu/index', '自定义菜单管理', '1', ''),
 ('383', 'admin', '1', 'Admin/Custommenu/add', '编辑自定义菜单', '1', ''),
-('384', 'admin', '1', 'Admin/Keyword/index', '关键词管理', '1', '');
+('384', 'admin', '1', 'Admin/Keyword/index', '关键词管理', '1', ''),
+('385', 'Issue', '1', 'addIssueContent', '专辑投稿权限', '1', ''),
+('386', 'Issue', '1', 'editIssueContent', '编辑专辑内容（管理）', '1', ''),
+('387', 'admin', '1', 'Admin/Ucuser/index', '微会员信息', '1', ''),
+('388', 'admin', '1', 'Admin/Weicja/index', '微场景', '1', ''),
+('389', 'admin', '2', 'Admin/Ucuser/index', '微会员', '1', '');
 
 DROP TABLE  IF EXISTS `uctoo_avatar`;
 CREATE TABLE IF NOT EXISTS `uctoo_avatar` (
@@ -621,7 +628,7 @@ INSERT INTO `uctoo_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `re
 (1, 'WEB_SITE_CLOSE', 4, '关闭站点', 1, '0:关闭,1:开启', '站点关闭后其他用户不能访问，管理员可以正常访问', 1378898976, 1379235296, 1, '1', 1),
 (2 ,  'SITE_LOGO',  '7',  '网站LOGO',  '1',  '',  '网站的logo设置，建议尺寸156*50',  '1388332311',  '1388501500',  '1',  '',  '3'),
 (3, 'CONFIG_TYPE_LIST', 3, '配置类型列表', 4, '', '主要用于数据解析和页面表单的生成', 1378898976, 1379235348, 1, '0:数字\r\n1:字符\r\n2:文本\r\n3:数组\r\n4:枚举', 8),
-(4, 'WEB_SITE_ICP', 1, '网站备案号', 1, '', '设置在网站底部显示的备案号，如“沪ICP备12007941号-2', 1378900335, 1379235859, 1, '浙ICP备XX号', 12),
+(4, 'WEB_SITE_ICP', 1, '网站备案号', 1, '', '设置在网站底部显示的备案号，如“沪ICP备12007941号-2', 1378900335, 1379235859, 1, '粤ICP备XX号', 12),
 (5, 'CONFIG_GROUP_LIST', 3, '配置分组', 4, '', '配置分组', 1379228036, 1384418383, 1, '1:基本\r\n2:内容\r\n3:用户\r\n4:系统\r\n5:邮件', 15),
 (6, 'HOOKS_TYPE', 3, '钩子的类型', 4, '', '类型 1-用于扩展显示内容，2-用于扩展业务处理', 1379313397, 1379313407, 1, '1:视图\r\n2:控制器', 17),
 (7, 'AUTH_CONFIG', 3, 'Auth配置', 4, '', '自定义Auth.class.php类配置', 1379409310, 1379409564, 1, 'AUTH_ON:1\r\nAUTH_TYPE:2', 20),
@@ -637,7 +644,7 @@ INSERT INTO `uctoo_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `re
 (18, 'DENY_VISIT', 3, '超管专限控制器方法', 0, '', '仅超级管理员可访问的控制器方法', 1386644141, 1386644659, 1, '0:Addons/addhook\r\n1:Addons/edithook\r\n2:Addons/delhook\r\n3:Addons/updateHook\r\n4:Admin/getMenus\r\n5:Admin/recordList\r\n6:AuthManager/updateRules\r\n7:AuthManager/tree', 3),
 (19, 'ADMIN_ALLOW_IP', 2, '后台允许访问IP', 4, '', '多个用逗号分隔，如果不配置表示不限制IP访问', 1387165454, 1387165553, 1, '', 27),
 (20, 'SHOW_PAGE_TRACE', 4, '是否显示页面Trace', 4, '0:关闭\r\n1:开启', '是否显示页面Trace信息', 1387165685, 1387165685, 1, '0', 7),
-(21, 'WEB_SITE', 1, '网站名称', 1, '', '用于邮件,短信,站内信显示', 1388332311, 1388501500, 1, 'OpenCenter', 3),
+(21, 'WEB_SITE', 1, '网站名称', 1, '', '用于邮件,短信,站内信显示', 1388332311, 1388501500, 1, 'UCToo开源微信应用开发平台', 3),
 (22, 'MAIL_TYPE', 4, '邮件类型', 5, '1:SMTP 模块发送\r\n2:mail() 函数发送', '如果您选择了采用服务器内置的 Mail 服务，您不需要填写下面的内容', 1388332882, 1388931416, 1, '1', 0),
 (23, 'MAIL_SMTP_HOST', 1, 'SMTP 服务器', 5, '', 'SMTP服务器', 1388332932, 1388332932, 1, '', 0),
 (24, 'MAIL_SMTP_PORT', 0, 'SMTP服务器端口', 5, '', '默认25', 1388332975, 1388332975, 1, '25', 0),
@@ -848,6 +855,10 @@ CREATE TABLE `uctoo_keyword` (
 -- ----------------------------
 -- Records of uctoo_keyword
 -- ----------------------------
+INSERT INTO `uctoo_keyword` VALUES ('514', '107', '微场景', 'gh_1dd1d1321b7c', 'Weicj', 'Weicj', '3', '1425366290', '4', '0', 'custom_reply_news', '0', '0');
+INSERT INTO `uctoo_keyword` VALUES ('516', '107', 'jssdk', 'gh_1dd1d1321b7c', 'Jssdk', '', '0', '1425366959', '36', '0', 'custom_reply_news', '0', '0');
+INSERT INTO `uctoo_keyword` VALUES ('517', '107', '微会员', 'gh_1dd1d1321b7c', 'Ucuser', '', '0', '1425368595', '9', '0', '', '0', '0');
+INSERT INTO `uctoo_keyword` VALUES ('520', '107', '123', 'gh_1dd1d1321b7c', 'Welcome', 'CustomReply', '3', '0', '0', '0', null, null, '0');
 
 
 DROP TABLE  IF EXISTS `uctoo_member`;
@@ -902,6 +913,10 @@ CREATE TABLE `uctoo_member_public` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=107 DEFAULT CHARSET=utf8;
 
+-- ----------------------------
+-- Records of uctoo_member_public
+-- ----------------------------
+INSERT INTO `uctoo_member_public` VALUES ('107', '1', 'UCToo', 'gh_1dd1d1321b7c', 'UCToo_com', '', '', '', '', '', '', '3', '', '', '1', '0', '');
 
 DROP TABLE  IF EXISTS `uctoo_menu`;
 CREATE TABLE IF NOT EXISTS `uctoo_menu` (
@@ -1416,6 +1431,9 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucuser` (
   `subscribe` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否订阅了公众号',
   `openid` varchar(255) NOT NULL COMMENT 'OpenId用户的标识，对当前公众号唯一',
   `nickname` char(16) NOT NULL DEFAULT '' COMMENT '昵称',
+  `password` char(32) NOT NULL COMMENT '密码',
+  `email` char(32) NOT NULL COMMENT '用户邮箱',
+  `mobile` char(15) NOT NULL COMMENT '用户手机',
   `sex` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '用户的性别，值为1时是男性，值为2时是女性，值为0时是未知',
   `city` int(11) NOT NULL COMMENT '城市',
   `country` int(11) NOT NULL COMMENT '国家',
@@ -1424,14 +1442,17 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucuser` (
   `headimgurl` varchar(255) NOT NULL COMMENT '头像',
   `subscribe_time` int(10) NOT NULL COMMENT '关注时间',
   `unionid` int(10) DEFAULT NULL COMMENT '只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段',
+  `remark` text DEFAULT NULL  COMMENT '公众号运营者对粉丝的备注，公众号运营者可在微信公众平台用户管理界面对粉丝添加备注',
+  `groupid` int(10) DEFAULT NULL COMMENT '用户所在的分组ID',
   `birthday` date NOT NULL DEFAULT '0000-00-00' COMMENT '生日',
   `qq` char(10) NOT NULL DEFAULT '' COMMENT 'qq号',
-  `login` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录次数',
+  `weibo` varchar(100) NOT NULL DEFAULT '' COMMENT '微博',
+  `login` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录状态，0未登录，1登录',
   `reg_ip` bigint(20) NOT NULL DEFAULT '0' COMMENT '注册IP',
   `reg_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '注册时间',
   `last_login_ip` bigint(20) NOT NULL DEFAULT '0' COMMENT '最后登录IP',
   `last_login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后登录时间',
-  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '会员状态',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '会员状态，-1禁用，0未验证，1未同步微信资料，2已同步微信，3等待验证',
   `last_login_role` INT( 11 ) NOT NULL,
   `show_role` INT( 11 ) NOT NULL COMMENT  '个人主页显示角色',
   `signature` text NOT NULL,
@@ -1526,7 +1547,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_role_config` (
   `data` text NOT NULL COMMENT '该配置的其它值',
   `update_time` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COMMENT='角色配置表' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='角色配置表' AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS `uctoo_role_group`;
 CREATE TABLE IF NOT EXISTS `uctoo_role_group` (
@@ -1534,7 +1555,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_role_group` (
   `title` varchar(25) NOT NULL,
   `update_time` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COMMENT='角色分组' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='角色分组' AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS `uctoo_user_role`;
 CREATE TABLE IF NOT EXISTS `uctoo_user_role` (
@@ -1605,6 +1626,8 @@ CREATE TABLE `uctoo_weicj` (
   `audio2` varchar(255) NOT NULL COMMENT '背景音乐（网络地址）',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+INSERT INTO `uctoo_weicj` VALUES ('3', 'http://test.uctoo.com/index.php?s=/home/addons/execute/Weicj/Weicj/index/id/3/mp_id/107.html', '0', '微场景', '微场景演示', '21', '27', '20', '107', '18', '25', '24', '23', '26', '0', 'http://test.uctoo.com/index.php?s=/issue/index/index.html', 'http://mh.ccjoy.com/reg/reg1/images/sound.mp3');
 
 -- ----------------------------
 -- Table structure for uctoo_weixin_log
