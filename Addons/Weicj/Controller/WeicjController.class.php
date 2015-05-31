@@ -10,13 +10,17 @@ class WeicjController extends AddonsController{
 
 
               public function index(){
-                $params['mp_id'] = $map['mp_id'] = get_mpid();
-		$map['id'] = I('id');
+                $map['id'] = I('id');
+		$params['mp_id'] = $map['mp_id'] = get_mpid();
+		
 
 		hook('init_ucuser',$params);   //把消息分发到addons/ucuser/init_ucuser的方法中,初始化公众号粉丝信息
 	
 	$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-        $this->assign ( 'share_url', $url );
+                  $surl = get_shareurl();
+                  if(!empty($surl)){
+                      $this->assign ( 'share_url', $surl );
+                  }
 
         $info = get_mpid_appinfo ( $params ['mp_id'] );
 

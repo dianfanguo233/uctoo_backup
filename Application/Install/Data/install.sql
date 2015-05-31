@@ -94,6 +94,7 @@ INSERT INTO `uctoo_addons` ( `name`, `title`, `description`, `status`, `config`,
 ('Ucuser', '微会员', '微会员管理和微信公众号粉丝初始化行为', '1', '{\"random\":\"1\"}', 'UCToo', '0.1', '1430793843', '1'),
 ('ToMobile', '转向手机页面', '转向手机页面，切换到手机页面', '1', '{\"to_mobile_type\":\"2\",\"js_to_mobile_type\":\"1\",\"js_url\":\"m.flutesing.com\",\"js_replace_url\":\"127.0.0.1|www.flutesing.com|flutesing.com\",\"mobile_theme\":\"mobile\"}', 'flutesing<www.flutesing.com>', '2014.5.25', '1431066151', '0'),
 ('Jssdk', '微信JSSDK演示案例', '微信开放平台JSSDK演示案例合辑', '1', 'null', 'uctoo', '0.1', '1431657126', '0');
+
 DROP TABLE  IF EXISTS `uctoo_attachment`;
 CREATE TABLE IF NOT EXISTS `uctoo_attachment` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

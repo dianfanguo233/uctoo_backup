@@ -17,7 +17,10 @@ class JssdkController extends AddonsController{
         //$param ['id'] = I('id');                                          //如有插件中数据id,分享url中应加入id参数
         //$url = addons_url ( 'Jssdk://Jssdk/index', $param );  //分享的url需要和自定义回复入口url保持相同
        $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-        $this->assign ( 'share_url', $url );
+        $surl = get_shareurl();
+        if(!empty($surl)){
+            $this->assign ( 'share_url', $surl );
+        }
 
         $info = get_mpid_appinfo ( $param ['mp_id'] );
 

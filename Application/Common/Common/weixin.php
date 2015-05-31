@@ -105,6 +105,7 @@ function get_openid($openid = NULL) {
         $options['encodingaeskey'] = $info['encodingaeskey'];
         $auth = new Com\Wxauth($options);
         $openid =  $auth->open_id;
+        session ( 'wxuser_' . $mp_id.$openid, $auth->wxuser );     //wxauth获得的微信用户信息存到session中
 
     }
 
@@ -115,6 +116,7 @@ function get_openid($openid = NULL) {
     return $openid;
 }
 
+//没有用到这个函数，请使用wxauth类
 function OAuthWeixin($callback) {
     $isWeixinBrowser = isWeixinBrowser ();
     $info = get_mpid_appinfo ();
@@ -207,4 +209,38 @@ function get_ucuser_uid($uid = 0) {
     }
 
     return $uid;
+}
+
+// 同步微信用户资料到本地存储。
+function sync_wxuser($mp_id, $openid) {
+    $model = D('Ucuser');
+    $map['mp_id'] = $mp_id;
+    $map['openid'] = $openid;
+    $wxuser = session ( 'wxuser_' . $mp_id.$openid );
+    if(!empty($wxuser['openid'])){         //通过oauth获取到过粉丝信息
+        $user = $model->where($map)->find();
+        if($user['status'] != 2){           //没有同步过粉丝信息
+            $user = array_merge($user ,$wxuser);
+            $user['status'] = 2;
+            $model->save($user);
+        }
+        return $user;
+    }
+
+    return false;
+}
+
+//获取分享url的方法，解决controler在鉴权时二次回调jssdk获取分享url错误的问题
+function get_shareurl(){
+    $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+    $findme   = 'https://open.weixin.qq.com/';
+    $pos = strpos($url, $findme);
+    // 使用 !== 操作符。使用 != 不能像我们期待的那样工作，
+    // 因为 'a' 的位置是 0。语句 (0 != false) 的结果是 false。
+    $share_url = '';
+    if ($pos !== false) {             //url是微信的回调授权地址
+        return '';
+    } else {                           //url是本地的分享地址
+        return $url;
+    }
 }

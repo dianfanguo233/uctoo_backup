@@ -52,21 +52,23 @@ class Wxauth {
 				$userinfo = $we_obj->getUserInfo($this->open_id);
 				if ($userinfo && !empty($userinfo['nickname'])) {
 					$this->wxuser = array(
-							'open_id'=>$this->open_id,
+							'openid'=>$this->open_id,
 							'nickname'=>$userinfo['nickname'],
 							'sex'=>intval($userinfo['sex']),
-							'location'=>$userinfo['province'].'-'.$userinfo['city'],
-							'avatar'=>$userinfo['headimgurl']
+							'province'=>$userinfo['province'],
+                            'city'=>$userinfo['city'],
+							'headimgurl'=>$userinfo['headimgurl']
 					);
 				} elseif (strstr($json['scope'],'snsapi_userinfo')!==false) {
 					$userinfo = $we_obj->getOauthUserinfo($access_token,$this->open_id);
 					if ($userinfo && !empty($userinfo['nickname'])) {
 						$this->wxuser = array(
-								'open_id'=>$this->open_id,
-								'nickname'=>$userinfo['nickname'],
-								'sex'=>intval($userinfo['sex']),
-								'location'=>$userinfo['province'].'-'.$userinfo['city'],
-								'avatar'=>$userinfo['headimgurl']
+                            'openid'=>$this->open_id,
+                            'nickname'=>$userinfo['nickname'],
+                            'sex'=>intval($userinfo['sex']),
+                            'province'=>$userinfo['province'],
+                            'city'=>$userinfo['city'],
+                            'headimgurl'=>$userinfo['headimgurl']
 						);
 					} else {
 						return $this->open_id;

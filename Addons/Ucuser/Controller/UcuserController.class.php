@@ -18,7 +18,10 @@ class UcuserController extends AddonsController{
               $user = get_uid_ucuser($uid);                    //获取本地存储公众号粉丝用户信息
 
               $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-              $this->assign ( 'share_url', $url );
+              $surl = get_shareurl();
+              if(!empty($surl)){
+                  $this->assign ( 'share_url', $surl );
+              }
 
               $appinfo = get_mpid_appinfo ( $params ['mp_id'] );   //获取公众号信息
               $this->assign ( 'appinfo', $appinfo );
@@ -63,7 +66,10 @@ class UcuserController extends AddonsController{
         $user = get_uid_ucuser($uid);                    //获取公众号粉丝用户信息
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-        $this->assign ( 'share_url', $url );
+        $surl = get_shareurl();
+        if(!empty($surl)){
+            $this->assign ( 'share_url', $surl );
+        }
 
         $appinfo = get_mpid_appinfo ( $params ['mp_id'] );   //获取公众号信息
         $this->assign ( 'appinfo', $appinfo );
@@ -110,7 +116,10 @@ class UcuserController extends AddonsController{
         $user = get_uid_ucuser($uid);                    //获取公众号粉丝用户信息
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-        $this->assign ( 'share_url', $url );
+        $surl = get_shareurl();
+        if(!empty($surl)){
+            $this->assign ( 'share_url', $surl );
+        }
 
         $appinfo = get_mpid_appinfo ( $params ['mp_id'] );   //获取公众号信息
         $this->assign ( 'appinfo', $appinfo );
@@ -157,7 +166,10 @@ class UcuserController extends AddonsController{
         $user = get_uid_ucuser($uid);                    //获取公众号粉丝用户信息
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-        $this->assign ( 'share_url', $url );
+        $surl = get_shareurl();
+        if(!empty($surl)){
+            $this->assign ( 'share_url', $surl );
+        }
 
         $appinfo = get_mpid_appinfo ( $params ['mp_id'] );   //获取公众号信息
         $this->assign ( 'appinfo', $appinfo );
