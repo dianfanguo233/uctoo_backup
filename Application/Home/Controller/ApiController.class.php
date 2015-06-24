@@ -14,6 +14,4 @@ class ApiController extends Uc{
     function index(){
         $this->response();
     }
-
-
 }

@@ -30,3 +30,6 @@ UCToo主要定位于提供一个可快速进行微应用开发的起始项目，
 13.集成SocketLog,方便调试。https://github.com/luofei614/SocketLog<br />
 14.采用与微信公众平台一一对应的共享数据模型，便于与其他第三方系统集成。<br />
 15.实现Restful API接口，可将系统数据提供给APP以及其他第三方系统调用。<br />
+
+演示公众号
+<img src="http://www.uctoo.com/Application/Home/Static/images/qrcode_default.jpg" alt="">

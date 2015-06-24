@@ -36,7 +36,7 @@ class MpbaseController extends AdminController
         $list = $model->where($map)->page($page, $r)->order('id asc')->select();
         int_to_string($list);  //设置status
         foreach ($list as &$val) {
-            $val['u_name'] = D('member')->where('uid=' . $val['uid'])->getField('nickname');
+            $val['u_name'] = D('Common/Member')->where('uid=' . $val['uid'])->getField('nickname');
             $val['type'] = $model->getMpType($val['type']);
         }
         $totalCount = $model->count();

@@ -89,7 +89,8 @@ if(!IS_CLI) {
         define('__ROOT__',  (($_root=='/' || $_root=='\\')?'':$_root));
     }
 }
-
+define('SITE_DOMAIN'	,	strip_tags($_SERVER['HTTP_HOST']));
+define('SITE_URL'		,	'http://'.SITE_DOMAIN.__ROOT__);
 // 加载核心Think类
 require CORE_PATH.'Think'.EXT;
 // 应用初始化 

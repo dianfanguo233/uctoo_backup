@@ -31,9 +31,10 @@ return array(
 
 /* URL配置 */
 'URL_CASE_INSENSITIVE' => true, //默认false 表示URL区分大小写 true则表示不区分大小写
-'URL_MODEL'            => 2, //URL模式  默认url rewrite模式
+'URL_MODEL'            => 3, //URL模式  默认关闭伪静态
 'VAR_URL_PARAMS'       => '', // PATHINFO URL参数变量
 'URL_PATHINFO_DEPR'    => '/', //PATHINFO URL分割符
+'URL_HTML_SUFFIX'       => 'html',  // URL伪静态后缀设置
 
 /* 全局过滤配置 */
 'DEFAULT_FILTER' => '', //全局过滤函数

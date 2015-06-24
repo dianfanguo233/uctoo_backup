@@ -86,7 +86,7 @@ class ActionLimit
      */
     function logout_account($item)
     {
-        D('Member')->logout();
+        D('Common/Member')->logout();
     }
 
     /**
@@ -159,6 +159,74 @@ function get_time_ago($type = 'second', $some = 1, $time = null)
 function get_time_unit($key = null){
     $array = array('second' => '秒', 'minute' => '分', 'hour' => '小时', 'day' => '天', 'week' => '周', 'month' => '月', 'year' => '年');
     return empty($key)?$array:$array[$key];
+}
+
+/**
+ * 单位格式时间转换成时间戳
+ * @param string $str 单位格式时间
+ * @param string $type +:生成的是之后的时间撮，-:生成的是之前的时间撮
+ * @param null $time 基准时间点
+ * @return array|int|null
+ * @author 郑钟良<zzl@ourstu.com>
+ */
+function unitTime_to_time($str='1 day',$type='-',$time=null)
+{
+    $time = empty($time) ? time() : $time;
+    $str=explode(' ',$str);
+    switch ($str[1]) {
+        case 'second':
+            if($type=='-'){
+                $result=$time-$str[0];
+            }else{
+                $result=$time+$str[0];
+            }
+            break;
+        case 'minute':
+            if($type=='-'){
+                $result=$time-$str[0] * 60;
+            }else{
+                $result=$time+$str[0] * 60;
+            }
+            break;
+        case 'hour':
+            if($type=='-'){
+                $result=$time-$str[0] * 60 * 60;
+            }else{
+                $result=$time+$str[0] * 60 * 60;
+            }
+            break;
+        case 'day':
+            $result = strtotime($type . $str[0] . ' day', $time);
+            break;
+        case 'week':
+            $result = strtotime($type . ($str[0] * 7) . ' day', $time);
+            break;
+        case 'month':
+            $result = strtotime($type . $str[0] . ' month', $time);
+            break;
+        case 'year':
+            $result = strtotime($type . $str[0] . ' year', $time);
+            break;
+        default:
+            $result = $time - $str[0];
+    }
+    return $result;
+}
+
+/**
+ * 30 day -> 30 天
+ * 单位格式时间转换成可显示的中文单位格式时间
+ * @param string $str
+ * @return string
+ * @author 郑钟良<zzl@ourstu.com>
+ */
+function unitTime_to_showUnitTime($str='1 day')
+{
+    $str=explode(' ',$str);
+    $replace=get_time_unit();
+    $str[1]=$replace[$str[1]];
+    $str=implode(' ',$str);
+    return $str;
 }
 
 

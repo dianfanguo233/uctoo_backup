@@ -140,12 +140,11 @@ class UcuserController extends AddonsController{
 
         if (IS_POST) {
 
-            $aEmail = I('post.email', '', 'op_t');
             $aMobile = I('post.mobile', '', 'op_t');
             $aPassword = I('post.password', '', 'op_t');
 
             $ucuser = D('Common/Ucuser');
-            $res = $ucuser->register($uid,$aPassword,$aEmail,$aMobile);
+            $res = $ucuser->register($uid,$aPassword,$aMobile);
             if($res > 0){
                 $this->success ( '注册成功', addons_url ( 'Ucuser://Ucuser/login' ) );
             }else{

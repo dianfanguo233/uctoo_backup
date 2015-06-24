@@ -42,6 +42,31 @@ class UserController extends AdminController
         $this->display();
     }
 
+    /**
+     * 重置用户密码
+     * @author 郑钟良<zzl@ourstu.com>
+     */
+    public function initPass(){
+        $uids=I('id');
+        !is_array($uids)&&$uids=explode(',',$uids);
+        foreach($uids as $key=>$val){
+            if(!query_user('uid',$val)){
+                unset($uids[$key]);
+            }
+        }
+        if(!count($uids)){
+            $this->error('前选择要重置的用户！');
+        }
+        $ucModel=UCenterMember();
+        $data=$ucModel->create(array('password'=>'123456'));
+        $res=$ucModel->where(array('id'=>array('in',$uids)))->save(array('password'=>$data['password']));
+        if($res){
+            $this->success('密码重置成功！');
+        }else{
+            $this->error('密码重置失败！可能密码重置前就是“123456”。');
+        }
+    }
+
     public function changeGroup()
     {
 
@@ -123,7 +148,7 @@ class UserController extends AdminController
         $builder = new AdminListBuilder();
         $builder->title("用户扩展资料列表");
         $builder->meta_title = '用户扩展资料列表';
-        $builder->setSearchPostUrl(U('Admin/User/expandinfo_select'),'','')->search('搜索', 'nickname', 'text', '请输入用户昵称或者ID');
+        $builder->setSearchPostUrl(U('Admin/User/expandinfo_select'))->search('搜索', 'nickname', 'text', '请输入用户昵称或者ID');
         $builder->keyId()->keyLink('nickname', "昵称", 'User/expandinfo_details?uid=###');
         foreach ($fields_list as $vt) {
             $builder->keyText($vt['field_name'], $vt['field_name']);
@@ -149,7 +174,7 @@ class UserController extends AdminController
                     $data_score[$key]=$val;
                 }
             }
-            $res = D('Member')->where(array('uid'=>$data['id']))->save($data_score);
+            $res = D('Common/Member')->where(array('uid'=>$data['id']))->save($data_score);
             if ($res) {
                 $this->success('设置成功');
             } else {
@@ -161,6 +186,7 @@ class UserController extends AdminController
             $map['status'] = array('egt', 0);
             $member = M('Member')->where($map)->find();
             $member['id'] = $member['uid'];
+            $member['username']=query_user('username',$uid);
             //扩展信息查询
             $map_profile['status'] = 1;
             $field_group = D('field_group')->where($map_profile)->select();
@@ -182,8 +208,8 @@ class UserController extends AdminController
             $builder = new AdminConfigBuilder();
             $builder->title("用户扩展资料详情");
             $builder->meta_title = '用户扩展资料详情';
-            $builder->keyId()->keyReadOnly('nickname', "用户名称");
-            $field_key = array('id','nickname');
+            $builder->keyId()->keyReadOnly('username', "用户名称")->keyReadOnly('nickname','昵称');
+            $field_key = array('id','username','nickname');
             foreach ($fields_list as $vt) {
                 $field_key[] = $vt['field_name'];
                 $builder->keyReadOnly($vt['field_name'], $vt['field_name']);
@@ -196,7 +222,7 @@ class UserController extends AdminController
                $score_key[]='score'.$vf['id'];
                $builder->keyText('score'.$vf['id'], $vf['title']);
             }
-            $score_data = D('Member')->where(array('uid'=>$uid))->field(implode(',',$score_key))->find();
+            $score_data = D('Common/Member')->where(array('uid'=>$uid))->field(implode(',',$score_key))->find();
             $member = array_merge($member,$score_data);
             /*积分设置end*/
 
@@ -340,6 +366,7 @@ class UserController extends AdminController
             $data['visiable'] = $visiable;
             $data['required'] = $required;
             $data['form_type'] = $form_type;
+            $data['form_default_value'] = $form_default_value;
             //当表单类型为以下三种是默认值不能为空判断@MingYang
             $form_types = array('radio','checkbox','select');
             if(in_array($data['form_type'],$form_types)){
@@ -352,7 +379,6 @@ class UserController extends AdminController
             if ($form_type == 'input' && $child_form_type == 'join') {
                 $data['child_form_type'] = $child_form_type;
             }
-            $data['form_default_value'] = $form_default_value;
             $data['validation'] = $validation;
             if ($id != '') {
                 $res = D('field_setting')->where('id=' . $id)->save($data);
@@ -522,7 +548,7 @@ class UserController extends AdminController
         $uid = $User->login(UID, $password, 4);
         ($uid == -2) && $this->error('密码不正确');
 
-        $Member = D('Member');
+        $Member = D('Common/Member');
         $data = $Member->create(array('nickname' => $nickname));
         if (!$data) {
             $this->error($Member->getError());
@@ -603,6 +629,10 @@ class UserController extends AdminController
     public function addAction()
     {
         $this->meta_title = '新增行为';
+
+
+        $module = D('Module')->getAll();
+        $this->assign('module',$module);
         $this->assign('data', null);
         $this->display('editaction');
     }
@@ -617,6 +647,8 @@ class UserController extends AdminController
         empty($id) && $this->error('参数不能为空！');
         $data = M('Action')->field(true)->find($id);
 
+        $module = D('Module')->getAll();
+        $this->assign('module',$module);
         $this->assign('data', $data);
         $this->meta_title = '编辑行为';
         $this->display();
@@ -677,7 +709,7 @@ class UserController extends AdminController
     {
         switch ($code) {
             case -1:
-                $error = '用户名长度必须在16个字符以内！';
+                $error = '用户名长度必须在32个字符以内！';
                 break;
             case -2:
                 $error = '用户名被禁止注册！';

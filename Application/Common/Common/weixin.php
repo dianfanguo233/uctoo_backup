@@ -195,8 +195,27 @@ function get_ucuser_uid($uid = 0) {
         $map['mp_id'] = $mp_id;
         $ucuser = D('Ucuser');
         $data = $ucuser->where($map)->find();
-        if(!$data){                                             //公众号没有这个粉丝信息，就注册一个
-            $uid =  $ucuser->registerUser($map['mp_id'],$map['openid']);
+        if(!$data){                                                 //公众号没有这个粉丝信息，就注册一个
+                                                                 //先在Member表注册会员，使系统中uid统一，公众号粉丝在绑定手机后可登录网站
+           
+            //先在Member表注册会员，使系统中uid统一，公众号粉丝在绑定手机后可登录网站
+            $aUsername = $aNickname = $map['openid'];           //以openid作为默认UcenterMember用户名和Member昵称
+            $aPassword = UCenterMember()->create_rand();        //随机密码，用户未通过公众号注册，就不可登录网站
+            $email = $aUsername.'@mp_id'.$map['mp_id'].'.com';   //以openid@mpid123.com作为默认邮箱
+            $mobile = arr2str(UCenterMember()->rand_mobile());                    //生成随机手机号已通过model校验，不实际使用，准确手机以微信绑定的为准
+            $aUnType = 5;                                               //微信公众号粉丝注册
+            $aRole = 3;                                                 //默认公众号粉丝用户角色
+            /* 注册用户 */
+           
+            $uid = UCenterMember()->register($aUsername, $aNickname, $aPassword, $email, $mobile, $aUnType);
+            if (0 < $uid) { //注册成功
+                initRoleUser($aRole,$uid); //初始化角色用户
+                set_user_status($uid, 1);                           //微信注册的用户状态直接设置为1
+            } else { //注册失败，显示错误信息
+
+            }
+
+            $uid = $ucuser->registerUser($uid , $map['mp_id'] ,$map['openid']);    //用注册member获取的统一uid注册微信粉丝
             session ( 'uid_' . $mp_id, $uid );
 
         }else{

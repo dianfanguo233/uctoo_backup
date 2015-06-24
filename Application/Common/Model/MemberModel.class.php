@@ -40,7 +40,7 @@ class MemberModel extends Model
 
 
         /* 验证昵称 */
-        array('nickname', '2,30', -33, self::EXISTS_VALIDATE, 'length'), //昵称长度不合法
+        array('nickname', '4,32', -33, self::EXISTS_VALIDATE, 'length'), //昵称长度不合法
         array('nickname', 'checkDenyNickname', -31, self::EXISTS_VALIDATE, 'callback'), //昵称禁止注册
         array('nickname', 'checkNickname', -32, self::EXISTS_VALIDATE, 'callback'),
         array('nickname', '', -30, self::EXISTS_VALIDATE, 'unique'), //昵称被占用
@@ -57,7 +57,16 @@ class MemberModel extends Model
      */
     protected function checkDenyNickname($nickname)
     {
-        return true; //TODO: 暂不限制，下一个版本完善
+        $denyName=M("Config")->where(array('name' => 'USER_NAME_BAOLIU'))->getField('value');
+        if($denyName!=''){
+            $denyName=explode(',',$denyName);
+            foreach($denyName as $val){
+                if(!is_bool(strpos($nickname,$val))){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     protected function checkNickname($nickname)
@@ -83,7 +92,7 @@ class MemberModel extends Model
                 $this->error = '前台用户信息注册失败，请重试！';
                 return false;
             }
-
+            $this->initFollow($uid);
             return $uid;
         } else {
             return $this->getError(); //错误详情见自动验证注释
@@ -150,6 +159,8 @@ class MemberModel extends Model
      */
     public function logout()
     {
+        session('_AUTH_LIST_'.get_uid().'1',null);
+        session('_AUTH_LIST_'.get_uid().'2',null);
         session('user_auth', null);
         session('user_auth_sign', null);
         cookie('OX_LOGGED_USER', NULL);
@@ -216,10 +227,11 @@ class MemberModel extends Model
 
     public function need_login()
     {
-
-        if ($uid = $this->getCookieUid()) {
-            $this->login($uid);
-            return true;
+        if (!is_login()) {
+            if ($uid = $this->getCookieUid()) {
+                $this->login($uid);
+                return true;
+            }
         }
     }
 
@@ -320,7 +332,7 @@ class MemberModel extends Model
     public function addSyncData($uid, $info)
     {
 
-        $data1['nickname'] = mb_substr($info['nick'], 0, 11, 'utf-8');
+        $data1['nickname'] = mb_substr($info['nick'], 0, 32, 'utf-8');
         //去除特殊字符。
         $data1['nickname'] = preg_replace('/[^A-Za-z0-9_\x80-\xff\s\']/', '', $data1['nickname']);
         empty($data1['nickname']) && $data1['nickname'] = $this->rand_nickname();
@@ -493,5 +505,44 @@ class MemberModel extends Model
             }
         }
         return $change;
+    }
+
+    private function initFollow($uid=0)
+    {
+        if($uid!=0){
+            $followModel=D('Common/Follow');
+            $follow=modC('NEW_USER_FOLLOW','','USERCONFIG');
+            $fans=modC('NEW_USER_FANS','','USERCONFIG');
+            $friends=modC('NEW_USER_FRIENDS','','USERCONFIG');
+            if($follow!=''){
+                $follow=explode(',',$follow);
+                foreach($follow as $val){
+                    if(query_user('uid',$val)){
+                        $followModel->addFollow($uid,$val);
+                    }
+                }
+                unset($val);
+            }
+            if($fans!=''){
+                $fans=explode(',',$fans);
+                foreach($fans as $val){
+                    if(query_user('uid',$val)){
+                        $followModel->addFollow($val,$uid);
+                    }
+                }
+                unset($val);
+            }
+            if($friends!=''){
+                $friends=explode(',',$friends);
+                foreach($friends as $val){
+                    if(query_user('uid',$val)){
+                        $followModel->addFollow($val,$uid);
+                        $followModel->addFollow($uid,$val);
+                    }
+                }
+                unset($val);
+            }
+        }
+        return true;
     }
 }

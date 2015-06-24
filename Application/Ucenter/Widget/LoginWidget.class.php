@@ -55,7 +55,7 @@ class LoginWidget extends Action
         $uid = UCenterMember()->login($username, $aPassword, $aUnType);
         if (0 < $uid) { //UC登录成功
             /* 登录用户 */
-            $Member = D('Member');
+            $Member = D('Common/Member');
             $args['uid'] = $uid;
             $args = array('uid'=>$uid,'nickname'=>$username);
             check_and_add($args);

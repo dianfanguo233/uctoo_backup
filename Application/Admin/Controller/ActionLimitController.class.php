@@ -23,9 +23,9 @@ class ActionLimitController extends AdminController
         $map['status'] = array('EGT', 0);
         $model = M('action_limit');
         $List = $model->where($map)->order('id asc')->select();
+        $timeUnit = $this->getTimeUnit();
         foreach($List as &$val){
-            $timeUnit = $this->getTimeUnit();
-            $val['time_unit'] = $timeUnit[$val['time_unit']];
+            $val['time'] =$val['time_number']. $timeUnit[$val['time_unit']];
             $val['action_list'] = get_action_name($val['action_list']);
             empty( $val['action_list']) &&  $val['action_list'] = '所有行为';
 
@@ -43,7 +43,7 @@ class ActionLimitController extends AdminController
             ->keyTitle()
             ->keyText('name', '名称')
             ->keyText('frequency', '频率')
-            ->keyText('time_unit', '时间单位')
+            ->keyText('time', '时间单位')
             ->keyText('punish', '处罚')
             ->keyBool('if_message', '是否发送提醒')
             ->keyText('message_content', '消息提示内容')
@@ -70,6 +70,7 @@ class ActionLimitController extends AdminController
             $data['message_content'] = I('post.message_content', '', 'op_t');
             $data['action_list'] = I('post.action_list', '', 'op_t');
             $data['status'] = I('post.status', 1, 'intval');
+            $data['module'] = I('post.module', '', 'op_t');
 
             $data['punish'] = implode(',', $data['punish']);
 
@@ -84,10 +85,20 @@ class ActionLimitController extends AdminController
             } else {
                 $res = $model->addActionLimit($data);
             }
-            $this->success(($aId == 0 ? '添加' : '编辑') . '成功', $aId == 0 ? U('', array('id' => $res)) : '');
-
+            if($res){
+                $this->success(($aId == 0 ? '添加' : '编辑') . '成功', $aId == 0 ? U('', array('id' => $res)) : '');
+            }else{
+                $this->error($aId == 0 ? '操作失败，请添加正确信息！' : '操作失败，请确保修改了信息并且信息正确！');
+            }
         } else {
             $builder = new AdminConfigBuilder();
+
+            $modules = D('Module')->getAll();
+            $module['all'] = '全站';
+            foreach($modules as $k=>$v){
+                $module[$v['name']] = $v['alias'];
+            }
+
             if ($aId != 0) {
                 $limit = $model->getActionLimit(array('id' => $aId));
                 $limit['punish'] = explode(',', $limit['punish']);
@@ -103,9 +114,10 @@ class ActionLimitController extends AdminController
             $builder->title(($aId == 0 ? '新增' : '编辑') . '行为限制')->keyId()
                 ->keyTitle()
                 ->keyText('name', '名称')
+                ->keySelect('module', '所属模块','',$module)
                 ->keyText('frequency', '频率')
                // ->keySelect('time_unit', '时间单位', '', $this->getTimeUnit())
-                ->keyMultiInput('time_number,time_unit','时间单位','时间单位',array(array('type'=>'text','style'=>'width:295px;margin-right:5px'),array('type'=>'select','opt'=>$this->getTimeUnit(),'style'=>'width:100px')))
+                ->keyMultiInput('time_number|time_unit','时间单位','时间单位',array(array('type'=>'text','style'=>'width:295px;margin-right:5px'),array('type'=>'select','opt'=>$this->getTimeUnit(),'style'=>'width:100px')))
 
                 ->keyChosen('punish', '处罚', '可多选', $opt_punish)
                 ->keyBool('if_message', '是否发送提醒')

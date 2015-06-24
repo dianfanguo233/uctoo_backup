@@ -102,7 +102,6 @@ class Auth{
         if (!$this->_config['AUTH_ON'])
             return true;
         $authList = $this->getAuthList($uid,$type); //获取用户需要验证的所有有效规则列表
-
         if (is_string($name)) {
             $name = strtolower($name);
             if (strpos($name, ',') !== false) {
@@ -123,7 +122,6 @@ class Auth{
                 $auth = preg_replace('/\?.*$/U','',$auth);
                 if ( in_array($auth,$name) && $intersect==$param ) {  //如果节点相符且url参数满足
                     $list[] = $auth ;
-
                 }
             }else if (in_array($auth , $name)){
                 $list[] = $auth ;

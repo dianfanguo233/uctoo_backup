@@ -56,7 +56,7 @@ class UserApi extends Api{
                 if(strtolower(UC_CHARSET) == 'gbk'){
                     $uc_user[1] =  iconv('GBK', 'UTF-8', $uc_user[1]);
                 }
-                D('member')->where(array('uid'=>$uc_user[0]))->setField('nickname',$uc_user[1]);
+                D('Common/Member')->where(array('uid'=>$uc_user[0]))->setField('nickname',$uc_user[1]);
                 D('ucenter_member')->where(array('id'=>$uc_user[0]))->setField('username',$uc_user[1]);
                 return $uc_user[0];
             }

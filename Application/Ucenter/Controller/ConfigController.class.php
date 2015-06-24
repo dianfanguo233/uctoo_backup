@@ -42,22 +42,32 @@ class ConfigController extends BaseController
 
         $roleModel=D('Role');
         $userRoleModel=D('UserRole');
-        $map['status']=1;
-        $map['invite']=0;
-        if($roleModel->where($map)->count()>1){
-            $have=1;
-        }else{
-            $map_user['uid']=is_login();
-            $map_user['role_id']=array('neq',get_login_role());
-            $map_user['status']=array('egt',0);
-            $role_ids=$userRoleModel->where($map_user)->field('role_id')->select();
-            if($role_ids){
-                $role_ids=array_column($role_ids,'role_id');
-                $map_can['status']=1;
-                $map_can['id']=array('in',$role_ids);
-                if($roleModel->where($map_can)->count()){
-                    $have=1;
+
+        $register_type=modC('REGISTER_TYPE','normal','Invite');
+        $register_type=explode(',',$register_type);
+        if(!in_array('invite',$register_type)){//开启邀请注册
+            $map['status']=1;
+            $map['invite']=0;
+            if($roleModel->where($map)->count()>1){
+                $have=1;
+            }else{
+                $map_user['uid']=is_login();
+                $map_user['role_id']=array('neq',get_login_role());
+                $map_user['status']=array('egt',0);
+                $role_ids=$userRoleModel->where($map_user)->field('role_id')->select();
+                if($role_ids){
+                    $role_ids=array_column($role_ids,'role_id');
+                    $map_can['status']=1;
+                    $map_can['id']=array('in',$role_ids);
+                    if($roleModel->where($map_can)->count()){
+                        $have=1;
+                    }
                 }
+            }
+        }else{
+            $map['status']=1;
+            if($roleModel->where($map)->count()>1){
+                $have=1;
             }
         }
         $this->assign('can_show_role',$have);
@@ -100,7 +110,7 @@ class ConfigController extends BaseController
             if(!$userRoleModel->where($map)->count()){
                 $this->error('参数错误！');
             }
-            $result=D('Member')->where(array('uid'=>is_login()))->setField('show_role',$aShowRole);
+            $result=D('Common/Member')->where(array('uid'=>is_login()))->setField('show_role',$aShowRole);
             if($result){
                 clean_query_user_cache(is_login(),array('show_role'));
                 $this->success('设置成功！');
@@ -135,7 +145,15 @@ class ConfigController extends BaseController
             $map_can_have_roles['id']=array('not in',$already_role_ids);//去除已有角色
             $map_can_have_roles['invite']=0;//不需要邀请注册
             $map_can_have_roles['status']=1;
-            $can_have_roles=$roleModel->where($map_can_have_roles)->order('sort asc')->select();
+            $can_have_roles=$roleModel->where($map_can_have_roles)->order('sort asc')->select();//可持有角色
+
+            $register_type=modC('REGISTER_TYPE','normal','Invite');
+            $register_type=explode(',',$register_type);
+            if(in_array('invite',$register_type)){//开启邀请注册
+                $map_can_have_roles['invite']=1;
+                $can_up_roles=$roleModel->where($map_can_have_roles)->order('sort asc')->select();//可升级角色
+                $this->assign('can_up_roles',$can_up_roles);
+            }
 
             $show_role=query_user(array('show_role'));
             $this->assign('show_role',$show_role['show_role']);
@@ -146,6 +164,37 @@ class ConfigController extends BaseController
             $this->display();
         }
 
+    }
+
+    public function tag()
+    {
+        $userTagLinkModel=D('Ucenter/UserTagLink');
+        if(IS_POST){
+            $aTagIds=I('post.tag_ids','','op_t');
+            $result=$userTagLinkModel->editData($aTagIds);
+            if($result){
+                $res['status']=1;
+            }else{
+                $res['status']=0;
+                $res['info']="操作失败！";
+            }
+            $this->ajaxReturn($res);
+        }else{
+            $userTagModel=D('Ucenter/UserTag');
+            $map=getRoleConfigMap('user_tag',get_login_role());
+            $ids=M('RoleConfig')->where($map)->getField('value');
+            if($ids){
+                $ids=explode(',',$ids);
+                $tag_list=$userTagModel->getTreeListByIds($ids);
+                $this->assign('tag_list',$tag_list);
+            }
+            $myTags=$userTagLinkModel->getUserTag(is_login());
+            $this->assign('my_tag',$myTags);
+            $my_tag_ids=array_column($myTags,'id');
+            $my_tag_ids=implode(',',$my_tag_ids);
+            $this->assign('my_tag_ids',$my_tag_ids);
+            $this->display();
+        }
     }
 
     public function index()
@@ -177,7 +226,7 @@ class ConfigController extends BaseController
             $user['signature'] = $aSignature;
             $user['uid'] = get_uid();
 
-            $rs_member = D('Member')->save($user);
+            $rs_member = D('Common/Member')->save($user);
 
             $ucuser['id'] = get_uid();
             $rs_ucmember = UCenterMember()->save($ucuser);
@@ -217,10 +266,10 @@ class ConfigController extends BaseController
         $length = mb_strlen($nickname, 'utf8');
         if ($length == 0) {
             $this->error('请输入昵称。');
-        } else if ($length > 16) {
-            $this->error('昵称不能超过16个字。');
-        } else if ($length <= 1) {
-            $this->error('昵称不能少于1个字。');
+        } else if ($length > 32) {
+            $this->error('昵称不能超过32个字。');
+        } else if ($length < 4) {
+            $this->error('昵称不能少于4个字。');
         }
         $match = preg_match('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/', $nickname);
         if (!$match) {
@@ -229,7 +278,7 @@ class ConfigController extends BaseController
 
         $map_nickname['nickname'] = $nickname;
         $map_nickname['uid'] = array('neq', is_login());
-        $had_nickname = D('Member')->where($map_nickname)->count();
+        $had_nickname = D('Common/Member')->where($map_nickname)->count();
         if ($had_nickname) {
             $this->error('昵称已被人使用。');
         }
@@ -243,8 +292,8 @@ class ConfigController extends BaseController
     private function checkSignature($signature)
     {
         $length = mb_strlen($signature, 'utf8');
-        if ($length >= 30) {
-            $this->error('签名不能超过30个字');
+        if ($length >= 100) {
+            $this->error('签名不能超过100个字');
         }
     }
 
@@ -672,7 +721,7 @@ class ConfigController extends BaseController
         }
 
         //验证用户名是否是字母和数字
-        preg_match("/^[a-zA-Z0-9_]{1,30}$/", $aUsername, $match);
+        preg_match("/^[a-zA-Z0-9_]{4,32}$/", $aUsername, $match);
         if (!$match) {
             $this->error('用户名只允许英文字母和数字');
         }
@@ -728,7 +777,7 @@ class ConfigController extends BaseController
                 $content = modC('REG_EMAIL_VERIFY', '{$verify}', 'USERCONFIG');
                 $content = str_replace('{$verify}', $verify, $content);
                 $content = str_replace('{$account}', $account, $content);
-                $res = send_mail($account, C('WEB_SITE') . '邮箱验证', $content);
+                $res = send_mail($account, modC('WEB_SITE_NAME', 'UCToo开源微信应用开发框架', 'Config') . '邮箱验证', $content);
 
                 return $res;
                 break;

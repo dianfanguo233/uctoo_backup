@@ -95,7 +95,7 @@ class ScoreModel extends Model
      * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
      */
     public function getUserScore($uid,$type){
-        $model = D('Member');
+        $model = D('Common/Member');
         $score = $model->where(array('uid'=>$uid))->getField('score'.$type);
         return $score;
     }
@@ -110,7 +110,7 @@ class ScoreModel extends Model
      */
     public function setUserScore($uids,$score,$type,$action='inc'){
 
-        $model = D('Member');
+        $model = D('Common/Member');
         switch($action){
             case 'inc':
                 $score = abs($score);
@@ -127,6 +127,10 @@ class ScoreModel extends Model
                 $res = false;
                 break;
         }
+        foreach($uids as $val){
+            clean_query_user_cache($val,'score'.$type);
+        }
+        unset($val);
         return $res;
     }
 

@@ -71,7 +71,7 @@ class AdminListBuilder extends AdminBuilder
      */
     public function setSelectPostUrl($url)
     {
-        $this->_selectPostUrl = U($url);
+        $this->_selectPostUrl = $url;
         return $this;
     }
 
@@ -141,11 +141,10 @@ class AdminListBuilder extends AdminBuilder
      * @return $this
      * @author 郑钟良<zzl@ourstu.com>
      */
-    public function modalPopupButton($url, $params, $title, $attr = array())
+    public function buttonModalPopup($url, $params, $title, $attr = array())
     {
+        //$attr中可选参数，data-title：模态框标题，target-form：要传输的数据
         $attr['modal-url'] = $this->addUrlParam($url, $params);
-        $attr['target-form'] = 'ids';
-        $attr['data-title']=$attr['data-title'];//模态框标题
         $attr['data-role']='modal_popup';
         return $this->button($title, $attr);
     }
@@ -390,6 +389,49 @@ class AdminListBuilder extends AdminBuilder
         return $this->key($name, $title , 'Join' , $map);
     }
 
+    /**
+     * 模态弹窗
+     * @param $getUrl
+     * @param $text
+     * @param $title
+     * @param array $attr
+     * @return $this
+     * @author 郑钟良<zzl@ourstu.com>
+     */
+    public function keyDoActionModalPopup($getUrl,$text,$title,$attr=array())
+    {
+        //attr中需要设置data-title，用于设置模态弹窗标题
+        $attr['data-role']='modal_popup';
+        //获取默认getUrl函数
+        if (is_string($getUrl)) {
+            $getUrl = $this->createDefaultGetUrlFunction($getUrl);
+        }
+        //确认已经创建了DOACTIONS字段
+        $doActionKey = null;
+        foreach ($this->_keyList as $key) {
+            if ($key['name'] === 'DOACTIONS') {
+                $doActionKey = $key;
+                break;
+            }
+        }
+        if (!$doActionKey) {
+            $this->key('DOACTIONS', $title, 'doaction', $attr);
+        }
+
+        //找出第一个DOACTIONS字段
+        $doActionKey = null;
+        foreach ($this->_keyList as &$key) {
+            if ($key['name'] == 'DOACTIONS') {
+                $doActionKey = & $key;
+                break;
+            }
+        }
+
+        //在DOACTIONS中增加action
+        $doActionKey['opt']['actions'][] = array('text' => $text, 'get_url' => $getUrl,'opt'=>$attr);
+        return $this;
+    }
+
     public function keyDoAction($getUrl, $text, $title = '操作')
     {
         //获取默认getUrl函数
@@ -506,9 +548,9 @@ class AdminListBuilder extends AdminBuilder
             $url = $getUrl($item);
             //允许字段为空，如果字段名为空将标题名填充到A变现里
             if(!$value){
-                return "<a href=\"$url\">".$key['title']."</a>";
+                return "<a href=\"$url\" target=\"_blank\">".$key['title']."</a>";
             } else {
-                return "<a href=\"$url\">$value</a>";
+                return "<a href=\"$url\" target=\"_blank\">$value</a>";
             }
         });
 
@@ -537,7 +579,21 @@ class AdminListBuilder extends AdminBuilder
                 $getUrl = $action['get_url'];
                 $linkText = $action['text'];
                 $url = $getUrl($item);
-                $result[] = "<a href=\"$url\">$linkText</a>";
+                if(isset($action['opt'])){
+                    $content = array();
+                    foreach($action['opt'] as $key=>$value) {
+                        $value = htmlspecialchars($value);
+                        $content[] = "$key=\"$value\"";
+                    }
+                    $content = implode(' ', $content);
+                    if(isset($action['opt']['data-role'])&&$action['opt']['data-role']=="modal_popup"){//模态弹窗
+                        $result[] = "<a href=\" #\" modal-url=\"$url\" ".$content.">$linkText</a>";
+                    }else{
+                        $result[] = "<a href=\"$url\" ".$content.">$linkText</a>";
+                    }
+                }else{
+                    $result[] = "<a href=\"$url\">$linkText</a>";
+                }
             }
             return implode(' ', $result);
         });
@@ -665,13 +721,16 @@ class AdminListBuilder extends AdminBuilder
      */
     private function createDefaultGetUrlFunction($pattern)
     {
-        return function ($item) use ($pattern) {
+        $explode = explode('|',$pattern);
+        $pattern = $explode[0];
+        $fun = empty($explode[1])?'U':$explode[1];
+        return function ($item) use ($pattern,$fun) {
             $pattern = str_replace('###', $item['id'], $pattern);
             //调用ThinkPHP中的解析引擎解析变量
             $view = new \Think\View();
             $view->assign($item);
             $pattern = $view->fetch('', $pattern);
-            return U($pattern);
+            return $fun($pattern);
         };
     }
 

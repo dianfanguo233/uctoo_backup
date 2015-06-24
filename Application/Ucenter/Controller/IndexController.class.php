@@ -70,7 +70,7 @@ class IndexController extends BaseController
     {
         //调用API获取基本信息
         //TODO tox 获取省市区数据
-        $user = query_user(array('username','nickname', 'signature', 'email', 'mobile', 'rank_link', 'sex', 'pos_province', 'pos_city', 'pos_district', 'pos_community'), $uid);
+        $user = query_user(array('nickname', 'signature', 'email', 'mobile', 'rank_link', 'sex', 'pos_province', 'pos_city', 'pos_district', 'pos_community'), $uid);
         if ($user['pos_province'] != 0) {
             $user['pos_province'] = D('district')->where(array('id' => $user['pos_province']))->getField('name');
             $user['pos_city'] = D('district')->where(array('id' => $user['pos_city']))->getField('name');

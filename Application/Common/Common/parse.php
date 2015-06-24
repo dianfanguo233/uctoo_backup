@@ -100,7 +100,7 @@ function parse_at_users($content)
 
     //将@用户替换成链接
     foreach ($at_usernames as $e) {
-        $user = D('Member')->where(array('nickname' => $e))->find();
+        $user = D('Common/Member')->where(array('nickname' => $e))->find();
         if ($user) {
             $query_user = query_user(array('space_url'), $user['uid']);
             $content = str_replace("@$e", "<a ucard=\"$user[uid]\" href=\"$query_user[space_url]\">@$e </a>", $content);
@@ -126,7 +126,7 @@ function get_at_uids($content)
     $usernames = get_at_usernames($content);
     $result = array();
     foreach ($usernames as $username) {
-        $user = D('Member')->where(array('nickname' => op_t($username)))->field('uid')->find();
+        $user = D('Common/Member')->where(array('nickname' => op_t($username)))->field('uid')->find();
         $result[] = $user['uid'];
     }
     return $result;

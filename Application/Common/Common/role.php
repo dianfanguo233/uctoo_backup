@@ -108,3 +108,30 @@ function clear_role_cache($role_id=0,$type){
     }
     return true;
 }
+
+/**
+ * 初始化角色用户信息
+ * @param $role_id
+ * @param $uid
+ * @return bool
+ * @author 郑钟良<zzl@ourstu.com>
+ */
+function initRoleUser($role_id=0,$uid)
+{
+    $memberModel=D('Common/Member');
+    $role=D('Role')->where(array('id'=>$role_id))->find();
+    $user_role=array('uid'=>$uid,'role_id'=>$role_id,'step'=>"start");
+    if($role['audit']){//该角色需要审核
+        $user_role['status']=2;//未审核
+    }else{
+        $user_role['status']=1;
+    }
+    $result=D('UserRole')->add($user_role);
+    if(!$role['audit']){//该角色不需要审核
+        $memberModel->initUserRoleInfo($role_id,$uid);
+    }
+    $memberModel->initDefaultShowRole($role_id,$uid);
+
+    return $result;
+}
+

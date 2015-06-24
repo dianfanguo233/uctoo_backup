@@ -37,7 +37,7 @@ class UcuserModel extends Model
         array('signature', '0,100', -1, self::EXISTS_VALIDATE, 'length'),
 
         /* 验证昵称 */
-        array('nickname', '2,30', -33, self::EXISTS_VALIDATE, 'length'), //昵称长度不合法
+        array('nickname', '2,32', -33, self::EXISTS_VALIDATE, 'length'), //昵称长度不合法
         array('nickname', 'checkDenyNickname', -31, self::EXISTS_VALIDATE, 'callback'), //昵称禁止注册
         array('nickname', 'checkNickname', -32, self::EXISTS_VALIDATE, 'callback'),
         array('nickname', '', -30, self::EXISTS_VALIDATE, 'unique'), //昵称被占用
@@ -96,20 +96,21 @@ class UcuserModel extends Model
 
     /**
      * 初始化一个新用户
+     * @param  string $uid member表uid
      * @param  string $mp_id 公众号mp_id
      * @param  string $openid 用户openid
      * @return integer          注册成功-用户uid，注册失败-错误编号
      */
-    public function registerUser($mp_id = '',$openid = '')
+    public function registerUser($uid ,$mp_id = '',$openid = '')
     {
         /* 在当前应用中注册用户 */
-        if ($user = $this->create(array('mp_id' => $mp_id,'openid' => $openid, 'status' => 1))) {
-            $uid = $this->add($user);
-            if (!$uid) {
+        if ($user = $this->create(array('uid' => $uid,'mp_id' => $mp_id,'openid' => $openid, 'status' => 1))) {
+            $ucuid = $this->add($user);
+            if (!$ucuid) {
                 $this->error = '微会员信息注册失败，请重试！';
                 return false;
             }
-
+            sync_wxuser($mp_id,$openid);                                //初始化用户后同步一次用户资料
             return $uid;
         } else {
             return $this->getError(); //错误详情见自动验证注释
@@ -126,25 +127,31 @@ class UcuserModel extends Model
      * @param  string $mobile 用户手机号码
      * @return integer          注册成功-用户信息，注册失败-错误编号
      */
-    public function register($uid ,$password, $email, $mobile)
+    public function register($uid ,$password, $mobile)
     {
         $user = $this->find($uid);
         $data = array(
             'uid' => $uid,
             'password' => $password,
-            'email' => $email,
+            'mobile' => $mobile,
+        );
+        $data1 = array(
+            'id' => $uid,
+            'password' => $password,
             'mobile' => $mobile,
         );
 
-        if(empty($user['password']) && empty($user['email']) && empty($user['mobile']) ){       // 没注册过
+        if(empty($user['mobile']) ){       // 没在微信端注册（绑定）过，记录手机和密码
             /* 完善用户信息 */
-            if ($this->create($data) && $this->save()) {
-                return true;
+            if ( $this->create($data) && $this->save()) {
+                if (UCenterMember()->create($data1) && UCenterMember()->save()){             //更新UcenterMember中的手机和密码
+                    return true;
+                }
             } else {
                 return $this->getError(); //错误详情见自动验证注释
             }
-        }else {
-                    return -2; //密码错误
+        }else {                                                        //  已在微信端绑定过，提示用正确的帐密登录
+                    return -11; //密码错误
         }
     }
 
@@ -165,7 +172,6 @@ class UcuserModel extends Model
 
         /* 获取用户数据 */
         $user = $this->where($map)->find();
-        trace('wechat：modellogin'. arr2str($user),'微信','DEBUG',true);
 
         if($role_id!=0){
             $user['last_login_role']=$role_id;
@@ -182,10 +188,8 @@ class UcuserModel extends Model
 
         if (is_array($user) && $user['status']) {
             /* 验证用户密码 */
-            trace(UC_AUTH_KEY.'wechat：modellogin'. $password,'微信','DEBUG',true);
             if (think_ucenter_md5($password, UC_AUTH_KEY) === $user['password']) {
                 $this->updateLogin($user['uid']); //更新用户登录信息
-                trace('wechat：modelloginvvv'.arr2str($user),'微信','DEBUG',true);
                 return $user['uid']; //登录成功，返回用户UID
             } else {
 

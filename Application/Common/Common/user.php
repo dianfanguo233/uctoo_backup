@@ -131,8 +131,21 @@ function check_step($now_step=''){
  * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
  */
 function set_user_status($uid,$status){
-    D('Member')->where(array('uid'=>$uid))->setField('status',$status);
+    D('Common/Member')->where(array('uid'=>$uid))->setField('status',$status);
     UCenterMember()->where(array('id'=>$uid))->setField('status',$status);
+    return true;
+}
+
+/**
+ * set_users_status   批量设置用户状态
+ * @param $map
+ * @param $status
+ * @return bool
+ * @author 郑钟良<zzl@ourstu.com>
+ */
+function set_users_status($map,$status){
+    D('Common/Member')->where($map)->setField('status',$status);
+    UCenterMember()->where($map)->setField('status',$status);
     return true;
 }
 
@@ -152,7 +165,7 @@ function check_step_can_skip($step){
 
 
 function check_and_add($args){
-    $Member = D('Member');
+    $Member = D('Common/Member');
     $uid = $args['uid'];
 
     $check = $Member->find($uid);

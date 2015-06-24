@@ -85,7 +85,7 @@ class BaseController extends AddonsController
     {
         if (0 < $uid) { //UC登录成功
             /* 登录用户 */
-            $Member = D('Member');
+            $Member = D('Common/Member');
             if ($Member->login($uid, false)) { //登录用户
                 //TODO:跳转到登录前页面
                 //redirect(U('Home/Index/index'));
@@ -170,7 +170,7 @@ class BaseController extends AddonsController
         if (0 < $uid) { //注册成功
             $this->addSyncLoginData($uid, $this->access_token, $this->openid, $this->type, $this->openid);
             $uid = $User->login($username, $password); //通过账号密码取到uid
-            D('Member')->login($uid, false); //登陆
+            D('Common/Member')->login($uid, false); //登陆
             $this->success('绑定成功！',U('Home/Index/index'));
         } else { //注册失败，显示错误信息
             $this->error($this->showRegError($uid));
@@ -190,7 +190,7 @@ class BaseController extends AddonsController
 
         if (0 < $uid) { //UC登录成功
             /* 登录用户 */
-            $Member = D('Member');
+            $Member = D('Common/Member');
             if ($Member->login($uid, $remember == 'on')) { //登录用户
                 $this->addSyncLoginData($uid, $this->access_token, $this->openid, $this->type, $this->openid);
                 //TODO:跳转到登录前页面
@@ -276,7 +276,7 @@ class BaseController extends AddonsController
     {
         switch ($code) {
             case -1:
-                $error = '用户名长度必须在16个字符以内！';
+                $error = '用户名长度必须在32个字符以内！';
                 break;
             case -2:
                 $error = '用户名被禁止注册！';
@@ -312,7 +312,7 @@ class BaseController extends AddonsController
                 $error = '用户名只能由数字、字母和"_"组成！';
                 break;
             case -21:
-                $error = '昵称不能少于两个字！';
+                $error = '昵称不能少于四个字！';
                 break;
             case -30:
                 $error = '昵称被占用！';

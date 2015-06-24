@@ -34,7 +34,7 @@ class UcenterMemberModel extends Model
     /* 用户模型自动验证 */
     protected $_validate = array(
         /* 验证用户名 */
-        array('username', '4,30', -1, self::EXISTS_VALIDATE, 'length'), //用户名长度不合法
+        array('username', '4,32', -1, self::EXISTS_VALIDATE, 'length'), //用户名长度不合法
         array('username', 'checkDenyMember', -2, self::EXISTS_VALIDATE, 'callback'), //用户名禁止注册
         array('username', 'checkUsername', -20, self::EXISTS_VALIDATE, 'callback'),
         array('username', '', -3, self::EXISTS_VALIDATE, 'unique'), //用户名被占用
@@ -44,7 +44,7 @@ class UcenterMemberModel extends Model
 
         /* 验证邮箱 */
         array('email', 'email', -5, self::EXISTS_VALIDATE), //邮箱格式不正确
-        array('email', '4,32', -6, self::EXISTS_VALIDATE, 'length'), //邮箱长度不合法
+        array('email', '4,64', -6, self::EXISTS_VALIDATE, 'length'), //邮箱长度不合法
         array('email', 'checkDenyEmail', -7, self::EXISTS_VALIDATE, 'callback'), //邮箱禁止注册
         array('email', '', -8, self::EXISTS_VALIDATE, 'unique'), //邮箱被占用
 
@@ -64,13 +64,22 @@ class UcenterMemberModel extends Model
     );
 
     /**
-     * 检测用户名是不是被禁止注册
+     * 检测用户名是不是被禁止注册(保留用户名)
      * @param  string $username 用户名
      * @return boolean          ture - 未禁用，false - 禁止注册
      */
     protected function checkDenyMember($username)
     {
-        return true; //TODO: 暂不限制，下一个版本完善
+        $denyName=M("Config")->where(array('name' => 'USER_NAME_BAOLIU'))->getField('value');
+        if($denyName!=''){
+            $denyName=explode(',',$denyName);
+            foreach($denyName as $val){
+                if(!is_bool(strpos($username,$val))){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -90,7 +99,7 @@ class UcenterMemberModel extends Model
         if (strpos($username, ' ') !== false) {
             return false;
         }
-        preg_match("/^[a-zA-Z0-9_]{1,30}$/", $username, $result);
+        preg_match("/^[a-zA-Z0-9_]{4,32}$/", $username, $result);
 
         if (!$result) {
             return false;
@@ -589,7 +598,7 @@ class UcenterMemberModel extends Model
 
     public function rand_email()
     {
-        $email = $this->create_rand(10) . '@ocenter.com';
+        $email = $this->create_rand(10) . '@uctoo.com';
         if ($this->where(array('email' => $email))->select()) {
             $this->rand_email();
         } else {
@@ -605,6 +614,32 @@ class UcenterMemberModel extends Model
         } else {
             return $username;
         }
+    }
+
+    public function rand_mobile()
+    {
+        $phoneArr = array();     //保存手机号数组
+        $num = 1;                 //生成手机号的个数
+        $twoArr = array(3,4,5,8);  //手机号的第二位
+        $tArr = array(0,1,2,3,4,5,6,7,8,9);    //手机号第二位为3时，手机号的第3位数据集，以及手机号的第4位到第11位
+        $ntArr = array(0,1,2,3,5,6,7,8,9);      //手机号第二位不为3时，手机号的第3位数据集
+        for($i=0;$i<$num;$i++){
+           $phone[0] = 1;                      //手机号第一位必须为1
+           for($j=1;$j<11;$j++){
+              if($j == 1){
+                 $t = rand(0,2);          //随机生成手机号的第二位数字
+                 $phone[$j] = $twoArr[$t];
+              }elseif($j==2 && $phone[1] != 3){     //当第二位不为3时，随机生成其余手机号
+                 $th = rand(0,8);
+                 $phone[$j] = $ntArr[$th];
+              }else{                                         //当第二位为3时，随机生成其余手机号
+                 $th = rand(0,9);
+                 $phone[$j] = $tArr[$th];
+              }
+	       }
+	       $phoneArr[] = implode("",$phone);          //将手机号数组合并成字符串
+        }
+        return $phoneArr;
     }
 
     function create_rand($length = 8)
@@ -651,7 +686,7 @@ class UcenterMemberModel extends Model
         $error = $error_code == null ? $this->error : $error_code;
         switch ($error) {
             case -1:
-                $error = '用户名长度必须在16个字符以内！';
+                $error = '用户名长度必须在32个字符以内！';
                 break;
             case -2:
                 $error = '用户名被禁止注册！';

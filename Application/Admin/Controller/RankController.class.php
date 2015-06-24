@@ -34,7 +34,7 @@ class RankController extends AdminController
         $model = D('Rank');
         $list = $model->page($page, $r)->select();
         foreach ($list as &$val) {
-            $val['u_name'] = D('member')->where('uid=' . $val['uid'])->getField('nickname');
+            $val['u_name'] = D('Common/Member')->where('uid=' . $val['uid'])->getField('nickname');
             $val['types']=$val['types']?'是':'否';
         }
         $totalCount = $model->count();
@@ -184,7 +184,7 @@ class RankController extends AdminController
         if (!$id) {
             $this->error('请选择用户');
         }
-        $u_name = D('member')->where('uid=' . $id)->getField('nickname');
+        $u_name = D('Common/Member')->where('uid=' . $id)->getField('nickname');
         $model = D('rank_user');
         $rankList = $model->where(array('uid'=> $id,'status'=>1))->page($page, 20)->order('create_time asc')->select();
         $totalCount = $model->where(array('uid'=> $id,'status'=>1))->count();
@@ -238,7 +238,7 @@ class RankController extends AdminController
                 } else {
                     $rank = D('rank')->where('id=' . $data['rank_id'])->find();
                     //$logoUrl=getRootUrl().D('picture')->where('id='.$rank['logo'])->getField('path');
-                    //$u_name = D('member')->where('uid=' . $uid)->getField('nickname');
+                    //$u_name = D('Common/Member')->where('uid=' . $uid)->getField('nickname');
                     $content = '管理员给你颁发了头衔：[' . $rank['title'] . ']'; //<img src="'.$logoUrl.'" title="'.$rank['title'].'" alt="'.$rank['title'].'">';
 
                     $user = query_user(array('username', 'space_link'), $uid);
@@ -246,9 +246,6 @@ class RankController extends AdminController
                     $content1 = '管理员给@' . $user['username'] . ' 颁发了新的头衔：[' . $rank['title'] . ']，颁发理由：' . $reason; //<img src="'.$logoUrl.'" title="'.$rank['title'].'" alt="'.$rank['title'].'">';
                     clean_query_user_cache($uid, array('rank_link'));
                     $this->sendMessage($data, $content);
-                    //写入数据库
-                    $model = D('Weibo/Weibo');
-//                    $result = $model->addWeibo(is_login(), $content1);
                 }
             }
             $this->success($is_Edit ? '编辑关联成功' : '添加关联成功', U('Rank/userRankList?id=' . $uid));
@@ -311,7 +308,7 @@ class RankController extends AdminController
                 } else {
                     $rank = D('rank')->where('id=' . $data['rank_id'])->find();
                     //$logoUrl=getRootUrl().D('picture')->where('id='.$rank['logo'])->getField('path');
-                    //$u_name = D('member')->where('uid=' . $uid)->getField('nickname');
+                    //$u_name = D('Common/Member')->where('uid=' . $uid)->getField('nickname');
                     $content = '管理员给你颁发了头衔：[' . $rank['title'] . ']'; //<img src="'.$logoUrl.'" title="'.$rank['title'].'" alt="'.$rank['title'].'">';
 
                     $user = query_user(array('username', 'space_link'), $uid);
@@ -319,9 +316,7 @@ class RankController extends AdminController
                     $content1 = '管理员给@' . $user['username'] . ' 颁发了新的头衔：[' . $rank['title'] . ']，颁发理由：' . $reason; //<img src="'.$logoUrl.'" title="'.$rank['title'].'" alt="'.$rank['title'].'">';
                     clean_query_user_cache($uid, array('rank_link'));
                     $this->sendMessage($data, $content);
-                    //写入数据库
-                    $model = D('Weibo/Weibo');
-//                    $result = $model->addWeibo(is_login(), $content1);
+
                 }
             }
             $this->success($is_Edit ? '编辑关联成功' : '添加关联成功', U('Rank/userRankList?id=' . $uid));
@@ -395,7 +390,7 @@ class RankController extends AdminController
             $val['title'] = D('rank')->where('id=' . $val['rank_id'])->getField('title');
             $val['is_show'] = $val['is_show'] ? '显示' : '不显示';
             //获取用户信息
-            $u_user = D('member')->where('uid=' . $val['uid'])->getField('nickname');
+            $u_user = D('Common/Member')->where('uid=' . $val['uid'])->getField('nickname');
             $val['u_name']=$u_user;
         }
         unset($val);
@@ -423,7 +418,7 @@ class RankController extends AdminController
             $val['title'] = D('rank')->where('id=' . $val['rank_id'])->getField('title');
             $val['is_show'] = $val['is_show'] ? '显示' : '不显示';
             //获取用户信息
-            $u_user = D('member')->where('uid=' . $val['uid'])->getField('nickname');
+            $u_user = D('Common/Member')->where('uid=' . $val['uid'])->getField('nickname');
             $val['u_name']=$u_user;
         }
         unset($val);
@@ -453,9 +448,6 @@ class RankController extends AdminController
                 $content1 = '管理员通过了@' . $user['username'] . ' 的头衔申请：[' . $rank['title'] . ']，申请理由：' . $rank_user['reason'];
                 clean_query_user_cache($rank_user['uid'], array('rank_link'));
                 $this->sendMessage($rank_user, $content,'头衔申请审核通过');
-                //发微博
-                $model_weibo = D('Weibo/Weibo');
-//                $result = $model_weibo->addWeibo(is_login(), $content1);
             }
         }else if($status=-1){
             foreach($ids as $val){

@@ -12,20 +12,21 @@ CREATE TABLE IF NOT EXISTS `uctoo_action` (
   `type` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT '类型',
   `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
+  `module` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='系统行为表' AUTO_INCREMENT=1 ;
 
 
-INSERT INTO `uctoo_action` ( `name`, `title`, `remark`, `rule`, `log`, `type`, `status`, `update_time`) VALUES
-('reg', '用户注册', '用户注册', '', '', 1, 1, 1426070545),
-('input_password', '输入密码', '记录输入密码的次数。', '', '', 1, 1, 1426122119),
-('user_login', '用户登录', '积分+10，每天一次', 'table:member|field:score|condition:uid={$self} AND status>-1|rule:score+10|cycle:24|max:1;', '[user|get_nickname]在[time|time_format]登录了账号', 1, 1, 1387181220),
-('update_config', '更新配置', '新增或修改或删除配置', '', '', 1, 1, 1383294988),
-('update_model', '更新模型', '新增或修改模型', '', '', 1, 1, 1383295057),
-('update_attribute', '更新属性', '新增或更新或删除属性', '', '', 1, 1, 1383295963),
-('update_channel', '更新导航', '新增或修改或删除导航', '', '', 1, 1, 1383296301),
-( 'update_menu', '更新菜单', '新增或修改或删除菜单', '', '', 1, 1, 1383296392),
-( 'update_category', '更新分类', '新增或修改或删除分类', '', '', 1, 1, 1383296765);
+INSERT INTO `uctoo_action` ( `name`, `title`, `remark`, `rule`, `log`, `type`, `status`, `update_time`, `module`) VALUES
+( 'reg', '用户注册', '用户注册', '', '', 1, 1, 1426070545, ''),
+( 'input_password', '输入密码', '记录输入密码的次数。', '', '', 1, 1, 1426122119, ''),
+( 'user_login', '用户登录', '积分+10，每天一次', 'a:1:{i:0;a:5:{s:5:"table";s:6:"member";s:5:"field";s:1:"1";s:4:"rule";s:2:"10";s:5:"cycle";s:2:"24";s:3:"max";s:1:"1";}}', '[user|get_nickname]在[time|time_format]登录了账号', 1, 1, 1428397656, ''),
+( 'update_config', '更新配置', '新增或修改或删除配置', '', '', 1, 1, 1383294988, ''),
+( 'update_model', '更新模型', '新增或修改模型', '', '', 1, 1, 1383295057, ''),
+( 'update_attribute', '更新属性', '新增或更新或删除属性', '', '', 1, 1, 1383295963, ''),
+( 'update_channel', '更新导航', '新增或修改或删除导航', '', '', 1, 1, 1383296301, ''),
+( 'update_menu', '更新菜单', '新增或修改或删除菜单', '', '', 1, 1, 1383296392, ''),
+( 'update_category', '更新分类', '新增或修改或删除分类', '', '', 1, 1, 1383296765, '');
 
 DROP TABLE  IF EXISTS `uctoo_action_limit`;
 CREATE TABLE IF NOT EXISTS `uctoo_action_limit` (
@@ -41,12 +42,13 @@ CREATE TABLE IF NOT EXISTS `uctoo_action_limit` (
   `action_list` text NOT NULL,
   `status` tinyint(4) NOT NULL,
   `create_time` int(11) NOT NULL,
+  `module` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-INSERT INTO `uctoo_action_limit` (`title`, `name`, `frequency`, `time_number`, `time_unit`, `punish`, `if_message`, `message_content`, `action_list`, `status`, `create_time`) VALUES
-('reg', '注册限制', 1, 1, 'minute', 'warning', 0, '', '[reg]', 1, 0),
-('input_password', '输密码', 3, 1, 'minute', 'warning', 0, '', '[input_password]', 1, 0);
+INSERT INTO `uctoo_action_limit` ( `title`, `name`, `frequency`, `time_number`, `time_unit`, `punish`, `if_message`, `message_content`, `action_list`, `status`, `create_time`, `module`) VALUES
+( 'reg', '注册限制', 1, 1, 'minute', 'warning', 0, '', '[reg]', 1, 0, ''),
+( 'input_password', '输密码', 3, 1, 'minute', 'warning', 0, '', '[input_password]', 1, 0, '');
 
 
 
@@ -181,8 +183,8 @@ CREATE TABLE IF NOT EXISTS `uctoo_auth_group` (
 
 INSERT INTO `uctoo_auth_group` (`id`, `module`, `type`, `title`, `description`, `status`, `rules`) VALUES
 (1, 'admin', 1, '普通用户', '', 1, ',1,235,236,237,246,253,254,286,321,370,371,373,374,376,378,380,381,382,383,384,387,388,389'),
-(2, 'admin', 1, 'VIP', '', 1, ''),
-(3, 'admin', '1', '公众号管理用户组', '', '1', ',368,369,235,236,237,246,253,254,281,286,321,370,377,379,1,313,315,316,322,371,373,376,378,380,381,382,383,384');
+(2, 'admin', 1, '公众号粉丝组', '公众号粉丝', 1, ''),
+(3, 'admin', 1, '公众号管理用户组', '', 1, ',368,369,235,236,237,246,253,254,281,286,321,370,377,379,1,313,315,316,322,371,373,376,378,380,381,382,383,384');
 
 DROP TABLE  IF EXISTS `uctoo_auth_group_access`;
 CREATE TABLE IF NOT EXISTS `uctoo_auth_group_access` (
@@ -656,18 +658,16 @@ INSERT INTO `uctoo_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `re
 (29, 'COUNT_DAY', 0, '后台首页统计用户增长天数', 0, '', '默认统计最近半个月的用户数增长情况', 1420791945, 1420876261, 1, '15', 0),
 (30, 'MAIL_USER_REG', 5, '注册邮件模板', 3, '', '支持HTML代码', 1388337307, 1389532335, 1, '<a href="http://3spp.cn" target="_blank">点击进入</a><span style="color:#E53333;">当您收到这封邮件，表明您已注册成功，以上为您的用户名和密码。。。。祝您生活愉快····</span>', 55),
 (31, 'USER_NAME_BAOLIU', 1, '保留用户名', 3, '', '禁止注册用户名,用" , "号隔开', 1388845937, 1388845937, 1, '管理员,测试,admin,垃圾', 0),
-(32, 'USER_REG_TIME', 0, '注册时间限制', 3, '', '同一IP注册时间限制，防恶意注册，格式分钟', 1388847715, 1388847715, 1, '2', 0),
-(33, 'VERIFY_OPEN', 4, '验证码配置', 4, '0:全部关闭\r\n1:全部显示\r\n2:注册显示\r\n3:登陆显示', '验证码配置', 1388500332, 1405561711, 1, '2', 0),
-(34, 'VERIFY_TYPE', 4, '验证码类型', 4, '1:中文\r\n2:英文\r\n3:数字\r\n4:算数', '验证码类型', 1388500873, 1405561731, 1, '3', 0),
+(33, 'VERIFY_OPEN', 8, '验证码配置', 4, 'reg:注册显示\r\nlogin:登陆显示\r\nreset:找回密码', '验证码配置', 1388500332, 1405561711, 1, '', 0),
+(34, 'VERIFY_TYPE', 4, '验证码类型', 4, '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', '验证码类型', 1388500873, 1405561731, 1, '4', 0),
 (35, 'NO_BODY_TLE', 2, '空白说明', 2, '', '空白说明', 1392216444, 1392981305, 1, '呵呵，暂时没有内容哦！！', 0),
 (36, 'USER_RESPASS', 5, '密码找回模板', 3, '', '密码找回文本', 1396191234, 1396191234, 1, '<span style="color:#009900;">请点击以下链接找回密码，如无反应，请将链接地址复制到浏览器中打开(下次登录前有效)</span>', 0),
 (37, 'COUNT_CODE', 2, '统计代码', 1, '', '用于统计网站访问量的第三方代码，推荐CNZZ统计', 1403058890, 1403058890, 1, '', 4),
 (38, 'AFTER_LOGIN_JUMP_URL', 2, '登陆后跳转的Url', 1, '', '支持形如weibo/index/index的ThinkPhp路由写法，支持普通的url写法', 1407145718, 1407154887, 1, 'Home/index/index', 7),
-(39, 'USER_REG_WEIBO_CONTENT', 1, '用户注册微博提示内容', 3, '', '留空则表示不发新微博，支持face', 1404965285, 1404965445, 1, '', 0),
 (40, 'URL_MODEL', 4, 'URL模式', 4, '1:PATHINFO模式\r\n2:REWRITE模式(开启伪静态)\r\n3:兼容模式', '选择Rewrite模式则开启伪静态，默认建议开启兼容模式', 1421027546, 1421027676, 1, '3', 0),
 (41, 'DEFUALT_HOME_URL', 1, '默认首页Url', 1, '', '支持形如weibo/index/index的ThinkPhp路由写法，支持普通的url写法，不填则显示默认聚合首页', 1417509438, 1417509501, 1, '', 0),
-(42, 'MAIL_SMTP_SECURE', 1, 'SMTP安全协议', 5, '', '不填写不使用安全协议，可填写ssl和tls两种安全协议。', 1426735670, 1426735709, 1, 'ssl', '6');
-
+(39, 'MAIL_SMTP_SECURE', 1, 'SMTP安全协议', 5, '', '不填写不使用安全协议，可填写ssl和tls两种安全协议。', 1426735670, 1426735709, 1, 'ssl', '6'),
+(42, '_USERCONFIG_REG_SWITCH', 0, '', 0, '', '', 1427094903, 1427094903, 1, 'username', 0);
 
 --
 -- 表的结构 `uctoo_custom_menu`
@@ -791,7 +791,7 @@ INSERT INTO `uctoo_hooks` (`name`, `description`, `type`, `update_time`, `addons
 ( 'AdminIndex', '首页小格子个性化显示', 1, 1382596073, 'SiteStat,SyncLogin,DevTeam,SystemInfo'),
 ( 'topicComment', '评论提交方式扩展钩子。', 1, 1380163518, ''),
 ( 'app_begin', '应用开始', 2, 1384481614, 'Iswaf'),
-( 'checkin', '签到', 1, 1395371353, ''),
+( 'checkIn', '签到', 1, 1395371353, ''),
 ( 'Rank', '签到排名钩子', 1, 1395387442, 'Rank_checkin'),
 ( 'support', '赞', 1, 1398264759, ''),
 ( 'localComment', '本地评论插件', 1, 1399440321, 'LocalComment'),
@@ -813,7 +813,8 @@ INSERT INTO `uctoo_hooks` (`name`, `description`, `type`, `update_time`, `addons
 ( 'ucenterSideMenu', '用户中心左侧菜单', 1, 1417161205, ''),
 ( 'weixin', '微信插件默认处理的钩子', '2', '1428547125', ''),
 ( 'keyword', '关键词', '2', '1430792771', 'Keyword'),
-( 'init_ucuser', '初始化粉丝信息', '2', '1430793836', 'Ucuser');
+( 'init_ucuser', '初始化粉丝信息', '2', '1430793836', 'Ucuser'),
+( 'afterTop', '顶部导航之后的钩子，调用公告等', 1, 1429671392, '');
 
 DROP TABLE  IF EXISTS `uctoo_local_comment`;
 CREATE TABLE IF NOT EXISTS `uctoo_local_comment` (
@@ -865,7 +866,7 @@ INSERT INTO `uctoo_keyword` VALUES ('520', '107', '123', 'gh_1dd1d1321b7c', 'Wel
 DROP TABLE  IF EXISTS `uctoo_member`;
 CREATE TABLE IF NOT EXISTS `uctoo_member` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-  `nickname` char(16) NOT NULL DEFAULT '' COMMENT '昵称',
+  `nickname` char(32) NOT NULL DEFAULT '' COMMENT '昵称',
   `sex` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '性别',
   `birthday` date NOT NULL DEFAULT '0000-00-00' COMMENT '生日',
   `qq` char(10) NOT NULL DEFAULT '' COMMENT 'qq号',
@@ -883,10 +884,10 @@ CREATE TABLE IF NOT EXISTS `uctoo_member` (
   `pos_district` int(11) NOT NULL,
   `pos_community` int(11) NOT NULL,
   `token` varchar(200) DEFAULT NULL COMMENT '当前登录公众号',
-  `score1` float DEFAULT NULL COMMENT '用户积分',
-  `score2` float DEFAULT NULL COMMENT 'score2',
-  `score3` float DEFAULT NULL COMMENT 'score3',
-  `score4` float DEFAULT NULL COMMENT 'score4',
+  `score1` float DEFAULT '0' COMMENT '用户积分',
+  `score2` float DEFAULT '0' COMMENT 'score2',
+  `score3` float DEFAULT '0' COMMENT 'score3',
+  `score4` float DEFAULT '0' COMMENT 'score4',
   PRIMARY KEY (`uid`),
   KEY `status` (`status`),
   KEY `name` (`nickname`)
@@ -931,6 +932,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_menu` (
   `group` varchar(50) DEFAULT '' COMMENT '分组',
   `is_dev` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否仅开发者模式可见',
   `icon` varchar(20) NOT NULL COMMENT '导航图标',
+  `module` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=116 ;
@@ -978,8 +980,8 @@ INSERT INTO `uctoo_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `g
 (40, '添加、编辑分组', 39, 0, 'Admin/User/editProfile', 0, '', '', 0, ''),
 (41, '分组排序', 39, 0, 'Admin/User/sortProfile', 0, '', '', 0, ''),
 (42, '字段列表', 39, 0, 'Admin/User/field', 0, '', '', 0, ''),
-(43, '添加、编辑字段', 42, 0, 'Admin/User/editFieldSetting', 0, '', '', 0, ''),
-(44, '字段排序', 42, 0, 'Admin/User/sortField', 0, '', '', 0, ''),
+(43, '添加、编辑字段', 39, 0, 'Admin/User/editFieldSetting', 0, '', '', 0, ''),
+(44, '字段排序', 39, 0, 'Admin/User/sortField', 0, '', '', 0, ''),
 (45, '用户扩展资料列表', 2, 0, 'Admin/User/expandinfo_select', 0, '', '用户管理', 0, ''),
 (46, '扩展资料详情', 45, 0, 'User/expandinfo_details', 0, '', '', 0, ''),
 (47, '待审核用户头衔', 2, 0, 'Rank/rankVerify', 0, '', '头衔管理', 0, ''),
@@ -1033,10 +1035,10 @@ INSERT INTO `uctoo_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `g
 (96, '还原数据库', 74, 0, 'Database/index?type=import', 0, '', '数据备份', 0, ''),
 (97, '恢复', 96, 0, 'Database/import', 0, '数据库恢复', '', 0, ''),
 (98, '删除', 96, 0, 'Database/del', 0, '删除备份文件', '', 0, ''),
-(99, '规则管理', 74, 0, 'SEO/index', 0, '', 'SEO规则', 0, ''),
+(99, 'SEO规则管理', 74, 0, 'SEO/index', 0, '', 'SEO规则', 0, ''),
 (100, '新增、编辑', 99, 0, 'SEO/editRule', 0, '', '', 0, ''),
-(101, '排序', 99, 0, 'SEO/sortRule', 0, '', '', 0, ''),
-(102, '规则回收站', 74, 0, 'SEO/ruleTrash', 0, '', 'SEO规则', 0, ''),
+(101, '排序', 99, 0, 'SEO/sortRule', 1, '', '', 0, ''),
+(102, 'SEO规则回收站', 74, 0, 'SEO/ruleTrash', 0, '', 'SEO规则', 0, ''),
 (103, '全部补丁', 74, 0, 'Admin/Update/quick', 0, '', '升级补丁', 0, ''),
 (104, '新增补丁', 74, 0, 'Admin/Update/addpack', 1, '', '升级补丁', 0, ''),
 (105, '云市场', 0, 5, 'module/lists', 1, '', '', 0, 'cloud'),
@@ -1081,7 +1083,50 @@ INSERT INTO `uctoo_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `g
 (144, '删除公众号', '135', '0', 'Mpbase/del', '1', '', '公众号', '0', ''),
 (145, '微场景', '135', '4', 'Admin/Weicja/index', '0', '', '公众号', '0', ''),
 (146, '微会员', '0', '10', 'Ucuser/index', '1', '', '', '0', ''),
-(147, '微会员信息', '146', '0', 'Ucuser/index', '0', '', '微会员管理', '0', '');
+(147, '微会员信息', '146', '0', 'Ucuser/index', '0', '', '微会员管理', '0', ''),
+(148, '类型管理', 116, 0, 'Invite/index', 0, '', '邀请注册管理', 0, ''),
+(149, '邀请码管理', 116, 0, 'Invite/invite', 0, '', '邀请注册管理', 0, ''),
+(150, '基础配置', 116, 0, 'Invite/config', 0, '', '邀请注册管理', 0, ''),
+(151, '兑换记录', 116, 0, 'Invite/buyLog', 0, '', '邀请注册管理', 0, ''),
+(152, '邀请记录', 116, 0, 'Invite/inviteLog', 0, '', '邀请注册管理', 0, ''),
+(153, '用户信息', 116, 0, 'Invite/userInfo', 0, '', '邀请注册管理', 0, ''),
+(154, '编辑邀请注册类型', 148, 0, 'Invite/edit', 1, '', '', 0, ''),
+(155, '删除邀请', 148, 0, 'Invite/setStatus', 1, '', '', 0, ''),
+(156, '删除邀请码', 149, 0, 'Invite/delete', 1, '', '', 0, ''),
+(157, '生成邀请码', 149, 0, 'Invite/createCode', 1, '', '', 0, ''),
+(158, '删除无用邀请码', 149, 0, 'Invite/deleteTrue', 1, '', '', 0, ''),
+(159, '导出cvs', 149, 0, 'Invite/cvs', 1, '', '', 0, ''),
+(160, '用户信息编辑', 153, 0, 'Invite/editUserInfo', 1, '', '', 0, ''),
+(161, '删除日志', 31, 0, 'Action/remove', 1, '', '', 0, ''),
+(162, '清空日志', 31, 0, 'Action/clear', 1, '', '', 0, ''),
+(163, '设置积分状态', 51, 0, 'User/setTypeStatus', 1, '', '', 0, ''),
+(164, '删除积分类型', 51, 0, 'User/delType', 1, '', '', 0, ''),
+(165, '充值积分', 53, 0, 'User/getNickname', 1, '', '', 0, ''),
+(166, '删除菜单', 82, 0, 'Menu/del', 1, '', '', 0, ''),
+(167, '设置开发者模式可见', 82, 0, 'Menu/toogleDev', 1, '', '', 0, ''),
+(168, '设置显示隐藏', 82, 0, 'Menu/toogleHide', 1, '', '', 0, ''),
+(169, '行为限制启用、禁用、删除', 114, 0, 'ActionLimit/setLimitStatus', 1, '', '', 0, ''),
+(170, '启用、禁用、删除、回收站还原', 99, 0, 'SEO/setRuleStatus', 1, '', '', 0, ''),
+(171, '回收站彻底删除', 102, 0, 'SEO/doClear', 1, '', '', 0, ''),
+(172, '初始化无角色用户', 130, 0, 'Role/initUnhaveUser', 1, '', '', 0, ''),
+(173, '删除钩子', 58, 0, 'Addons/delHook', 0, '', '', 0, ''),
+(174, '使用补丁', 103, 0, 'Update/usePack', 1, '', '', 0, ''),
+(175, '查看补丁', 103, 0, 'Update/view', 1, '', '', 0, ''),
+(176, '删除补丁', 103, 0, 'Update/delPack', 1, '', '', 0, ''),
+(177, '标签列表', 2, 0, 'UserTag/userTag', 0, '', '用户标签管理', 0, ''),
+(178, '添加分类、标签', 177, 0, 'UserTag/add', 1, '', '', 0, ''),
+(179, '设置分类、标签状态', 177, 0, 'UserTag/setStatus', 1, '', '', 0, ''),
+(180, '分类、标签回收站', 177, 0, 'UserTag/tagTrash', 1, '', '', 0, ''),
+(181, '测底删除回收站内容', 177, 0, 'UserTag/userTagClear', 1, '', '', 0, ''),
+(182, '可拥有标签配置', 116, 0, 'role/configusertag', 1, '', '', 0, ''),
+(183, '编辑模块', 107, 0, 'Module/edit', 1, '', '模块管理', 0, ''),
+(184, '网站信息', 74, 0, 'Config/website', 0, '', '系统设置', 0, ''),
+(185, '主题管理', 105, 0, 'Theme/tpls', 0, '', '云市场', 0, ''),
+(186, '使用主题', 105, 0, 'Theme/setTheme', 1, '', '云市场', 0, ''),
+(187, '查看主题', 105, 0, 'Theme/lookTheme', 1, '', '云市场', 0, ''),
+(188, '主题打包下载', 105, 0, 'Theme/packageDownload', 1, '', '云市场', 0, ''),
+(189, '卸载删除主题', 105, 0, 'Theme/delete', 1, '', '云市场', 0, ''),
+(190, '上传安装主题', 105, 0, 'Theme/add', 1, '', '云市场', 0, '');
 
 
 DROP TABLE  IF EXISTS `uctoo_message`;
@@ -1220,6 +1265,7 @@ CREATE TABLE `uctoo_role` (
 -- ----------------------------
 INSERT INTO `uctoo_role` VALUES ('1', '0', 'default', '普通用户', '普通用户', '1', '0', '0', '0', '1', '1426841173', '1426841173');
 INSERT INTO `uctoo_role` VALUES ('2', '0', 'mpop', '公众号管理员', '微信公众号管理员', '1,3', '0', '0', '0', '1', '1426841843', '1427064318');
+INSERT INTO `uctoo_role` VALUES ('3', '0', 'mpfans', '公众号粉丝', '公众号粉丝', '2', '0', '0', '0', '1', '1435036639', '1435039721');
 
 -- ----------------------------
 -- Table structure for uctoo_role_config
@@ -1256,6 +1302,7 @@ CREATE TABLE `uctoo_role_group` (
   `update_time` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='角色分组';
+
 DROP TABLE  IF EXISTS `uctoo_seo_rule`;
 CREATE TABLE IF NOT EXISTS `uctoo_seo_rule` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1393,9 +1440,9 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucenter_admin` (
 DROP TABLE  IF EXISTS `uctoo_ucenter_member`;
 CREATE TABLE IF NOT EXISTS `uctoo_ucenter_member` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-  `username` char(16) NOT NULL COMMENT '用户名',
+  `username` char(32) NOT NULL COMMENT '用户名',
   `password` char(32) NOT NULL COMMENT '密码',
-  `email` char(32) NOT NULL COMMENT '用户邮箱',
+  `email` char(64) NOT NULL COMMENT '用户邮箱',
   `mobile` char(15) NOT NULL COMMENT '用户手机',
   `reg_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '注册时间',
   `reg_ip` bigint(20) NOT NULL DEFAULT '0' COMMENT '注册IP',
@@ -1526,6 +1573,38 @@ CREATE TABLE IF NOT EXISTS `uctoo_user_config` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='用户配置信息表' AUTO_INCREMENT=1 ;
 
+DROP TABLE IF EXISTS `uctoo_user_tag`;
+CREATE TABLE IF NOT EXISTS `uctoo_user_tag` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(25) NOT NULL,
+  `status` tinyint(4) NOT NULL,
+  `pid` int(11) NOT NULL,
+  `sort` tinyint(6) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='标签分类表' AUTO_INCREMENT=4 ;
+
+--
+-- 转存表中的数据 `uctoo_user_tag`
+--
+
+INSERT INTO `uctoo_user_tag` (`id`, `title`, `status`, `pid`, `sort`) VALUES
+(1, '默认', 1, 0, 0),
+(2, '开发者', 1, 1, 0),
+(3, '站长', 1, 1, 0);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `uctoo_user_tag_link`
+--
+
+DROP TABLE IF EXISTS `uctoo_user_tag_link`;
+CREATE TABLE IF NOT EXISTS `uctoo_user_tag_link` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `tags` varchar(200) NOT NULL COMMENT '标签ids',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='用户标签关联表' AUTO_INCREMENT=1 ;
 DROP TABLE IF EXISTS `uctoo_sso_app`;
 CREATE TABLE IF NOT EXISTS `uctoo_sso_app` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1662,3 +1741,72 @@ CREATE TABLE `uctoo_welcome` (
   `url` varchar(255) DEFAULT NULL COMMENT '跳转url',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+DROP TABLE IF EXISTS `uctoo_invite`;
+CREATE TABLE IF NOT EXISTS `uctoo_invite` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'PRIMARY_KEY',
+  `invite_type` int(11) NOT NULL COMMENT '邀请类型id',
+  `code` varchar(25) NOT NULL COMMENT '邀请码',
+  `uid` int(11) NOT NULL COMMENT '用户id',
+  `can_num` int(10) NOT NULL COMMENT '可以注册用户（含升级）',
+  `already_num` int(10) NOT NULL COMMENT '已经注册用户（含升级）',
+  `end_time` int(11) NOT NULL COMMENT '有效期至',
+  `status` tinyint(2) NOT NULL COMMENT '0：已用完，1：还可注册，2：用户取消邀请，-1：管理员删除',
+  `create_time` int(11) NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='邀请码表' AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `uctoo_invite_buy_log`;
+CREATE TABLE IF NOT EXISTS `uctoo_invite_buy_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'PRIMARY_KEY',
+  `invite_type` int(11) NOT NULL COMMENT '邀请类型id',
+  `uid` int(11) NOT NULL COMMENT '用户id',
+  `num` int(10) NOT NULL COMMENT '可邀请名额',
+  `content` varchar(200) NOT NULL COMMENT '记录信息',
+  `create_time` int(11) NOT NULL COMMENT '创建时间（做频率用）',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='用户购买邀请名额记录' AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `uctoo_invite_log`;
+CREATE TABLE IF NOT EXISTS `uctoo_invite_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'PRIMARY_KEY',
+  `uid` int(11) NOT NULL COMMENT '用户id',
+  `inviter_id` int(11) NOT NULL COMMENT '邀请人id',
+  `invite_id` int(11) NOT NULL COMMENT '邀请码id',
+  `content` varchar(200) NOT NULL COMMENT '记录内容',
+  `create_time` int(11) NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='邀请注册成功记录表' AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `uctoo_invite_type`;
+CREATE TABLE IF NOT EXISTS `uctoo_invite_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'PRIMARY_KEY',
+  `title` varchar(25) NOT NULL COMMENT '标题',
+  `length` int(10) NOT NULL DEFAULT '11' COMMENT '验证码长度',
+  `time` varchar(50) NOT NULL COMMENT '有效时长，带单位的时间',
+  `cycle_num` int(10) NOT NULL COMMENT '周期内可购买个数',
+  `cycle_time` varchar(50) NOT NULL COMMENT '周期时长，带单位的时间',
+  `roles` varchar(50) NOT NULL COMMENT '绑定角色ids',
+  `auth_groups` varchar(50) NOT NULL COMMENT '允许购买的用户组ids',
+  `pay_score` int(10) NOT NULL COMMENT '购买消耗积分',
+  `pay_score_type` int(11) NOT NULL COMMENT '购买消耗积分类型',
+  `income_score` int(10) NOT NULL COMMENT '每邀请成功一个用户，邀请者增加积分',
+  `income_score_type` int(11) NOT NULL COMMENT '邀请成功后增加积分类型id',
+  `is_follow` tinyint(2) NOT NULL COMMENT '邀请成功后是否互相关注',
+  `status` tinyint(2) NOT NULL,
+  `create_time` int(11) NOT NULL COMMENT '创建时间',
+  `update_time` int(11) NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='邀请注册码类型表' AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `uctoo_invite_user_info`;
+CREATE TABLE IF NOT EXISTS `uctoo_invite_user_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'PRIMARY_KEY',
+  `invite_type` int(11) NOT NULL COMMENT '邀请类型id',
+  `uid` int(11) NOT NULL COMMENT '用户id',
+  `num` int(11) NOT NULL COMMENT '可邀请名额',
+  `already_num` int(11) NOT NULL COMMENT '已邀请名额',
+  `success_num` int(11) NOT NULL COMMENT '成功邀请名额',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='邀请注册用户信息' AUTO_INCREMENT=1 ;
+
+

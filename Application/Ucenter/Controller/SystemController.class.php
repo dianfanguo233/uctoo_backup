@@ -31,7 +31,7 @@ class SystemController extends BaseController
     public function logout()
     {
         //调用退出登录的API
-        D('Member')->logout();
+        D('Common/Member')->logout();
         $html='';
         if(UC_SYNC && is_login() != 1){
            // include_once './api/uc_client/client.php';

@@ -40,7 +40,7 @@ class RoleController extends AdminController
     public function index($page = 1, $r = 20)
     {
         $map['status'] = array('egt', 0);
-        $roleList = $this->roleModel->selectPageByMap($map, $totalCount, $page, $r, 'sort asc');
+        list($roleList,$totalCount) = $this->roleModel->selectPageByMap($map, $page, $r, 'sort asc');
         $map_group['id'] = array('in', array_column($roleList, 'group_id'));
 
         $group = $this->roleGroupModel->where($map_group)->field('id,title')->select();
@@ -228,12 +228,19 @@ class RoleController extends AdminController
     private function checkSingleRoleUser($ids)
     {
         $ids = is_array($ids) ? $ids : explode(',', $ids);
+
+        $user_ids=D('Member')->where(array('status'=>-1))->field('uid')->select();
+        $user_ids=array_column($user_ids,'uid');
+
         $error_role_id = 0; //出错的角色id
         foreach ($ids as $role_id) {
             //获取拥有该角色的用户ids
             $uids = $this->userRoleModel->where(array('role_id' => $role_id))->field('uid')->select();
+            $uids=array_column($uids,'uid');
+            if(count($user_ids)){
+                $uids=array_diff($uids,$user_ids);
+            }
             if (count($uids) > 0) { //拥有该角色
-                $uids=array_column($uids,'uid');
                 $uids = array_unique($uids);
                 //获取拥有其他角色的用户ids
                 $have_uids = $this->userRoleModel->where(array('role_id' => array('not in', $ids), 'uid' => array('in', $uids)))->field('uid')->select();
@@ -298,13 +305,29 @@ class RoleController extends AdminController
         if ($aUserStatus) {//筛选状态
             $map_user_list['status'] = $aUserStatus == 3 ? 0 : $aUserStatus;
         }
+        $user_ids=D('Member')->where(array('status'=>-1))->field('uid')->select();
+        $user_ids=array_column($user_ids,'uid');
         if($aSingleRole){//单角色筛选
             $uids=$this->userRoleModel->group('uid')->field('uid')->having('count(uid)=1')->select();
             $uids=array_column($uids,'uid');//单角色用户id列表
             if($aSingleRole==1){
-                $map_user_list['uid']=array('in',$uids);
+                if(count($user_ids)){
+                    $map_user_list['uid']=array('in',array_diff($uids,$user_ids));
+                }else{
+                    $map_user_list['uid']=array('in',$uids);
+                }
             }else{
-                $map_user_list['uid']=array('not in',$uids);
+                if(count($uids)&&count($user_ids)){
+                    $map_user_list['uid']=array('not in',array_merge($user_ids,$uids));
+                }else if(count($uids)){
+                    $map_user_list['uid']=array('not in',$uids);
+                }else if(count($user_ids)){
+                    $map_user_list['uid']=array('not in',$user_ids);
+                }
+            }
+        }else{
+            if(count($user_ids)){
+                $map_user_list['uid']=array('not in',$user_ids);
             }
         }
         $user_list = $this->userRoleModel->where($map_user_list)->page($page, $r)->order('id desc')->select();
@@ -331,18 +354,19 @@ class RoleController extends AdminController
 
         $builder = new AdminListBuilder();
         $builder->title('角色用户列表')
-            ->setSelectPostUrl('Role/userList');
+            ->setSelectPostUrl(U('Role/userList'));
         if ($map_user_list['status'] == 2) {
             $builder->setStatusUrl(U('Role/setUserAudit', array('role_id' => $map_user_list['role_id'])))->buttonEnable('', '审核通过')->buttonDelete('', '审核失败');
         } else {
             $builder->setStatusUrl(U('Role/setUserStatus', array('role_id' => $map_user_list['role_id'])))->buttonEnable()->buttonDisable();
         }
 
-        $builder->modalPopupButton(U('Role/changeRole',array('role_id'=>$map_user_list['role_id'])), array(), '迁移用户',array('data-title'=>'迁移用户到其他角色'))
+        $builder->buttonModalPopup(U('Role/changeRole',array('role_id'=>$map_user_list['role_id'])), array(), '迁移用户',array('data-title'=>'迁移用户到其他角色','target-form'=>'ids'))
+            ->button('初始化没角色的用户', array('href' => U('Role/initUnhaveUser')))
             ->select('角色：', 'role_id', 'select', '', '', '', $role_list)->select('状态：', 'user_status', 'select', '', '', '', $statusOptions)->select('', 'single_role', 'select', '', '', '', $singleRoleOptions)
             ->keyId()
             ->keyImage('avatar', '头像')
-            ->keyLink('nickname', '昵称', 'ucenter/index/information?uid=###')
+            ->keyLink('nickname', '昵称', 'ucenter/index/information?uid={$uid}')
             ->keyStatus()
             ->pagination($totalCount, $r)
             ->data($user_list)
@@ -448,7 +472,8 @@ class RoleController extends AdminController
                     $map_ids['uid']=array('in',$unHave);
                     $map_ids['role_id']=$role_id;
                     $error_ids=$this->userRoleModel->where($map_ids)->field('id')->select();
-                    $error_ids=array_column($error_ids,'id');
+                    $error_ids=implode(',',array_column($error_ids,'id'));
+
                     $this->error("id为{$error_ids}的角色用户只拥有该角色，不能被禁用！");
                 }
                 foreach($uids as $val){
@@ -509,7 +534,7 @@ class RoleController extends AdminController
      */
     private function setDefaultShowRole($role_id,$uid)
     {
-        $memberModel=D('Member');
+        $memberModel=D('Common/Member');
         $user=query_user(array('show_role','last_login_role'),$uid);
         if($role_id==$user['show_role']){
             $roles=$this->userRoleModel->where(array('role_id'=>array('neq',$role_id),'uid'=>$uid,'status'=>array('gt',0)))->field('role_id')->select();
@@ -548,7 +573,7 @@ class RoleController extends AdminController
         }
         unset($roles, $val);
         $builder = new AdminListBuilder;
-        $builder->title('角色分组（同组角色互斥，即同一分组下的角色不能同时被用户拥有）')
+        $builder->title('角色分组（同组角色互斥，即同一分组下的角色不能同时被用户拥有；同一角色同时只能存在于一个分组中）')
             ->buttonNew(U('Role/editGroup'))
             ->keyId()
             ->keyText('title', '标题')
@@ -607,7 +632,7 @@ class RoleController extends AdminController
             }
             unset($val);
             $builder = new AdminConfigBuilder;
-            $builder->title("{$title}（同组角色互斥，即同一分组下的角色不能同时被用户拥有）");
+            $builder->title("{$title}（同组角色互斥，即同一分组下的角色不能同时被用户拥有；同一角色同时只能存在于一个分组中）");
             $builder->keyId()
                 ->keyText('title', '标题')
                 ->keyChosen('roles', '分组下角色选择', '一个角色同时只能存在于一个分组下', $roles)
@@ -965,5 +990,40 @@ class RoleController extends AdminController
         }
         /* 返回JSON数据 */
         $this->ajaxReturn($return);
+    }
+
+
+    /**
+     * 初始化没角色的用户
+     * @author 郑钟良<zzl@ourstu.com>
+     */
+    public function initUnhaveUser()
+    {
+        $memberModel=D('Common/Member');
+
+        $uids=$memberModel->field('uid')->select();
+        $uids=array_column($uids,'uid');
+
+        $have_uids=$this->userRoleModel->field('uid')->select();
+        $have_uids=array_column($have_uids,'uid');
+        $have_uids=array_unique($have_uids);
+
+        $not_have_uids=array_diff($uids,$have_uids);
+
+        $data['status']=1;
+        $data['role_id']=1;
+        $data['step']="finish";
+        $data['init']=1;
+        $dataList=array();
+
+        foreach($not_have_uids as $val){
+            $data['uid']=$val;
+            $dataList[]=$data;
+            $memberModel->initUserRoleInfo(1,$val);
+            $memberModel->initDefaultShowRole(1,$val);
+        }
+        unset($val);
+        $this->userRoleModel->addAll($dataList);
+        $this->success('操作成功！');
     }
 } 

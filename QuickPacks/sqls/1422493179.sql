@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `ocenter_verify` (
+CREATE TABLE IF NOT EXISTS `uctoo_verify` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL,
   `account` varchar(255) NOT NULL,

@@ -2,7 +2,7 @@
 <div class="col-md-6 col-xs-12 lg_left">
     <div class="col-xs-12">
         <div class="col-xs-12  lg_lf_top">
-            <h2>欢迎回到 <eq name="login_type" value="login"><a href="http://{:$_SERVER['HTTP_HOST']}__ROOT__" title="进入首页">{:C('WEB_SITE')}</a><else/>{:C('WEB_SITE')}</eq> ！</h2>
+            <h2>欢迎回到 <eq name="login_type" value="login"><a href="http://{:$_SERVER['HTTP_HOST']}__ROOT__" title="进入首页">{:modC('WEB_SITE_NAME','UCToo开源微信应用开发框架','Config')}</a><else/>{:modC('WEB_SITE_NAME','UCToo开源微信应用开发框架','Config')}</eq> ！</h2>
         </div>
         <div class="clearfix"></div>
         <form action="__SELF__" method="post" class="lg_lf_form ">
@@ -13,9 +13,9 @@
                     <div class="col-xs-12">
 
                         <input type="text" id="inputEmail" class="form-control" placeholder="请输入{$ph}"
-                               ajaxurl="/member/checkUserNameUnique.html" errormsg="请填写1-16位用户名"
+                               ajaxurl="/member/checkUserNameUnique.html" errormsg="请填写4-32位用户名"
                                nullmsg="请填写用户名"
-                               datatype="*1-16" value="" name="username" autocomplete="off">
+                               datatype="*4-32" value="" name="username" autocomplete="off">
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -26,7 +26,7 @@
                         <div id="password_block" class="input-group">
                             <input type="password" id="inputPassword" class="form-control"
                                    placeholder="请输入密码"
-                                   errormsg="密码为6-20位" nullmsg="请填写密码" datatype="*6-20" name="password">
+                                   errormsg="密码为6-30位" nullmsg="请填写密码" datatype="*6-30" name="password">
 
                             <div class="input-group-addon"><a style="width: 100%;height: 100%"
                                                               href="javascript:void(0);"
@@ -84,17 +84,36 @@
     <div class="hidden-xs hidden-sm" style="margin: 21px 0 16px 40px;">
 
         <h2>没有账号？</h2>
+        <php>
+            $register_type=modC('REGISTER_TYPE','normal','Invite');
+            $register_type=explode(',',$register_type);
+            if(in_array('invite',$register_type)&&!in_array('normal',$register_type)){
+        </php>
         <php>if(check_reg_type('username')){</php>
-        <a href="{:U('ucenter/member/register',array('type'=>'username'))}"
-           class="btn btn-block btn-danger btn-lg">用户名注册</a>
-        <php>}</php>
-        <php>if(check_reg_type('email')){</php>
-        <a href="{:U('ucenter/member/register',array('type'=>'email'))}"
-           class="btn btn-block btn-primary btn-lg">邮箱注册</a>
-        <php>}</php>
-        <php>if(check_reg_type('mobile')){</php>
-        <a href="{:U('ucenter/member/register',array('type'=>'mobile'))}"
-           class="btn btn-block btn-success btn-lg">手机号注册</a>
+            <a data-type="ajax" data-url="{:U('Ucenter/Member/inCode',array('type'=>'username'))}" data-title="邀请用户才能注册！" data-toggle="modal"
+               class="btn btn-block btn-danger btn-lg">用户名注册</a>
+            <php>}</php>
+            <php>if(check_reg_type('email')){</php>
+            <a data-type="ajax" data-url="{:U('Ucenter/Member/inCode',array('type'=>'email'))}" data-title="邀请用户才能注册！" data-toggle="modal"
+               class="btn btn-block btn-primary btn-lg">邮箱注册</a>
+            <php>}</php>
+            <php>if(check_reg_type('mobile')){</php>
+            <a data-type="ajax" data-url="{:U('Ucenter/Member/inCode',array('type'=>'mobile'))}" data-title="邀请用户才能注册！" data-toggle="modal"
+               class="btn btn-block btn-success btn-lg">手机号注册</a>
+            <php>}</php>
+        <php>}else{</php>
+            <php>if(check_reg_type('username')){</php>
+            <a href="{:U('ucenter/member/register',array('type'=>'username'))}"
+               class="btn btn-block btn-danger btn-lg">用户名注册</a>
+            <php>}</php>
+            <php>if(check_reg_type('email')){</php>
+            <a href="{:U('ucenter/member/register',array('type'=>'email'))}"
+               class="btn btn-block btn-primary btn-lg">邮箱注册</a>
+            <php>}</php>
+            <php>if(check_reg_type('mobile')){</php>
+            <a href="{:U('ucenter/member/register',array('type'=>'mobile'))}"
+               class="btn btn-block btn-success btn-lg">手机号注册</a>
+            <php>}</php>
         <php>}</php>
     </div>
 
@@ -119,12 +138,12 @@
     function change_show(obj) {
         if ($(obj).text().trim() == 'show') {
             var value = $('#inputPassword').val().trim();
-            var html = '<input type="text" value="' + value + '" id="inputPassword" class="form-control" placeholder="请输入密码" errormsg="密码为6-20位" nullmsg="请填写密码" datatype="*6-20" name="password">' +
+            var html = '<input type="text" value="' + value + '" id="inputPassword" class="form-control" placeholder="请输入密码" errormsg="密码为6-30位" nullmsg="请填写密码" datatype="*6-30" name="password">' +
                     '<div class="input-group-addon"><a style="width: 100%;height: 100%" href="javascript:void(0);" onclick="change_show(this)">hide</a></div>';
             $('#password_block').html(html);
         } else {
             var value = $('#inputPassword').val().trim();
-            var html = '<input type="password" value="' + value + '" id="inputPassword" class="form-control" placeholder="请输入密码" errormsg="密码为6-20位" nullmsg="请填写密码" datatype="*6-20" name="password">' +
+            var html = '<input type="password" value="' + value + '" id="inputPassword" class="form-control" placeholder="请输入密码" errormsg="密码为6-30位" nullmsg="请填写密码" datatype="*6-30" name="password">' +
                     '<div class="input-group-addon"><a style="width: 100%;height: 100%" href="javascript:void(0);" onclick="change_show(this)">show</a></div>';
             $('#password_block').html(html);
         }
