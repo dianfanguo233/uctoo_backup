@@ -19,6 +19,7 @@
  * @Return: array
  */
 use Vendor\PHPMailer;
+use Vendor\requester;
 
 function get_city_by_ip($ip)
 {
@@ -288,4 +289,52 @@ function get_kanban_config($key, $kanban, $default = '', $module = '')
     }
     return getSubByKey($res,'data-id');
 
+}
+
+/**
+ * 获取城市区划信息
+ * @param int    $id
+ * @param string $field
+ * @return 完整的数据  或者  指定的$field字段值
+ * @author uctoo <contact@uctoo.com>
+ */
+function get_district($id ,$field)
+{
+    if (empty($id)) {
+        return false;
+    }
+    $district = M('District')->getById($id);
+
+    return empty($field) ? $district : $district[$field];
+}
+
+/**
+ * 通过名字获取城市区划信息
+ * @param string $name
+ * @param string $field
+ * @return 完整的数据  或者  指定的$field字段值
+ * @author uctoo <contact@uctoo.com>
+ */
+function get_districtField($name ,$field)
+{
+    if (empty($name)) {
+        return false;
+    }
+    $map['name'] = array('like', '%' . $name . '%');
+    $district = M('District')->where($map)->find();
+
+    return empty($field) ? $district : $district[$field];
+}
+
+function call_api($url,$data='')
+{
+    $requester = new requester($url);
+    $requester->charset = "utf-8";
+    $requester->content_type = 'application/x-www-form-urlencoded';
+    $requester->data = http_build_query($data);
+    $requester->enableCookie = true;
+    $requester->enableHeaderOutput = false;
+    $requester->method = "post";
+    $arr = $requester->request();
+    return $arr;
 }

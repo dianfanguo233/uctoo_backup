@@ -78,6 +78,22 @@ class MemberController extends Controller
                 $this->error('该类型未开放注册。');
             }
 
+           /* 在第三方系统中注册用户*/   //演示call_api方法调用第三方restful api 接口示例
+           /* $res = call_api("http://api.demo.com/?m=conference&c=publisherapi&a=public_register&mobile=".$aMobile.
+                "&code=".$aRegVerify."&username=".$aUsername."&password=".$aPassword.
+                "&sex=%E7%94%B7&email=".UCenterMember()->rand_email());  //注册
+            $res = json_decode($res[1],true);
+           
+            $token = $res['result']['token'];
+            if($res['code'] == '200'){
+                $res['status'] = true;
+                $res['info'] = "reg ";
+             
+            }else{
+                $this->error($this->showRegError($res['code']));
+            }
+            */
+	    
             $aCode = I('post.code', '', 'op_t');
             if (!$this->checkInviteCode($aCode)) {
                 $this->error('非法邀请码！');
