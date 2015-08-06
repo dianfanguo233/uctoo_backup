@@ -90,7 +90,7 @@ class MemberController extends Controller
                 $res['info'] = "reg ";
              
             }else{
-                $this->error($this->showRegError($res['code']));
+                 $this->error($res['code']);
             }
             */
 	    
