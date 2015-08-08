@@ -844,6 +844,8 @@ CREATE TABLE `uctoo_keyword` (
   `addon` varchar(255) NOT NULL COMMENT '关键词所属插件',
   `model` varchar(100) NOT NULL COMMENT '数据模型',
   `aim_id` int(10) unsigned NOT NULL COMMENT '插件表里的ID值',
+  `cover` int(10) unsigned NOT NULL COMMENT '封面图片',
+  `url` varchar(255) DEFAULT NULL COMMENT '跳转url',
   `cTime` int(10) NOT NULL COMMENT '创建时间',
   `keyword_length` int(10) unsigned DEFAULT '0' COMMENT '关键词长度',
   `keyword_type` tinyint(2) DEFAULT '0' COMMENT '匹配类型',

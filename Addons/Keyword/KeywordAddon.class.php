@@ -68,9 +68,9 @@ use Common\Controller\Addon;
                     $reData[0]['Title'] = $aimData['title'];
                     $reData[0]['Description'] = $aimData['description'];
 
-                    $reData[0]['PicUrl'] = get_addoncover_url( $Keyword['addon'] ); //插件目录下放个回复封面图片例如jssdk插件中的cover.png
+                    $reData[0]['PicUrl'] = get_cover_url( $Keyword['cover'] ); //在后台关键词管理功能上传回复封面图片
                     $param['mp_id'] = $params['mp_id'];
-                    $reData[0]['Url'] = get_addonreply_url($Keyword['addon'],$param);
+                    $reData[0]['Url'] = $Keyword['url'];
                     $params['weObj']->news($reData);
                 }
 
