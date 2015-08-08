@@ -455,7 +455,7 @@ class RoleController extends AdminController
             $to_init_uids=array_combine($to_init_ids,$user_role);
             $to_init_ids=array_intersect($ids,$to_init_ids);//交集获得需要初始化的ids
             foreach($to_init_ids as $val){
-                D('Common/Member')->initUserRoleInfo($role_id,$to_init_uids[$val]['uid']);
+                D('Member')->initUserRoleInfo($role_id,$to_init_uids[$val]['uid']);
             }
             $builder = new AdminListBuilder;
             $builder->doSetStatus('UserRole', $ids, $status);
@@ -506,7 +506,7 @@ class RoleController extends AdminController
                 $map_role['id'] = $val;
                 $user_role=$this->userRoleModel->where($map_role)->find();
                 if($user_role['init']==0){
-                    D('Common/Member')->initUserRoleInfo($role_id,$user_role['uid']);
+                    D('Member')->initUserRoleInfo($role_id,$user_role['uid']);
                 }
             }
             $builder = new AdminListBuilder;
@@ -534,7 +534,7 @@ class RoleController extends AdminController
      */
     private function setDefaultShowRole($role_id,$uid)
     {
-        $memberModel=D('Common/Member');
+        $memberModel=D('Member');
         $user=query_user(array('show_role','last_login_role'),$uid);
         if($role_id==$user['show_role']){
             $roles=$this->userRoleModel->where(array('role_id'=>array('neq',$role_id),'uid'=>$uid,'status'=>array('gt',0)))->field('role_id')->select();
@@ -999,7 +999,7 @@ class RoleController extends AdminController
      */
     public function initUnhaveUser()
     {
-        $memberModel=D('Common/Member');
+        $memberModel=D('Member');
 
         $uids=$memberModel->field('uid')->select();
         $uids=array_column($uids,'uid');

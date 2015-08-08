@@ -174,7 +174,7 @@ class UserController extends AdminController
                     $data_score[$key]=$val;
                 }
             }
-            $res = D('Common/Member')->where(array('uid'=>$data['id']))->save($data_score);
+            $res = D('Member')->where(array('uid'=>$data['id']))->save($data_score);
             if ($res) {
                 $this->success('设置成功');
             } else {
@@ -222,7 +222,7 @@ class UserController extends AdminController
                $score_key[]='score'.$vf['id'];
                $builder->keyText('score'.$vf['id'], $vf['title']);
             }
-            $score_data = D('Common/Member')->where(array('uid'=>$uid))->field(implode(',',$score_key))->find();
+            $score_data = D('Member')->where(array('uid'=>$uid))->field(implode(',',$score_key))->find();
             $member = array_merge($member,$score_data);
             /*积分设置end*/
 
@@ -548,7 +548,7 @@ class UserController extends AdminController
         $uid = $User->login(UID, $password, 4);
         ($uid == -2) && $this->error('密码不正确');
 
-        $Member = D('Common/Member');
+        $Member = D('Member');
         $data = $Member->create(array('nickname' => $nickname));
         if (!$data) {
             $this->error($Member->getError());

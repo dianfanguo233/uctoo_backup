@@ -34,7 +34,7 @@ class PublicController extends \Think\Controller {
             $uid = $User->login($username, $password);
             if(0 < $uid){ //UC登录成功
                 /* 登录用户 */
-                $Member = D('Common/Member');
+                $Member = D('Member');
                 if($Member->login($uid)){ //登录用户
                     //TODO:跳转到登录前页面
                     $this->success('登录成功！', U('Index/index'));
@@ -70,7 +70,7 @@ class PublicController extends \Think\Controller {
     /* 退出登录 */
     public function logout(){
         if(is_login()){
-            D('Common/Member')->logout();
+            D('Member')->logout();
             session('[destroy]');
             $this->success('退出成功！', U('login'));
         } else {

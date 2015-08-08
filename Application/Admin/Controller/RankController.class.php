@@ -34,7 +34,7 @@ class RankController extends AdminController
         $model = D('Rank');
         $list = $model->page($page, $r)->select();
         foreach ($list as &$val) {
-            $val['u_name'] = D('Common/Member')->where('uid=' . $val['uid'])->getField('nickname');
+            $val['u_name'] = D('Member')->where('uid=' . $val['uid'])->getField('nickname');
             $val['types']=$val['types']?'是':'否';
         }
         $totalCount = $model->count();
@@ -184,7 +184,7 @@ class RankController extends AdminController
         if (!$id) {
             $this->error('请选择用户');
         }
-        $u_name = D('Common/Member')->where('uid=' . $id)->getField('nickname');
+        $u_name = D('Member')->where('uid=' . $id)->getField('nickname');
         $model = D('rank_user');
         $rankList = $model->where(array('uid'=> $id,'status'=>1))->page($page, 20)->order('create_time asc')->select();
         $totalCount = $model->where(array('uid'=> $id,'status'=>1))->count();
@@ -238,7 +238,7 @@ class RankController extends AdminController
                 } else {
                     $rank = D('rank')->where('id=' . $data['rank_id'])->find();
                     //$logoUrl=getRootUrl().D('picture')->where('id='.$rank['logo'])->getField('path');
-                    //$u_name = D('Common/Member')->where('uid=' . $uid)->getField('nickname');
+                    //$u_name = D('Member')->where('uid=' . $uid)->getField('nickname');
                     $content = '管理员给你颁发了头衔：[' . $rank['title'] . ']'; //<img src="'.$logoUrl.'" title="'.$rank['title'].'" alt="'.$rank['title'].'">';
 
                     $user = query_user(array('username', 'space_link'), $uid);
@@ -308,7 +308,7 @@ class RankController extends AdminController
                 } else {
                     $rank = D('rank')->where('id=' . $data['rank_id'])->find();
                     //$logoUrl=getRootUrl().D('picture')->where('id='.$rank['logo'])->getField('path');
-                    //$u_name = D('Common/Member')->where('uid=' . $uid)->getField('nickname');
+                    //$u_name = D('Member')->where('uid=' . $uid)->getField('nickname');
                     $content = '管理员给你颁发了头衔：[' . $rank['title'] . ']'; //<img src="'.$logoUrl.'" title="'.$rank['title'].'" alt="'.$rank['title'].'">';
 
                     $user = query_user(array('username', 'space_link'), $uid);
@@ -390,7 +390,7 @@ class RankController extends AdminController
             $val['title'] = D('rank')->where('id=' . $val['rank_id'])->getField('title');
             $val['is_show'] = $val['is_show'] ? '显示' : '不显示';
             //获取用户信息
-            $u_user = D('Common/Member')->where('uid=' . $val['uid'])->getField('nickname');
+            $u_user = D('Member')->where('uid=' . $val['uid'])->getField('nickname');
             $val['u_name']=$u_user;
         }
         unset($val);
@@ -418,7 +418,7 @@ class RankController extends AdminController
             $val['title'] = D('rank')->where('id=' . $val['rank_id'])->getField('title');
             $val['is_show'] = $val['is_show'] ? '显示' : '不显示';
             //获取用户信息
-            $u_user = D('Common/Member')->where('uid=' . $val['uid'])->getField('nickname');
+            $u_user = D('Member')->where('uid=' . $val['uid'])->getField('nickname');
             $val['u_name']=$u_user;
         }
         unset($val);
