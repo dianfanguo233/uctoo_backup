@@ -329,3 +329,11 @@ function filterBase64($content){
     }
     return $content;
 }
+
+//打印输出数组信息
+function printf_info($data)
+{
+    foreach($data as $key=>$value){
+        echo "<font color='#00ff55;'>$key</font> : $value <br/>";
+    }
+}

@@ -2,7 +2,7 @@
 
 namespace Addons\Ucuser\Controller;
 use Home\Controller\AddonsController;
-use Common\UcuserModel;
+use Common\Model\UcuserModel;
 use Com\TPWechat;
 use Com\JsSdkPay;
 use Com\ErrCode;
@@ -15,6 +15,9 @@ class UcuserController extends AddonsController{
 		        $map['id'] = I('id');
 
 		      $uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
+		      if($uid === false){
+                  $this->error('只可在微信中访问');
+              }
               $user = get_uid_ucuser($uid);                    //获取本地存储公众号粉丝用户信息
 
               $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -63,7 +66,11 @@ class UcuserController extends AddonsController{
         $this->assign ( 'mp_id', $params['mp_id'] );
         $map['id'] = I('id');
         $uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($uid === false){
+            $this->error('只可在微信中访问');
+        }
         $user = get_uid_ucuser($uid);                    //获取公众号粉丝用户信息
+        $this->assign ( 'user', $user );
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         $surl = get_shareurl();
@@ -96,7 +103,7 @@ class UcuserController extends AddonsController{
 
             $ucuser = D('Common/Ucuser');
             $res = $ucuser->login($uid,$aMobile,$aPassword,$aRemember);
-            if($res > 0){
+           if($res > 0){
                 $this->success ( '登录成功', addons_url ( 'Ucuser://Ucuser/index' ) );
             }else{
                 $this->error ( $ucuser->getError () );
@@ -113,7 +120,11 @@ class UcuserController extends AddonsController{
         $this->assign ( 'mp_id', $params['mp_id'] );
         $map['id'] = I('id');
         $uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($uid === false){
+            $this->error('只可在微信中访问');
+        }
         $user = get_uid_ucuser($uid);                    //获取公众号粉丝用户信息
+        $this->assign ( 'user', $user );
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         $surl = get_shareurl();
@@ -162,6 +173,9 @@ class UcuserController extends AddonsController{
         $this->assign ( 'mp_id', $params['mp_id'] );
         $map['id'] = I('id');
         $uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($uid === false){
+            $this->error('只可在微信中访问');
+        }
         $user = get_uid_ucuser($uid);                    //获取公众号粉丝用户信息
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -226,4 +240,92 @@ class UcuserController extends AddonsController{
         $this->success ( '已退出登录', addons_url ( 'Ucuser://Ucuser/index' ) );
     }
 
+public function forget(){
+
+        $params['mp_id'] = $map['mp_id'] = get_mpid();
+        $this->assign ( 'mp_id', $params['mp_id'] );
+        $map['id'] = I('id');
+        $uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($uid === false){
+            $this->error('只可在微信中访问');
+        }
+
+        if (IS_POST) {
+            $aMobile = I('post.mobile', '', 'op_t');
+            $verify = I('post.verify', '', 'op_t');
+            $password = I('post.password', '', 'op_t');
+            $repassword = I('post.repassword', '', 'op_t');
+
+            //确认两次输入的密码正确
+            if ($password != $repassword) {
+                $this->error('两次输入的密码不一致');
+            }
+            //读取SESSION中的验证信息
+            $mobile = session('reset_password_mobile');
+           //提交修改密码和接收验证码的手机号码不一致
+            if ($aMobile != $mobile) {
+                $this->error('提交修改密码和接收验证码的手机号码不一致');
+            }
+
+            $res = D('Verify')->checkVerify($aMobile, "mobile", $verify, 0);
+            //确认验证信息正确
+            if(!$res){
+                echo '验证码错误';
+                return false;
+            }else{
+                echo true;
+            }
+
+            //将新的密码写入数据库
+            $data1 = array('uid' => $uid, 'mobile' => $aMobile, 'password' => $password);
+            $model = D('Common/Ucuser');
+            $data1 = $model->create($data1);
+            if (!$data1) {
+                $this->error('密码格式不正确');
+            }
+            $result = $model->where(array('uid' => $uid))->save($data1);
+            if ($result === false) {
+                $this->error('数据库写入错误');
+            }
+
+            //将新的密码写入数据库
+            $data = array('id' => $uid, 'mobile' => $aMobile, 'password' => $password);
+            $model = UCenterMember();
+            $data = $model->create($data);
+            if (!$data) {
+                $this->error('密码格式不正确');
+            }
+            $result = $model->where(array('id' => $uid))->save($data);
+            if ($result === false) {
+                $this->error('数据库写入错误');
+            }
+
+            //显示成功消息
+            $this->success('密码重置成功',  addons_url ( 'Ucuser://Ucuser/login' ) );
+
+        }
+
+            $this->display();
+    }
+    
+    /**
+     * checkVerify 检测验证码
+     * @author:patrick contact@uctoo.com
+     *
+     */
+    public function checkVerify()
+    {
+        $aMobile = I('post.mobile', '', 'op_t');
+        $verify = I('post.verify', '', 'op_t');
+        $aUid = I('uid', 0, 'intval');
+
+       $res = D('Verify')->checkVerify($aMobile, "mobile", $verify, 0);
+
+       if (!$res) {
+          echo '验证码错误';
+          return false;
+       }else{
+          echo true;
+       }
+    }
 }

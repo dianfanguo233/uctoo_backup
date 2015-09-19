@@ -4,7 +4,7 @@
 namespace Event\Controller;
 
 use Think\Controller;
-use Common\UcuserModel;
+use Common\Model\UcuserModel;
 use Com\TPWechat;
 use Com\JsSdkPay;
 use Com\ErrCode;
@@ -198,7 +198,9 @@ class IndexController extends Controller
         $this->check_action_limit('edit_event', 'event', 0, is_login(), true);
         if ($id) {
             $content_temp = D('Event')->find($id);
-            $this->check_rule('Event/Index/edit',$content_temp['uid'],'您无该活动编辑权限。');
+            if (!check_auth('Event/Index/edit',$content_temp['uid'])) {
+                $this->error('您无该活动编辑权限。');
+            }
             $content['uid'] = $content_temp['uid']; //权限矫正，防止被改为管理员
             $rs = D('Event')->save($content);
             if(D('Common/Module')->isInstalled('Weibo')){//安装了微博模块
@@ -212,7 +214,9 @@ class IndexController extends Controller
                 $this->success('编辑失败。', '');
             }
         } else {
-            $this->check_rule('Event/Index/edit',-1,'您无活动发布权限。');
+            if (!check_auth('Event/Index/edit')) {
+                $this->error('您无该活动编辑权限。');
+            }
             if (modC('NEED_VERIFY',0) && !is_administrator()) //需要审核且不是管理员
             {
                 $content['status'] = 0;
@@ -268,6 +272,9 @@ class IndexController extends Controller
         $params['mp_id'] = $map['mp_id'] = get_mpid();
         $this->assign ( 'mp_id', $params['mp_id'] );
         $uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($uid === false){
+            $this->error('只可在微信中访问');
+        }
         $user = get_uid_ucuser($uid);                    //获取公众号粉丝用户信息
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         $surl = get_shareurl();
@@ -353,7 +360,10 @@ class IndexController extends Controller
         if (!$event_content) {
             $this->error('404 not found');
         }
-        $this->check_rule('Event/Index/edit',$event_content['uid'],'您无该活动编辑权限。');
+
+        if (!check_auth('Event/Index/edit')) {
+            $this->error('您无编辑活动的权限。');
+        }
         $event_content['user'] = query_user(array('id', 'username', 'nickname', 'space_url', 'space_link', 'avatar64', 'rank_html', 'signature'), $event_content['uid']);
         $this->assign('content', $event_content);
         $this->setTitle('编辑活动' . '——活动');
@@ -363,7 +373,9 @@ class IndexController extends Controller
 
     public function add()
     {
-        $this->check_rule('Event/Index/edit',-1,'您无活动发布权限。');
+        if (!check_auth('Event/Index/edit')) {
+            $this->error('您无编辑活动的权限。');
+        }
         $this->setTitle('添加活动' . '——活动');
         $this->setKeywords('添加' . ',活动');
         $this->display();

@@ -20,6 +20,7 @@
  */
 use Vendor\PHPMailer;
 use Vendor\requester;
+use Vendor\Ucpaas;
 
 function get_city_by_ip($ip)
 {
@@ -212,6 +213,12 @@ function sendSMS($mobile, $content, $time = '', $mid = '')
     $uid = modC('SMS_UID', '', 'USERCONFIG');
     $pwd = modC('SMS_PWD', '', 'USERCONFIG');
     $http = modC('SMS_HTTP', '', 'USERCONFIG');
+    
+    $smssp = modC('SMS_SP', '', 'USERCONFIG');
+    $accountsid = modC('SMS_ACCOUNTSID', '', 'USERCONFIG');
+    $token = modC('SMS_TOKEN', '', 'USERCONFIG');
+    $appId = modC('SMS_APPID', '', 'USERCONFIG');
+    $templateId = modC('SMS_TEMPLATEID', '', 'USERCONFIG');
 
     if (empty($http) || empty($uid) || empty($pwd)) {
         return '管理员还未配置短信信息，请联系管理员配置';
@@ -226,11 +233,52 @@ function sendSMS($mobile, $content, $time = '', $mid = '')
         'mid' => $mid, //子扩展号
         'encode' => 'utf8',
     );
-    $re = postSMS($http, $data); //POST方式提交
-    if (trim($re) == '100') {
-        return "发送成功!";
-    } else {
-        return "发送失败! 状态：" . $re;
+
+    if(strstr($smssp,"ucpaas")){       //云之讯的短信发送
+        
+        //初始化必填
+        $options['accountsid']=$accountsid; //填写自己的
+        $options['token']=$token; //填写自己的
+        //初始化 $options必填
+        $ucpass = new Ucpaas($options);
+
+        //随机生成6位验证码
+        srand((double)microtime()*1000000);//create a random number feed.
+        $ychar="0,1,2,3,4,5,6,7,8,9";
+        $list=explode(",",$ychar);
+        for($i=0;$i<6;$i++){
+            $randnum = rand(0,9); // 10+26;
+            $authnum .= $list[$randnum];
+        }
+        //短信验证码（模板短信）,默认以65个汉字（同65个英文）为一条（可容纳字数受您应用名称占用字符影响），超过长度短信平台将会自动分割为多条发送。分割后的多条短信将按照具体占用条数计费。
+        $appId = $appId;  //填写自己的
+        $to = $mobile;
+       // $templateId = "1";
+        $param=$authnum;
+        $param = $param.",10";                                       //添加短信模板的第二个参数，“您的验证码为{1}，请于{2}分钟内正确输入验证码”
+        $arr=$ucpass->templateSMS($appId,$to,$templateId,$param);
+        
+        if (substr($arr,21,6) == 000000) {
+            D('Verify')->addSMSVerify($to,$authnum);                //保存验证短信到验证码表
+            
+            //如果成功就，这里只是测试样式，可根据自己的需求进行调节
+            return "短信验证码已发送成功，请注意查收短信";
+
+        }else{
+            
+            //如果不成功
+            return "短信验证码发送失败，请联系客服";
+
+        }
+
+
+    }else{
+        $re = postSMS($http, $data); //POST方式提交
+        if (trim($re) == '100') {
+            return "发送成功!";
+        } else {
+            return "发送失败! 状态：" . $re;
+        }
     }
 }
 

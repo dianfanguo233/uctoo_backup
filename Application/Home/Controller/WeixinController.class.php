@@ -68,15 +68,22 @@ class WeixinController extends Controller {
         if (! empty ( $FromUserName )) {
           $oid =  get_openid($FromUserName);
         }
+
         
         hook('init_ucuser',$params);   //把消息分发到addons/ucuser/init_ucuser的方法中,初始化公众号粉丝信息
+
+        $map['openid'] = get_openid();
+        $map['mp_id'] = $params['mp_id'];
+        $ucuser = D('Ucuser');
+        $user = $ucuser->where($map)->find();       //查询出公众号的粉丝
+        $fsub = $user["subscribe"];               //记录首次关注状态
 
         //与微信交互的中控服务器逻辑可以自己定义，这里实现一个通用的
         switch ($type) {
             //事件
             case TPWechat::MSGTYPE_EVENT:         //先处理事件型消息
                 $event = $weObj->getRevEvent();
-                switch ($event) {
+                switch ($event['event']) {
                     //关注
                     case TPWechat::EVENT_SUBSCRIBE:
                         //二维码关注
@@ -86,7 +93,14 @@ class WeixinController extends Controller {
                         }else{
 
                         }
-                        break;
+			
+                    if(!$user["subscribe"]){   //未关注，并设置关注状态为已关注
+                        $user["subscribe"] = 1;     
+                        $ucuser->where($map)->save($user);
+                    }
+			hook('welcome', $params);   //把消息分发到实现了welcome方法的addons中,参数中包含本次用户交互的微信类实例和公众号在系统中id
+                        exit;
+			break;
                     //扫描二维码
                     case TPWechat::EVENT_SCAN:
 
@@ -129,7 +143,10 @@ class WeixinController extends Controller {
                         break;
                     //取消关注
                     case TPWechat::EVENT_UNSUBSCRIBE:
-
+                    if($user["subscribe"]){
+                        $user["subscribe"] = 0;     //取消关注设置关注状态为取消
+                        $ucuser->where($map)->save($user);
+                    }
                         break;
                     //群发接口完成后推送的结果
                     case TPWechat::EVENT_SEND_MASS:
@@ -176,7 +193,9 @@ class WeixinController extends Controller {
         }
 
         // 记录日志
-        addWeixinLog ( $data, $GLOBALS ['HTTP_RAW_POST_DATA'] );
+        if (C('DEVELOP_MODE')) { // 是否开发者模式
+            addWeixinLog ( $data, $GLOBALS ['HTTP_RAW_POST_DATA'] );
+        }
 	}
 
 }

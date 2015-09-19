@@ -28,6 +28,22 @@ CREATE TABLE `uctoo_member_public` (
 -- Records of uctoo_member_public
 -- ----------------------------
 
+-- ----------------------------
+-- Table structure for uctoo_autoreply
+-- ----------------------------
+DROP TABLE IF EXISTS `uctoo_autoreply`;
+CREATE TABLE `uctoo_autoreply` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uid` int(10) NOT NULL COMMENT '用户ID',
+  `mp_id` int(10) NOT NULL COMMENT '公众号ID',
+  `type` char(10) NOT NULL DEFAULT '0' COMMENT '自定义回复类型',
+  `keyword_id` int(10) NOT NULL COMMENT '关键词ID',
+  `content` varchar(255) NOT NULL COMMENT '自动回复内容',
+  `status` tinyint(4) NOT NULL COMMENT '2：未审核，1:启用，0：禁用，-1：删除',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+
 INSERT INTO `uctoo_menu` (`title`, `pid`, `sort`, `url`, `hide`, `tip`, `group`, `is_dev`, `icon`) VALUES
 ( '基础设置', 0, 0, 'Mpbase/index', 1, '', '', 0, '');
 
@@ -38,6 +54,7 @@ INSERT INTO `uctoo_menu` ( `title`, `pid`, `sort`, `url`, `hide`, `tip`, `group`
 ( '编辑公众号', @tmp_id, 0, 'Mpbase/editMp', 1, '', '公众号', 0, ''),
 ( '公众号管理', @tmp_id, 0, 'Mpbase/index', 0, '', '公众号', 0, ''),
 ( '管理基本设置', @tmp_id, 0, 'Mpbase/config', 0, '', '公众号', 0, ''),
+( '自动回复管理', @tmp_id, 0, 'Mpbase/autoreply', 0, '', '公众号', 0, ''),
 ( '编辑自定义菜单', @tmp_id, 0, 'Admin/Custommenu/add', 1, '', '公众号', 0, ''),
 ( '自定义菜单管理', @tmp_id, 0, 'Admin/Custommenu/index', 0, '', '公众号', 0, ''),
 ( '自定义菜单操作', @tmp_id, 0, 'Admin/Custommenu/operate', 1, '', '公众号', 0, '');

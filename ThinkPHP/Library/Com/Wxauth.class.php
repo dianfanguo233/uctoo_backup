@@ -17,11 +17,9 @@ class Wxauth {
 	public function wxoauth(){
 		$scope = 'snsapi_base';
 		$code = isset($_GET['code'])?$_GET['code']:'';
-		trace('wechat：re5'.$code,'微信','DEBUG',true);
 		$token_time = isset($_SESSION['token_time'])?$_SESSION['token_time']:0;
 		if(!$code && isset($_SESSION['open_id']) && isset($_SESSION['user_token']) && $token_time>time()-3600)
 		{
-			trace($_SESSION['user_token'].'wechat：re6'.$_SESSION['open_id'],'微信','DEBUG',true);
 			if (!$this->wxuser) {
 				$this->wxuser = $_SESSION['wxuser'];
 			}
@@ -37,7 +35,6 @@ class Wxauth {
 					'appid'=>$this->options["appid"], //填写高级调用功能的app id
 					'appsecret'=>$this->options["appsecret"] //填写高级调用功能的密钥
 			);
-            trace('wechat：re7'. arr2str($options),'微信','DEBUG',true);
 			$we_obj = new TPWechat($options);
 			if ($code) {
 				$json = $we_obj->getOauthAccessToken();
@@ -83,7 +80,6 @@ class Wxauth {
 				$scope = 'snsapi_userinfo';
 			}
 			if ($scope=='snsapi_base') {
-				trace('wechat：re7'.$code,'微信','DEBUG',true);
 				$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 				$_SESSION['wx_redirect'] = $url;
 			} else {
@@ -93,9 +89,7 @@ class Wxauth {
 				unset($_SESSION['wx_redirect']);
 				die('获取用户授权失败');
 			}
-			trace('wechat：re8'.$url,'微信','DEBUG',true);
 			$oauth_url = $we_obj->getOauthRedirect($url,"wxbase",$scope);
-			trace('wechat：re9'.$oauth_url,'微信','DEBUG',true);
 			redirect ( $oauth_url );
 		}
 	}

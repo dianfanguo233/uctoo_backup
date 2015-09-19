@@ -38,7 +38,7 @@ class KeywordController extends AdminController
         $builder
             ->title('关键词列表')
             ->buttonNew(U('edit'))->button('删除',array('class' => 'btn ajax-post tox-confirm', 'data-confirm' => '您确实要删除关键词吗？', 'url' => U('del'), 'target-form' => 'ids'))
-            ->keyId()->keyText('keyword', '关键词')->keyText('addon', '所属插件')->keyText('model', '对应数据表')->keyText('aim_id','插件数据ID')
+            ->keyId()->keyText('keyword', '关键词')->keyText('addon', '所属插件')->keyText('model', '对应数据表')->keyText('aim_id','插件数据ID')->keyText('title','回复标题')->keyText('description','回复描述')
             ->keyImage('cover', '回复封面图片')->keyText('url', '跳转url', '以http://开头的完整url')->keyDoActionEdit('edit?id=###')->keyDoAction('del?ids=###', '删除')
             ->data($list)
             ->pagination($totalCount, $r)
@@ -73,6 +73,8 @@ class KeywordController extends AdminController
             $data['token'] = I('post.token', '', 'op_t');
             $data['addon'] = I('post.addon', 'CustomReply', 'op_t');   //不指定模块，默认用CustomReply模块
             $data['model'] = I('post.model', '', 'op_t');
+            $data['title'] = I('post.title', '', 'op_t');
+            $data['description'] = I('post.description', '', 'op_t');
             $data['aim_id'] = I('post.aim_id', 1, 'op_t');
             $data['cover'] = I('post.cover', '', 'intval');
             $data['url'] = I('post.url', '', 'op_t');
@@ -102,7 +104,7 @@ class KeywordController extends AdminController
 
                 $builder->title($id != 0 ? '关键词公众号' : '添加关键词')
                     ->keyId()->keyHidden('mp_id','')->keyText('keyword', '关键词', '关键词不可重复')->keyHidden('token','')
-                    ->keyText('addon', '所属插件', '插件标识，一般是英文字符串')->keyText('model', '对应数据表', '关键词索引到的数据表，表名')
+                    ->keyText('addon', '所属插件', '插件标识，一般是英文字符串（第一优先级匹配）')->keyText('model', '对应数据表', '关键词索引到的数据表，表名（第一优先级匹配）')->keyText('title','回复标题', '自定义回复的标题')->keyText('description','回复描述', '自定义回复的描述')
                     ->keySingleImage('cover', '封面图', '自定义回复的封面图片')->keyText('url', '跳转url', '以http://开头的完整url')->keyText('aim_id', '插件数据ID', '记录了回复信息的一条数据')->keyUpdateTime('cTime')
                     ->data($keyword)
                     ->buttonSubmit(U('edit'))->buttonBack()

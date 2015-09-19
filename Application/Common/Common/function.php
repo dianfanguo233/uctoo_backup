@@ -10,6 +10,7 @@
 // OneThink常量定义
 use Admin\Model\AuthRuleModel;
 const ONETHINK_VERSION = '1.0.131218';
+const UCTOO_VERSION = '0.5.150902';
 const ONETHINK_ADDON_PATH = './Addons/';
 
 
@@ -95,10 +96,24 @@ function CheckPermission($uids)
     return false;
 }
 
-function check_auth($rule, $type = AuthRuleModel::RULE_URL)
+
+function check_auth($rule = '', $except_uid = -1, $type = AuthRuleModel::RULE_URL)
 {
     if (is_administrator()) {
         return true;//管理员允许访问任何页面
+    }
+    if ($except_uid != -1) {
+        if (!is_array($except_uid)) {
+            $except_uid = explode(',', $except_uid);
+        }
+        if (in_array(is_login(), $except_uid)) {
+            return true;
+        }
+    }
+    $rule = empty($rule) ? MODULE_NAME . '/' . CONTROLLER_NAME . '/' . ACTION_NAME : $rule;
+    // 检测是否有该权限
+    if (!M('auth_rule')->where(array('name' => $rule, 'status' => 1))->find()) {
+        return false;
     }
     static $Auth = null;
     if (!$Auth) {
@@ -110,6 +125,7 @@ function check_auth($rule, $type = AuthRuleModel::RULE_URL)
     return true;
 
 }
+
 
 /**
  * 检测当前用户是否为管理员
@@ -445,6 +461,7 @@ function get_addon_config($name)
  * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 function addons_url($url, $param = array()) {
+    $domain = 'http://'.$_SERVER['HTTP_HOST'];   //返回完整url
 	//修复如user_center://user_center/add 识别错误的问题
 	$urlArr = explode ( '://', $url );
 	if (stripos ( $urlArr [0], '_' ) !== false) {
@@ -472,9 +489,9 @@ function addons_url($url, $param = array()) {
     );
     $params = array_merge($params, $param); //添加额外参数
     if (strtolower(MODULE_NAME) == 'admin') {
-        return U('Admin/Addons/execute', $params);
+        return $domain.U('Admin/Addons/execute', $params);
     } else {
-        return U('Home/Addons/execute', $params);
+        return $domain.U('Home/Addons/execute', $params);
 
     }
 

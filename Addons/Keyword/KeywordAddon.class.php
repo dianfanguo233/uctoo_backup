@@ -50,7 +50,7 @@ use Common\Controller\Addon;
                 $kmap['keyword'] = $params['weObj']->getRevContent();       //TODO:先只支持精确匹配，后续根据keyword_type字段增加模糊匹配
                 $Keyword = M('Keyword')->where($kmap)->find();
 
-                if($Keyword['model'] && $Keyword['aim_id']){              //如果有指定模型，就用模型中的aim_id数据组装回复的内容
+                if($Keyword['model'] && $Keyword['aim_id']){              //关键词匹配第一优先级，如果有指定模型，就用模型中的aim_id数据组装回复的内容
 
                     $amap['id'] =  $Keyword['aim_id'];
                     $aimData = M($Keyword['model'])->where($amap)->find();
@@ -61,17 +61,22 @@ use Common\Controller\Addon;
                     $reData[0]['Url'] = $aimData['url'];
 
                     $params['weObj']->news($reData);
-                }elseif ($Keyword['addon']){                                 //TODO:没有指定模型，就用addon的配置信息组装回复的内容
+                }elseif ($Keyword['title']){                                 //关键词匹配第二优先级，关键词表中的回复内容
                     $amap['name'] =  $Keyword['addon'];
                     $aimData = M('Addons')->where($amap)->find();             //插件信息组装回复，当然插件需要先安装了
-       
-                    $reData[0]['Title'] = $aimData['title'];
-                    $reData[0]['Description'] = $aimData['description'];
-
+                  
+                    $reData[0]['Title'] = $Keyword['title']? $Keyword['title'] :$aimData['title'];   //关键词匹配第三优先级，插件中的配置信息
+                    $reData[0]['Description'] = $Keyword['description']? $Keyword['description'] :$aimData['description'];
+                  
                     $reData[0]['PicUrl'] = get_cover_url( $Keyword['cover'] ); //在后台关键词管理功能上传回复封面图片
                     $param['mp_id'] = $params['mp_id'];
                     $reData[0]['Url'] = $Keyword['url'];
-                    $params['weObj']->news($reData);
+                    if($Keyword['url']){                                        //关键词没有链接地址，就回复成文本消息
+                        $params['weObj']->news($reData);
+                    }else{
+                        $params['weObj']->text($Keyword['description']);
+                    }
+
                 }
 
             }else{

@@ -1,10 +1,10 @@
 <?php
 // +----------------------------------------------------------------------
-// | OneThink [ WE CAN DO IT JUST THINK IT ]
+// | UCToo [ Universal Convergence Technology ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2013 http://www.onethink.cn All rights reserved.
+// | Copyright (c) 2015 http://www.uctoo.com All rights reserved.
 // +----------------------------------------------------------------------
-// | Author: yangweijie <yangweijiester@gmail.com> <code-tech.diandian.com>
+// | Author: patrick <contact@uctoo.com> <http://www.uctoo.com>
 // +----------------------------------------------------------------------
 
 
@@ -13,7 +13,7 @@ use Common\Controller\Addon;
 
 /**
  * 系统环境信息插件
- * @author thinkphp
+ * @author uctoo
  */
 
     class SystemInfoAddon extends Addon{
@@ -23,7 +23,7 @@ use Common\Controller\Addon;
             'title'=>'系统环境信息',
             'description'=>'用于显示一些服务器的信息',
             'status'=>1,
-            'author'=>'thinkphp',
+            'author'=>'uctoo',
             'version'=>'0.1'
         );
 
@@ -40,9 +40,9 @@ use Common\Controller\Addon;
             $config = $this->getConfig();
             
             if(false){//extension_loaded('curl')
-                $url = 'http://www.onethink.cn/index.php?m=home&c=check_version';
+                $url = 'http://www.uctoo.com/index.php?m=home&c=check_version';
                 $params = array(
-                    'version' => ONETHINK_VERSION,
+                    'version' => UCTOO_VERSION,
                     'domain'  => $_SERVER['HTTP_HOST'],
                     'auth'    => sha1(C('DATA_AUTH_KEY')),
                 );

@@ -98,7 +98,6 @@ class JsSdkPay {
   {
     $result = $this->xmlToArray($this->postXml());
     $prepay_id = $result["prepay_id"];
-    trace('wechat：getPrepayId'.$prepay_id,'微信','DEBUG',true);
     return $prepay_id;
   }
   /**
@@ -116,7 +115,6 @@ class JsSdkPay {
   function postXml()
   {
     $xml = $this->createXml();
-    trace('wechat：postXml'.$xml,'微信','DEBUG',true);
     return  $this->postXmlCurl($xml,"https://api.mch.weixin.qq.com/pay/unifiedorder",$this->CURL_TIMEOUT);
 
   }
@@ -128,7 +126,7 @@ class JsSdkPay {
     //初始化curl
     $ch = curl_init();
     //设置超时
-    curl_setopt($ch,CURLOP_TIMEOUT, $this->CURL_TIMEOUT);
+    curl_setopt($ch,CURLOPT_TIMEOUT, $this->CURL_TIMEOUT);
     //这里设置代理，如果有的话
     //curl_setopt($ch,CURLOPT_PROXY, '8.8.8.8');
     //curl_setopt($ch,CURLOPT_PROXYPORT, 8080);
@@ -144,7 +142,7 @@ class JsSdkPay {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
     //运行curl
     $data = curl_exec($ch);
-    curl_close($ch);
+  //  curl_close($ch);
     //返回结果
     if($data)
     {

@@ -1,10 +1,10 @@
 <?php
 // +----------------------------------------------------------------------
-// | OneThink [ WE CAN DO IT JUST THINK IT ]
+// | UCToo [ Universal Convergence Technology ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2013 http://www.onethink.cn All rights reserved.
+// | Copyright (c) 2015 http://www.uctoo.com All rights reserved.
 // +----------------------------------------------------------------------
-// | Author: yangweijie <yangweijiester@gmail.com> <code-tech.diandian.com>
+// | Author: patrick <contact@uctoo.com> <http://www.uctoo.com>
 // +----------------------------------------------------------------------
 
 namespace Mpbase\Model;

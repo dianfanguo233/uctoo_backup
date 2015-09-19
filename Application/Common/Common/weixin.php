@@ -178,7 +178,8 @@ function get_uid_ucuser($uid = 0) {
   return $user;
 }
 
-// 获取当前粉丝用户uid,和 hook('init_ucuser',$params)作用基本相同。
+
+// 获取当前粉丝用户uid,和 hook('init_ucuser',$params)作用基本相同。只在微信浏览器中可使用。
 function get_ucuser_uid($uid = 0) {
     $mp_id = get_mpid ();
     if ($uid !== NULL) {
@@ -189,6 +190,9 @@ function get_ucuser_uid($uid = 0) {
     $uid = session ( 'uid_' . $mp_id );
 
     $isWeixinBrowser = isWeixinBrowser ();
+    if(!$isWeixinBrowser){                           //非微信浏览器返回false，调用此函数必须对false结果进行判断，非微信浏览器不可访问调用的controller
+        return false;
+    }
     //下面这段应该逻辑没问题，如果公众号配置信息错误或者没有snsapi_base作用域的获取信息权限可能会出现死循环，注释掉以下if可治愈
     if ( $uid <= 0 && $isWeixinBrowser) {
         $map['openid'] = get_openid();
@@ -202,7 +206,7 @@ function get_ucuser_uid($uid = 0) {
             $aUsername = $aNickname = $map['openid'];           //以openid作为默认UcenterMember用户名和Member昵称
             $aPassword = UCenterMember()->create_rand();        //随机密码，用户未通过公众号注册，就不可登录网站
             $email = $aUsername.'@mp_id'.$map['mp_id'].'.com';   //以openid@mpid123.com作为默认邮箱
-            $mobile = arr2str(UCenterMember()->rand_mobile());                    //生成随机手机号已通过model校验，不实际使用，准确手机以微信绑定的为准
+            $mobile = arr2str(UCenterMember()->rand_mobile());                    //生成随机手机号以通过model校验，不实际使用，准确手机以微信绑定的为准
             $aUnType = 5;                                               //微信公众号粉丝注册
             $aRole = 3;                                                 //默认公众号粉丝用户角色
             /* 注册用户 */

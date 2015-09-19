@@ -37,6 +37,23 @@ use Common\Controller\Addon;
             return true;
         }
 
+        //实现的welcome钩子方法，对关注事件TPWechat::EVENT_SUBSCRIBE进行匹配，根据具体处理业务的addon数据或配置，组装回复给用户的内容
+        public function welcome($params){
 
+            if($params['mp_id']){
+                $kmap['mp_id'] = $params['mp_id'];
+                $kmap['type'] = "1";                                       //TODO:先只支持精确匹配，后续根据keyword_type字段增加模糊匹配
+                $con = $params['weObj']->getRevContent();
+                $welcome = M('Autoreply')->where($kmap)->find();
 
+                if($welcome['keyword_id'] == 0){              //如果有指定模型，就用模型中的aim_id数据组装回复的内容
+
+                    $reData = $welcome['content'];
+                    $params['weObj']->text($reData);
+                }
+            }else{
+
+            }
+            // $params['weObj']->text("hello ");
+        }
     }

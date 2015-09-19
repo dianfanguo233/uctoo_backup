@@ -570,6 +570,21 @@ INSERT INTO `uctoo_auth_rule` (`id`, `module`, `type`, `name`, `title`, `status`
 ('388', 'admin', '1', 'Admin/Weicja/index', '微场景', '1', ''),
 ('389', 'admin', '2', 'Admin/Ucuser/index', '微会员', '1', '');
 
+-- ----------------------------
+-- Table structure for uctoo_autoreply
+-- ----------------------------
+DROP TABLE IF EXISTS `uctoo_autoreply`;
+CREATE TABLE `uctoo_autoreply` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uid` int(10) NOT NULL COMMENT '用户ID',
+  `mp_id` int(10) NOT NULL COMMENT '公众号ID',
+  `type` char(10) NOT NULL DEFAULT '0' COMMENT '自定义回复类型',
+  `keyword_id` int(10) NOT NULL COMMENT '关键词ID',
+  `content` varchar(255) NOT NULL COMMENT '自动回复内容',
+  `status` tinyint(4) NOT NULL COMMENT '2：未审核，1:启用，0：禁用，-1：删除',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
 DROP TABLE  IF EXISTS `uctoo_avatar`;
 CREATE TABLE IF NOT EXISTS `uctoo_avatar` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -914,6 +929,9 @@ CREATE TABLE `uctoo_member_public` (
   `status` tinyint(4) NOT NULL COMMENT '2：未审核，1:启用，0：禁用，-1：删除',
   `group_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '等级',
   `encodingaeskey` varchar(255) NOT NULL COMMENT 'EncodingAESKey',
+  `mchid` varchar(50) NOT NULL COMMENT '商户号（微信支付必须配置）',
+  `mchkey` varchar(50) NOT NULL COMMENT '商户支付密钥（微信支付必须配置）',
+  `notify_url` varchar(255) NOT NULL COMMENT '接收微信支付异步通知回调地址',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=107 DEFAULT CHARSET=utf8;
 
@@ -1128,8 +1146,9 @@ INSERT INTO `uctoo_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `g
 (187, '查看主题', 105, 0, 'Theme/lookTheme', 1, '', '云市场', 0, ''),
 (188, '主题打包下载', 105, 0, 'Theme/packageDownload', 1, '', '云市场', 0, ''),
 (189, '卸载删除主题', 105, 0, 'Theme/delete', 1, '', '云市场', 0, ''),
-(190, '上传安装主题', 105, 0, 'Theme/add', 1, '', '云市场', 0, '');
-
+(190, '上传安装主题', 105, 0, 'Theme/add', 1, '', '云市场', 0, ''),
+(191, '系统信息', 74, 10, 'System/index', 0, '', '系统设置', 0, '', ''),
+(192, '自动回复管理', 135, 0, 'Mpbase/autoreply', 0, '', '公众号', 0, '');
 
 DROP TABLE  IF EXISTS `uctoo_message`;
 CREATE TABLE IF NOT EXISTS `uctoo_message` (
@@ -1204,6 +1223,44 @@ CREATE TABLE IF NOT EXISTS `uctoo_module` (
   KEY `name_2` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='模块管理表' AUTO_INCREMENT=1 ;
 
+--
+-- 通用订单表的结构 `uctoo_order`
+--
+CREATE TABLE IF NOT EXISTS `uctoo_order` (
+`id` int(12) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+`uid` int(11) NOT NULL COMMENT '用户ID',
+`mp_id` int(10) NOT NULL COMMENT '公众号ID',
+`order_id` varchar(50) NOT NULL COMMENT '订单ID',
+`order_status` tinyint(4) NOT NULL COMMENT '订单状态',
+`order_total_price`  int(10) NOT NULL  DEFAULT 1 COMMENT '订单总价格(单位 : 分)',
+`order_create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '订单创建时间',
+`order_express_price`  int(10) NOT NULL  DEFAULT 0 COMMENT '订单运费价格(单位 : 分)',
+`buyer_openid` varchar(50) NOT NULL COMMENT '买家微信OPENID',
+`buyer_nick` char(32) NOT NULL DEFAULT '' COMMENT '买家微信昵称',
+`receiver_name` char(32) NOT NULL DEFAULT '' COMMENT '收货人姓名',
+`receiver_province`  varchar(50) NOT NULL  COMMENT '收货地址省份',
+`receiver_city`  varchar(50) NOT NULL  COMMENT '收货地址城市',
+`receiver_zone`  varchar(50) NOT NULL  COMMENT '收货地址区/县',
+`receiver_address`  varchar(150) NOT NULL  COMMENT '收货详细地址',
+`receiver_mobile`  varchar(20) NOT NULL  COMMENT '收货人移动电话',
+`receiver_phone`  varchar(20) NOT NULL  COMMENT '收货人固定电话',
+`product_id`  varchar(50) NOT NULL  COMMENT '商品ID',
+`product_name`  varchar(50) NOT NULL  COMMENT '商品名称',
+`product_price`  int(10) NOT NULL  DEFAULT 1 COMMENT '商品价格(单位 : 分)',
+`product_sku`  varchar(255) NULL  COMMENT '商品SKU',
+`product_count`  int(10) NOT NULL  DEFAULT 1 COMMENT '商品个数',
+`product_img`  varchar(255) NULL   COMMENT '商品图片url',
+`delivery_id`  varchar(50) NOT NULL  COMMENT '运单ID',
+`delivery_company`  varchar(50) NOT NULL  COMMENT '物流公司编码',
+`trans_id`  varchar(50) NOT NULL  COMMENT '交易ID',
+`module` varchar(20) NOT NULL COMMENT '订单所属模块',
+`addon` varchar(50) NOT NULL COMMENT '订单所属插件',
+`model` varchar(100) NOT NULL COMMENT '数据模型',
+`aim_id` int(10) unsigned NOT NULL COMMENT '模型表里的ID值',
+PRIMARY KEY (`id`),
+KEY `mp_id` (`mp_id`),
+KEY `order_id` (`order_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='通用订单表';
 
 DROP TABLE  IF EXISTS `uctoo_picture`;
 CREATE TABLE IF NOT EXISTS `uctoo_picture` (
@@ -1431,6 +1488,43 @@ CREATE TABLE IF NOT EXISTS `uctoo_talk_push` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='对话推送表' AUTO_INCREMENT=1 ;
 
+--
+-- 通用微信支付订单表的结构 `uctoo_transaction`
+--
+CREATE TABLE IF NOT EXISTS `uctoo_transaction` (
+`id` int(12) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+`appid` varchar(32) NOT NULL COMMENT '公众账号ID',
+`mch_id` varchar(32) NOT NULL COMMENT '商户号',
+`device_info` varchar(32) NOT NULL COMMENT '设备号',
+`nonce_str` varchar(32) NOT NULL COMMENT '随机字符串',
+`sign` varchar(32) NOT NULL COMMENT '签名',
+`result_code` varchar(16) NOT NULL COMMENT '业务结果',
+`err_code` varchar(32) NOT NULL COMMENT '错误代码',
+`err_code_des` varchar(128) NOT NULL COMMENT '错误代码描述',
+`openid` varchar(128) NOT NULL COMMENT '用户标识',
+`is_subscribe` varchar(1) NOT NULL COMMENT '是否关注公众账号',
+`trade_type` varchar(16) NOT NULL COMMENT '交易类型',
+`bank_type` varchar(16) NOT NULL COMMENT '付款银行',
+`total_fee`  int(10) NOT NULL  DEFAULT 1 COMMENT '订单总价格(单位 : 分)',
+`fee_type` varchar(8) NOT NULL COMMENT '货币种类',
+`cash_fee`  int(10) NOT NULL DEFAULT 0 COMMENT '现金支付金额',
+`cash_fee_type` varchar(16) NOT NULL COMMENT '现金支付货币类型',
+`coupon_fee`  int(10) NOT NULL DEFAULT 0 COMMENT '代金券或立减优惠金额',
+`coupon_count`  int(10) NOT NULL DEFAULT 0 COMMENT '代金券或立减优惠使用数量',
+`coupon_id_0` varchar(20) NOT NULL COMMENT '代金券或立减优惠ID',
+`coupon_id_1` varchar(20) NOT NULL COMMENT '代金券或立减优惠ID',
+`coupon_fee_0`  int(10) NOT NULL DEFAULT 0 COMMENT '单个代金券或立减优惠支付金额',
+`coupon_fee_1`  int(10) NOT NULL DEFAULT 0 COMMENT '单个代金券或立减优惠支付金额',
+`transaction_id` varchar(32) NOT NULL COMMENT '微信支付订单号',
+`out_trade_no` varchar(32) NOT NULL COMMENT '商户订单号',
+`attach` varchar(128) NOT NULL DEFAULT '' COMMENT '商家数据包，原样返回',
+`time_end` varchar(14) NOT NULL DEFAULT '' COMMENT '支付完成时间，格式为yyyyMMddHHmmss',
+PRIMARY KEY (`id`),
+KEY `transaction_id` (`transaction_id`),
+KEY `out_trade_no` (`out_trade_no`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='通用微信支付订单表';
+
+
 DROP TABLE  IF EXISTS `uctoo_ucenter_admin`;
 CREATE TABLE IF NOT EXISTS `uctoo_ucenter_admin` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '管理员ID',
@@ -1479,8 +1573,8 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucuser` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `mp_id` int(10) NOT NULL COMMENT '公众号ID',
   `subscribe` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否订阅了公众号',
-  `openid` varchar(255) NOT NULL COMMENT 'OpenId用户的标识，对当前公众号唯一',
-  `nickname` char(16) NOT NULL DEFAULT '' COMMENT '昵称',
+  `openid` varchar(50) NOT NULL COMMENT 'OpenId用户的标识，对当前公众号唯一',
+  `nickname` char(32) NOT NULL DEFAULT '' COMMENT '昵称',
   `password` char(32) NOT NULL COMMENT '密码',
   `email` char(32) NOT NULL COMMENT '用户邮箱',
   `mobile` char(15) NOT NULL COMMENT '用户手机',
@@ -1743,6 +1837,7 @@ CREATE TABLE `uctoo_welcome` (
   `url` varchar(255) DEFAULT NULL COMMENT '跳转url',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `uctoo_invite`;
 CREATE TABLE IF NOT EXISTS `uctoo_invite` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'PRIMARY_KEY',

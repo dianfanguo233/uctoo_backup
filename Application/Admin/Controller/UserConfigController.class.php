@@ -67,9 +67,15 @@ str;
             ->keyEditor('REG_EMAIL_VERIFY', '邮箱验证模版', '用于进行邮箱的验证','all')
             ->keyEditor('REG_EMAIL_ACTIVATE', '邮箱激活模版', '用于进行用户的激活')
 
+            ->keyCheckBox('SMS_SP', '短信提供商', '可选的短信通道提供商,全不选即为关闭短信通道', array('ucpaas' => '云之讯', 'UCToo' => 'UCToo'))
             ->keyText('SMS_HTTP', '短信平台HTTP', '短信平台HTTP')
+            ->keyText('SMS_HTTPS', '短信平台HTTPS', '短信平台HTTPS')
             ->keyText('SMS_UID', '短信平台帐号', '短信平台帐号')
             ->keyText('SMS_PWD', '短信平台密码', '短信平台密码')
+            ->keyText('SMS_ACCOUNTSID', '短信平台开发者ID', '短信平台开发者ID')
+            ->keyText('SMS_TOKEN', '短信平台TOKEN', '短信平台TOKEN')
+            ->keyText('SMS_APPID', '短信平台应用ID', '短信平台应用ID')
+            ->keyText('SMS_TEMPLATEID', '短信平台模板ID', '短信平台模板ID')
             ->keyTextArea('SMS_CONTENT', '短信内容', '短信内容')
             ->keyTextArea('LEVEL', '等级配置', '每行一条，名称和积分之间用冒号分隔')
 
@@ -79,7 +85,7 @@ str;
             ->group('登录配置', 'OPEN_QUICK_LOGIN')
             ->group('邮箱验证模版', 'REG_EMAIL_VERIFY')
             ->group('邮箱激活模版', 'REG_EMAIL_ACTIVATE')
-            ->group('短信配置', 'SMS_HTTP,SMS_UID,SMS_PWD,SMS_CONTENT')
+            ->group('短信配置', 'SMS_SP,SMS_HTTP,SMS_HTTPS,SMS_UID,SMS_PWD,SMS_ACCOUNTSID,SMS_TOKEN,SMS_APPID,SMS_TEMPLATEID,SMS_CONTENT')
             ->group('基础设置', 'LEVEL')
             ->buttonSubmit('', '保存')->data($data);
         $admin_config->display();

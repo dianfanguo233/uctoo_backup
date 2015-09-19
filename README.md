@@ -13,7 +13,7 @@ UCToo主要定位于提供一个可快速进行微应用开发的起始项目，
 系统融合了众多优秀开源项目，采纳通用技术，每周持续集成业界最佳实线。UCToo开发团队扩展了微信应用开发相关功能，对接了微信公众平台和开放平台的所有接口，使其允许在任何类型的微信应用项目中使用。
 
 本包为0.5RC版本，欢迎大家安装使用。<br />
-更多信息请关注官方网站 http://www.uctoo.com <br /> 及"互联网+"开源社区 http://forum.uctoo.com ，开发者交流QQ群102324323<br />
+更多信息请关注官方网站 http://www.uctoo.com <br /> 及"互联网+"开源社区 http://forum.uctoo.com ，开发者交流QQ群102324323(已满)，138048128<br />
 
 1.移动端前端开发采用amazeui http://amazeui.org/ 。<br />
 2.PC端前端开发采用zui http://www.zui.sexy/ 。<br />
@@ -32,4 +32,4 @@ UCToo主要定位于提供一个可快速进行微应用开发的起始项目，
 15.实现Restful API接口，可将系统数据提供给APP以及其他第三方系统调用。<br />
 
 演示公众号
-<img src="http://www.uctoo.com/Application/Home/Static/images/qrcode_default.jpg" alt="">
+<img src="http://test.uctoo.com/Application/Home/Static/images/qrcode_default.jpg" alt="">

@@ -141,7 +141,6 @@ class UcuserModel extends Model
             'mobile' => $mobile,
         );
 
-        if(empty($user['mobile']) ){       // 没在微信端注册（绑定）过，记录手机和密码
             /* 完善用户信息 */
             if ( $this->create($data) && $this->save()) {
                 if (UCenterMember()->create($data1) && UCenterMember()->save()){             //更新UcenterMember中的手机和密码
@@ -150,9 +149,7 @@ class UcuserModel extends Model
             } else {
                 return $this->getError(); //错误详情见自动验证注释
             }
-        }else {                                                        //  已在微信端绑定过，提示用正确的帐密登录
-                    return -11; //密码错误
-        }
+
     }
 
     /**
@@ -198,6 +195,8 @@ class UcuserModel extends Model
         } else {
             return -1; //用户不存在或被禁用
         }
+
+        //以下程序运行不到
 
         session('temp_login_uid', $uid);
         session('temp_login_role_id', $user['last_login_role']);
