@@ -37,6 +37,9 @@ class IndexController extends AddonsController{
         $this->assign ( 'mp_id', $params['mp_id'] );
 
         $uid = get_ucuser_uid();                         //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($uid === false){
+            $this->error('只可在微信中访问');
+        }
         $user = get_uid_ucuser($uid);                    //获取本地存储公众号粉丝用户信息
         $this->assign('user', $user);
 
