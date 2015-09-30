@@ -1142,7 +1142,7 @@ INSERT INTO `uctoo_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `g
 (188, '主题打包下载', 105, 0, 'Theme/packageDownload', 1, '', '云市场', 0, ''),
 (189, '卸载删除主题', 105, 0, 'Theme/delete', 1, '', '云市场', 0, ''),
 (190, '上传安装主题', 105, 0, 'Theme/add', 1, '', '云市场', 0, ''),
-(191, '系统信息', 74, 10, 'System/index', 0, '', '系统设置', 0, '', ''),
+(191, '系统信息', 74, 10, 'System/index', 0, '', '系统设置', 0, ''),
 (192, '自动回复管理', 135, 0, 'Mpbase/autoreply', 0, '', '公众号', 0, '');
 
 DROP TABLE  IF EXISTS `uctoo_message`;
