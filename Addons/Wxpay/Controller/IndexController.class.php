@@ -8,6 +8,7 @@ use Com\Wxpay\lib\WxPayApi;
 use Com\Wxpay\lib\WxPayConfig;
 use Com\Wxpay\lib\WxPayUnifiedOrder;
 use Addons\Wxpay\Controller\PayNotifyCallBackController;
+use Com\TPWechat;
 
 
 class IndexController extends AddonsController{
@@ -138,6 +139,31 @@ class IndexController extends AddonsController{
         $this->options['secret'] = $info['secret'];
         $this->options['notify_url'] = $info['notify_url'];
         $this->wxpaycfg = new WxPayConfig($this->options);
+
+        //发送模板消息
+        $TMArray = array(
+            "touser" => $result["openid"],
+            "template_id" => "diW6jm5hBwemeoDF0FZdU2agSZ9kydje22YJIC0gVMo",
+            "url" => "http://test.uctoo.com/index.php?s=/home/addons/execute/Ucuser/Ucuser/index/mp_id/107.html",
+            "topcolor" => "#FF0000",
+            "data" => array(
+                "name" => array(
+                    "value" => "优创智投",
+                    "color" => "#173177",
+                ),
+                "remark" => array(
+                    "value" => "今天",
+                    "color" => "#173177",
+                )
+            )
+        );
+
+        $options['appid'] = $info['appid'];    //初始化options信息
+        $options['appsecret'] = $info['secret'];
+        $options['encodingaeskey'] = $info['encodingaeskey'];
+        $weObj = new TPWechat($options);
+        $res = $weObj->sendTemplateMessage($TMArray);
+
         //回复公众平台支付结果
         $notify = new PayNotifyCallBackController($this->wxpaycfg);    //
         $notify->Handle(false);
