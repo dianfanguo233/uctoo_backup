@@ -874,10 +874,6 @@ CREATE TABLE `uctoo_keyword` (
 -- ----------------------------
 -- Records of uctoo_keyword
 -- ----------------------------
-INSERT INTO `uctoo_keyword` VALUES ('514', '107', '微场景', 'gh_1dd1d1321b7c', 'Weicj', 'Weicj', '3', '1425366290', '4', '0', 'custom_reply_news', '0', '0');
-INSERT INTO `uctoo_keyword` VALUES ('516', '107', 'jssdk', 'gh_1dd1d1321b7c', 'Jssdk', '', '0', '1425366959', '36', '0', 'custom_reply_news', '0', '0');
-INSERT INTO `uctoo_keyword` VALUES ('517', '107', '微会员', 'gh_1dd1d1321b7c', 'Ucuser', '', '0', '1425368595', '9', '0', '', '0', '0');
-INSERT INTO `uctoo_keyword` VALUES ('520', '107', '123', 'gh_1dd1d1321b7c', 'Welcome', 'CustomReply', '3', '0', '0', '0', null, null, '0');
 
 
 DROP TABLE  IF EXISTS `uctoo_member`;
