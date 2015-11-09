@@ -1225,6 +1225,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_order` (
 `id` int(12) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
 `uid` int(11) NOT NULL COMMENT '用户ID',
 `mp_id` int(10) NOT NULL COMMENT '公众号ID',
+`type` varchar(10) NOT NULL COMMENT '订单类型，uid微信订单、mid网站订单、api第三方订单',
 `order_id` varchar(50) NOT NULL COMMENT '订单ID',
 `order_status` tinyint(4) NOT NULL COMMENT '订单状态',
 `order_total_price`  int(10) NOT NULL  DEFAULT 1 COMMENT '订单总价格(单位 : 分)',
@@ -1566,6 +1567,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucenter_setting` (
 DROP TABLE  IF EXISTS `uctoo_ucuser`;
 CREATE TABLE IF NOT EXISTS `uctoo_ucuser` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `mid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '关联的Member表uid',
   `mp_id` int(10) NOT NULL COMMENT '公众号ID',
   `subscribe` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否订阅了公众号',
   `openid` varchar(50) NOT NULL COMMENT 'OpenId用户的标识，对当前公众号唯一',

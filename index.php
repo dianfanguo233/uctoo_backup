@@ -50,7 +50,7 @@ if (get_magic_quotes_gpc()) {
  * 系统调试设置
  * 项目正式部署后请设置为false
  */
-define ('APP_DEBUG', true);
+define ('APP_DEBUG', false);
 
 //mp.weixin.qq.com，开发者中心，服务器配置，Token(令牌)
 define ('APP_TOKEN', 'uctoo');

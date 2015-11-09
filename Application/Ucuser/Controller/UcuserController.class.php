@@ -11,6 +11,9 @@ namespace Admin\Controller;
 use Admin\Builder\AdminConfigBuilder;
 use Admin\Builder\AdminListBuilder;
 use Admin\Builder\AdminTreeListBuilder;
+use Common\Model\UcuserModel;
+use Com\TPWechat;
+use Com\ErrCode;
 
 
 class UcuserController extends AdminController
@@ -33,11 +36,94 @@ class UcuserController extends AdminController
         $builder = new AdminListBuilder();
         $builder
             ->title('用户列表')
+            ->button('同步粉丝数据', array('href' => U('Ucuser/sycUcuser')))
+            ->button('获取粉丝信息', array('href' => U('Ucuser/sycUcuserInfo')))
+            ->button('数据剔重', array('href' => U('Ucuser/delDup')))
             ->keyText('uid', 'uid')->keyText('openid', 'openid')->keyText('nickname', '昵称')->keyText('sex', '性别')->keyText('province','省份')->keyText('city','城市')->keyText('score1','积分')
             ->data($list)
             ->pagination($totalCount, $r)
             ->display();
+    }
+
+    /**
+     * 同步公众号粉丝数据
+     * @param null $ids
+     * @author patrick<contact@uctoo.com>
+     */
+    public function sycUcuser($ids = null){
+
+        $info = get_mpid_appinfo();    //获取当前管理的公众号信息
+        $options['token'] = APP_TOKEN;    //初始化options信息
+        $options['appid'] = $info['appid'];
+        $options['appsecret'] = $info['secret'];
+        $options['encodingaeskey'] = $info['encodingaeskey'];
+        $weObj = new TPWechat($options);
+
+        $res = $weObj->getUserList();
+        $total = $res['total'];
+        $countSum = $res['count'];
+        $allData = $res['data']['openid'];
+        while($countSum < $total) {
+            $res = $weObj->getUserList($res['next_openid']);
+            $allData = array_merge($allData,$res['data']['openid']);
+            $countSum = $countSum+$res['count'];
+        }
+        $Ucuser = D("Ucuser"); // 实例化Ucuser对象
+        $map['mp_id'] = get_mpid();
+        $allUcuser = $Ucuser->where($map)->getField('uid,openid');
+        $diff = array_diff($allData,$allUcuser);
+        foreach($diff as $i) {
+            $Ucuser->registerUser( $info['id'] ,$i);
+        }
+        $this->success('获取粉丝信息成功',U('index'));
 
     }
 
+    /**
+     * 获取公众号粉丝信息
+     * @param null $ids
+     * @author patrick<contact@uctoo.com>
+     */
+    public function sycUcuserInfo($ids = null){
+
+        $info = get_mpid_appinfo();    //获取当前管理的公众号信息
+        $options['token'] = APP_TOKEN;    //初始化options信息
+        $options['appid'] = $info['appid'];
+        $options['appsecret'] = $info['secret'];
+        $options['encodingaeskey'] = $info['encodingaeskey'];
+        $weObj = new TPWechat($options);
+
+        $Ucuser = D("Ucuser"); // 实例化Ucuser对象
+        $map['mp_id'] = get_mpid();
+        $allUcuser = $Ucuser->where($map)->select();
+
+        foreach($allUcuser as &$i) {
+            if(empty($i['nickname'])){
+                $res = $weObj->getUserInfo($i['openid']);
+                $i = array_merge($i ,$res);
+                $i['status'] = 2;                       //已同步过数据资料的状态
+                $Ucuser->save($i);
+            }
+        }
+        $this->success('同步粉丝数据成功',U('index'));
+
+    }
+
+    /**
+     * 获取公众号粉丝信息
+     * @param null $ids
+     * @author patrick<contact@uctoo.com>
+     */
+    public function delDup($ids = null){
+
+        $Ucuser = D("Ucuser"); // 实例化Ucuser对象
+        $map['mp_id'] = get_mpid();
+        $allUcuser = $Ucuser->where($map)->getField('uid,openid');
+
+        $unDup = array_flip(array_flip($allUcuser));
+        $dup = array_diff_assoc($allUcuser,$unDup);
+        $dupKeys = array_keys($dup);
+        $Ucuser->delete(arr2str($dupKeys));
+        $this->success('数据剔重成功',U('index'));
+    }
 }

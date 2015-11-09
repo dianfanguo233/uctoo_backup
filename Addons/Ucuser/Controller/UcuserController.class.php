@@ -101,6 +101,22 @@ class UcuserController extends AddonsController{
             $aPassword = I('post.password', '', 'op_t');
             $aRemember = I('post.remember', 0, 'intval');
 
+            //微信端登录时检测是否在pc端有帐号，如果有pc端帐号，并且微信端密码和pc端不同，就把pc端密码复制给微信端帐号，以支持pc端注册的帐号直接在微信端登录
+            $umap['mobile'] = $aMobile;
+            $member = UCenterMember()->where($umap)->find();
+            if (empty ($member)) {                                 //在pc端没注册，注册一个pc端帐号
+
+            } else {                                                     //已经通过网站注册过帐号
+                if($member['password'] != $user['password']){
+                    $data['uid'] = $uid;
+                    $data['mid'] = $member['id'];                            //将UCenterMember表的id写入ucuser表mid字段
+                    $data['mobile'] = $aMobile;
+                    $data['password'] = $member['password'];              //同步加密后的密码
+                    $ucuser = M('Ucuser');
+                    $ucuser->save($data);
+                }
+            }
+
             $ucuser = D('Common/Ucuser');
             $res = $ucuser->login($uid,$aMobile,$aPassword,$aRemember);
            if($res > 0){
@@ -153,13 +169,32 @@ class UcuserController extends AddonsController{
 
             $aMobile = I('post.mobile', '', 'op_t');
             $aPassword = I('post.password', '', 'op_t');
+            $aNickname = I('post.nickname', '', 'op_t');
+            $verify = I('post.verify', '', 'op_t');
+            $aUid = I('uid', 0, 'intval');
+            //读取SESSION中的验证信息
+                $mobile = session('reset_password_mobile');
+                 //提交修改密码和接收验证码的手机号码不一致
+                 if ($aMobile != $mobile) {
+                echo '提交注册的手机号码和接收验证码的手机号码不一致';
+                     return false;
+                 }
+                 $res = D('Verify')->checkVerify($aMobile, "mobile", $verify, 0);
+                 //确认验证信息正确
+                 if(!$res){
+                     echo  '验证码错误';
+                     return false;
+                 }else{
 
+            }
+            
             $ucuser = D('Common/Ucuser');
-            $res = $ucuser->register($uid,$aPassword,$aMobile);
+            $res = $ucuser->register($uid,$user['openid'],$user['mp_id'],$aPassword,$aMobile);
+            
             if($res > 0){
                 $this->success ( '注册成功', addons_url ( 'Ucuser://Ucuser/login' ) );
             }else{
-                $this->error ( $ucuser->getError () );
+                echo '帐号已注册';
             }
 
         } else { //显示注册页面
@@ -213,6 +248,23 @@ class UcuserController extends AddonsController{
             $data['qq'] = I('post.qq', '', 'op_t');
             $data['weibo'] = I('post.weibo', '', 'op_t');
             $data['signature'] = I('post.signature', '', 'op_t');
+            $verify = I('post.verify', '', 'op_t');
+
+            //读取SESSION中的验证信息
+            $mobile = session('reset_password_mobile');
+            //提交修改密码和接收验证码的手机号码不一致
+            if ($data['mobile'] != $mobile) {
+                echo '提交修改密码和接收验证码的手机号码不一致';
+                return false;
+            }
+            $res = D('Verify')->checkVerify($data['mobile'], "mobile", $verify, 0);
+            //确认验证信息正确
+            if(!$res){
+                echo  '验证码错误';
+                return false;
+            }else{
+
+            }
 
             $ucuser = D('Common/Ucuser');
             $res = $ucuser->save($data);
@@ -307,7 +359,27 @@ public function forget(){
 
             $this->display();
     }
-    
+
+    /**
+     * sendVerify 发送短信验证码
+     * @author:patrick contact@uctoo.com
+     *
+     */
+    public function sendVerify()
+    {
+        $mobile = I('post.mobile', '', 'op_t');
+
+        if (empty($mobile)) {
+            $this->error('手机号不能为空');
+        }
+
+        //保存SESSION中的验证手机号码
+        session('reset_password_mobile',$mobile);
+
+        $res = sendSMS($mobile,"");
+        echo $res;             //ajax 返回提示
+    }
+
     /**
      * checkVerify 检测验证码
      * @author:patrick contact@uctoo.com
@@ -318,6 +390,14 @@ public function forget(){
         $aMobile = I('post.mobile', '', 'op_t');
         $verify = I('post.verify', '', 'op_t');
         $aUid = I('uid', 0, 'intval');
+
+        //读取SESSION中的验证信息
+        $mobile = session('reset_password_mobile');
+        //提交修改密码和接收验证码的手机号码不一致
+        if ($aMobile != $mobile) {
+            echo '提交注册的手机号码和接收验证码的手机号码不一致';
+            return false;
+        }
 
        $res = D('Verify')->checkVerify($aMobile, "mobile", $verify, 0);
 

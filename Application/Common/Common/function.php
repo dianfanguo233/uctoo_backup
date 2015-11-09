@@ -96,7 +96,6 @@ function CheckPermission($uids)
     return false;
 }
 
-
 function check_auth($rule = '', $except_uid = -1, $type = AuthRuleModel::RULE_URL)
 {
     if (is_administrator()) {

@@ -111,6 +111,20 @@ class MemberController extends Controller
                     // $this->success('注册成功，请登录邮箱进行激活');
                 }
 
+                //微信端粉丝关联PC端注册的帐号
+                $ucmap['mobile'] = $mobile;
+                $UcuserModel = D("Ucuser"); // 实例化Ucuser对象
+                $Ucuser = $UcuserModel->where($ucmap)->select();  // 是否有相同手机号码的粉丝已经注册,不区分公众号
+                
+                if (empty ($Ucuser)) {                         //用户没有在微信端注册过，暂时没有什么处理
+
+                } else {                                       //已经在公众号注册过帐号
+                    foreach($Ucuser as $i) {
+                        $i['mid'] = $uid;                  //将member表的uid写入ucuser表mid字段
+                        $UcuserModel->save($i);
+                    }
+                }
+
                 $uid = UCenterMember()->login($username, $aPassword, $aUnType); //通过账号密码取到uid
                 D('Common/Member')->login($uid, false,$aRole); //登陆
 
@@ -487,6 +501,26 @@ class MemberController extends Controller
         } else {
             $this->display();
         }
+    }
+
+    /**
+     * sendVerify 发送短信验证码
+     * @author:patrick contact@uctoo.com
+     *
+     */
+    public function sendVerify()
+    {
+        $mobile = I('post.mobile', '', 'op_t');
+
+        if (empty($mobile)) {
+            $this->error('手机号不能为空');
+        }
+
+        //保存SESSION中的验证手机号码
+        session('reset_password_mobile',$mobile);
+
+        $res = sendSMS($mobile,"");
+        echo $res;             //ajax 返回提示
     }
 
     /**

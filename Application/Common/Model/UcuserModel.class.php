@@ -61,6 +61,19 @@ class UcuserModel extends Model
     }
 
     /**
+     * 通过手机号码获取粉丝信息，不区分归属公众号
+     * @param  string $mobile 手机
+     * @return mixed 粉丝信息
+     */
+    public function getUcuserByMobile($mobile){
+        $map['mobile'] = $mobile;
+
+        /* 获取粉丝数据 */
+        $user = $this->where($map)->select();
+        return $user;
+    }
+
+    /**
      * 检测用户名是不是被禁止注册
      * @param  string $nickname 昵称
      * @return boolean          ture - 未禁用，false - 禁止注册
@@ -96,30 +109,28 @@ class UcuserModel extends Model
 
     /**
      * 初始化一个新用户
-     * @param  string $uid member表uid
      * @param  string $mp_id 公众号mp_id
      * @param  string $openid 用户openid
      * @return integer          注册成功-用户uid，注册失败-错误编号
      */
-    public function registerUser($uid ,$mp_id = '',$openid = '')
+    public function registerUser($mp_id = '',$openid = '')
     {
         /* 在当前应用中注册用户 */
-        if ($user = $this->create(array('uid' => $uid,'mp_id' => $mp_id,'openid' => $openid, 'status' => 1))) {
+        if ($user = $this->create(array('mp_id' => $mp_id,'openid' => $openid, 'status' => 1))) {
             $ucuid = $this->add($user);
             if (!$ucuid) {
                 $this->error = '微会员信息注册失败，请重试！';
                 return false;
             }
             sync_wxuser($mp_id,$openid);                                //初始化用户后同步一次用户资料
-            return $uid;
+            return $ucuid;
         } else {
             return $this->getError(); //错误详情见自动验证注释
         }
-
     }
 
     /**
-     * 注册一个新用户,其实已经注册了只是完善用户信息
+     * 注册一个新用户,如果member表已经有相同手机号，将member表的uid写入ucuser表mid字段，如果member表没有相同手机号，创建一个新纪录，
      * @param  integer $uid 用户UID
      * @param  string $nickname 昵称
      * @param  string $password 用户密码
@@ -127,29 +138,39 @@ class UcuserModel extends Model
      * @param  string $mobile 用户手机号码
      * @return integer          注册成功-用户信息，注册失败-错误编号
      */
-    public function register($uid ,$password, $mobile)
+    public function register($uid,$openid,$mp_id,$password, $mobile)
     {
-        $user = $this->find($uid);
-        $data = array(
-            'uid' => $uid,
-            'password' => $password,
-            'mobile' => $mobile,
-        );
-        $data1 = array(
-            'id' => $uid,
-            'password' => $password,
-            'mobile' => $mobile,
-        );
+        //先在Member表注册会员，公众号粉丝在绑定手机后可登录网站
+             $aUsername = $aNickname = $mobile;          //以手机号作为默认UcenterMember用户名和Member昵称
+             $email = $aUsername.'@mp_id'.$mp_id.'com';   //以openid@mpid123.com作为默认邮箱
+             $aUnType = 5;                                           //微信公众号粉丝注册
+             $aRole = 3;                                             //默认公众号粉丝用户角色
 
-            /* 完善用户信息 */
-            if ( $this->create($data) && $this->save()) {
-                if (UCenterMember()->create($data1) && UCenterMember()->save()){             //更新UcenterMember中的手机和密码
-                    return true;
-                }
-            } else {
-                return $this->getError(); //错误详情见自动验证注释
+             $map['mobile'] = $mobile;
+
+        $member = UCenterMember()->where($map)->find();
+        trace("forget".$member."a",'有园register11','DEBUG',true);
+        if (empty ($member)) {
+            /* 注册用户 */
+            $mid = UCenterMember()->register($aUsername, $aNickname, $password, $email, $mobile, $aUnType);
+            if (0 < $mid) { //注册成功
+                initRoleUser($aRole,$mid); //初始化角色用户
+                set_user_status($mid, 1);                           //微信注册的用户状态直接设置为1
+                $data['uid'] = $uid;
+                $data['mid'] = $mid;                               //将member表的uid写入ucuser表mid字段
+                $this->save($data);
+            } else { //注册失败，返回错误信息
+               return $mid;
             }
-
+        } else {
+                                                               //已经通过网站注册过帐号
+            $data['uid'] = $uid;
+            $data['mid'] = $member['id'];                            //将UCenterMember表的id写入ucuser表mid字段
+            $data['mobile'] = $mobile;
+            $data['password'] = think_ucenter_md5($password, UC_AUTH_KEY);
+            $res = $this->save($data);
+            return $res;
+        }
     }
 
     /**
@@ -398,23 +419,22 @@ class UcuserModel extends Model
     }
 
     /**
-     * 同步登陆时添加用户信息
+     * 同步登陆时添加粉丝信息，这个方法一般不在PC端使用，PC端不知道粉丝归属的公众号，且粉丝访问公众号时会自动生成粉丝数据
      * @param $uid
      * @param $info
      * @return mixed
-     * autor:xjw129xjt
+     * autor:uctoo
      */
-    public function addSyncData($uid, $info)
+    public function addSyncUcuser($uid, $info)
     {
-
+        $data1 = $info;
         $data1['nickname'] = mb_substr($info['nickname'], 0, 11, 'utf-8');
         //去除特殊字符。
         $data1['nickname'] = preg_replace('/[^A-Za-z0-9_\x80-\xff\s\']/', '', $data1['nickname']);
         empty($data1['nickname']) && $data1['nickname'] = $this->rand_nickname();
-        $data1['nickname'] .= '_' . $this->rand_nickname();
         $data1['sex'] = $info['sex'];
         $data = $this->create($data1);
-        $data['uid'] = $uid;
+        $data['mid'] = $uid;
         $res = $this->add($data);
         return $res;
     }
