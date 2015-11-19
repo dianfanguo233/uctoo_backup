@@ -1567,7 +1567,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucenter_setting` (
 DROP TABLE  IF EXISTS `uctoo_ucuser`;
 CREATE TABLE IF NOT EXISTS `uctoo_ucuser` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-  `mid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '关联的Member表uid',
+  `mid` int(10) unsigned NOT NULL COMMENT '关联的Member表uid',
   `mp_id` int(10) NOT NULL COMMENT '公众号ID',
   `subscribe` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否订阅了公众号',
   `openid` varchar(50) NOT NULL COMMENT 'OpenId用户的标识，对当前公众号唯一',

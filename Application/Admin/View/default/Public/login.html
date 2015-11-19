@@ -7,15 +7,28 @@
         <!--zui-->
         <link rel="stylesheet" type="text/css" href="__ZUI__/css/zui.css" media="all">
         <!--zui end-->
+		 <style type="text/css">
+        .background {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            background: #52B4D1;
+            overflow: hidden;
+        }
+    </style>
     </head>
     <body >
+		<!-- 背景 -->
+    <div id="particles-js" class="background"></div>
         <div id="main-content">
 
             <!-- 主体 -->
             <div class="login-body">
                 <div class="login-main pr">
                     <form action="{:U('login')}" method="post" class="login-form">
-                        <h3 class="welcome"><img class="logo" src="__IMG__/login_logo.png"> 登陆后台</h3>
+                        <h3 class="welcome"><img class="logo" src="__IMG__/login_logo.png"> 登录后台</h3>
                         <div id="itemBox" class="item-box">
                             <div class="input-group user-name" >
                                 <span class="input-group-addon"><i class="icon-user"></i></span>
@@ -60,6 +73,7 @@
     <script type="text/javascript" src="__PUBLIC__/js/jquery-2.0.3.min.js"></script>
     <!--<![endif]-->
     <script type="text/javascript" src="__ZUI__/js/zui.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/static/js/particles.min.js"></script>
     <script type="text/javascript">
     	/* 登陆表单获取焦点变色 */
     	$(".login-form").on("focus", "input", function(){
@@ -132,6 +146,54 @@
                     }
                 })
             }
+			
+			//背景粒子效果
+            particlesJS('particles-js', {
+                particles: {
+                    color: '#FFF',
+                    shape: 'circle', // "circle", "edge" or "triangle"
+                    opacity: 1,
+                    size: 2,
+                    size_random: true,
+                    nb: 200,
+                    line_linked: {
+                        enable_auto: true,
+                        distance: 100,
+                        color: '#FFF',
+                        opacity: .8,
+                        width: 1,
+                        condensed_mode: {
+                            enable: false,
+                            rotateX: 600,
+                            rotateY: 600
+                        }
+                    },
+                    anim: {
+                        enable: true,
+                        speed: 1
+                    }
+                },
+                interactivity: {
+                    enable: true,
+                    mouse: {
+                        distance: 250
+                    },
+                    detect_on: 'canvas', // "canvas" or "window"
+                    mode: 'grab',
+                    line_linked: {
+                        opacity: .5
+                    },
+                    events: {
+                        onclick: {
+                            enable: true,
+                            mode: 'push', // "push" or "remove" (particles)
+                            nb: 4
+                        }
+                    }
+                },
+                retina_detect: true
+            });
+			
 		});
     </script>
 </body>
