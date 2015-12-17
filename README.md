@@ -15,7 +15,7 @@ UCToo主要定位于提供一个可快速进行微应用开发的起始项目，
 本包为0.5RC版本，欢迎大家安装使用。<br />
 更多信息请关注官方网站 http://www.uctoo.com <br /> 及"互联网+"开源社区 http://forum.uctoo.com ，开发者交流QQ群102324323(已满)，138048128<br />
 
-1.移动端前端开发采用amazeui http://amazeui.org/ 。<br />
+1.移动端前端开发采用weui https://github.com/weui/weui 以及 amazeui http://amazeui.org/ 。<br />
 2.PC端前端开发采用zui http://www.zui.sexy/ 。<br />
 3.开发框架采用ThinkPHP http://thinkphp.cn 。<br />
 4.用户中心采用Ocenter http://www.ocenter.cn 。<br />
