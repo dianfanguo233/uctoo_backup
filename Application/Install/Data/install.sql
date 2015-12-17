@@ -938,6 +938,7 @@ CREATE TABLE `uctoo_member_public` (
 -- ----------------------------
 -- Records of uctoo_member_public
 -- ----------------------------
+INSERT INTO `uctoo_member_public` VALUES ('1', '1', 'UCToo', 'gh_1dd1d1321b7c', 'UCToo_com', '', '', '', '', '', '', '3', '', '', '1', '0', '');
 
 DROP TABLE  IF EXISTS `uctoo_menu`;
 CREATE TABLE IF NOT EXISTS `uctoo_menu` (
@@ -1549,6 +1550,10 @@ CREATE TABLE `uctoo_tplmsg` (
   KEY `mp_id` (`mp_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+INSERT INTO `uctoo_tplmsg` VALUES ('3', '1', '1', 'diW6jm5hBwemeoDF0FZdU2agSZ9kydje22YJIC0gVMo', '购买成功通知', 'IT科技 - 互联网|电子商务', '#FF0000', '您好，您已购买成功。\r\n\r\n商品信息：{{name.DATA}}\r\n{{remark.DATA}}', 'http://test.uctoo.com/index.php?s=/home/addons/execute/Ucuser/Ucuser/index/mp_id/1.html');
+INSERT INTO `uctoo_tplmsg` VALUES ('4', '1', '1', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', '积分变动通知', 'IT科技 - 互联网|电子商务', '#FF0000', '{{first.DATA}}\r\n\r\n{{FieldName.DATA}}:{{Account.DATA}}\r\n{{change.DATA}}积分:{{CreditChange.DATA}}\r\n积分余额:{{CreditTotal.DATA}}\r\n{{Remark.DATA}}', 'http://test.uctoo.com/index.php?s=/home/addons/execute/Ucuser/Ucuser/index/mp_id/1.html');
+
+
 DROP TABLE IF EXISTS `uctoo_tplmsg_field`;
 CREATE TABLE `uctoo_tplmsg_field` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -1562,6 +1567,16 @@ CREATE TABLE `uctoo_tplmsg_field` (
   KEY `template_id` (`template_id`),
   KEY `mp_id` (`mp_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+INSERT INTO `uctoo_tplmsg_field` VALUES ('2', '3', '1', 'diW6jm5hBwemeoDF0FZdU2agSZ9kydje22YJIC0gVMo', 'name', 'UCToo{$product_name}', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('5', '4', '1', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'first', '{$from_name}给你打了分：', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('4', '3', '1', 'diW6jm5hBwemeoDF0FZdU2agSZ9kydje22YJIC0gVMo', 'remark', 'hahahaha', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('6', '4', '1', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'FieldName', '总威望', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('7', '4', '1', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'Account', '{$score2}', '#FF0000');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('8', '4', '1', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'change', '增加', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('9', '4', '1', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'CreditChange', '10', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('10', '4', '1', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'CreditTotal', '{$score1}', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('11', '4', '1', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'Remark', '点击详情，查看打分结果，还可以给对方打分！', '#173177');
 
 --
 -- 通用微信支付订单表的结构 `uctoo_transaction`
@@ -1880,7 +1895,7 @@ CREATE TABLE `uctoo_weicj` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
-INSERT INTO `uctoo_weicj` VALUES ('3', 'http://test.uctoo.com/index.php?s=/home/addons/execute/Weicj/Weicj/index/id/3/mp_id/107.html', '0', '微场景', '微场景演示', '21', '27', '20', '107', '18', '25', '24', '23', '26', '0', 'http://test.uctoo.com/index.php?s=/issue/index/index.html', 'http://mh.ccjoy.com/reg/reg1/images/sound.mp3');
+INSERT INTO `uctoo_weicj` VALUES ('3', 'http://test.uctoo.com/index.php?s=/home/addons/execute/Weicj/Weicj/index/id/3/mp_id/1.html', '0', '微场景', '微场景演示', '21', '27', '20', '107', '18', '25', '24', '23', '26', '0', 'http://test.uctoo.com/index.php?s=/issue/index/index.html', 'http://mh.ccjoy.com/reg/reg1/images/sound.mp3');
 
 -- ----------------------------
 -- Table structure for uctoo_weixin_log
