@@ -110,7 +110,7 @@ class UcuserController extends AdminController
     }
 
     /**
-     * 获取公众号粉丝信息
+     * 删除公众号重复粉丝信息，忘记当时怎么写的算法了，好像效果是只保留openid相同的最大的那个uid记录
      * @param null $ids
      * @author patrick<contact@uctoo.com>
      */
@@ -125,5 +125,18 @@ class UcuserController extends AdminController
         $dupKeys = array_keys($dup);
         $Ucuser->delete(arr2str($dupKeys));
         $this->success('数据剔重成功',U('index'));
+    }
+
+    public function config()
+    {
+        $list[0]['url'] = addons_url('Ucuser://Ucuser/index', array('mp_id' => get_mpid()));
+
+        //显示页面
+        $builder = new AdminListBuilder();
+        $builder
+            ->title('微会员配置')
+            ->keyText('url', '微会员用户中心链接')
+            ->data($list)
+            ->display();
     }
 }

@@ -141,28 +141,11 @@ class IndexController extends AddonsController{
         $this->wxpaycfg = new WxPayConfig($this->options);
 
         //发送模板消息
-        $TMArray = array(
-            "touser" => $result["openid"],
-            "template_id" => "diW6jm5hBwemeoDF0FZdU2agSZ9kydje22YJIC0gVMo",
-            "url" => "http://test.uctoo.com/index.php?s=/home/addons/execute/Ucuser/Ucuser/index/mp_id/107.html",
-            "topcolor" => "#FF0000",
-            "data" => array(
-                "name" => array(
-                    "value" => "优创智投",
-                    "color" => "#173177",
-                ),
-                "remark" => array(
-                    "value" => "今天",
-                    "color" => "#173177",
-                )
-            )
-        );
-
-        $options['appid'] = $info['appid'];    //初始化options信息
-        $options['appsecret'] = $info['secret'];
-        $options['encodingaeskey'] = $info['encodingaeskey'];
-        $weObj = new TPWechat($options);
-        $res = $weObj->sendTemplateMessage($TMArray);
+        $param['mp_id'] = $info['id'];
+        $param['template_id'] = "diW6jm5hBwemeoDF0FZdU2agSZ9kydje22YJIC0gVMo";
+        $param['touser'] = $result["openid"];
+        $param['product_name'] = $result['transaction_id'];
+        hook('TplMsg',$param);   //把消息分发到addons/TplMsg/TplMsg的方法中,发送模板信息
 
         //回复公众平台支付结果
         $notify = new PayNotifyCallBackController($this->wxpaycfg);    //

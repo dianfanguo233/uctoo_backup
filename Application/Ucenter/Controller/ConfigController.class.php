@@ -717,7 +717,7 @@ class ConfigController extends BaseController
         if (empty($cUsername)) {
             !empty($cEmail) && $str = '邮箱';
             !empty($cMobile) && $str = '手机';
-            $this->error('用户名不能为' . $str);
+        //    $this->error('用户名不能为' . $str);       //微信端注册默认用户名是手机，取消这个限定
         }
 
         //验证用户名是否是字母和数字

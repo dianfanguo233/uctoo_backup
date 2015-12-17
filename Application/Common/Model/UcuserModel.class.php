@@ -30,6 +30,9 @@ class UcuserModel extends Model
         array('update_time', NOW_TIME),
         array('status', 1, self::MODEL_INSERT),
         array('score1', 0, self::MODEL_INSERT),
+        array('score2', 0, self::MODEL_INSERT),
+        array('score3', 0, self::MODEL_INSERT),
+        array('score4', 0, self::MODEL_INSERT),
         array('password', 'think_ucenter_md5', self::MODEL_BOTH, 'function', UC_AUTH_KEY),
     );
 
@@ -130,47 +133,21 @@ class UcuserModel extends Model
     }
 
     /**
-     * 注册一个新用户,如果member表已经有相同手机号，将member表的uid写入ucuser表mid字段，如果member表没有相同手机号，创建一个新纪录，
+     * 根据粉丝uid更新关联的mid，电话号码，密码
      * @param  integer $uid 用户UID
-     * @param  string $nickname 昵称
+     * @param  string $mid member表的uid
      * @param  string $password 用户密码
-     * @param  string $email 用户邮箱
      * @param  string $mobile 用户手机号码
      * @return integer          注册成功-用户信息，注册失败-错误编号
      */
-    public function register($uid,$openid,$mp_id,$password, $mobile)
+    public function register($uid,$mid,$password, $mobile)
     {
-        //先在Member表注册会员，公众号粉丝在绑定手机后可登录网站
-             $aUsername = $aNickname = $mobile;          //以手机号作为默认UcenterMember用户名和Member昵称
-             $email = $aUsername.'@mp_id'.$mp_id.'com';   //以openid@mpid123.com作为默认邮箱
-             $aUnType = 5;                                           //微信公众号粉丝注册
-             $aRole = 3;                                             //默认公众号粉丝用户角色
-
-             $map['mobile'] = $mobile;
-
-        $member = UCenterMember()->where($map)->find();
-        trace("forget".$member."a",'有园register11','DEBUG',true);
-        if (empty ($member)) {
-            /* 注册用户 */
-            $mid = UCenterMember()->register($aUsername, $aNickname, $password, $email, $mobile, $aUnType);
-            if (0 < $mid) { //注册成功
-                initRoleUser($aRole,$mid); //初始化角色用户
-                set_user_status($mid, 1);                           //微信注册的用户状态直接设置为1
-                $data['uid'] = $uid;
-                $data['mid'] = $mid;                               //将member表的uid写入ucuser表mid字段
-                $this->save($data);
-            } else { //注册失败，返回错误信息
-               return $mid;
-            }
-        } else {
-                                                               //已经通过网站注册过帐号
             $data['uid'] = $uid;
-            $data['mid'] = $member['id'];                            //将UCenterMember表的id写入ucuser表mid字段
+            $data['mid'] = $mid;                            //将UCenterMember表的id写入ucuser表mid字段
             $data['mobile'] = $mobile;
             $data['password'] = think_ucenter_md5($password, UC_AUTH_KEY);
             $res = $this->save($data);
             return $res;
-        }
     }
 
     /**

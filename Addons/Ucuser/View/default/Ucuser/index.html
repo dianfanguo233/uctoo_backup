@@ -168,8 +168,12 @@
                             <p class="user-info-order">
 
                                 昵称：<strong>{$user.nickname}</strong><br>
-                                积分：<strong>{$user.score1}</strong> <br>
-                                余额：<strong>0</strong><br>
+                                积分：<empty name="user.login">
+                                        <strong>{$user.score1}</strong>
+                                      <else />
+                                        <strong>{$score}</strong>
+                                      </empty> <br>
+                                余额：<strong>{$user.score4}</strong><br>
                                 等级：<strong>Lv1 新手</strong><br>
                             </p>
                         </div>
@@ -189,7 +193,7 @@
 
         <ul class="am-nav am-nav-tabs">
             <li class="am-active"><a href="{:addons_url ( 'Ucuser://Ucuser/index',array('mp_id'=>$mp_id) )}">应用</a></li>
-            <li><a href="{:addons_url ( 'Ucuser://Ucuser/userMessage',array('mp_id'=>$mp_id) )}">消息</a></li>
+            <li><a href="{:addons_url ( 'Ucuser://Ucuser/myscore',array('mp_id'=>$mp_id,'to_uid'=>$user['uid']) )}">5维</a></li>
             <li><a href="{:addons_url ( 'Ucuser://Ucuser/profile',array('mp_id'=>$mp_id) )}">资料</a></li>
             <li><a href="#">群组</a></li>
             <li><a href="#">关注</a></li>
@@ -253,7 +257,6 @@
     </div>
 </block><!--body end -->
 <block name="script">
-    <script type="text/javascript">
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"> </script>
 
   <script>

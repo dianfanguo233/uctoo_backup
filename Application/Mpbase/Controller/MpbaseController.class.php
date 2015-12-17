@@ -228,7 +228,7 @@ class MpbaseController extends AdminController
     public function change() {
         $map ['id'] = I ( 'id', 0, 'intval' );
         $info = D ( 'Mpbase/MemberPublic' )->where ( $map )->find ();
-        get_mpid($map ['id']);                                               //设置当前下上文mp_id
+        get_mpid($map ['id']);                                               //设置当前上下文mp_id
 
         unset ( $map );
         $map ['uid'] = UID;

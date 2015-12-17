@@ -33,6 +33,10 @@ class MemberModel extends Model
         array('pos_city', 0, self::MODEL_INSERT),
         array('pos_district', 0, self::MODEL_INSERT),
         array('pos_community', 0, self::MODEL_INSERT),
+        array('score1', 0, self::MODEL_INSERT),
+        array('score2', 0, self::MODEL_INSERT),
+        array('score3', 0, self::MODEL_INSERT),
+        array('score4', 0, self::MODEL_INSERT),
     );
 
     protected $_validate = array(

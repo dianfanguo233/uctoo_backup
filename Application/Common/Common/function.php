@@ -1584,6 +1584,9 @@ function UCenterMember(){
     return D('User/UcenterMember');
 }
 
+function Ucuser(){
+    return D('Common/Ucuser');
+}
 
 function verify(){
     $type= C('VERIFY_TYPE');

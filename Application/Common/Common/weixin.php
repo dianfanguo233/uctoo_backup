@@ -178,6 +178,17 @@ function get_uid_ucuser($uid = 0) {
   return $user;
 }
 
+//根据uid获取粉丝用户信息
+function get_ucuser_bymid($mid) {
+    if(empty($mid)){
+        return false;
+    }
+    $model = D('Ucuser');
+    $map['mid'] = $mid;
+    $user = $model->where($map)->select();     //一个pc端帐号的mid可能对应多个公众号的uid
+    return $user;
+}
+
 
 // 获取当前粉丝用户uid(ucuser表的uid),和 hook('init_ucuser',$params)作用基本相同。只在微信浏览器中可使用。
 function get_ucuser_uid($uid = 0) {
@@ -200,8 +211,7 @@ function get_ucuser_uid($uid = 0) {
         $ucuser = D('Ucuser');
         $data = $ucuser->where($map)->find();
         if(!$data){                                                 //公众号没有这个粉丝信息，就注册一个
-
-            $uid = $ucuser->registerUser( $map['mp_id'] ,$map['openid']);    //微信粉丝表ucuser表的id字段即为uid
+            $uid = $ucuser->registerUser( $map['mp_id'] ,$map['openid']);    //微信粉丝表ucuser表的uid
             session ( 'uid_' . $mp_id, $uid );
 
         }else{
@@ -248,4 +258,33 @@ function get_shareurl(){
     } else {                           //url是本地的分享地址
         return $url;
     }
+}
+
+//根据openid获取member用户信息
+function get_member_by_openid($openid) {
+    if(empty($openid)){
+        return false;
+    }
+    $model = D('Ucuser');
+    $map['openid'] = $openid;
+    $user = $model->where($map)->find();
+    trace($user["openid"]."for".$user['mid']."get".$user['uid']."a",'用户中心get_member_by_openid','DEBUG',true);
+    if(empty($user['mid'])){           //粉丝没有关联的member帐号，在微信端和pc端都没有注册过
+        return false;
+    }
+    $member = query_user(array('id', 'username', 'nickname', 'space_url', 'space_link', 'avatar64', 'rank_html', 'signature', 'score1'), $user['mid']);
+
+    return $member;
+}
+
+//根据openid获取ucuser用户信息
+function get_ucuser_by_openid($openid) {
+    if(empty($openid)){
+        return false;
+    }
+    $model = D('Ucuser');
+    $map['openid'] = $openid;
+    $user = $model->where($map)->find();
+
+    return $user;
 }

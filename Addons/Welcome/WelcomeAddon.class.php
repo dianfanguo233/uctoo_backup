@@ -49,7 +49,7 @@ use Common\Controller\Addon;
                 if($welcome['keyword_id'] == 0){              //如果有指定模型，就用模型中的aim_id数据组装回复的内容
 
                     $reData = $welcome['content'];
-                    $params['weObj']->text($reData);
+                    $params['weObj']->text($reData)->reply();
                 }
             }else{
 

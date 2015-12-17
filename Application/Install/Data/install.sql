@@ -94,8 +94,9 @@ INSERT INTO `uctoo_addons` ( `name`, `title`, `description`, `status`, `config`,
 ( 'Welcome', '欢迎语', '用户关注公众号时发送的欢迎信息，支持文本，图片，图文的信息', '1', '{\"type\":\"1\",\"keyword\":\"\",\"title\":\"\",\"description\":\"\",\"pic_url\":\"\",\"url\":\"\"}', 'UCToo', '0.1', '1429585560', '0'),
 ('Weicj', '微场景', '微场景为产品、品牌以及事件的展示搭建了一个舞台，通过图片和音乐渲染氛围展示想传达的内容，并引导客户。可与其他插件配合使用以达到更好的营销效果。', '1', 'null', 'UCToo', '0.1', '1430374002', '0'),
 ('Ucuser', '微会员', '微会员管理和微信公众号粉丝初始化行为', '1', '{\"random\":\"1\"}', 'UCToo', '0.1', '1430793843', '1'),
-('ToMobile', '转向手机页面', '转向手机页面，切换到手机页面', '1', '{\"to_mobile_type\":\"2\",\"js_to_mobile_type\":\"1\",\"js_url\":\"m.flutesing.com\",\"js_replace_url\":\"127.0.0.1|www.flutesing.com|flutesing.com\",\"mobile_theme\":\"mobile\"}', 'flutesing<www.flutesing.com>', '2014.5.25', '1431066151', '0'),
-('Jssdk', '微信JSSDK演示案例', '微信开放平台JSSDK演示案例合辑', '1', 'null', 'uctoo', '0.1', '1431657126', '0');
+('ToMobile', '转向手机页面', '转向手机页面，切换到手机页面', '0', '{\"to_mobile_type\":\"2\",\"js_to_mobile_type\":\"1\",\"js_url\":\"m.flutesing.com\",\"js_replace_url\":\"127.0.0.1|www.flutesing.com|flutesing.com\",\"mobile_theme\":\"mobile\"}', 'flutesing<www.flutesing.com>', '2014.5.25', '1431066151', '0'),
+('Jssdk', '微信JSSDK演示案例', '微信开放平台JSSDK演示案例合辑', '1', 'null', 'uctoo', '0.1', '1431657126', '0'),
+('TplMsg', '模板消息发送', '模板消息发送插件', '1', 'null', 'UCToo', '0.1', '1450244557', '0');
 
 DROP TABLE  IF EXISTS `uctoo_attachment`;
 CREATE TABLE IF NOT EXISTS `uctoo_attachment` (
@@ -567,7 +568,7 @@ INSERT INTO `uctoo_auth_rule` (`id`, `module`, `type`, `name`, `title`, `status`
 ('385', 'Issue', '1', 'addIssueContent', '专辑投稿权限', '1', ''),
 ('386', 'Issue', '1', 'editIssueContent', '编辑专辑内容（管理）', '1', ''),
 ('387', 'admin', '1', 'Admin/Ucuser/index', '微会员信息', '1', ''),
-('388', 'admin', '1', 'Admin/Weicja/index', '微场景', '1', ''),
+('388', 'admin', '1', 'Admin/Weicj/index', '微场景', '1', ''),
 ('389', 'admin', '2', 'Admin/Ucuser/index', '微会员', '1', '');
 
 -- ----------------------------
@@ -829,7 +830,10 @@ INSERT INTO `uctoo_hooks` (`name`, `description`, `type`, `update_time`, `addons
 ( 'weixin', '微信插件默认处理的钩子', '2', '1428547125', ''),
 ( 'keyword', '关键词', '2', '1430792771', 'Keyword'),
 ( 'init_ucuser', '初始化粉丝信息', '2', '1430793836', 'Ucuser'),
-( 'afterTop', '顶部导航之后的钩子，调用公告等', 1, 1429671392, '');
+( 'afterTop', '顶部导航之后的钩子，调用公告等', 1, 1429671392, ''),
+( 'wxpay', '微信支付', '1', 1442221555, 'Wxpay'),
+( 'welcome', '关注自动回复钩子', '2', 1439891621, 'Welcome'),
+( 'TplMsg', '模板消息发送钩子', '2', 1450243898, 'TplMsg');
 
 DROP TABLE  IF EXISTS `uctoo_local_comment`;
 CREATE TABLE IF NOT EXISTS `uctoo_local_comment` (
@@ -869,7 +873,7 @@ CREATE TABLE `uctoo_keyword` (
   `request_count` int(10) NOT NULL DEFAULT '0' COMMENT '请求数',
   PRIMARY KEY (`id`),
   UNIQUE KEY `keyword_public` (`keyword`,`mp_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=457 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of uctoo_keyword
@@ -897,10 +901,10 @@ CREATE TABLE IF NOT EXISTS `uctoo_member` (
   `pos_district` int(11) NOT NULL,
   `pos_community` int(11) NOT NULL,
   `token` varchar(200) DEFAULT NULL COMMENT '当前登录公众号',
-  `score1` float DEFAULT '0' COMMENT '用户积分',
-  `score2` float DEFAULT '0' COMMENT 'score2',
-  `score3` float DEFAULT '0' COMMENT 'score3',
-  `score4` float DEFAULT '0' COMMENT 'score4',
+  `score1` float DEFAULT 0 COMMENT '用户积分',
+  `score2` float DEFAULT 0 COMMENT 'score2',
+  `score3` float DEFAULT 0 COMMENT 'score3',
+  `score4` float DEFAULT 0 COMMENT 'score4',
   PRIMARY KEY (`uid`),
   KEY `status` (`status`),
   KEY `name` (`nickname`)
@@ -929,7 +933,7 @@ CREATE TABLE `uctoo_member_public` (
   `mchkey` varchar(50) NOT NULL COMMENT '商户支付密钥（微信支付必须配置）',
   `notify_url` varchar(255) NOT NULL COMMENT '接收微信支付异步通知回调地址',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=107 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of uctoo_member_public
@@ -1142,8 +1146,15 @@ INSERT INTO `uctoo_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `g
 (188, '主题打包下载', 105, 0, 'Theme/packageDownload', 1, '', '云市场', 0, ''),
 (189, '卸载删除主题', 105, 0, 'Theme/delete', 1, '', '云市场', 0, ''),
 (190, '上传安装主题', 105, 0, 'Theme/add', 1, '', '云市场', 0, ''),
-(191, '系统信息', 74, 10, 'System/index', 0, '', '系统设置', 0, ''),
-(192, '自动回复管理', 135, 0, 'Mpbase/autoreply', 0, '', '公众号', 0, '');
+(191, '系统信息', 74, 10, 'System/index', 0, '', '系统设置', 0, '', ''),
+(192, '自动回复管理', 135, 0, 'Mpbase/autoreply', 0, '', '公众号', 0, ''),
+(193, '编辑自动回复', 192, 0, 'Mpbase/aredit', 0, '', '', 0, ''),
+(194, '微会员配置', '146', '0', 'Ucuser/config', '0', '', '微会员管理', '0', ''),
+(195, '模板消息', 135, 20, 'Tplmsg/index', 0, '', '公众号', 0, ''),
+(196, '编辑模板消息', 135, 0, 'Tplmsg/edit', 1, '', '公众号', 0, ''),
+(197, '删除模板消息', 135, 0, 'Tplmsg/del', 1, '', '公众号', 0, ''),
+(198, '管理模板消息字段', 135, 0, 'Tplmsg/field', 1, '', '公众号', 0, ''),
+(199, '编辑模板消息字段', 135, 0, 'Tplmsg/editField', 1, '', '公众号', 0, '');
 
 DROP TABLE  IF EXISTS `uctoo_message`;
 CREATE TABLE IF NOT EXISTS `uctoo_message` (
@@ -1164,7 +1175,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_message` (
   `find_id` int(11) NOT NULL,
   `status` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='thinkox新增消息表' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='新增消息表' AUTO_INCREMENT=1 ;
 
 
 -- ----------------------------
@@ -1217,6 +1228,44 @@ CREATE TABLE IF NOT EXISTS `uctoo_module` (
   UNIQUE KEY `name` (`name`),
   KEY `name_2` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='模块管理表' AUTO_INCREMENT=1 ;
+
+
+DROP TABLE  IF EXISTS `uctoo_myscore`;
+CREATE TABLE IF NOT EXISTS `uctoo_myscore` (
+  `id` int(12) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据ID',
+  `to_uid` int(10) unsigned NOT NULL COMMENT '被评分人UID',
+  `to_headimgurl` varchar(255) NOT NULL COMMENT '被评分人头像',
+  `to_name` char(32) NOT NULL DEFAULT '' COMMENT '被评分人昵称',
+  `from_uid` int(10) unsigned NOT NULL COMMENT '评分人UID',
+  `from_headimgurl` varchar(255) NOT NULL COMMENT '评分人头像',
+  `from_name` char(32) NOT NULL DEFAULT '' COMMENT '评分人昵称',
+  `mp_id` int(10) NOT NULL COMMENT '公众号ID',
+  `score_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '打分时间',
+  `remark` text DEFAULT NULL  COMMENT '一句话评论',
+  `score1` float DEFAULT 0 COMMENT '颜值score1',
+  `score2` float DEFAULT 0 COMMENT '学识score2',
+  `score3` float DEFAULT 0 COMMENT '财富score3',
+  `score4` float DEFAULT 0 COMMENT '人品score4',
+  `score5` float DEFAULT 0 COMMENT '战力score5',
+  PRIMARY KEY (`id`),
+  KEY `to_uid` (`to_uid`),
+  KEY `from_uid` (`from_uid`),
+  KEY `mp_id` (`mp_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='5维图' AUTO_INCREMENT=1;
+
+DROP TABLE  IF EXISTS `uctoo_totalscore`;
+CREATE TABLE IF NOT EXISTS `uctoo_totalscore` (
+  `id` int(12) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据ID',
+  `to_uid` int(10) unsigned NOT NULL COMMENT '被评分人UID',
+  `to_headimgurl` varchar(255) NOT NULL COMMENT '被评分人头像',
+  `to_name` char(32) NOT NULL DEFAULT '' COMMENT '被评分人昵称',
+  `mp_id` int(10) NOT NULL COMMENT '公众号ID',
+  `totalscore` float DEFAULT 0 COMMENT '总得分',
+  PRIMARY KEY (`id`),
+  KEY `to_uid` (`to_uid`),
+  KEY `mp_id` (`mp_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='5维图总分' AUTO_INCREMENT=1;
+
 
 --
 -- 通用订单表的结构 `uctoo_order`
@@ -1472,7 +1521,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_talk_message_push` (
   `status` tinyint(4) NOT NULL,
   `talk_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=gbk COMMENT='状态，0为未提示，1为未点击，-1为已点击' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='状态，0为未提示，1为未点击，-1为已点击' AUTO_INCREMENT=1 ;
 
 DROP TABLE  IF EXISTS `uctoo_talk_push`;
 CREATE TABLE IF NOT EXISTS `uctoo_talk_push` (
@@ -1483,6 +1532,36 @@ CREATE TABLE IF NOT EXISTS `uctoo_talk_push` (
   `status` tinyint(4) NOT NULL COMMENT '状态，0为未提示，1为未点击，-1为已点击',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='对话推送表' AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `uctoo_tplmsg`;
+CREATE TABLE `uctoo_tplmsg` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uid` int(10) NOT NULL COMMENT '用户ID',
+  `mp_id` int(10) NOT NULL COMMENT '公众号ID',
+  `template_id` varchar(50) NOT NULL COMMENT '消息模板ID',
+  `name` varchar(100) NOT NULL COMMENT '标题',
+  `industry` varchar(100) NOT NULL COMMENT '行业',
+  `topcolor` varchar(50) NOT NULL DEFAULT '#FFFFFF' COMMENT '背景色',
+  `content` varchar(255) NOT NULL COMMENT '详细内容',
+  `url` varchar(255) NOT NULL COMMENT '详情URL',
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  KEY `mp_id` (`mp_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `uctoo_tplmsg_field`;
+CREATE TABLE `uctoo_tplmsg_field` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `pid` int(10) unsigned NOT NULL COMMENT 'tplmsg表的ID',
+  `mp_id` int(10) NOT NULL COMMENT '公众号ID',
+  `template_id` varchar(50) NOT NULL COMMENT '消息模板ID',
+  `name` varchar(50) NOT NULL COMMENT '消息模板字段名',
+  `value` varchar(1000) NOT NULL COMMENT '消息模板字段值',
+  `color` varchar(50) NOT NULL DEFAULT '#173177' COMMENT '字段颜色',
+  PRIMARY KEY (`id`),
+  KEY `template_id` (`template_id`),
+  KEY `mp_id` (`mp_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
 -- 通用微信支付订单表的结构 `uctoo_transaction`
@@ -1597,14 +1676,14 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucuser` (
   `last_login_role` INT( 11 ) NOT NULL,
   `show_role` INT( 11 ) NOT NULL COMMENT  '个人主页显示角色',
   `signature` text NOT NULL,
-  `score1` float DEFAULT NULL COMMENT '用户积分',
-  `score2` float DEFAULT NULL COMMENT 'score2',
-  `score3` float DEFAULT NULL COMMENT 'score3',
-  `score4` float DEFAULT NULL COMMENT 'score4',
+  `score1` float DEFAULT 0 COMMENT '用户积分',
+  `score2` float DEFAULT 0 COMMENT 'score2',
+  `score3` float DEFAULT 0 COMMENT 'score3',
+  `score4` float DEFAULT 0 COMMENT 'score4',
   PRIMARY KEY (`uid`),
   KEY `status` (`status`),
   KEY `openid` (`openid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='微会员表' AUTO_INCREMENT=100 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='微会员表' AUTO_INCREMENT=1;
 
 
 DROP TABLE  IF EXISTS `uctoo_url`;
@@ -1698,6 +1777,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_user_tag_link` (
   `tags` varchar(200) NOT NULL COMMENT '标签ids',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='用户标签关联表' AUTO_INCREMENT=1 ;
+
 DROP TABLE IF EXISTS `uctoo_sso_app`;
 CREATE TABLE IF NOT EXISTS `uctoo_sso_app` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1813,7 +1893,7 @@ CREATE TABLE `uctoo_weixin_log` (
   `data` text,
   `data_post` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7213 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 -- ----------------------------
 -- Table structure for uctoo_welcome
 -- ----------------------------
@@ -1833,7 +1913,7 @@ CREATE TABLE `uctoo_welcome` (
   `token` varchar(255) NOT NULL COMMENT 'Token',
   `url` varchar(255) DEFAULT NULL COMMENT '跳转url',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `uctoo_invite`;
 CREATE TABLE IF NOT EXISTS `uctoo_invite` (

@@ -6,6 +6,7 @@ use Com\Wxpay\lib\WxPayConfig;
 use Com\Wxpay\lib\WxPayException;
 use Com\Wxpay\lib\WxPayNotify;
 use Com\Wxpay\lib\WxPayOrderQuery;
+use Ucuser\Model\UcuserScoreModel;
 
 
 class PayNotifyCallBackController extends WxPayNotify
@@ -51,6 +52,8 @@ class PayNotifyCallBackController extends WxPayNotify
         $data["paySta"] = 1;
         M('shop_order')-> where($map)->setField($data); //商城订单支付状态置为1
         M('order')-> where($omap)->setField("trans_id",$data["transaction_id"]); //支付流水号写入订单
+        $ucuser = get_ucuser_by_openid($data['openid']);
+        D('Ucuser/UcuserScore')->setUserScore($ucuser['uid'],$data['total_fee'],4,'inc'); //加余额
 
 		return true;
 	}

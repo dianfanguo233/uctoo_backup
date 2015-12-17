@@ -32,7 +32,7 @@ class KeywordController extends AdminController
             $amap['name'] = $val['addon'];
             $val['addon_name'] = M('addons')->where($amap)->getField('title');
         }
-        $totalCount = $model->count();
+        $totalCount = $model->where($kmap)->count();
         //显示页面
         $builder = new AdminListBuilder();
         $builder
