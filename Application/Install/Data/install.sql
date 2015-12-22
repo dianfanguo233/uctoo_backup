@@ -938,7 +938,7 @@ CREATE TABLE `uctoo_member_public` (
 -- ----------------------------
 -- Records of uctoo_member_public
 -- ----------------------------
-INSERT INTO `uctoo_member_public` VALUES ('1', '1', 'UCToo', 'gh_1dd1d1321b7c', 'UCToo_com', '', '', '', '', '', '', '3', '', '', '1', '0', '');
+INSERT INTO `uctoo_member_public` VALUES ('1', '1', 'UCToo', 'gh_1dd1d1321b7c', 'UCToo_com', '', '', '', '', '', '', '3', '', '', '1', '0', '', '', '', '');
 
 DROP TABLE  IF EXISTS `uctoo_menu`;
 CREATE TABLE IF NOT EXISTS `uctoo_menu` (
