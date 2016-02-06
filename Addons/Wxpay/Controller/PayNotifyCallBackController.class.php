@@ -7,7 +7,7 @@ use Com\Wxpay\lib\WxPayException;
 use Com\Wxpay\lib\WxPayNotify;
 use Com\Wxpay\lib\WxPayOrderQuery;
 use Ucuser\Model\UcuserScoreModel;
-
+use Com\TPWechat;
 
 class PayNotifyCallBackController extends WxPayNotify
 {
@@ -55,6 +55,20 @@ class PayNotifyCallBackController extends WxPayNotify
         $ucuser = get_ucuser_by_openid($data['openid']);
         D('Ucuser/UcuserScore')->setUserScore($ucuser['uid'],$data['total_fee'],4,'inc'); //加余额
 
+        //核销订单中使用的优惠券，核销逻辑并未提供完整演示，聪明的开发者请自己写 ：）
+        $order = M('order')-> where($omap)->find(); //通用订单
+        if(empty($order['coupon'])){               //订单没有使用优惠券
+            return true;
+        }
+        $coupon = json_decode($order['coupon']);
+
+        $appinfo = get_mpid_appinfo ( $order ['mp_id'] );   //获取公众号信息
+
+        $options['appid'] = $appinfo['appid'];    //初始化options信息
+        $options['appsecret'] = $appinfo['secret'];
+        $options['encodingaeskey'] = $appinfo['encodingaeskey'];
+        $weObj = new TPWechat($options);
+        $res = $weObj->consumeCardCode();
 		return true;
 	}
 }

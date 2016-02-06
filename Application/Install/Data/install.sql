@@ -96,7 +96,8 @@ INSERT INTO `uctoo_addons` ( `name`, `title`, `description`, `status`, `config`,
 ('Ucuser', '微会员', '微会员管理和微信公众号粉丝初始化行为', '1', '{\"random\":\"1\"}', 'UCToo', '0.1', '1430793843', '1'),
 ('ToMobile', '转向手机页面', '转向手机页面，切换到手机页面', '0', '{\"to_mobile_type\":\"2\",\"js_to_mobile_type\":\"1\",\"js_url\":\"m.flutesing.com\",\"js_replace_url\":\"127.0.0.1|www.flutesing.com|flutesing.com\",\"mobile_theme\":\"mobile\"}', 'flutesing<www.flutesing.com>', '2014.5.25', '1431066151', '0'),
 ('Jssdk', '微信JSSDK演示案例', '微信开放平台JSSDK演示案例合辑', '1', 'null', 'uctoo', '0.1', '1431657126', '0'),
-('TplMsg', '模板消息发送', '模板消息发送插件', '1', 'null', 'UCToo', '0.1', '1450244557', '0');
+('TplMsg', '模板消息发送', '模板消息发送插件', '1', 'null', 'UCToo', '0.1', '1450244557', '0'),
+('Wxpay', '微信支付', '微信支付集成插件', '1', '{\"APPID\":\"\",\"MCHID\":\"\",\"KEY\":\"\",\"APPSECRET\":\"\"}', 'UCToo', '3.0', '1442221600', '0');
 
 DROP TABLE  IF EXISTS `uctoo_attachment`;
 CREATE TABLE IF NOT EXISTS `uctoo_attachment` (
@@ -686,6 +687,28 @@ INSERT INTO `uctoo_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `re
 (42, '_USERCONFIG_REG_SWITCH', 0, '', 0, '', '', 1427094903, 1427094903, 1, 'username', 0);
 
 --
+-- 卡券核销表的结构 `uctoo_card_code_consume`
+--
+CREATE TABLE IF NOT EXISTS `uctoo_card_code_consume` (
+`id` int(12) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+`uid` int(11) NOT NULL COMMENT '用户ID',
+`mp_id` int(10) NOT NULL COMMENT '公众号ID',
+`type` varchar(10) NOT NULL COMMENT '核销类型，uid微信端核销、mid网站端核销、api第三方核销',
+`order_id` varchar(50) NOT NULL COMMENT '订单ID',
+`openid` varchar(50) NOT NULL COMMENT '粉丝微信OPENID',
+`card_id`  varchar(50) NOT NULL  COMMENT '卡券ID',
+`code`  varchar(50) NOT NULL  COMMENT '核销的卡券Code码',
+`errcode` tinyint(4) NOT NULL COMMENT '核销接口返回状态',
+`errmsg`  varchar(20) NOT NULL  COMMENT '核销接口返回错误码',
+`trans_id`  varchar(50) NOT NULL  COMMENT '交易流水ID',
+`module` varchar(20) NOT NULL COMMENT '核销卡券所属模块',
+`addon` varchar(50) NOT NULL COMMENT '核销卡券所属插件',
+PRIMARY KEY (`id`),
+KEY `mp_id` (`mp_id`),
+KEY `code` (`code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='优惠券核销';
+
+--
 -- 表的结构 `uctoo_custom_menu`
 --
 CREATE TABLE IF NOT EXISTS `uctoo_custom_menu` (
@@ -863,6 +886,8 @@ CREATE TABLE `uctoo_keyword` (
   `addon` varchar(255) NOT NULL COMMENT '关键词所属插件',
   `model` varchar(100) NOT NULL COMMENT '数据模型',
   `aim_id` int(10) unsigned NOT NULL COMMENT '插件表里的ID值',
+  `title` varchar(100) DEFAULT NULL COMMENT '跳转url',
+  `description` varchar(100) DEFAULT NULL COMMENT '跳转url',
   `cover` int(10) unsigned NOT NULL COMMENT '封面图片',
   `url` varchar(255) DEFAULT NULL COMMENT '跳转url',
   `cTime` int(10) NOT NULL COMMENT '创建时间',
@@ -1155,7 +1180,8 @@ INSERT INTO `uctoo_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `g
 (1018, '删除模板消息', 1000, 0, 'Tplmsg/del', 1, '', '公众号', 0, ''),
 (1019, '管理模板消息字段', 1000, 0, 'Tplmsg/field', 1, '', '公众号', 0, ''),
 (1020, '编辑模板消息字段', 1000, 0, 'Tplmsg/editField', 1, '', '公众号', 0, ''),
-(1021, '应用市场', 105, 0, 'Appstore/index', 0, '', '云市场', 0, '');
+(1021, '应用市场', 105, 0, 'Appstore/index', 0, '', '云市场', 0, ''),
+(1022, '微会员统计', 1011, 0, 'Ucuser/stats', 0, '', '微会员管理', 0, '');
 
 DROP TABLE  IF EXISTS `uctoo_message`;
 CREATE TABLE IF NOT EXISTS `uctoo_message` (
@@ -1298,6 +1324,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_order` (
 `product_img`  varchar(255) NULL   COMMENT '商品图片url',
 `delivery_id`  varchar(50) NOT NULL  COMMENT '运单ID',
 `delivery_company`  varchar(50) NOT NULL  COMMENT '物流公司编码',
+`coupon`  varchar(2550) NULL  COMMENT '优惠券信息，coupon_fee、coupon_count、coupon_id_$n、coupon_fee_$n组成的json',
 `trans_id`  varchar(50) NOT NULL  COMMENT '交易ID',
 `module` varchar(20) NOT NULL COMMENT '订单所属模块',
 `addon` varchar(50) NOT NULL COMMENT '订单所属插件',

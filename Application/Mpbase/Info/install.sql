@@ -48,7 +48,7 @@ INSERT INTO `uctoo_menu` (`title`, `pid`, `sort`, `url`, `hide`, `tip`, `group`,
 ( '基础设置', 0, 0, 'Mpbase/index', 1, '', '', 0, '');
 
 set @tmp_id=0;
-select @tmp_id:= id from `ocenter_menu` where title = '基础设置';
+select @tmp_id:= id from `uctoo_menu` where title = '基础设置';
 
 INSERT INTO `uctoo_menu` ( `title`, `pid`, `sort`, `url`, `hide`, `tip`, `group`, `is_dev`) VALUES
 ( '编辑公众号', @tmp_id, 0, 'Mpbase/editMp', 1, '', '公众号', 0, ''),

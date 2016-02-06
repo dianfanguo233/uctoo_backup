@@ -37,6 +37,24 @@ class IndexController extends AddonsController{
         $params['mp_id'] = $mp_id;   //系统中公众号ID
         $this->assign ( 'mp_id', $params['mp_id'] );
 
+        $order_total_price = I('order_total_price', 1, 'intval');
+        $addon = I('addon', '', 'op_t');
+
+        $couponArray = array();
+        for($i = 0; $i <= 32; $i++) {         //收集优惠券code参数，用于后续orderpaided核销优惠券
+            $coupon_id_[$i] = I('coupon_id_'.$i, '', 'op_t');
+            $coupon_fee_[$i] = I('coupon_fee_'.$i, '', 'op_t');
+            $couponArray["coupon_id_".$i] = I('coupon_id_'.$i, '', 'op_t');
+            $couponArray["coupon_fee_".$i] = I('coupon_fee_'.$i, '', 'op_t');
+        }
+        $couponArray["coupon_fee"] = I('coupon_fee', '', 'op_t');
+        $couponArray["coupon_count"] = I('coupon_count', '', 'op_t');
+        $couponArrayF = array_filter($couponArray);
+        $coupon = json_encode($couponArrayF);
+        $couponJson = I('consumeJson', '', 'op_t');
+        $selected_couponsum = I('selected_couponsum', '', 'op_t');
+
+
         $uid = get_ucuser_uid();                         //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
         if($uid === false){
             $this->error('只可在微信中访问');
@@ -55,18 +73,20 @@ class IndexController extends AddonsController{
         $odata['mp_id'] = $params['mp_id'];                    // 当前公众号在系统中ID
         $odata['order_id'] = "time".date("YmdHis");   //
         $odata['order_status'] = 1;                            //不带该字段-全部状态, 2-待发货, 3-已发货, 5-已完成, 8-维权中
-        $odata['order_total_price'] = 1;                      //订单总价，单位：分
+        $odata['order_total_price'] = $order_total_price ? $order_total_price-$selected_couponsum*100 : 1;                      //订单总价，单位：分
         $odata['buyer_openid'] = $user['openid'];
         $odata['buyer_nick'] = $user['nickname'];
         $odata['receiver_mobile'] = $user['mobile'];
         $odata['product_id'] = 1;
         $odata['product_name'] = "UCToo";
-        $odata['product_price'] = 100;                          //商品价格，单位：分
+        $odata['product_price'] = $order_total_price ? $order_total_price : 1;                          //商品价格，单位：分
         $odata['product_sku'] = "UCToo_Wxpay";
         $odata['product_count'] = 1;
         $odata['module'] = MODULE_NAME;
+        $odata['addon'] = $addon ? $addon : "donate";
         $odata['model'] = "order";
         $odata['aim_id'] = 1;
+        $odata['coupon'] = $couponJson;
         $order = D("Order"); // 实例化order对象
         $order->create($odata); // 生成数据对象
         $result = $order->add(); // 写入数据
@@ -114,7 +134,7 @@ class IndexController extends AddonsController{
          * 2、jsapi支付时需要填入用户openid，WxPay.JsApiPay.php中有获取openid流程 （文档可以参考微信公众平台“网页授权接口”，
          * 参考http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html）
          */
-
+        $this->assign ( 'order_total_price', $odata['order_total_price'] );
         $this->assign ( 'order', $odata );
         $this->assign ( 'jsApiParameters', $jsApiParameters );
         $this->assign ( 'editAddress', $editAddress );
@@ -165,6 +185,129 @@ class IndexController extends AddonsController{
         $this->display ();
     }
 
+    //UCToo开源捐赠
+    public function donate(){
+        empty ( $mp_id ) && $mp_id = get_mpid ();
+        $params['mp_id'] = $mp_id;   //系统中公众号ID
+        $this->assign ( 'mp_id', $params['mp_id'] );
 
+        $jsApiPay_url = addons_url('Wxpay://Index/jsApiPay', array('mp_id' => get_mpid()));
+        $this->assign ( 'jsApiPay_url', $jsApiPay_url);
+
+        $uid = get_ucuser_uid();                         //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($uid === false){
+            $this->error('只可在微信中访问');
+        }
+        $user = get_uid_ucuser($uid);                    //获取本地存储公众号粉丝用户信息
+        $this->assign('user', $user);
+
+        $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $surl = get_shareurl();
+        if(!empty($surl)){
+            $this->assign ( 'share_url', $surl );
+        }
+
+        $home_url = addons_url('Ucuser://Ucuser/index', array('mp_id' => get_mpid()));
+        $this->assign ( 'home_url', $home_url );
+
+        $appinfo = get_mpid_appinfo ( $params ['mp_id'] );   //获取公众号信息
+        $this->assign ( 'appinfo', $appinfo );
+
+        $options['appid'] = $appinfo['appid'];    //初始化options信息
+        $options['appsecret'] = $appinfo['secret'];
+        $options['encodingaeskey'] = $appinfo['encodingaeskey'];
+        $weObj = new TPWechat($options);
+
+        $auth = $weObj->checkAuth();
+        $js_ticket = $weObj->getJsTicket();
+        if (!$js_ticket) {
+            $this->error('获取js_ticket失败！错误码：'.$weObj->errCode.' 错误原因：'.ErrCode::getErrText($weObj->errCode));
+        }
+        $js_sign = $weObj->getJsSign($url);
+
+        $this->assign ( 'js_sign', $js_sign );
+
+        //分享数据定义
+        $sharedata['title']= $user['nickname']."的爱心捐赠";
+        $sharedata['desc']= "捐赠UCToo 互联网+ 开源开发框架！";
+        $sharedata['link'] = addons_url('Wxpay://Index/donate', array('mp_id' => get_mpid()));
+        $sharedata['imgUrl'] = $user['headimgurl'];
+        $this->assign ( 'sharedata', $sharedata );
+
+        $map['addon'] = $mp_id;
+        $map['addon'] = 'donate';
+        $map['trans_id'] = array('neq','');
+        $donate_list = M('order')->where($map)->order('order_create_time desc')->limit(100)->select();
+        $this->assign ( 'donate_list', $donate_list );
+
+        $donate_sum = M('order')->field('uid,buyer_nick,sum(order_total_price) as total_price')->where($map)->order('sum(order_total_price) desc')->group('uid')->select();
+        $this->assign ( 'donate_sum', $donate_sum );
+
+        //微信卡券相关示例
+        $cardlist = $weObj->getCardIdList();
+        $cards = array();
+
+        foreach ($cardlist['card_id_list'] as $k => $vo) {
+            $cards[$k] = $weObj->getCardInfo("$vo");
+        }
+        if($user['login']){     //区分登录会员和未登录会员的不同产品定价
+            $wxpay_sum = 1;
+        }else{
+            $wxpay_sum = 1;
+        }
+
+        $usercards = $weObj->getUserCardList($user['openid'],'');
+        $codes = array();
+        $usercardsinfo = array();
+        $couponsum = 0;
+        $selected_couponsum = 0;         //选中的优惠券总金额
+        $canReduce = 300;               //此订单可享受的优惠上限
+
+        $consume = array();                   //待核销的优惠券列表
+        foreach ($usercards['card_list'] as $k => $vo) {
+            $codes[$k] = $weObj->checkCardCode($vo['code']);
+            if($codes[$k]['user_card_status'] == 'NORMAL' && $codes[$k]['can_consume'] == true){   //正常状态且可以核销的卡券
+                $goodcodes[$k] = $codes[$k];
+                $usercardsinfo[$k] = $weObj->getCardInfo($vo['card_id']);
+                $couponsum += $usercardsinfo[$k]['card']['cash']['reduce_cost'];
+                if($canReduce >= $usercardsinfo[$k]['card']['cash']['reduce_cost']){     // 可享受的优惠上限大于此张优惠券的面值
+                    if($canReduce > $selected_couponsum){                                       // 存在优惠券边界值超出可享受的优惠上限的bug
+                        $selected_couponsum += $usercardsinfo[$k]['card']['cash']['reduce_cost'];
+                        $consume[$k] = $usercards['card_list'][$k];
+                    }
+                }
+            }
+        }
+
+        $wxpay_sum += $selected_couponsum;
+
+        $couponsum = $couponsum/100;  //单位元
+        $canReduce = $canReduce/100;  //单位元
+        $tips = "微信支付立减".$canReduce."元";
+
+        if($canReduce > $couponsum){  //优惠券总额小于可享受的优惠上限
+            $tips .= "您已领取的优惠券小于可享受的最高优惠，您可领取更多优惠券或使用现有优惠券继续支付";
+        }else{                       //优惠券总额大于可享受的优惠上限，只能享受优惠上限的额度 $selected_couponsum 已算出
+
+        }
+        $this->assign ( 'selected_couponsum',$selected_couponsum/100 );
+        $this->assign ( 'couponsum',$couponsum );
+        $this->assign ( 'consume',$consume );
+        $this->assign ( 'consumeJson',json_encode($consume) );
+        $this->assign ( 'tips',$tips );
+        $this->assign ( 'wxpay_sum',$wxpay_sum );
+
+
+        $card_sign = $weObj->getCardSign('CASH');
+        $this->assign ( 'card_sign', $card_sign );
+        $cardExt = $weObj->getCardSign('','pWhGnjq33WL4mFZuNcl-uKZe1lao');
+        $this->assign ( 'cardExt_timestamp', $cardExt['timestamp'] );
+        $this->assign ( 'cardExt_nonceStr', $cardExt['nonceStr'] );
+        $this->assign ( 'cardExt_cardSign', $cardExt['cardSign'] );
+
+        $this->assign ( 'usercards', $usercards );
+
+        $this->display();
+    }
 
 }
