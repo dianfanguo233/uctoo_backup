@@ -64,6 +64,8 @@ use Common\Controller\Addon;
                         $params['weObj']->text($Keyword['description']);
                     }
 
+                }else{                                                           //没匹配到关键词转到官方多客服  http://dkf.qq.com/，避免出现“该公众号暂时无法提供服务，请稍候再试”的提示
+                    $params['weObj']->transfer_customer_service();
                 }
 
             }else{
