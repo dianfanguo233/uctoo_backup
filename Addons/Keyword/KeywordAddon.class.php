@@ -34,7 +34,11 @@ use Common\Controller\Addon;
 
             if($params['mp_id']){
                 $kmap['mp_id'] = $params['mp_id'];
-                $kmap['keyword'] = $params['weObj']->getRevContent();       //TODO:先只支持精确匹配，后续根据keyword_type字段增加模糊匹配
+                $kmap['keyword'] = $params['weObj']->getRevContent();       //TODO:先只支持精确匹配，后续根据keyword_type字段增加模糊匹配 ，用户在对话框发送关键字
+                if(empty($kmap['keyword'])){                                //用户点击菜单拉取关键字对应的回复
+                    $data = $params['weObj']->getRevData();
+                    $kmap['keyword'] = $data['EventKey'];
+                }
                 $Keyword = M('Keyword')->where($kmap)->find();
 
                 if($Keyword['model'] && $Keyword['aim_id']){              //关键词匹配第一优先级，如果有指定模型，就用模型中的aim_id数据组装回复的内容

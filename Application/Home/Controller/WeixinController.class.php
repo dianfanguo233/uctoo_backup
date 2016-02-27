@@ -112,6 +112,8 @@ class WeixinController extends Controller {
                     //自定义菜单 - 点击菜单拉取消息时的事件推送
                     case TPWechat::EVENT_MENU_CLICK:
 
+                        hook('keyword',$params);   //把消息分发到实现了keyword方法的addons中,参数中包含本次用户交互的微信类实例和公众号在系统中id
+                        $weObj->reply();           //在addons中处理完业务逻辑，回复消息给用户
                         break;
                     //自定义菜单 - 点击菜单跳转链接时的事件推送
                     case TPWechat::EVENT_MENU_VIEW:
