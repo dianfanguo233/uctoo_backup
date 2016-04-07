@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `uctoo_district` (
+CREATE TABLE IF NOT EXISTS `thinkox_district` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `level` tinyint(4) unsigned NOT NULL DEFAULT '0',
@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_district` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='中国省市区乡镇数据表';
 
-INSERT INTO `uctoo_district` (`id`, `name`, `level`, `upid`) VALUES
+INSERT INTO `thinkox_district` (`id`, `name`, `level`, `upid`) VALUES
 (110000, '北京市', 1, 0),
 (120000, '天津市', 1, 0),
 (130000, '河北省', 1, 0),

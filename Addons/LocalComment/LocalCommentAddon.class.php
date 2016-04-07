@@ -72,7 +72,7 @@ SQL
         $total_count = $this->getCommentCount($app, $mod, $row_id);
         //增加用户信息
         foreach ($list as &$e) {
-            $e['user'] = query_user(array('uid', 'avatar32', 'nickname', 'space_url'), $e['uid']);
+            $e['user'] = query_user(array('uid', 'avatar64', 'nickname', 'space_url'), $e['uid']);
         }
         unset($e);
         $pageCount = ceil($total_count / $count);
@@ -91,7 +91,7 @@ SQL
 
         $param['extra'] = http_build_query($param['extra']);
         $this->assign($param);
-        $this->assign('myInfo',query_user(array('avatar32','nickname','uid','space_url'),is_login()));
+        $this->assign('myInfo',query_user(array('avatar64','nickname','uid','space_url'),is_login()));
         $this->display('comment');
     }
 

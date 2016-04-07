@@ -31,21 +31,21 @@ class SystemController extends BaseController
     public function logout()
     {
         //调用退出登录的API
-        D('Common/Member')->logout();
+        D('Member')->logout();
         $html='';
         if(UC_SYNC && is_login() != 1){
-           // include_once './api/uc_client/client.php';
-            $Ucenter = new \Common\Model\UcenterModel();
-            $html = $Ucenter->uc_user_synlogout();
+            include_once './api/uc_client/client.php';
+            $html = uc_user_synlogout();
         }
 
         $oc_config =  include_once './OcApi/oc_config.php';
         if ($oc_config['SSO_SWITCH']) {
             include_once  './OcApi/OCenter/OCenter.php';
             $OCApi = new \OCApi();
-            $html .= $OCApi->ocSynLogout();
+            $html = $OCApi->ocSynLogout();
         }
-        exit(json_encode(array('message' =>'退出登陆成功。','url' => U('Home/Index/index'),'html'=>$html)));
+
+        exit(json_encode(array('message' =>L('_SUCCESS_LOGOUT_').L('_PERIOD_'),'url' => U('Home/Index/index'),'html'=>$html)));
         //显示页面
         //$this->success($result['message'], U('Home/Index/index'));
     }
@@ -94,7 +94,7 @@ class SystemController extends BaseController
         //确认用户已经绑定手机
         $profile = callApi('User/getProfile');
         if (!$profile['mobile']) {
-            $this->error('您尚未绑定手机', U('Ucenter/Index/index'));
+            $this->error(L('_ERROR_PHONE_NOT_BIND_'), U('Ucenter/Index/index'));
         }
 
         //发送验证码到已经绑定的手机上

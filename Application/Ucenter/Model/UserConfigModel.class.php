@@ -14,21 +14,27 @@ use Think\Model;
 
 class UserConfigModel extends Model
 {
-    public function addData($data=array())
+    public function addData($data = array())
     {
-        $res=$this->add($data);
+        $res = $this->add($data);
         return $res;
     }
 
-    public function findData($map=array())
+    public function findData($map = array())
     {
-        $res=$this->where($map)->find();
+        $res = $this->where($map)->find();
         return $res;
     }
 
-    public function saveValue($map=array(),$value='')
+    public function saveValue($map = array(), $value = '')
     {
-        $res=$this->where($map)->setField('value',$value);
+        if ($this->findData($map)) {
+            $res = $this->where($map)->setField('value', $value);
+        } else {
+            $map['value'] = $value;
+            $res = $this->where($map)->addData($map);
+        }
+
         return $res;
     }
 } 

@@ -1,4 +1,4 @@
-$(function () {
+﻿$(function () {
     var $menu = $(".menu"), $menuLi = $menu.find("li"), $current = $menu.find('.current'), $li_3 = $menu.find('li.li_3'), $li_3_content = $li_3.find('.li_3_content');
     $menuLi.hover(function () {
         var $this = $(this), num = $menuLi.index($this), current = $menuLi.index($(".first")), len = current - num;

@@ -35,10 +35,6 @@ return array(
 'VAR_URL_PARAMS'       => '', // PATHINFO URL参数变量
 'URL_PATHINFO_DEPR'    => '/', //PATHINFO URL分割符
 'URL_HTML_SUFFIX'       => 'html',  // URL伪静态后缀设置
-'URL_ROUTER_ON'   => true, //开启路由
-'URL_ROUTE_RULES' => array( //定义路由规则，支持addon短域名
-'Addons/execute/:_addons/:_controller/:_action' => array('Home/Addons/execute'),
-),
 
 /* 全局过滤配置 */
 'DEFAULT_FILTER' => '', //全局过滤函数
@@ -113,5 +109,6 @@ return array(
 'TMPL_PARSE_STRING' => array(
 '__STATIC__' => __ROOT__ . '/Public/static',
 '__ZUI__'=>__ROOT__.'/Public/zui'
+
 ),
 );

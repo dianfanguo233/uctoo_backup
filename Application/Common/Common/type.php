@@ -18,7 +18,7 @@ function arrayval($x) {
 
 
 /**
- * 	ä½œç”¨ï¼šarrayè½¬xml
+ * 	×÷ÓÃ£ºarray×ªxml
  */
 function arrayToXml($arr)
 {
@@ -38,16 +38,16 @@ function arrayToXml($arr)
 }
 
 /**
- * 	ä½œç”¨ï¼šå°†xmlè½¬ä¸ºarray
+ * 	×÷ÓÃ£º½«xml×ªÎªarray
  */
 function xmlToArray($xml)
 {
-    //å°†XMLè½¬ä¸ºarray
+    //½«XML×ªÎªarray
     $array_data = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
     return $array_data;
 }
 
-// æŠŠå­—ç¬¦ä¸²è½¬æˆæ•°ç»„ï¼Œæ”¯æŒæ±‰å­—ï¼Œåªèƒ½æ˜¯utf-8æ ¼å¼çš„
+// °Ñ×Ö·û´®×ª³ÉÊı×é£¬Ö§³Öºº×Ö£¬Ö»ÄÜÊÇutf-8¸ñÊ½µÄ
 function StringToArray($str) {
     $result = array ();
     $len = strlen ( $str );

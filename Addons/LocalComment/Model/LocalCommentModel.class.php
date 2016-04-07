@@ -47,7 +47,7 @@ class LocalCommentModel extends Model
             if (is_bool($comment)) {
                 $comment = $this->where(array('id' => $id, 'status' => 1))->find();
                 if ($comment) {
-                    $comment['user'] = query_user(array('avatar32', 'nickname', 'uid', 'space_url'), $comment['uid']);
+                    $comment['user'] = query_user(array('avatar64', 'nickname', 'uid', 'space_url'), $comment['uid']);
                 }
                 S('local_comment_' . $id, $comment, 60 * 60);
             }

@@ -4,7 +4,7 @@ return array(
     //模块名
     'name' => 'Mpbase',
     //别名
-    'alias' => '基础设置',
+    'alias' => '公众号',
     //版本号
     'version' => '1.0.0',
     //是否商业模块,1是，0，否

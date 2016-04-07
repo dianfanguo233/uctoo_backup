@@ -27,11 +27,14 @@ return array(
         '__ZUI__'=>__ROOT__.'/Public/zui',
         '__NAME__'=>'UCToo',
         '__COMPANY__'=>'深圳优创智投科技有限公司',
-        '__WEBSITE__'=>'www.uctoo.com',
-        '__COMPANY_WEBSITE__'=>'www.uctoo.com'
+        '__WEBSITE__'=>'www.uctoo.cn',
+        '__COMPANY_WEBSITE__'=>'www.uctoo.com',
+        '__VERSION__'=>'0.6.0',
     ),
     /* URL配置 */
     'URL_MODEL' => 3, //URL模式
     'DEFAULT_THEME' =>  'default',  // 默认模板主题名称
+    'SESSION_PREFIX' => 'uctoo', //session前缀
+    'COOKIE_PREFIX' => 'uctoo_', // Cookie前缀 避免冲突
 
 );

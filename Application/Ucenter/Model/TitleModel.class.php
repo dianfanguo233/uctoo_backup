@@ -35,6 +35,7 @@ class TitleModel
         return $config[$max_key];
     }
 
+
     public function getCurrentTitleInfo($uid)
     {
         $user_info = query_user(array('score'), $uid);
@@ -82,10 +83,10 @@ class TitleModel
                 0 => 'Lv1 实习',
                 50 => 'Lv2 试用',
                 100 => 'Lv3 转正',
-                200 => 'Lv 4 助理',
-                400 => 'Lv 5 经理',
-                800 => 'Lv 6 董事',
-                1600 => 'Lv 7 董事长'
+                200 => 'Lv4 助理',
+                400 => 'Lv5 经理',
+                800 => 'Lv6 董事',
+                1600 => 'Lv7 董事长'
             );
         } else {
             $title = str_replace("\r", '', $title);

@@ -116,29 +116,20 @@ class Dispatcher {
             define('__INFO__','');
             define('__EXT__','');
         }else{
-            //=====uctoo 修改 支持 index.php/addon/Vote/Vote/lists 这样的插件短地址
-		$info = trim ( $_SERVER ['PATH_INFO'], '/' );
-		
-		$re = C('URL_ROUTE_RULES');
-		if (substr ( $info, 0, 6 ) == 'addon/' && C('URL_ROUTER_ON') && isset($re['Addons/execute/:_addons/:_controller/:_action'])) {
-			$info = str_replace ( 'addon/', 'Home/Addons/execute/', $info );
-		}
-		
-		define ( '__INFO__', $info );
+            define('__INFO__',trim($_SERVER['PATH_INFO'],'/'));
             // URL后缀
             define('__EXT__', strtolower(pathinfo($_SERVER['PATH_INFO'],PATHINFO_EXTENSION)));
-            $_SERVER['PATH_INFO'] = __INFO__;     
+            $_SERVER['PATH_INFO'] = __INFO__;
             if (__INFO__ && !defined('BIND_MODULE') && C('MULTI_MODULE')){ // 获取模块名
-                    $paths      =   explode($depr,__INFO__,2);
-                    $allowList  =   C('MODULE_ALLOW_LIST'); // 允许的模块列表
-                    $module     =   preg_replace('/\.' . __EXT__ . '$/i', '',$paths[0]);
-                    if( empty($allowList) || (is_array($allowList) && in_array_case($module, $allowList))){
-                        $_GET[$varModule]       =   $module;
-                        $_SERVER['PATH_INFO']   =   isset($paths[1])?$paths[1]:'';
-                    }
+                $paths      =   explode($depr,__INFO__,2);
+                $allowList  =   C('MODULE_ALLOW_LIST'); // 允许的模块列表
+                $module     =   preg_replace('/\.' . __EXT__ . '$/i', '',$paths[0]);
+                if( empty($allowList) || (is_array($allowList) && in_array_case($module, $allowList))){
+                    $_GET[$varModule]       =   $module;
+                    $_SERVER['PATH_INFO']   =   isset($paths[1])?$paths[1]:'';
                 }
-            }             
-
+            }
+        }
 
         // URL常量
         define('__SELF__',strip_tags($_SERVER[C('URL_REQUEST_URI')]));
@@ -159,6 +150,25 @@ class Dispatcher {
             // 加载模块配置文件
             if(is_file(MODULE_PATH.'Conf/config'.CONF_EXT))
                 C(load_config(MODULE_PATH.'Conf/config'.CONF_EXT));
+
+            /**加载主题公共配置文件
+             * 2015-5-14 13:43
+             * 增加主题配置文件加载 start
+             * @author 郑钟良<zzl@ourstu.com>
+             */
+            if(is_file(OS_THEME_PATH.'config.php')){
+                $TMPL_PARSE_STRING=C('TMPL_PARSE_STRING');
+                C(load_config(OS_THEME_PATH.'config.php'));
+                $NEW_TMPL_PARSE_STRING=C('TMPL_PARSE_STRING');
+                $NEW_TMPL_PARSE_STRING=array_merge($NEW_TMPL_PARSE_STRING,$TMPL_PARSE_STRING);
+                C('TMPL_PARSE_STRING',$NEW_TMPL_PARSE_STRING);
+            }
+            /**
+             * 2015-5-14 13:43
+             * 增加主题配置文件加载 end
+             * @author 郑钟良<zzl@ourstu.com>
+             */
+
             // 加载应用模式对应的配置文件
             if('common' != APP_MODE && is_file(MODULE_PATH.'Conf/config_'.APP_MODE.CONF_EXT))
                 C(load_config(MODULE_PATH.'Conf/config_'.APP_MODE.CONF_EXT));
@@ -178,15 +188,15 @@ class Dispatcher {
             // 加载模块的扩展配置文件
             load_ext_file(MODULE_PATH);
         }else{
-            E(L('_MODULE_NOT_EXIST_').':'.MODULE_NAME);
+            E(L('_MODULE_NOT_EXIST_').':'.MODULE_NAME,815);
         }
 
         if(!defined('__APP__')){
-            if(is_file( '/Conf/user.php'))
+            if(is_file( './Conf/user.php'))
             {
                 C(api('Config/lists'));//合并入后台设置
             }
-	        $urlMode        =   C('URL_MODEL');
+	        $urlMode        = MODULE_NAME=='Admin'?3:  C('URL_MODEL');
 	        if($urlMode == URL_COMPAT ){// 兼容模式判断
 	            define('PHP_FILE',_PHP_FILE_.'?'.$varPath.'=');
 	        }elseif($urlMode == URL_REWRITE ) {

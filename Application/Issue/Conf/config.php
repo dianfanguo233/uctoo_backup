@@ -28,8 +28,7 @@ return array(
         '__IMG__' => __ROOT__ . '/Application/'.MODULE_NAME   . '/Static/images',
         '__CSS__' => __ROOT__ . '/Application/'.MODULE_NAME .'/Static/css',
         '__JS__' => __ROOT__ . '/Application/'.MODULE_NAME. '/Static/js',
-        '__ZUI__' => __ROOT__ . '/Public/zui',
-	'__AUI__'=>__ROOT__.'/Public/amazeui/assets'
+        '__ZUI__' => __ROOT__ . '/Public/zui'
     ),
 
 

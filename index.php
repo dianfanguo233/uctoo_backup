@@ -7,7 +7,6 @@
 //	'optimize'=>true,
 //	'show_included_files'=>true,
 //),'set_config');
-
 // +----------------------------------------------------------------------
 // | OneThink [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -20,6 +19,8 @@ function reset_session_path()
 {
     $root = str_replace("\\", '/', dirname(__FILE__));
     $savePath = $root . "/tmp/";
+    if (!file_exists($savePath))
+       @mkdir($savePath, 0777);
     session_save_path($savePath);
 }
 
@@ -46,19 +47,22 @@ if (get_magic_quotes_gpc()) {
 
 
 
+
+define ('APP_DEBUG', false);
+
+define ('APP_PATH', './Application/');
+
 /**
  * 系统调试设置
  * 项目正式部署后请设置为false
- */
-define ('APP_DEBUG', false);
-
 //mp.weixin.qq.com，开发者中心，服务器配置，Token(令牌)
+ */
 define ('APP_TOKEN', 'uctoo');
 /**
- * 应用目录设置
- * 安全期间，建议安装调试完成后移动到非WEB目录
+ *  主题目录 OpenCenter模板地址 （与ThinkPHP中的THEME_PATH不同）
+ *  @author 郑钟良<zzl@ourstu.com>
  */
-define ('APP_PATH', './Application/');
+define ('OS_THEME_PATH', './Theme/');
 
 if (!is_file( 'Conf/user.php')) {
     header('Location: ./install.php');
@@ -75,4 +79,16 @@ define ('RUNTIME_PATH', './Runtime/');
  * 引入核心入口
  * ThinkPHP亦可移动到WEB以外的目录
  */
-require './ThinkPHP/ThinkPHP.php';
+try{
+    require './ThinkPHP/ThinkPHP.php';
+}catch (\Exception $exception){
+    if($exception->getCode()==815){
+        send_http_status(404);
+        $string=file_get_contents('./404.html');
+        $string=str_replace('$ERROR_MESSAGE',$exception->getMessage(),$string);
+        $string=str_replace('HTTP_HOST','http://'.$_SERVER['HTTP_HOST'],$string);
+        echo $string;
+    }else{
+        E($exception->getMessage(),$exception->getCode());
+    }
+}

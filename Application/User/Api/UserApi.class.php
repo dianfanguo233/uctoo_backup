@@ -39,11 +39,13 @@ class UserApi extends Api{
      * @return integer           登录成功-用户ID，登录失败-错误编号
      */
     public function login($username, $password, $type = 1){
+        $username=str_replace(array('"',"'",'`',',',')','(','='),'',$username);
         if(file_exists('./api/uc_login.lock')){
             include_once './api/uc_client/client.php';
             if(strtolower(UC_CHARSET) == 'gbk'){
                 $username =  iconv('UTF-8', 'GBK', $username);
             }
+
             $uc_user = uc_user_login($username,$password,0);
             if($uc_user[0]==-2){
                 return '密码错误';
@@ -56,13 +58,13 @@ class UserApi extends Api{
                 if(strtolower(UC_CHARSET) == 'gbk'){
                     $uc_user[1] =  iconv('GBK', 'UTF-8', $uc_user[1]);
                 }
-                D('Common/Member')->where(array('uid'=>$uc_user[0]))->setField('nickname',$uc_user[1]);
+                D('member')->where(array('uid'=>$uc_user[0]))->setField('nickname',$uc_user[1]);
                 D('ucenter_member')->where(array('id'=>$uc_user[0]))->setField('username',$uc_user[1]);
                 return $uc_user[0];
             }
         }else{
-            if(UC_SYNC && $username != get_username(1)){  //User模块下的login仅用户登录管理后台，不包括同步登录到Ucenter
-            //    return $this->ucLogin($username, $password);
+            if(UC_SYNC && $username != get_username(1)){
+                return $this->ucLogin($username, $password);
             }
             return $this->model->login($username, $password, $type);
         }
