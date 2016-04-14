@@ -1,11 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: uctoo
- * Date: 15-4-7
- * Time: 上午11:26
- * @author:patrick admin@uctoo.com
- */
+// +----------------------------------------------------------------------
+// | UCToo [ Universal Convergence Technology ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2015 http://www.uctoo.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: patrick <contact@uctoo.com> <http://www.uctoo.com>
+// +----------------------------------------------------------------------
 
 function addWeixinLog($data, $data_post = '') {
     $log ['cTime'] = time ();
@@ -43,7 +43,7 @@ function get_token_appinfo($token = '') {
 
 function get_mpid_appinfo($mp_id = '') {
     empty ( $mp_id ) && $mp_id = get_mpid ();
-    $map ['id'] = $mp_id;
+    $map ['mp_id'] = $mp_id;
     $info = M ( 'member_public' )->where ( $map )->find ();
     return $info;
 }
@@ -161,7 +161,7 @@ function get_mpid($mp_id = NULL) {
         $map['uid'] = is_login();
         $map['public_id'] = get_token();
         $mp =  D('Mpbase/MemberPublic')->where($map)->find();  //所登陆会员帐号当前管理的公众号
-        $mp_id = $mp['id'];
+        $mp_id = $mp['mp_id'];
     }
     if (empty ( $mp_id )) {
         return - 1;
@@ -287,4 +287,15 @@ function get_ucuser_by_openid($openid) {
     $user = $model->where($map)->find();
 
     return $user;
+}
+
+/**
+ * 系统非常规MD5加密方法
+ * @param  string $str 要加密的字符串
+ * @return string
+ */
+function mpid_md5($str, $key = '')
+{
+    trace($str,'TplMsg2:','DEBUG',true);
+    return '' === $str ? '' : md5(sha1($str) . $key);
 }

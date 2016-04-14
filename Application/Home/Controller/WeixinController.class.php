@@ -31,8 +31,6 @@ class WeixinController extends Controller {
     public function _initialize(){
         /* 读取数据库中的公众号信息初始化微信类 */
 
-
-
     }
 
      /**
@@ -41,9 +39,10 @@ class WeixinController extends Controller {
      * 所以，微信公众平台后台填写的api地址则为该操作的访问地址
      * 在mp.weixin.qq.com 开发者中心配置的 URL(服务器地址)  http://域名/index.php/home/weixin/index/id/member_public表的id.html
      */
-	public function index($id = '') {
+	public function index($mp_id = '') {
         //
-        $this->member_public = M('MemberPublic')->find($id);
+        $map['mp_id'] = $mp_id;
+        $this->member_public = M('MemberPublic')->where($map)->find();
         $this->options['appid'] = $this->member_public['appid'];    //初始化options信息
         $this->options['appsecret'] = $this->member_public['secret'];
         $this->options['encodingaeskey'] = $this->member_public['encodingaeskey'];
@@ -55,12 +54,12 @@ class WeixinController extends Controller {
         $ToUserName = $weObj->getRevTo();
         $FromUserName = $weObj->getRevFrom();
         $params['weObj'] = &$weObj;
-        $params['mp_id'] = $id;
+        $params['mp_id'] = $mp_id;
         $params['weOptions'] = $this->options;
         
         //如果被动响应可获得用户信息就记录下
-	if (! empty ( $id )) {                    //设置当前上下文的公众号id
-            $mp_id =  get_mpid($id);
+	if (! empty ( $mp_id )) {                    //设置当前上下文的公众号id
+            $mp_id =  get_mpid($mp_id);
         }
         if (! empty ( $ToUserName )) {
             get_token ( $ToUserName );

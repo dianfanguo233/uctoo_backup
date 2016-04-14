@@ -1,10 +1,10 @@
 <?php
 // +----------------------------------------------------------------------
-// | OneThink [ WE CAN DO IT JUST THINK IT ]
+// | UCToo [ Universal Convergence Technology ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2013 http://www.onethink.cn All rights reserved.
+// | Copyright (c) 2015 http://www.uctoo.com All rights reserved.
 // +----------------------------------------------------------------------
-// | Author: 麦当苗儿 <zuojiazi@vip.qq.com> <http://www.zjzit.cn>
+// | Author: patrick <contact@uctoo.com> <http://www.uctoo.com>
 // +----------------------------------------------------------------------
 
 namespace Home\Controller;
@@ -68,6 +68,10 @@ class IndexController extends Controller
         if (empty ( $_GET ['id'] )) {
             $this->error ( '公众号参数非法' );
         }
+        $map['uid'] = is_login();
+        $map['id'] = $_GET ['id'];
+        $mp = M('MemberPublic')->where($map)->find();
+        $this->assign('mp_id', $mp['mp_id']);
         $this->display ( );
     }
 

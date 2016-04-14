@@ -168,7 +168,7 @@ class MpbaseController extends AdminController
             $data['public_name'] = I('post.public_name', '', 'op_t');
             $data['wechat'] = I('post.wechat', 1, 'op_t');
             $data['public_id'] = I('post.public_id', 1, 'op_t');
-            $data['type'] = I('post.type', '', 'intval');
+            $data['mp_type'] = I('post.mp_type', '', 'intval');
             $data['appid'] = I('post.appid', '', 'op_t');
             $data['secret'] = I('post.secret', '', 'op_t');
             $data['encodingaeskey'] = I('post.encodingaeskey', '', 'op_t');
@@ -176,6 +176,9 @@ class MpbaseController extends AdminController
             $data['mchkey'] = I('post.mchkey', '', 'op_t');
             $data['notify_url'] = I('post.notify_url', '', 'op_t');
             $data['status'] = I('post.status', 1, 'intval');
+
+            $data['mp_id'] = mpid_md5($data['appid']);
+
 
             if ($id != 0) {
                 $data['id'] = $id;
@@ -201,8 +204,8 @@ class MpbaseController extends AdminController
             $builder = new AdminConfigBuilder();
             if(is_administrator()){   //管理员可以设定公众号uid
                 $builder->title($id != 0 ? '编辑公众号' : '添加公众号')
-                    ->keyId()->keyUid('uid', '用户', '公众号管理员')->keyText('public_name', '名称', '公众号名称')->keyText('wechat', '微信号', '微信号')->keyText('public_id', '原始ID', '公众号原始ID')
-                    ->keySelect('type', '类型', '请选择公众号类型', $model->getMpType(null))->keyText('appid', 'AppID', '应用ID')->keyText('secret', 'AppSecret', '应用密钥，需公众号管理员才能在mp.weixin.qq.com后台完整显示')
+                    ->keyId()->keyUid('uid', '用户', '公众号管理员')->keyReadOnly('mp_id', '公众号索引ID', '公众号索引ID')->keyText('public_name', '名称', '公众号名称')->keyText('wechat', '微信号', '微信号')->keyText('public_id', '原始ID', '公众号原始ID')
+                    ->keySelect('mp_type', '类型', '请选择公众号类型', $model->getMpType(null))->keyText('appid', 'AppID', '应用ID')->keyText('secret', 'AppSecret', '应用密钥，需公众号管理员才能在mp.weixin.qq.com后台完整显示')
                     ->keyText('encodingaeskey', '消息加解密密钥', '安全模式下必填') ->keyText('mchid', '微信支付商户号', '微信支付必须配置') ->keyText('mchkey', '微信支付商户支付密钥', '微信支付必须配置')
                     ->keyText('notify_url', '接收微信支付异步通知回调地址', '微信支付必须配置，带http://的完整URL')
                     ->keyStatus()
@@ -211,8 +214,8 @@ class MpbaseController extends AdminController
                     ->display();
             }else{    //非管理员以登录uid作为公众号uid
                 $builder->title($id != 0 ? '编辑公众号' : '添加公众号')
-                    ->keyId()->keyReadOnly('uid', '用户', '公众号管理员')->keyText('public_name', '名称', '公众号名称')->keyText('wechat', '微信号', '微信号')->keyText('public_id', '原始ID', '公众号原始ID')
-                    ->keySelect('type', '类型', '请选择公众号类型', $model->getMpType(null))->keyText('appid', 'AppID', '应用ID')->keyText('secret', 'AppSecret', '应用密钥，需公众号管理员才能在mp.weixin.qq.com后台完整显示')
+                    ->keyId()->keyReadOnly('uid', '用户', '公众号管理员')->keyReadOnly('mp_id', '公众号索引ID', '公众号索引ID')->keyText('public_name', '名称', '公众号名称')->keyText('wechat', '微信号', '微信号')->keyText('public_id', '原始ID', '公众号原始ID')
+                    ->keySelect('mp_type', '类型', '请选择公众号类型', $model->getMpType(null))->keyText('appid', 'AppID', '应用ID')->keyText('secret', 'AppSecret', '应用密钥，需公众号管理员才能在mp.weixin.qq.com后台完整显示')
                     ->keyText('encodingaeskey', '消息加解密密钥', '安全模式下必填') ->keyText('mchid', '微信支付商户号', '微信支付必须配置') ->keyText('mchkey', '微信支付商户支付密钥', '微信支付必须配置')
                     ->keyText('notify_url', '接收微信支付异步通知回调地址', '微信支付必须配置，带http://的完整URL')
                     ->keyStatus()
@@ -228,7 +231,7 @@ class MpbaseController extends AdminController
     public function change() {
         $map ['id'] = I ( 'id', 0, 'intval' );
         $info = D ( 'Mpbase/MemberPublic' )->where ( $map )->find ();
-        get_mpid($map ['id']);                                               //设置当前上下文mp_id
+        get_mpid($info ['mp_id']);                                               //设置当前上下文mp_id
 
         unset ( $map );
         $map ['uid'] = UID;
