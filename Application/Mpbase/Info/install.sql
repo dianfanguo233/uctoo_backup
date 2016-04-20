@@ -5,6 +5,7 @@
 DROP TABLE IF EXISTS `uctoo_member_public`;
 CREATE TABLE `uctoo_member_public` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `mp_id` varchar(50) NOT NULL COMMENT '公众号检索标识',
   `uid` int(10) NOT NULL COMMENT '用户ID',
   `public_name` varchar(50) NOT NULL COMMENT '公众号名称',
   `public_id` varchar(100) NOT NULL COMMENT '公众号原始id',
@@ -15,14 +16,18 @@ CREATE TABLE `uctoo_member_public` (
   `addon_config` text NOT NULL COMMENT '插件配置',
   `addon_status` text NOT NULL COMMENT '插件状态',
   `token` varchar(100) NOT NULL COMMENT 'Token',
-  `type` char(10) NOT NULL DEFAULT '0' COMMENT '公众号类型',
+  `mp_type` char(10) NOT NULL DEFAULT '0' COMMENT '公众号类型',
   `appid` varchar(255) NOT NULL COMMENT 'AppID',
   `secret` varchar(255) NOT NULL COMMENT 'AppSecret',
   `status` tinyint(4) NOT NULL COMMENT '2：未审核，1:启用，0：禁用，-1：删除',
   `group_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '等级',
   `encodingaeskey` varchar(255) NOT NULL COMMENT 'EncodingAESKey',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=107 DEFAULT CHARSET=utf8;
+  `mchid` varchar(50) NOT NULL COMMENT '商户号（微信支付必须配置）',
+  `mchkey` varchar(50) NOT NULL COMMENT '商户支付密钥（微信支付必须配置）',
+  `notify_url` varchar(255) NOT NULL COMMENT '接收微信支付异步通知回调地址',
+  PRIMARY KEY (`id`),
+  KEY `mp_id` (`mp_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of uctoo_member_public

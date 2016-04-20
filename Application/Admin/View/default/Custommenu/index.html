@@ -9,6 +9,9 @@
         <div class="col-xs-10">
             <a class="btn" href="{:U('add')}">新 增</a>
             <a class="btn" href="{:U('create')}"  >生成微信自定义菜单</a>
+            <if condition = "$isgetmenu">
+            <a class="btn" href="{:U('getmenu')}"  >获取公众号现有自定义菜单</a>
+            </if>
         </div>
     </div>
 
@@ -22,6 +25,8 @@
 
             <div class="form-item with-padding">
                 <button class="btn submit-btn ajax-post no-refresh" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+
+                <input class="btn submit-btn" type="submit" onclick="javascript:this.form.action='{:U('previewmenu')}';" value="预览" >
                 <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
             </div>
         </form>

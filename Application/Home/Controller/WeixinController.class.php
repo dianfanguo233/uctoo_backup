@@ -92,7 +92,21 @@ class WeixinController extends Controller {
                         }else{
 
                         }
-			
+
+//                        $weObj->reply();
+                        //获取回复数据
+                        $where['mtype']= 1;
+                        $where['statu']= 1;
+                        $model_re = M('replay_messages');
+                        $data_re=$model_re->where($where)->find();
+                        $params['type']=$data_re['type'];
+
+                        $params['replay_msg']=D('Mpbase/Autoreply')->get_type_data($data_re);
+
+                        hook('wxmsg',$params);
+
+                        $weObj->reply();
+
                     if(!$user["subscribe"]){   //未关注，并设置关注状态为已关注
                         $user["subscribe"] = 1;     
                         $ucuser->where($map)->save($user);
@@ -111,8 +125,23 @@ class WeixinController extends Controller {
                     //自定义菜单 - 点击菜单拉取消息时的事件推送
                     case TPWechat::EVENT_MENU_CLICK:
 
-                        hook('keyword',$params);   //把消息分发到实现了keyword方法的addons中,参数中包含本次用户交互的微信类实例和公众号在系统中id
-                        $weObj->reply();           //在addons中处理完业务逻辑，回复消息给用户
+//                        hook('keyword',$params);   //把消息分发到实现了keyword方法的addons中,参数中包含本次用户交互的微信类实例和公众号在系统中id
+//                        $weObj->reply();           //在addons中处理完业务逻辑，回复消息给用户
+                        $where['keywork']=array('like', '%' . $data['Content'] . '%');
+                        $where['mtype']= 3;
+                        $where['statu']= 1;
+                        $model_re = M('replay_messages');
+                        $data_re=$model_re->where($where)->find();
+                        $params['type']=$data_re['type'];
+                        $params['replay_msg']=D('Mpbase/Autoreply')->get_type_data($data_re);
+
+
+                        hook('wxmsg',$params);
+
+                        $weObj->reply();  //在addons中处理完业务逻辑，回复消息给用户
+                        break;
+
+
                         break;
                     //自定义菜单 - 点击菜单跳转链接时的事件推送
                     case TPWechat::EVENT_MENU_VIEW:
@@ -165,8 +194,26 @@ class WeixinController extends Controller {
             //文本
             case TPWechat::MSGTYPE_TEXT :
 
-                hook('keyword',$params);   //把消息分发到实现了keyword方法的addons中,参数中包含本次用户交互的微信类实例和公众号在系统中id
-		        $weObj->reply();           //在addons中处理完业务逻辑，回复消息给用户
+                $where['keywork']=array('like', '%' . $data['Content'] . '%');
+                $where['mtype']= 3;
+                $where['statu']= 1;
+                $model_re = M('replay_messages');
+                $data_re=$model_re->order('time desc')->where($where)->find();
+//              关键字匹配失败进入自动回复
+                if(!$data_re){
+                    unset($where);
+                    $where['mtype']= 2;
+                    $where['statu']= 1;
+                    $data_re=$model_re->order('time desc')->where($where)->find();
+                }
+
+                $params['type']=$data_re['type'];
+                $params['replay_msg']=D('Mpbase/Autoreply')->get_type_data($data_re);
+
+
+                hook('wxmsg',$params);
+
+                $weObj->reply();  //在addons中处理完业务逻辑，回复消息给用户
                 break;
             //图像
             case TPWechat::MSGTYPE_IMAGE :

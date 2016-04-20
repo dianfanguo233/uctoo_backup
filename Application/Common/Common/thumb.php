@@ -203,3 +203,11 @@ function get_pic_src($path)
         return $path;
     }
 }
+
+function get_cover_url($cover_id) {
+    $url = get_cover ( $cover_id, 'path' );
+    if (empty ( $url ))
+        return '';
+
+    return "http://".$_SERVER ['HTTP_HOST'].$url;
+}

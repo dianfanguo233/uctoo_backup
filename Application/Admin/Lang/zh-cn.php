@@ -32,7 +32,7 @@ return array(
 
     /*Controller&View*/
 //    public
-    '_SNS_BACKSTAGE_MANAGE_' => 'OpenCenter管理后台',
+    '_SNS_BACKSTAGE_MANAGE_' => 'UCToo管理后台',
     '_Q_AND_A_' => '问答',
     '_DOCUMENT_' => '文档',
     '_CACHE_CLEAR_' => '清空缓存',
@@ -75,6 +75,8 @@ return array(
     '_MYSQL_VERSION_' => 'MYSQL版本',
     '_OC_VERSION_' => 'OpenCenter主程序版本：',
     '_OC_QQ_GROUP_' => 'OpenCenter开发者QQ群：',
+    '_UCTOO_VERSION_' => 'UCToo主程序版本：',
+    '_UCTOO_QQ_GROUP_' => 'UCToo开发者QQ群：',
     '_LIMIT_UPLOAD_' => '上传限制',
     '_MODIFY_HOW_TO_' => '如何修改',
     '_USER_INCREASE_RECENT_' => '最近{$count_day}天用户增长数',

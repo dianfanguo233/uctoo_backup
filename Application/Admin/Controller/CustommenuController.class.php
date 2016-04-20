@@ -20,8 +20,9 @@ class CustommenuController extends AdminController
      * 菜单列表
      * @author patrick <contact@uctoo.com>
      */
-    public function index()
+    public function index($getwechatmenu=null)
     {
+
         $cm = D('Mpbase/CustomMenu');
         if(IS_POST){
             $one = $_POST['cm'][1];
@@ -64,6 +65,7 @@ class CustommenuController extends AdminController
             /* 获取菜单列表 */
             $map = array('status' => array('gt', -1), 'token' => get_token(),'pid' => 0);
             $list =$cm->where($map)->order('sort asc,id asc')->select();
+
             foreach ($list as $k => &$v) {
 
                 $child = $cm->where(array('status' => array('gt', -1), 'pid' => $v['id']))->order('sort asc,id asc')->select();
@@ -76,15 +78,65 @@ class CustommenuController extends AdminController
 
             unset($k, $v);
             $this->assign('type',$cm->getCmType());
-            $this->assign('list', $list);
+
+            if($getwechatmenu) {
+                $this->assign('list', $getwechatmenu);
+            }else{
+                $this->assign('list', $list);
+                $this->assign('isgetmenu',1);
+            }
+
+
+
 
             $this->meta_title = '自定义菜单管理';
-            $this->display();
+            $this->display('index');
         }
 
     }
 
-    /**
+    public function getmenu(){
+
+        $id = get_mpid();
+        $member_public = M('MemberPublic')->find($id);
+        $options['appid'] = $member_public['appid'];    //初始化options信息
+        $options['appsecret'] = $member_public['secret'];
+        $options['encodingaeskey'] = $member_public['encodingaeskey'];
+        $weObj = new TPWechat($options);
+        $menu = $weObj->getMenu();
+        foreach($menu['menu']['button'] as $k =>&$v){
+            $v['title']=$v['name'];
+            $v['keyword']=$v['key'];
+            !$v['type']?$v['type']='none':null;
+            foreach($v['sub_button'] as &$v1){
+                $v1['title']=$v1['name'];
+                $v1['keyword']=$v1['key'];
+            }
+             $v['child'] = $v['sub_button'];
+        }
+
+        R('Custommenu/index',array($menu['menu']['button']));
+
+    }
+
+     public function previewmenu(){
+         $menu = I('post.');
+         $menu =$menu['cm'];
+         foreach($menu['1']['title'] as $v){
+            $preview[]=array('name'=>$v);
+         };
+
+             foreach($menu['2']['pid']  as $k=>$v){
+                 $preview[$v]['child'][]=array('sort'=>$menu['2']['sort'][$k],'title'=>$menu['2']['title'][$k]);
+         }
+
+         $this->assign('menu',$preview);
+         $this->display();
+
+     }
+
+
+   /**
      * 自定义菜单列表
      * @author patrick <contact@uctoo.com>
      */
@@ -220,6 +272,8 @@ class CustommenuController extends AdminController
      */
     public function create()
     {
+
+
         $data = $this->get_data ();
 
         // 要先填写appid
@@ -236,14 +290,20 @@ class CustommenuController extends AdminController
             'appid'=> $info['appid'], //填写高级调用功能的app id
             'appsecret'=> $info['secret'] //填写高级调用功能的密钥
         );
+       // dump($options);
 
         $weObj = new TPWechat($options);
         $res = $weObj->createMenu($data);
+//        $test['text'] = json_encode($data);
+//        M('test')->add($test);
 
+        //die;
         if ($res) {
+
             $this->success ( '发送菜单成功',U('Custommenu/index'),3 );
         } else {
-            $this->success ( '发送菜单失败，错误的返回码是：' . $weObj->errCode . ', 错误的提示是：' . $weObj->errMsg ,U('Custommenu/index'),5 );
+            //die(222);
+            $this->error ( '发送菜单失败，错误的返回码是：' . $weObj->errCode . ', 错误的提示是：' . $weObj->errMsg ,U('Custommenu/index'),5 );
         }
     }
 

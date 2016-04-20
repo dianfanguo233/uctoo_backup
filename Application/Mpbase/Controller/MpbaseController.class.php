@@ -9,6 +9,7 @@
 
 
 namespace Admin\Controller;
+use Think\Controller;
 
 use Admin\Builder\AdminConfigBuilder;
 use Admin\Builder\AdminListBuilder;
@@ -17,6 +18,11 @@ use Admin\Builder\AdminTreeListBuilder;
 
 class MpbaseController extends AdminController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        //dump($_SERVER);
+    }
     public function config()
     {
         $admin_config = new AdminConfigBuilder();
@@ -248,4 +254,244 @@ class MpbaseController extends AdminController
 
         redirect ( U ( 'index' ) );
     }
+
+/*
+     * 自动回复消息；
+     *  - 关注回复
+     *  - 关键词回复
+     *  - 未匹配关键字回复
+     * */
+    public function replay_messages($r=10,$page=1){
+        $autor = D('Mpbase/Autoreply');
+        $messages = D('Mpbase/Messages');
+        I('mtype')? $where['mtype'] = I('mtype'):null;
+        $list = $messages->get_replay_all($where);
+        $message_type=$autor ->getMessagesType();
+         $reply_type=$autor ->replyMessagesType();
+
+        $builder = new AdminListBuilder();
+
+        $mtype['mtype'] = I('mtype');
+
+        $builder
+            ->title('自动消息回复')
+            ->buttonNew(U('edit_text_messages',$mtype),'新增文本消息')
+            ->buttonNew(U('edit_picture_messages',$mtype),'新增图文消息')
+            ->setSelectPostUrl(U(''))
+            ->select('动作类型','mtype','select','','','',$message_type)
+            ->keyId()
+            ->keyText('mtype','动作类型')
+            ->keyText('type','回复类型')
+            ->keyText('title','规则名称')
+            ->keyTime('time','创建时间')
+            //转出想要的操作key 为do；
+//            ->keyTruncText('detile','详情',15)
+//            ->keyDoAction('editaction','操作')
+            ->keyHtml('statu','操作')
+            ->keyHtml('editaction','操作')
+            ->data($list['data'])
+            ->pagination($list['count'],$r)
+            ->display();
+
+
+    }
+
+    public function edit_text_messages(){
+        $auto = D('Mpbase/Autoreply');
+        $model = D('Replay_messages');
+        $id = I('id');
+        $list['mtype'] = I('mtype');
+        $mtype = $auto ->getArType();
+        if(IS_POST){
+
+            $data = I('post.');
+            $data['type']= 'text';
+            $data['mp_id']= get_mpid();
+            $data['time']= time();
+//            开始事务
+            $model->startTrans();
+
+            $res_mes = $auto ->post_messages($data);
+
+            $data['ms_id']=$res_mes;
+
+            if(!$id){
+                $res =$model->field('id,title,statu,time,type,mp_id,mtype,ms_id,keywork')->add($data);
+
+            }else{
+                $res =$model->field('id,title,statu,time,type,mp_id,mtype,ms_id,keywork')->save($data);
+            }
+
+            if(!$res||!$res_mes){
+                $model->rollback();
+                $this->error($res_mes.'错误-'.$res);
+            }else{
+                $model->commit();
+                $this->success('成功',"javascript:history.back(-1);");
+            }
+        }else{
+        if($id) {
+            $list = $model->find($id);
+            $list = $auto->get_mes_data($list);
+        }
+
+        $builder = new AdminConfigBuilder();
+        $builder
+            ->title('文本')
+            ->keyId()
+            ->keyText('title','规则名称')
+            ->keyRadio('mtype','动作类型','',$mtype)
+            ->keyText('keywork','关键字','匹配多个关键字请以 ，号隔开')
+            ->keyTextArea('detile','内容')
+            ->data($list)
+            ->buttonSubmit(U(''))
+            ->buttonBack()
+            ->display();
+        }
+    }
+
+
+    public function edit_picture_messages(){
+
+        $auto = D('Mpbase/Autoreply');
+        $model = D('Replay_messages');
+        $id = I('id');
+        $list['mtype'] = I('mtype');
+
+        $mtype = $auto ->getArType(null,1);
+
+        if(IS_POST){
+            $data = I('post.');
+
+            $data['type']= 'picture';
+            $data['mp_id']= get_mpid();
+            $data['time']= time();
+//            开始事务
+
+            $model->startTrans();
+
+            $res_mes = $auto ->post_messages($data);
+
+            $data['ms_id']=$res_mes;
+
+
+            if(!$id){
+                $res =$model->where("id=$id")->field('title,statu,time,type,mp_id,mtype,ms_id,keywork')->add($data);
+
+            }else{
+                $res =$model->field('id,title,statu,time,type,mp_id,mtype,ms_id,keywork')->save($data);
+            }
+//            dump($model->getlastsql());
+//            dump($res_mes);
+//            dump($res);
+//            dump($data);
+//            die;
+
+
+            if(!$res||!$res_mes){
+                $model->rollback();
+                $this->error($res_mes.'错误-'.$res);
+            }else{
+                $model->commit();
+                $this->success('成功',"javascript:history.back(-1);");
+            }
+
+        }else{
+            if($id) {
+                $list = $model->find($id);
+
+                $list = $auto->get_mes_data($list);
+            }
+
+//            dump($list);die;
+    //        $auto->builder_picture_messages();
+            $builder = new AdminConfigBuilder();
+            $builder
+                ->title('图文[只填写每一条则回复一条图文信息，多条则回复图文且第一条为大图]')
+                ->keyId()
+                ->keyText('title','规则名称')
+                ->keyRadio('mtype','动作类型','',$mtype)
+                ->keyText('keywork','关键字','匹配多个关键字请以 ，号隔开')
+                ->keyText('title0','标题','第一条')
+                ->keyText('detile0','内容')
+                ->keyText('url0','url0')
+                ->keyText('title1','标题','第二条')
+                ->keyText('detile1','内容')
+                ->keyText('url1','url1')
+                ->keyText('title2','标题','第三条')
+                ->keyText('detile2','内容')
+                ->keyText('url2','url2')
+                ->keyText('title3','标题','第四条')
+                ->keyText('detile3','内容')
+                ->keyText('url3','url3')
+                ->keyText('title4','标题','第五条')
+                ->keyText('detile4','内容')
+                ->keyText('url4','url4')
+                ->keyMultiImage('pic','图片','按顺序添加图片')
+                ->data($list)
+                ->buttonSubmit(U('edit_picture_messages',$mtype))
+                ->buttonBack()
+                ->display();
+
+        }
+    }
+
+    public function open_mes_uq(){
+        $id = I('get.id');
+        $model = D('Mpbase/Messages');
+        $res = $model->set_unqiue($id);
+
+        if($res){
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+        dump($res);
+        die;
+        $this->error('错误');
+
+    }
+
+    public function open_mes_kw(){
+        $id = I('get.id');
+        $model = D('Mpbase/Messages');
+        $res = $model->set_open($id);
+
+        if($res){
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+        //dump($res);
+        //die;
+        $this->error('错误');
+
+    }
+    public function close_mes(){
+
+        $id = I('get.id');
+        $model = D('Mpbase/Messages');
+        $res = $model->close_open($id);
+
+        if($res){
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+        //dump($res);
+        //die;
+        $this->error('错误');
+
+    }
+
+
+    public function putfile(){
+
+        $file = A('Core/File');
+        $file->downloadFile(1);
+
+//        $builder = new AdminConfigBuilder();
+//        $builder
+//            ->keySingleFile(111,11)
+//            ->buttonSubmit()
+//            ->display();
+
+
+    }
+
+
 }
