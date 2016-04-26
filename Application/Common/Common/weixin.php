@@ -93,7 +93,7 @@ function get_openid($openid = NULL) {
 
     $isWeixinBrowser = isWeixinBrowser ();
     //下面这段应该逻辑没问题，如果公众号配置信息错误或者没有snsapi_base作用域的获取信息权限可能会出现死循环，注释掉以下if可治愈
-    if ( $openid <= 0 && $isWeixinBrowser) {
+    if ( empty($openid) && $isWeixinBrowser) {
 
         $callback = GetCurUrl ();
        // OAuthWeixin ( $callback );
@@ -104,13 +104,15 @@ function get_openid($openid = NULL) {
         $options['appsecret'] = $info['secret'];
         $options['encodingaeskey'] = $info['encodingaeskey'];
         $auth = new Com\Wxauth($options);
-        $openid =  $auth->open_id;
+
+	    $openid =  $auth->open_id;
+	    session ( 'openid_' . $mp_id, $openid );                   //openid 存进session
         session ( 'wxuser_' . $mp_id.$openid, $auth->wxuser );     //wxauth获得的微信用户信息存到session中
 
     }
 
     if (empty ( $openid )) {
-        return - 1;
+        return 0;
     }
 
     return $openid;
