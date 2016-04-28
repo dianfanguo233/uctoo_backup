@@ -75,4 +75,14 @@ class IndexController extends Controller
         $this->display ( );
     }
 
+	/*
+	 * 二维码
+	 */
+	public function qrcode()
+	{
+		error_reporting(E_ERROR);
+		require_once VENDOR_PATH.'phpqrcode/phpqrcode.php';
+		$url = urldecode($_GET["data"]);
+		\QRcode::png($url);
+	}
 }

@@ -40,14 +40,7 @@ class JsApiPay
     //=======【curl超时设置】===================================
     //本例程通过curl使用HTTP POST方法，此处可修改其超时时间，默认为30秒
     public  $CURL_TIMEOUT = 30;
-
-    //微信支付配置参数，类初始化必填
-    public $wxpaycfg;
-
-    //构造函数，初始化的时候最先执行
-    public function __construct($wxpaycfg) {
-        $this->wxpaycfg = $wxpaycfg;
-    }
+	
 
 	/**
 	 * 
@@ -91,7 +84,7 @@ class JsApiPay
 		{
 			throw new WxPayException("参数错误");
 		}
-		$jsapi = new WxPayJsApiPay($this->wxpaycfg);
+		$jsapi = new WxPayJsApiPay();
 		$jsapi->SetAppid($UnifiedOrderResult["appid"]);
 		$timeStamp = time();
 		$jsapi->SetTimeStamp("$timeStamp");
@@ -168,7 +161,7 @@ class JsApiPay
 	{	
 		$getData = $this->data;
 		$data = array();
-		$data["appid"] = $this->wxpaycfg->appid;
+		$data["appid"] = WxPayConfig::getConfig('APPID');
 		$data["url"] = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		$time = time();
 		$data["timestamp"] = "$time";
@@ -182,7 +175,7 @@ class JsApiPay
 			"addrSign" => $addrSign,
 			"signType" => "sha1",
 			"scope" => "jsapi_address",
-			"appId" => $this->wxpaycfg->appid,
+			"appId" => WxPayConfig::getConfig('APPID'),
 			"timeStamp" => $data["timestamp"],
 			"nonceStr" => $data["noncestr"]
 		);
@@ -199,7 +192,7 @@ class JsApiPay
 	 */
 	private function __CreateOauthUrlForCode($redirectUrl)
 	{
-		$urlObj["appid"] = $this->wxpaycfg->appid;
+		$urlObj["appid"] = WxPayConfig::getConfig('APPID');
 		$urlObj["redirect_uri"] = "$redirectUrl";
 		$urlObj["response_type"] = "code";
 		$urlObj["scope"] = "snsapi_base";
@@ -217,8 +210,8 @@ class JsApiPay
 	 */
 	private function __CreateOauthUrlForOpenid($code)
 	{
-		$urlObj["appid"] = $this->wxpaycfg->appid;
-		$urlObj["secret"] = $this->wxpaycfg->appsecret;
+		$urlObj["appid"] = WxPayConfig::getConfig('APPID');
+		$urlObj["secret"] = WxPayConfig::getConfig('APPSECRET');
 		$urlObj["code"] = $code;
 		$urlObj["grant_type"] = "authorization_code";
 		$bizString = $this->ToUrlParams($urlObj);

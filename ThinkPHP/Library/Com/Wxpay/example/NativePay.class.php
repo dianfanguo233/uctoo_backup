@@ -1,6 +1,9 @@
 <?php
-require_once "../lib/WxPay.Api.php";
+//require_once "../lib/WxPay.Api.php";
+namespace Com\Wxpay\example;
 
+use Com\Wxpay\lib\WxPayApi;
+use Com\Wxpay\lib\WxPayBizPayUrl;
 /**
  * 
  * 刷卡支付实现类
