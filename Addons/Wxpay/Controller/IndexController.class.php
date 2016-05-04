@@ -97,19 +97,19 @@ class IndexController extends AddonsController{
 
         //获取公众号信息，jsApiPay初始化参数
         $info = get_mpid_appinfo ( $odata['mp_id'] );
-        $this->options['appid'] = $info['appid'];
-        $this->options['mchid'] = $info['mchid'];
-        $this->options['mchkey'] = $info['mchkey'];
-        $this->options['secret'] = $info['secret'];
-        $this->options['notify_url'] = $info['notify_url'];
-        $this->wxpaycfg = new WxPayConfig($this->options);
-
+	    $cfg = array(
+		    'APPID'     => $info['appid'],
+		    'MCHID'     => $info['mchid'],
+		    'KEY'       => $info['mchkey'],
+		    'APPSECRET' => $info['secret'],
+		    'NOTIFY_URL' => $info['notify_url'],
+	    );
+	    WxPayConfig::setConfig($cfg);
         //①、初始化JsApiPay
-        $tools = new JsApiPay($this->wxpaycfg);
-        $wxpayapi = new WxPayApi($this->wxpaycfg);
+        $tools = new JsApiPay();
 
         //②、统一下单
-        $input = new WxPayUnifiedOrder($this->wxpaycfg);           //这里带参数初始化了WxPayDataBase
+        $input = new WxPayUnifiedOrder();           //这里带参数初始化了WxPayDataBase
       //  $input->SetAppid($info['appid']);//公众账号ID
       //  $input->SetMch_id($info['mchid']);//商户号
         $input->SetBody($odata['product_name']);
@@ -122,7 +122,7 @@ class IndexController extends AddonsController{
       //  $input->SetNotify_url($info['notify_url']);       //http://test.uctoo.com/index.php/UShop/Index/notify
         $input->SetTrade_type("JSAPI");
         $input->SetOpenid($user['openid']);
-        $order = $wxpayapi->unifiedOrder($input);
+        $order = WxPayApi::unifiedOrder($input);
 
         $jsApiParameters = $tools->GetJsApiParameters($order);
 //获取共享收货地址js函数参数
@@ -153,12 +153,14 @@ class IndexController extends AddonsController{
 
         $info = M ( 'member_public' )->where ( $map )->find ();
        //获取公众号信息，jsApiPay初始化参数
-        $this->options['appid'] = $info['appid'];
-        $this->options['mchid'] = $info['mchid'];
-        $this->options['mchkey'] = $info['mchkey'];
-        $this->options['secret'] = $info['secret'];
-        $this->options['notify_url'] = $info['notify_url'];
-        $this->wxpaycfg = new WxPayConfig($this->options);
+	    $cfg = array(
+		    'APPID'     => $info['appid'],
+		    'MCHID'     => $info['mchid'],
+		    'KEY'       => $info['mchkey'],
+		    'APPSECRET' => $info['secret'],
+		    'NOTIFY_URL' => $info['notify_url'],
+	    );
+	    WxPayConfig::setConfig($cfg);
 
         //发送模板消息
         $param['mp_id'] = $info['id'];
@@ -168,7 +170,7 @@ class IndexController extends AddonsController{
         hook('TplMsg',$param);   //把消息分发到addons/TplMsg/TplMsg的方法中,发送模板信息
 
         //回复公众平台支付结果
-        $notify = new PayNotifyCallBackController($this->wxpaycfg);    //
+        $notify = new PayNotifyCallBackController();    //
         $notify->Handle(false);
 
         //处理业务逻辑

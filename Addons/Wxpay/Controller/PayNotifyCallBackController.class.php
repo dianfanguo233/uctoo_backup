@@ -14,9 +14,9 @@ class PayNotifyCallBackController extends WxPayNotify
 	//查询订单
 	public function Queryorder($transaction_id)
 	{
-		$input = new WxPayOrderQuery($this->wxpaycfg);
+		$input = new WxPayOrderQuery();
 		$input->SetTransaction_id($transaction_id);
-		$result = $this->wxpayapi->orderQuery($input);
+		$result = WxPayApi::orderQuery($input);
 
 		if(array_key_exists("return_code", $result)
 			&& array_key_exists("result_code", $result)
