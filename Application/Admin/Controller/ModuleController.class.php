@@ -86,10 +86,11 @@ class ModuleController extends AdminController
             $aAlias = I('alias', '', 'text');
             $module['alias'] = empty($aAlias) ? $this->error(L('_MODULE_CHINESE_NAME_CAN_NOT_BE_EMPTY_')) : $aAlias;
             $aIcon = I('icon', '', 'text');
-            $module['icon'] = empty($aIcon) ? $this->error(L('_ICONS_CANT_BE_EMPTY_')) : $aIcon;
+            $module['icon'] = empty($aIcon) ? $this->error(L('_ICONS_CANT_BE_EMPTY_')) : strtr($aIcon,array('icon-'=>''));
             $aSummary = I('summary', '', 'text');
             $module['summary'] = empty($aSummary) ? $this->error(L('_THE_INTRODUCTION_CAN_NOT_BE_EMPTY_')) : $aSummary;
             $module['title'] = I('name', '', '');
+            $module['show_nav'] = I('show_nav', '', 'intval');
             $aToken=I('token','','text');
             $aToken=trim($aToken);
             if($aToken!=''){
@@ -113,12 +114,14 @@ class ModuleController extends AdminController
             $aName = I('name', '', 'text');
             $module = $this->moduleModel->getModule($aName);
             $module['token']=D('Common/Module')->getToken($module['name']);
+	        $module['icon'] = 'icon-'.$module['icon'];
             $builder = new AdminConfigBuilder();
             $builder->title(L('_MODULE_EDIT_') . $module['alias']);
             $builder->keyId()->keyReadOnly('name', L('_MODULE_NAME_'))->keyText('alias', L('_MODULE_CHINESE_NAME_'))->keyReadOnly('version', L('_VERSION_'))
-                ->keyText('icon', L('_ICON_'))
+                ->keyIcon('icon', L('_ICON_'))
                 ->keyTextArea('summary', L('_MODULE_INTRODUCTION_'))
                 ->keyReadOnly('developer', L('_DEVELOPER_'))
+	            ->keybool('show_nav', L('_SHOW_NAV_'))
                 ->keyText('entry', L('_FRONT_ENTRANCE_'))
                 ->keyText('admin_entry', L('_BACKGROUND_ENTRY_'))
                 ->keyText('token', L('_MODULE_KEY_TOKEN_'),L('_MODULE_KEY_TOKEN_VICE_'));

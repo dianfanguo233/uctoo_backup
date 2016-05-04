@@ -103,7 +103,7 @@
     <ul class="nav nav-primary nav-stacked">
 
         <volist name="__MODULE_MENU__" id="v">
-            <if condition="$v['is_setup'] AND $v['admin_entry']">
+            <if condition="$v['is_setup'] AND $v['admin_entry'] AND $v['show_nav']">
                 <li>
                     <a  href="{:U($v['admin_entry'])}" title="{$v.alias|text}" class="text-ellipsis text-center">
                         <i class="icon-{$v['icon']}"></i><br/>{$v.alias}

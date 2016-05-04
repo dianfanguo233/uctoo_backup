@@ -668,6 +668,7 @@ return array(
     '_MODULE_KEY_TOKEN_' => '模块密钥Token',
     '_MODULE_KEY_TOKEN_VICE_' => '请到云市场对应版本的下载页找到Token，并填入，此后Token会自动跟随版本升级，无需再手动修改',
     '_MODULE_EDIT_' => '编辑模块—',
+    '_SHOW_NAV_'=>'是否显示在导航栏',
 
 //    public
     '_VERIFICATION_CODE_INPUT_ERROR_' => '验证码输入错误！',

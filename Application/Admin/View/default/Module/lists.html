@@ -38,7 +38,7 @@
                     </div>
                     <div class="content-wrapper">
                         <div class="title">
-                            <a href="{:U('edit?', array('name' => $vo['name']))}">{$vo.alias} <span class="text-muted">{$vo.name}</span></a>
+                            <a href="{:U($vo['admin_entry'])}">{$vo.alias} <span class="text-muted">{$vo.name}</span></a>
                             <div class="pull-right">
                                 <empty name="vo.token">
                                     <span class="label label-info">{$vo.version}</span>
