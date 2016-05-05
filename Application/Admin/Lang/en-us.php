@@ -597,6 +597,7 @@
 '_MODULE_KEY_TOKEN_' =>' Module key Token',
 '_MODULE_KEY_TOKEN_VICE_' =>' Please go to the cloud market for the corresponding version of the download page to find Token, and fill in, then Token will automatically follow the version upgrade, no need to manually modify',
 '_MODULE_EDIT_' =>' Edit module-',
+'_SHOW_NAV_'=>'Show nav',
 '_VERIFICATION_CODE_INPUT_ERROR_' =>' Verification code input error!',
 '_LOGIN_SUCCESS_' =>' Login success!',
 '_USERS_DO_NOT_EXIST_OR_ARE_DISABLED_' =>' Users do not exist or are disabled!',
