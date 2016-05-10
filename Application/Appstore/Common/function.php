@@ -9,7 +9,7 @@
 
 /*
  * 解压文件；
- *
+ *type 0：模式 1 插件
  * */
 function get_zip_originalsize($name,$type = 0) {
     //先判断待解压的文件是否存在

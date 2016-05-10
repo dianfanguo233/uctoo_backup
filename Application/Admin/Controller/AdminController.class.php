@@ -35,6 +35,7 @@ class AdminController extends Controller
             $config = api('Config/lists');
             S('DB_CONFIG_DATA', $config);
         }
+
         C($config); //添加配置
 
         // 是否是超级管理员

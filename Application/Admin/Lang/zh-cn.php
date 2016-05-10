@@ -185,7 +185,10 @@ return array(
     '_SITE_NAME_' => '网站名',
     '_SITE_NAME_VICE_' => '用于邮件,短信,站内信显示',
     '_LICENSE_NO_' => '网站备案号',
-    '_LICENSE_NO_VICE_' => '设置在网站底部显示的备案号，如“粤ICP备XXX号-2',
+
+
+    '_LICENSE_NO_VICE_' => '设置在网站底部显示的备案号，如“沪ICP备12007941号-2',
+
     '_SITE_LOGO_' => '网站Logo',
     '_SITE_LOGO_VICE_' => '网站的Logo设置，一般会替换掉导航栏内的图标，建议尺寸156*50',
     '_QR_WEIXIN_' => '微信二维码',

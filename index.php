@@ -48,7 +48,7 @@ if (get_magic_quotes_gpc()) {
 
 
 
-define ('APP_DEBUG', false);
+define ('APP_DEBUG', true);
 
 define ('APP_PATH', './Application/');
 

@@ -48,6 +48,56 @@ CREATE TABLE `uctoo_autoreply` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `uctoo_replay_messages`;
+CREATE TABLE `uctoo_replay_messages`(
+  `id` INT (10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `title` VARCHAR (255) NOT NULL COMMENT '名称',
+  `statu` INT (10)  NOT NULL DEFAULT '0',
+  `ms_id` INT (10) NOT NULL COMMENT  '关联id',
+  `time` INT (15) NOT NULL COMMENT  '时间',
+  `type`  VARCHAR (255) NOT NULL COMMENT '回复类型',
+  `mtype` VARCHAR (255) NOT NULL COMMENT '消息类型',
+  `mp_id` int (2) NOT NULL COMMENT '公众号mpid',
+  `keywork` TEXT  COMMENT '关键词',
+  PRIMARY  KEY (`id`)
+) ENGINE = InnoDB CHARSET=utf8;
+
+
+
+DROP TABLE IF EXISTS `uctoo_text_messages`;
+CREATE TABLE `uctoo_text_messages`(
+  `id` INT (10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `detile` VARCHAR (255) COMMENT '内容',
+
+
+  PRIMARY KEY (`id`)
+)ENGINE =   InnoDB CHARSET=utf8;
+
+DROP TABLE IF EXISTS `uctoo_picture_messages`;
+CREATE  TABLE `uctoo_picture_messages`(
+  `id` INT (10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `title0` VARCHAR (255) COMMENT '标题',
+  `detile0` TEXT COMMENT '内容',
+  `url0` TEXT COMMEnt'URL',
+  `title1` VARCHAR (255) COMMENT '标题',
+  `detile1` TEXT COMMENT '内容',
+  `url1` TEXT COMMEnt'URL',
+  `title2` VARCHAR (255) COMMENT '标题',
+  `detile2` TEXT COMMENT '内容',
+  `url2` TEXT COMMEnt'URL',
+  `title3` VARCHAR (255) COMMENT '标题',
+  `detile3` TEXT COMMENT '内容',
+  `url3` TEXT COMMEnt'URL',
+  `title4` VARCHAR (255) COMMENT '标题',
+  `detile4` TEXT COMMENT '内容',
+  `url4` TEXT COMMEnt'URL',
+  `pic` VARCHAR (255) COMMENT '图片',
+  PRIMARY KEY (`id`)
+)ENGINE = InnoDB CHARSET=utf8;
+
+
+
+
 
 INSERT INTO `uctoo_menu` (`title`, `pid`, `sort`, `url`, `hide`, `tip`, `group`, `is_dev`, `icon`) VALUES
 ( '基础设置', 0, 0, 'Mpbase/index', 1, '', '', 0, '');
@@ -59,7 +109,7 @@ INSERT INTO `uctoo_menu` ( `title`, `pid`, `sort`, `url`, `hide`, `tip`, `group`
 ( '编辑公众号', @tmp_id, 0, 'Mpbase/editMp', 1, '', '公众号', 0, ''),
 ( '公众号管理', @tmp_id, 0, 'Mpbase/index', 0, '', '公众号', 0, ''),
 ( '管理基本设置', @tmp_id, 0, 'Mpbase/config', 0, '', '公众号', 0, ''),
-( '自动回复管理', @tmp_id, 0, 'Mpbase/autoreply', 0, '', '公众号', 0, ''),
+( '自动回复管理', @tmp_id, 0, 'Mpbase/replay_messages', 0, '', '公众号', 0, ''),
 ( '编辑自定义菜单', @tmp_id, 0, 'Admin/Custommenu/add', 1, '', '公众号', 0, ''),
 ( '自定义菜单管理', @tmp_id, 0, 'Admin/Custommenu/index', 0, '', '公众号', 0, ''),
 ( '自定义菜单操作', @tmp_id, 0, 'Admin/Custommenu/operate', 1, '', '公众号', 0, '');

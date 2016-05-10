@@ -344,7 +344,14 @@ class ModuleModel extends Model
                 }
             }
         }
-
+        //执行sql，修复手动安装不执行数据库问题 ；
+        if (file_exists(APP_PATH . '/' . $module['name'] . '/Info/install.sql')) {
+            $install_sql = APP_PATH . '/' . $module['name'] . '/Info/install.sql';
+            if (D()->executeSqlFile($install_sql) === true) {
+//                echo 111;
+                $log .= '&nbsp;&nbsp;>模块数据添加成功。';
+            }
+        }
         $module['is_setup'] = 1;
         $rs = $this->save($module);
         if ($rs === false) {

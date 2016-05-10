@@ -229,6 +229,7 @@ class MemberModel extends Model
             'token'=>$info['public_id'],
             'public_name'=>$info['public_name'],
         );
+
         session('user_auth', $auth);
         session('user_auth_sign', data_auth_sign($auth));
         if ($remember) {

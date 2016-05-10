@@ -6017,3 +6017,56 @@ CREATE TABLE `uctoo_weixin_log` (
   `data_post` text,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+
+
+
+DROP TABLE IF EXISTS `uctoo_replay_messages`;
+CREATE TABLE `uctoo_replay_messages`(
+  `id` INT (10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `title` VARCHAR (255) NOT NULL COMMENT '名称',
+  `statu` INT (10)  NOT NULL DEFAULT '0',
+  `ms_id` INT (10) NOT NULL COMMENT  '关联id',
+  `time` INT (15) NOT NULL COMMENT  '时间',
+  `type`  VARCHAR (255) NOT NULL COMMENT '回复类型',
+  `mtype` VARCHAR (255) NOT NULL COMMENT '消息类型',
+  `mp_id` VARCHAR (255) NOT NULL COMMENT '公众号mpid',
+  `keywork` TEXT  COMMENT '关键词',
+  PRIMARY  KEY (`id`)
+) ENGINE = InnoDB CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `uctoo_text_messages`;
+CREATE TABLE `uctoo_text_messages`(
+  `id` INT (10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `detile` VARCHAR (255) COMMENT '内容',
+
+
+  PRIMARY KEY (`id`)
+)ENGINE =   InnoDB CHARSET=utf8;
+
+DROP TABLE IF EXISTS `uctoo_picture_messages`;
+CREATE  TABLE `uctoo_picture_messages`(
+  `id` INT (10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `title0` VARCHAR (255) COMMENT '标题',
+  `detile0` TEXT COMMENT '内容',
+  `url0` TEXT COMMEnt'URL',
+  `title1` VARCHAR (255) COMMENT '标题',
+  `detile1` TEXT COMMENT '内容',
+  `url1` TEXT COMMEnt'URL',
+  `title2` VARCHAR (255) COMMENT '标题',
+  `detile2` TEXT COMMENT '内容',
+  `url2` TEXT COMMEnt'URL',
+  `title3` VARCHAR (255) COMMENT '标题',
+  `detile3` TEXT COMMENT '内容',
+  `url3` TEXT COMMEnt'URL',
+  `title4` VARCHAR (255) COMMENT '标题',
+  `detile4` TEXT COMMENT '内容',
+  `url4` TEXT COMMEnt'URL',
+  `pic` VARCHAR (255) COMMENT '图片',
+  PRIMARY KEY (`id`)
+)ENGINE = InnoDB CHARSET=utf8;
+
+
+
+

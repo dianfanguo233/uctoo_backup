@@ -34,11 +34,15 @@ class PublicController extends \Think\Controller {
             /* 调用UC登录接口登录 */
             $User = new UserApi;
             $uid = $User->login($username, $password);
+
             if(0 < $uid){ //UC登录成功
                 /* 登录用户 */
-                $Member = D('Member');
+//                $Member = D('Member');
+//                //修复登录bug；
+                $Member = D('Common/Member');
                 if($Member->login($uid)){ //登录用户
                     //TODO:跳转到登录前页面
+//                    die;
                     $this->success(L('_LOGIN_SUCCESS_'), U('Index/index'));
                 } else {
                     $this->error($Member->getError());
