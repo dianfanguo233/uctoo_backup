@@ -340,8 +340,13 @@ function T($template = '', $layer = '')
  * @param mixed $datas 要获取的额外数据源
  * @return mixed
  */
-function I($name, $default = '', $filter = null, $datas = null)
-{
+function I($name,$default='',$filter=null,$datas=null) {
+	static $_PUT	=	null;
+	if(strpos($name,'/')){ // 指定修饰符
+		list($name,$type) 	=	explode('/',$name,2);
+	}elseif(C('VAR_AUTO_STRING')){ // 默认强制转换为字符串
+        $type   =   's';
+    }
     if (strpos($name, '.')) { // 指定参数来源
         list($method, $name) = explode('.', $name, 2);
     } else { // 默认为自动判断
@@ -355,7 +360,10 @@ function I($name, $default = '', $filter = null, $datas = null)
             $input =& $_POST;
             break;
         case 'put'     :
-            parse_str(file_get_contents('php://input'), $input);
+        	if(is_null($_PUT)){
+            	parse_str(file_get_contents('php://input'), $_PUT);
+        	}
+        	$input 	=	$_PUT;        
             break;
         case 'param'   :
             switch ($_SERVER['REQUEST_METHOD']) {
@@ -363,7 +371,10 @@ function I($name, $default = '', $filter = null, $datas = null)
                     $input = $_POST;
                     break;
                 case 'PUT':
-                    parse_str(file_get_contents('php://input'), $input);
+                	if(is_null($_PUT)){
+                    	parse_str(file_get_contents('php://input'), $_PUT);
+                	}
+                	$input 	=	$_PUT;
                     break;
                 default:
                     $input = $_GET;
@@ -411,15 +422,22 @@ function I($name, $default = '', $filter = null, $datas = null)
         }
     } elseif (isset($input[$name])) { // 取值操作
         $data = $input[$name];
-        is_array($data) && array_walk_recursive($data, 'filter_exp');
         $filters = isset($filter) ? $filter : C('DEFAULT_FILTER');
         if ($filters) {
             if (is_string($filters)) {
+                if(0 === strpos($filters,'/')){
+                    if(1 !== preg_match($filters,(string)$data)){
+                        // 支持正则验证
+                        return   isset($default) ? $default : null;
+                    }
+                }else{
                 $filters = explode(',', $filters);
+                }
             } elseif (is_int($filters)) {
                 $filters = array($filters);
             }
 
+            if(is_array($filters)){
             foreach ($filters as $filter) {
                 if (function_exists($filter)) {
                     $data = is_array($data) ? array_map_recursive($filter, $data) : $filter($data); // 参数过滤
@@ -431,9 +449,30 @@ function I($name, $default = '', $filter = null, $datas = null)
                 }
             }
         }
+        }
+        if(!empty($type)){
+        	switch(strtolower($type)){
+        		case 'a':	// 数组
+        			$data 	=	(array)$data;
+        			break;
+        		case 'd':	// 数字
+        			$data 	=	(int)$data;
+        			break;
+        		case 'f':	// 浮点
+        			$data 	=	(float)$data;
+        			break;
+        		case 'b':	// 布尔
+        			$data 	=	(boolean)$data;
+        			break;
+                case 's':   // 字符串
+                default:
+                    $data   =   (string)$data;
+        	}
+        }
     } else { // 变量默认值
         $data = isset($default) ? $default : NULL;
     }
+    is_array($data) && array_walk_recursive($data,'think_filter');
     return $data;
 }
 
@@ -1674,10 +1713,11 @@ function send_http_status($code)
     }
 }
 
-// 过滤表单中的表达式
-function filter_exp(&$value)
-{
-    if (in_array(strtolower($value), array('exp', 'or'))) {
+function think_filter(&$value){
+	// TODO 其他安全过滤
+
+	// 过滤查询特殊字符
+    if(preg_match('/^(EXP|NEQ|GT|EGT|LT|ELT|OR|XOR|LIKE|NOTLIKE|NOT BETWEEN|NOTBETWEEN|BETWEEN|NOTIN|NOT IN|IN)$/i',$value)){
         $value .= ' ';
     }
 }
