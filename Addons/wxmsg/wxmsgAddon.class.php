@@ -44,28 +44,6 @@ use Common\Controller\Addon;
                     $res = $param['replay_msg'];
                     $pic =explode(',',$res['pic']);
 
-                    $test['text'] = json_encode($res);
-                    M('test')->add($test);
-//                    用循环应该会有bug；
-//                    $i=0;
-//                    while($i<=9){
-//                        $test['text'] = "$i";
-//                        M('test')->add($test);
-//                        if($res['title'.$i]){
-//                            $test['text'] = $res['title'.$i];
-//                            M('test')->add($test);
-//                            $i++;
-//                            $reData[$i]['Title'] = $res['title'.$i];
-//                            $reData[$i]['Description'] = $res['detile'.$i];
-//                            $reData[$i]['PicUrl'] = get_cover_url($pic[$i]) ; //'http://images.domain.com/templates/domaincom/logo.png';
-//                            $reData[$i]['Url'] = $res['url'.$i];
-//                            $test['text'] = $reData[$i]['Title'];
-//                            M('test')->add($test);
-//                      }
-//                    $i++;
-//
-//                    }
-
                         $reData[0]['Title'] = $res['title0'];
                         $reData[0]['Description'] = $res['detile0'];
 
@@ -110,12 +88,6 @@ use Common\Controller\Addon;
 
 
             }
-
-
-
-
-
-
 
         }
 

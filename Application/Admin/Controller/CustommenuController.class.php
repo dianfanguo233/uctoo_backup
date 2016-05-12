@@ -85,7 +85,13 @@ class CustommenuController extends AdminController
                 $this->assign('list', $list);
                 $this->assign('isgetmenu',1);
             }
+//            dump($cm->getCmType() );
+//            dump($getwechatmenu);
+//            dump($list);die;
 
+//            dump($cm->getCmType() );
+//            echo 111;
+//            dump($list);die;
 
 
 
@@ -94,7 +100,9 @@ class CustommenuController extends AdminController
         }
 
     }
-
+/*
+ * 获取自定义菜单
+ * */
     public function getmenu(){
 
         $id = get_mpid();
@@ -104,6 +112,9 @@ class CustommenuController extends AdminController
         $options['encodingaeskey'] = $member_public['encodingaeskey'];
         $weObj = new TPWechat($options);
         $menu = $weObj->getMenu();
+        if(!$menu){
+            $this->error('请确认公众号权限');
+        }
         foreach($menu['menu']['button'] as $k =>&$v){
             $v['title']=$v['name'];
             $v['keyword']=$v['key'];
@@ -114,14 +125,17 @@ class CustommenuController extends AdminController
             }
              $v['child'] = $v['sub_button'];
         }
-
         R('Custommenu/index',array($menu['menu']['button']));
 
     }
 
+    /*
+     * 菜单预览
+     */
      public function previewmenu(){
          $menu = I('post.');
          $menu =$menu['cm'];
+//         dump($menu);
          foreach($menu['1']['title'] as $v){
             $preview[]=array('name'=>$v);
          };
@@ -129,7 +143,7 @@ class CustommenuController extends AdminController
              foreach($menu['2']['pid']  as $k=>$v){
                  $preview[$v]['child'][]=array('sort'=>$menu['2']['sort'][$k],'title'=>$menu['2']['title'][$k]);
          }
-
+         //dump($preview);
          $this->assign('menu',$preview);
          $this->display();
 
@@ -272,8 +286,6 @@ class CustommenuController extends AdminController
      */
     public function create()
     {
-
-
         $data = $this->get_data ();
 
         // 要先填写appid
@@ -290,20 +302,14 @@ class CustommenuController extends AdminController
             'appid'=> $info['appid'], //填写高级调用功能的app id
             'appsecret'=> $info['secret'] //填写高级调用功能的密钥
         );
-       // dump($options);
 
         $weObj = new TPWechat($options);
         $res = $weObj->createMenu($data);
-//        $test['text'] = json_encode($data);
-//        M('test')->add($test);
 
-        //die;
         if ($res) {
-
             $this->success ( '发送菜单成功',U('Custommenu/index'),3 );
         } else {
-            //die(222);
-            $this->error ( '发送菜单失败，错误的返回码是：' . $weObj->errCode . ', 错误的提示是：' . $weObj->errMsg ,U('Custommenu/index'),5 );
+            $this->success ( '发送菜单失败，错误的返回码是：' . $weObj->errCode . ', 错误的提示是：' . $weObj->errMsg ,U('Custommenu/index'),5 );
         }
     }
 

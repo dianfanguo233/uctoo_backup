@@ -616,3 +616,5 @@ function show_cloud_cover($path){
         return $path;
     }
 }
+
+

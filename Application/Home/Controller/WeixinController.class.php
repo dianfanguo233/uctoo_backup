@@ -30,8 +30,8 @@ class WeixinController extends Controller {
 
     public function _initialize(){
         /* 读取数据库中的公众号信息初始化微信类 */
-
     }
+
 
      /**
      * 微信消息接口入口
@@ -56,7 +56,7 @@ class WeixinController extends Controller {
         $params['weObj'] = &$weObj;
         $params['mp_id'] = $mp_id;
         $params['weOptions'] = $this->options;
-        
+
         //如果被动响应可获得用户信息就记录下
 	if (! empty ( $mp_id )) {                    //设置当前上下文的公众号id
             $mp_id =  get_mpid($mp_id);
@@ -82,9 +82,11 @@ class WeixinController extends Controller {
             //事件
             case TPWechat::MSGTYPE_EVENT:         //先处理事件型消息
                 $event = $weObj->getRevEvent();
+
                 switch ($event['event']) {
                     //关注
                     case TPWechat::EVENT_SUBSCRIBE:
+
                         //二维码关注
                         if(isset($event['eventkey']) && isset($event['ticket'])){
 
@@ -95,6 +97,7 @@ class WeixinController extends Controller {
 
 //                        $weObj->reply();
                         //获取回复数据
+                        $where['mp_id']=get_mpid();
                         $where['mtype']= 1;
                         $where['statu']= 1;
                         $model_re = M('replay_messages');
@@ -103,7 +106,8 @@ class WeixinController extends Controller {
 
                         $params['replay_msg']=D('Mpbase/Autoreply')->get_type_data($data_re);
 
-                        hook('wxmsg',$params);
+                        D('Home/Wxmsg')->wxmsg($params);
+//                        hook('wxmsg',$params);
 
                         $weObj->reply();
 
@@ -111,7 +115,8 @@ class WeixinController extends Controller {
                         $user["subscribe"] = 1;     
                         $ucuser->where($map)->save($user);
                     }
-			hook('welcome', $params);   //把消息分发到实现了welcome方法的addons中,参数中包含本次用户交互的微信类实例和公众号在系统中id
+			        hook('welcome', $params);   //把消息分发到实现了welcome方法的addons中,参数中包含本次用户交互的微信类实例和公众号在系统中id
+
                         exit;
 			break;
                     //扫描二维码
@@ -130,13 +135,14 @@ class WeixinController extends Controller {
                         $where['keywork']=array('like', '%' . $data['Content'] . '%');
                         $where['mtype']= 3;
                         $where['statu']= 1;
+                        $where['mp_id']=get_mpid();
                         $model_re = M('replay_messages');
                         $data_re=$model_re->where($where)->find();
                         $params['type']=$data_re['type'];
                         $params['replay_msg']=D('Mpbase/Autoreply')->get_type_data($data_re);
 
-
-                        hook('wxmsg',$params);
+                        D('Home/Wxmsg')->wxmsg($params);
+//                        hook('wxmsg',$params);
 
                         $weObj->reply();  //在addons中处理完业务逻辑，回复消息给用户
                         break;
@@ -177,6 +183,7 @@ class WeixinController extends Controller {
                         $user["subscribe"] = 0;     //取消关注设置关注状态为取消
                         $ucuser->where($map)->save($user);
                     }
+
                         break;
                     //群发接口完成后推送的结果
                     case TPWechat::EVENT_SEND_MASS:
@@ -197,6 +204,7 @@ class WeixinController extends Controller {
                 $where['keywork']=array('like', '%' . $data['Content'] . '%');
                 $where['mtype']= 3;
                 $where['statu']= 1;
+                $where['mp_id']=get_mpid();
                 $model_re = M('replay_messages');
                 $data_re=$model_re->order('time desc')->where($where)->find();
 //              关键字匹配失败进入自动回复
@@ -204,6 +212,7 @@ class WeixinController extends Controller {
                     unset($where);
                     $where['mtype']= 2;
                     $where['statu']= 1;
+                    $where['mp_id']=get_mpid();
                     $data_re=$model_re->order('time desc')->where($where)->find();
                 }
 
@@ -211,7 +220,8 @@ class WeixinController extends Controller {
                 $params['replay_msg']=D('Mpbase/Autoreply')->get_type_data($data_re);
 
 
-                hook('wxmsg',$params);
+                D('Home/Wxmsg')->wxmsg($params);
+//                hook('wxmsg',$params);
 
                 $weObj->reply();  //在addons中处理完业务逻辑，回复消息给用户
                 break;
@@ -245,5 +255,8 @@ class WeixinController extends Controller {
             addWeixinLog ( $data, $GLOBALS ['HTTP_RAW_POST_DATA'] );
         }
 	}
+
+
+
 
 }

@@ -16,15 +16,20 @@ use Admin\Builder\AdminListBuilder;
 use Admin\Builder\AdminTreeListBuilder;
 
 
-class MpbaseController extends AdminController
-{
+
+class MpbaseController extends AdminController{
+
     public function __construct()
     {
         parent::__construct();
         //dump($_SERVER);
     }
+
+
+
     public function config()
     {
+
         $admin_config = new AdminConfigBuilder();
         $data = $admin_config->handleConfig();
 
@@ -174,7 +179,7 @@ class MpbaseController extends AdminController
             $data['public_name'] = I('post.public_name', '', 'op_t');
             $data['wechat'] = I('post.wechat', 1, 'op_t');
             $data['public_id'] = I('post.public_id', 1, 'op_t');
-            $data['mp_type'] = I('post.mp_type', '', 'intval');
+            $data['type'] = I('post.type', '', 'intval');
             $data['appid'] = I('post.appid', '', 'op_t');
             $data['secret'] = I('post.secret', '', 'op_t');
             $data['encodingaeskey'] = I('post.encodingaeskey', '', 'op_t');
@@ -237,15 +242,13 @@ class MpbaseController extends AdminController
     public function change() {
         $map ['id'] = I ( 'id', 0, 'intval' );
         $info = D ( 'Mpbase/MemberPublic' )->where ( $map )->find ();
-        get_mpid($info ['mp_id']);                                               //设置当前上下文mp_id
-
+        get_mpid($info ['id']);                                               //设置当前上下文mp_id
         unset ( $map );
         $map ['uid'] = UID;
         $res =  M ( 'Member' )->where ( $map )->setField ( 'token', $info['public_id'] );
-
-
             $user = session('user_auth');
             $user['token'] = $info['public_id'];
+            $user['mp_id'] = $info ['id'];//修复mp_id问题，不知道有没其他影响
             $user['public_name'] = $info['public_name'];
             session('user_auth', $user);
             session('user_auth_sign', data_auth_sign($user));
@@ -255,7 +258,7 @@ class MpbaseController extends AdminController
         redirect ( U ( 'index' ) );
     }
 
-/*
+    /*
      * 自动回复消息；
      *  - 关注回复
      *  - 关键词回复
@@ -265,6 +268,7 @@ class MpbaseController extends AdminController
         $autor = D('Mpbase/Autoreply');
         $messages = D('Mpbase/Messages');
         I('mtype')? $where['mtype'] = I('mtype'):null;
+        $where['mp_id']=get_mpid();
         $list = $messages->get_replay_all($where);
         $message_type=$autor ->getMessagesType();
          $reply_type=$autor ->replyMessagesType();
@@ -444,8 +448,8 @@ class MpbaseController extends AdminController
         if($res){
             redirect($_SERVER['HTTP_REFERER']);
         }
-        dump($res);
-        die;
+//        dump($res);
+//        die;
         $this->error('错误');
 
     }
@@ -492,6 +496,11 @@ class MpbaseController extends AdminController
 
 
     }
+
+
+
+
+
 
 
 }

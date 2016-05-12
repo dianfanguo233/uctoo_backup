@@ -1863,7 +1863,31 @@ function get_all_module_lang($common_lang = array())
     foreach ($list as $val) {
         $module_lang = array_merge($module_lang, (array)$val);
     }
-    $lang = $module_lang ; // array_unique(array_merge($common_lang,$module_lang));
+    $lang = $module_lang; // array_unique(array_merge($common_lang,$module_lang));
     return $lang;
-
 }
+    /**
+     * 执行SQL文件
+     */
+    function execute_sql_file($sql_path) {
+        // 读取SQL文件
+        $sql = file_get_contents ( $sql_path );
+        $sql = str_replace ( "\r", "\n", $sql );
+        $sql = explode ( ";\n", $sql );
+
+        // 替换表前缀
+        $orginal = 'uctoo_';
+        $prefix = C ( 'DB_PREFIX' );
+        $sql = str_replace ( "{$orginal}", "{$prefix}", $sql );
+
+        // 开始安装
+        foreach ( $sql as $value ) {
+            $value = trim ( $value );
+            if (empty ( $value ))
+                continue;
+
+            $res = M ()->execute ( $value );
+            // dump($res);
+            // dump(M()->getLastSql());
+        }
+    }

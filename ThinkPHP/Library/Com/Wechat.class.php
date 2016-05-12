@@ -377,6 +377,8 @@ class Wechat
 		if (!empty($postStr)) {
 			$this->_receive = (array)simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
 		}
+
+
 		return $this;
 	}
 

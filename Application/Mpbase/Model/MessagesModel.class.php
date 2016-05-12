@@ -78,6 +78,7 @@ class MessagesModel extends Model
         $mtype = $model ->find($id);
         $where['mtype'] = $mtype['mtype'];
         $where['statu'] = 1;
+        $where['mp_id']=get_mpid();
         $data['statu'] = 0;
         $select = $model->where($where)->select();
 
@@ -114,6 +115,7 @@ class MessagesModel extends Model
 
         $model = D('replay_messages');
         $where['id'] = $id;
+        $where['mp_id']=get_mpid();
         $data['statu'] = 1;
         $res = $model->where($where)->field('statu')->save($data);
         //dump($model->getlastsql());die;
