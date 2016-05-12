@@ -30,10 +30,6 @@ class WeixinController extends Controller {
 
     public function _initialize(){
         /* 读取数据库中的公众号信息初始化微信类 */
-
-
-
-
     }
 
 
