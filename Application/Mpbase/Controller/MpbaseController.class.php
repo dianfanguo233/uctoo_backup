@@ -179,7 +179,7 @@ class MpbaseController extends AdminController{
             $data['public_name'] = I('post.public_name', '', 'op_t');
             $data['wechat'] = I('post.wechat', 1, 'op_t');
             $data['public_id'] = I('post.public_id', 1, 'op_t');
-            $data['type'] = I('post.type', '', 'intval');
+            $data['mp_type'] = I('post.mp_type', '', 'intval');
             $data['appid'] = I('post.appid', '', 'op_t');
             $data['secret'] = I('post.secret', '', 'op_t');
             $data['encodingaeskey'] = I('post.encodingaeskey', '', 'op_t');

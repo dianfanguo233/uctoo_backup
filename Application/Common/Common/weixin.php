@@ -43,7 +43,7 @@ function get_token_appinfo($token = '') {
 
 function get_mpid_appinfo($mp_id = '') {
     empty ( $mp_id ) && $mp_id = get_mpid ();
-    $map ['mp_id'] = $mp_id;
+    $map ['id'] = $mp_id;
     $info = M ( 'member_public' )->where ( $map )->find ();
     return $info;
 }
@@ -153,7 +153,10 @@ function get_mpid($mp_id = NULL) {
     if ($mp_id !== NULL) {
         session ( 'mp_id', $mp_id );
     } elseif (! empty ( $_REQUEST ['mp_id'] )) {
-        session ( 'mp_id', $_REQUEST ['mp_id'] );
+	    //外链指定mp_id 为加密过的mp_id
+	    $map ['mp_id'] = I('mp_id','','/^\w{32}$/');
+	    $mp_id = M ( 'member_public' )->where ( $map )->getField('id');
+        empty($mp_id) || session ( 'mp_id', $mp_id );
     }
     $mp_id = session ( 'mp_id' );
     if (empty ( $mp_id )) {
@@ -163,7 +166,7 @@ function get_mpid($mp_id = NULL) {
         $map['uid'] = is_login();
         $map['public_id'] = get_token();
         $mp =  D('Mpbase/MemberPublic')->where($map)->find();  //所登陆会员帐号当前管理的公众号
-        $mp_id = $mp['mp_id'];
+        $mp_id = $mp['id'];
     }
     if (empty ( $mp_id )) {
         return - 1;

@@ -54,12 +54,12 @@ class WeixinController extends Controller {
         $ToUserName = $weObj->getRevTo();
         $FromUserName = $weObj->getRevFrom();
         $params['weObj'] = &$weObj;
-        $params['mp_id'] = $mp_id;
+        $params['mp_id'] = $this->member_public['id'];
         $params['weOptions'] = $this->options;
 
         //如果被动响应可获得用户信息就记录下
-	if (! empty ( $mp_id )) {                    //设置当前上下文的公众号id
-            $mp_id =  get_mpid($mp_id);
+	if (! empty ( $this->member_public['id'] )) {                    //设置当前上下文的公众号id
+            $mp_id =  get_mpid($this->member_public['id']);
         }
         if (! empty ( $ToUserName )) {
             get_token ( $ToUserName );
