@@ -16,6 +16,9 @@ use Think\Model;
  */
 class OrderModel extends Model
 {
+	protected $_validate = array(
+		array('order_id', '', '-1', self::MUST_VALIDATE, 'unique'), //order_id 不该重复
+	);
     /* 通用订单模型自动完成 */
     protected $_auto = array(
 
