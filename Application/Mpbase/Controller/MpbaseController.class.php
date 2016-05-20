@@ -17,8 +17,8 @@ use Admin\Builder\AdminTreeListBuilder;
 
 
 
-class MpbaseController extends AdminController{
-
+class MpbaseController extends AdminController
+{
     public function __construct()
     {
         parent::__construct();
@@ -136,7 +136,7 @@ class MpbaseController extends AdminController{
         int_to_string($list);  //设置status
         foreach ($list as &$val) {
             $val['u_name'] = D('Common/Member')->where('uid=' . $val['uid'])->getField('nickname');
-            $val['type'] = $model->getMpType($val['type']);
+            $val['type'] = $model->getMpType($val['mp_type']);
         }
         $totalCount = $model->count();
         //显示页面
