@@ -13,6 +13,7 @@ namespace Home\Controller;
 
 use Think\Controller;
 use Com\TPWechat;
+use Com\Wxpay\lib\WxPayConfig;
 /**
  * 微信交互控制器，中控服务器
  * 主要获取和反馈微信平台的数据，分析用户交互和系统消息分发。
@@ -258,5 +259,28 @@ class WeixinController extends Controller {
 
 
 
+	/*
+	 * 微信支付统一回调接口 后续逻辑可查看 PayNotifyCallBackController 中 NotifyProcess() 说明
+	 */
+	public function notify(){
+		$rsv_data = $GLOBALS ['HTTP_RAW_POST_DATA'];
+		$result   = xmlToArray($rsv_data);
+		addWeixinLog(var_export($rsv_data, true), $GLOBALS ['HTTP_RAW_POST_DATA']);
+		//回复公众平台支付结果
+		$notify       = new PayNotifyCallBackController();
+		$map["appid"] = $result["appid"];
+		$map["mchid"] = $result["mch_id"];
+		$info         = M('member_public')->where($map)->find();
+		//获取公众号信息，jsApiPay初始化参数
+		$cfg = array(
+			'APPID'      => $info['appid'],
+			'MCHID'      => $info['mchid'],
+			'KEY'        => $info['mchkey'],
+			'APPSECRET'  => $info['secret'],
+			'NOTIFY_URL' => $info['notify_url'],
+		);
+		WxPayConfig::setConfig($cfg);
+		$notify->Handle(false);
+	}
 
 }
