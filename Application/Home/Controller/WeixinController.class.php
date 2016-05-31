@@ -42,6 +42,7 @@ class WeixinController extends Controller {
      */
 	public function index($mp_id = '') {
         //
+        get_mpid($mp_id);//初始化公众号
         $map['mp_id'] = $mp_id;
         $this->member_public = M('MemberPublic')->where($map)->find();
         $this->options['appid'] = $this->member_public['appid'];    //初始化options信息
@@ -219,8 +220,6 @@ class WeixinController extends Controller {
 
                 $params['type']=$data_re['type'];
                 $params['replay_msg']=D('Mpbase/Autoreply')->get_type_data($data_re);
-
-
                 D('Home/Wxmsg')->wxmsg($params);
 //                hook('wxmsg',$params);
 

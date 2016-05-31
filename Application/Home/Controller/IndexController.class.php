@@ -22,6 +22,7 @@ class IndexController extends Controller
     //系统首页
     public function index()
     {
+        sendSMS();
         if(is_login()){
         }
         hook('homeIndex');
