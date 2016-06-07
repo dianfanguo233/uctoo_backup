@@ -14,6 +14,8 @@ namespace Home\Controller;
 use Think\Controller;
 use Com\TPWechat;
 use Com\Wxpay\lib\WxPayConfig;
+use Com\Wxpay\lib\WxPayOrderQuery;
+use Com\Wxpay\lib\WxPayApi;
 /**
  * 微信交互控制器，中控服务器
  * 主要获取和反馈微信平台的数据，分析用户交互和系统消息分发。
@@ -282,4 +284,50 @@ class WeixinController extends Controller {
 		$notify->Handle(false);
 	}
 
+	/*
+	 * 查询微信支付的订单
+	 * 注意 这里未做权限判断
+	 */
+	public function orderquery()
+	{
+		$id = I('id','','intval');
+		$order                      = M("Order");
+		if(empty($id)
+		||!($odata = $order->where('id = '. $id )->find()))
+		{
+			$this->error('该支付记录不存在');
+		}
+		$map["id"] = $odata["mp_id"];
+		$info         = M('member_public')->where($map)->find();
+		//获取公众号信息，jsApiPay初始化参数
+		$cfg = array(
+			'APPID'      => $info['appid'],
+			'MCHID'      => $info['mchid'],
+			'KEY'        => $info['mchkey'],
+			'APPSECRET'  => $info['secret'],
+			'NOTIFY_URL' => $info['notify_url'],
+		);
+		WxPayConfig::setConfig($cfg);
+		$input = new WxPayOrderQuery();
+		$input->SetOut_trade_no($odata['order_id']);
+		$result = WxPayApi::orderQuery($input);
+		if(array_key_exists("return_code", $result)
+			&& array_key_exists("result_code", $result)
+			&& array_key_exists("trade_state", $result)
+			&& $result["return_code"] == "SUCCESS"
+			&& $result["result_code"] == "SUCCESS"
+			&& $result["trade_state"] == "SUCCESS")
+		{
+			// $odata['module'] = Shop 则在D('ShopOrder','Logic')->AfterPayOrder() 内处理后续逻辑
+			$class = parse_res_name($odata['module'].'/'.$odata['module'].'Order','Logic');
+			if(class_exists($class) &&
+				method_exists($class,'AfterPayOrder'))
+			{
+				$m = new $class();
+				$m->AfterPayOrder($result,$odata);
+			}
+			$this->success('已支付');
+		}
+		$this->error((empty($result['trade_state_desc'])?'未支付':$result['trade_state_desc']));
+	}
 }
