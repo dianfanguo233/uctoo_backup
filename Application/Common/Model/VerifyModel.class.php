@@ -55,6 +55,25 @@ class VerifyModel extends Model
         return $verify;
     }
 
+
+    public function addSMSVerify($account,$verify,$type="mobile",$uid=0)
+    {
+        $uid = $uid?$uid:is_login();
+
+        $this->where(array('account'=>$account,'type'=>$type))->delete();
+        $data['verify'] = $verify;
+        $data['account'] = $account;
+        $data['type'] = $type;
+        $data['uid'] = $uid;
+        $data = $this->create($data);
+        $res = $this->add($data);
+        if(!$res){
+            return false;
+        }
+        return $verify;
+    }
+
+
     public function getVerify($id)
     {
         $verify = $this->where(array('id' => $id))->getField('verify');
@@ -67,7 +86,6 @@ class VerifyModel extends Model
         if (!$verify1) {
             return false;
         }
-
         $this->where(array('account' => $account, 'type' => $type))->delete();
         //$this->where('create_time <= '.get_some_day(1))->delete();
 

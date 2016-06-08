@@ -6068,5 +6068,62 @@ CREATE  TABLE `uctoo_picture_messages`(
 )ENGINE = InnoDB CHARSET=utf8;
 
 
+--基础钩子--
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for uctoo_hooks
+-- ----------------------------
+DROP TABLE IF EXISTS `uctoo_hooks`;
+CREATE TABLE `uctoo_hooks` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(40) NOT NULL DEFAULT '' COMMENT '钩子名称',
+  `description` text NOT NULL COMMENT '描述',
+  `type` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '类型',
+  `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `addons` varchar(255) NOT NULL DEFAULT '' COMMENT '钩子挂载的插件 ''，''分割',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=MyISAM AUTO_INCREMENT=10001 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of uctoo_hooks
+-- ----------------------------
+INSERT INTO `uctoo_hooks` VALUES ('38', 'pageHeader', '页面header钩子，一般用于加载插件CSS文件和代码', '1', '0', '');
+INSERT INTO `uctoo_hooks` VALUES ('39', 'pageFooter', '页面footer钩子，一般用于加载插件JS文件和JS代码', '1', '0', 'SuperLinks');
+INSERT INTO `uctoo_hooks` VALUES ('40', 'adminEditor', '后台内容编辑页编辑器', '1', '1378982734', 'EditorForAdmin');
+INSERT INTO `uctoo_hooks` VALUES ('41', 'AdminIndex', '首页小格子个性化显示', '1', '1382596073', 'SiteStat,SyncLogin,DevTeam,SystemInfo,LocalComment');
+INSERT INTO `uctoo_hooks` VALUES ('42', 'topicComment', '评论提交方式扩展钩子。', '1', '1380163518', '');
+INSERT INTO `uctoo_hooks` VALUES ('43', 'app_begin', '应用开始', '2', '1384481614', 'Iswaf');
+INSERT INTO `uctoo_hooks` VALUES ('44', 'checkIn', '签到', '1', '1395371353', 'CheckIn');
+INSERT INTO `uctoo_hooks` VALUES ('45', 'Rank', '签到排名钩子', '1', '1395387442', 'Rank_checkin');
+INSERT INTO `uctoo_hooks` VALUES ('46', 'support', '赞', '1', '1398264759', 'Support');
+INSERT INTO `uctoo_hooks` VALUES ('47', 'localComment', '本地评论插件', '1', '1399440321', 'LocalComment');
+INSERT INTO `uctoo_hooks` VALUES ('48', 'weiboType', '微博类型', '1', '1409121894', '');
+INSERT INTO `uctoo_hooks` VALUES ('49', 'repost', '转发钩子', '1', '1403668286', '');
+INSERT INTO `uctoo_hooks` VALUES ('50', 'syncLogin', '第三方登陆位置', '1', '1403700579', 'SyncLogin');
+INSERT INTO `uctoo_hooks` VALUES ('51', 'syncMeta', '第三方登陆meta接口', '1', '1403700633', 'SyncLogin');
+INSERT INTO `uctoo_hooks` VALUES ('52', 'J_China_City', '每个系统都需要的一个中国省市区三级联动插件。', '1', '1403841931', 'ChinaCity');
+INSERT INTO `uctoo_hooks` VALUES ('54', 'imageSlider', '图片轮播钩子', '1', '1407144022', '');
+INSERT INTO `uctoo_hooks` VALUES ('55', 'friendLink', '友情链接插件', '1', '1407156413', 'SuperLinks');
+INSERT INTO `uctoo_hooks` VALUES ('56', 'beforeSendWeibo', '在发微博之前预处理微博', '2', '1408084504', 'InsertFile');
+INSERT INTO `uctoo_hooks` VALUES ('57', 'beforeSendRepost', '转发微博前的预处理钩子', '2', '1408085689', '');
+INSERT INTO `uctoo_hooks` VALUES ('58', 'parseWeiboContent', '解析微博内容钩子', '2', '1409121261', '');
+INSERT INTO `uctoo_hooks` VALUES ('59', 'userConfig', '用户配置页面钩子', '1', '1417137557', 'SyncLogin');
+INSERT INTO `uctoo_hooks` VALUES ('60', 'weiboSide', '微博侧边钩子', '1', '1417063425', 'Retopic,Recommend');
+INSERT INTO `uctoo_hooks` VALUES ('61', 'personalMenus', '顶部导航栏个人下拉菜单', '1', '1417146501', '');
+INSERT INTO `uctoo_hooks` VALUES ('62', 'dealPicture', '上传图片处理', '2', '1417139975', '');
+INSERT INTO `uctoo_hooks` VALUES ('63', 'ucenterSideMenu', '用户中心左侧菜单', '1', '1417161205', '');
+INSERT INTO `uctoo_hooks` VALUES ('64', 'afterTop', '顶部导航之后的钩子，调用公告等', '1', '1429671392', 'Announcement');
+INSERT INTO `uctoo_hooks` VALUES ('65', 'report', '举报钩子', '1', '1429511732', 'Report');
+INSERT INTO `uctoo_hooks` VALUES ('66', 'handleAction', '行为的额外操作', '2', '1433300260', 'CheckIn');
+INSERT INTO `uctoo_hooks` VALUES ('67', 'uploadDriver', '附件图片上传引擎', '2', '1435306269', '');
+INSERT INTO `uctoo_hooks` VALUES ('69', 'filterHtmlContent', '渲染富文本', '2', '1441951420', '');
+INSERT INTO `uctoo_hooks` VALUES ('70', 'parseContent', '解析内容', '2', '1445828128', 'Sensitive');
+INSERT INTO `uctoo_hooks` VALUES ('71', 'tool', '返回顶部，右下角工具栏', '1', '1445828128', '');
+INSERT INTO `uctoo_hooks` VALUES ('10000', 'sms', 'sms', '2', '1464053212', 'YunSms');
+
+
+
 
 
