@@ -577,9 +577,54 @@ class UcuserModel extends Model
         return $change;
     }
 
+	/*
+	 * 获取 带有tag_id的 筛选数组
+	 */
+	public function get_tag_id_map($tag_id)
+	{
 
+		if(is_array($tag_id))
+		{
+			foreach($tag_id as $id)
+			{
+				$ret[] =  array($this->get_tag_id_map($id));
+			}
+//			$ret[] = 'and';
+		}else
+		{
+			$ret[] = array(
+				array('like','['.$tag_id.']'),
+				array('like','%,'.$tag_id.']'),
+				array('like','['.$tag_id.',%'),
+				array('like','%,'.$tag_id.',%'),
+				'or'
+			);
+		}
+		if(((is_numeric($tag_id) && !($tag_id==1 ))
+			|| (is_array($tag_id) && !in_array(1,$tag_id))))
+		{
+			$ret[] = array(
+				array('notlike','[1]'),
+				array('notlike','%,1]'),
+				array('notlike','[1,%'),
+				array('notlike','%,1,%'),
+				'and'
+			);
+		}
+		return $ret;
+	}
 
+	public function delete_tag_id($ucuser_info,$tag_id)
+	{
+		if(!empty($ucuser_info['tagid_list'])
+		&& ($ucuser_info['tagid_list'] = json_decode($ucuser_info['tagid_list'],true)))
+		{
+			$ucuser_info['tagid_list'] = array_diff($ucuser_info['tagid_list'],array($tag_id));
+			$ucuser_info['tagid_list'] = json_encode($ucuser_info['tagid_list']);
+			$this->where('uid = '.$ucuser_info['uid'])->save($ucuser_info);
 
+		}
+	}
 
     public function getErrorMessage($error_code = null)
     {
