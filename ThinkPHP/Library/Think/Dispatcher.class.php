@@ -252,7 +252,17 @@ class Dispatcher {
                 // URL参数按顺序绑定变量
                 $var    =   $paths;
             }else{
-                preg_replace_callback('/(\w+)\/([^\/]+)/', function($match) use(&$var){$var[$match[1]]=strip_tags($match[2]);}, implode('/',$paths));
+//				preg_replace_callback('/(\w+)\/([^\/]+)/', function($match) use(&$var){
+//					                preg_replace_callback('/(\w+)\/([^\/]+)/', function($match) use(&$var){
+//										$var[$match[1]]=strip_tags($match[2]);
+//				}, implode('/',$paths));
+				//支持 url中 &a[]=1 格式
+                preg_replace_callback('/([\w\[\]]+)\/([^\/]+)/', function($match) use(&$var){
+					$a = '&'.urlencode($match[1]).'='.strip_tags($match[2]);
+					parse_str($a,$vars);
+					$var = array_merge($var,$vars);
+				}, implode('/',$paths));
+
             }
             $_GET   =  array_merge($var,$_GET);
         }
