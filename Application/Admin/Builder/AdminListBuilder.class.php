@@ -19,6 +19,7 @@ class AdminListBuilder extends AdminBuilder
     private $_search = array();
     private $_select = array();
     private $_form=array();
+    private $_idskey;
     /**设置页面标题
      * @param $title 标题文本
      * @return $this
@@ -382,9 +383,9 @@ class AdminListBuilder extends AdminBuilder
         return $this->keyYesNo($name, $title);
     }
 
-    public function keyImage($name, $title)
+    public function keyImage($name, $title,$attr=array())
     {
-        return $this->key($name, $title, 'image');
+        return $this->key($name, $title, 'image',$attr);
     }
 
     public function keyTime($name, $title)
@@ -608,16 +609,29 @@ class AdminListBuilder extends AdminBuilder
         //image转换为图片
 
         $this->convertKey('image', 'html', function ($value, $key, $item) {
+			$content = '';
+			if (isset($key['opt']))
+			{
+				$content = array();
+				foreach ($key['opt'] as $key => $v)
+				{
+					$v     = htmlspecialchars($v);
+					$content[] = "$key=\"$v\"";
+				}
+				$content = implode(' ', $content);
+			}
             if (intval($value)) {//value是图片id
                 $value = htmlspecialchars($value);
                 $sc_src = get_cover($value, 'path');
 
                 $src = getThumbImageById($value, 80, 80);
                 $sc_src = $sc_src == '' ? $src : $sc_src;
-                $html = "<div class='popup-gallery'><a title=\"" . L('_VIEW_BIGGER_') . "\" href=\"$sc_src\"><img src=\"$sc_src\"/ style=\"width:80px;height:80px\"></a></div>";
+				empty($content) && $content = 'style=\"width:80px;height:80px\"';
+                $html = "<div class='popup-gallery'><a title=\"" . L('_VIEW_BIGGER_') . "\" href=\"$sc_src\"><img src=\"$sc_src\"/ \" ".$content."></a></div>";
             } else {//value是图片路径
                 $sc_src = $value;
-                $html = "<div class='popup-gallery'><a title=\"" . L('_VIEW_BIGGER_') . "\" href=\"$sc_src\"><img src=\"$sc_src\"/ style=\"border-radius:100%;\"></a></div>";
+				empty($content) && $content = 'style=\"border-radius:100%;\"';
+                $html = "<div class='popup-gallery'><a title=\"" . L('_VIEW_BIGGER_') . "\" href=\"$sc_src\"><img src=\"$sc_src\"/ ".$content."></a></div>";
             }
             return $html;
         });
@@ -705,6 +719,7 @@ class AdminListBuilder extends AdminBuilder
 
         //显示页面
         $this->assign('title', $this->_title);
+        $this->assign('idskey', $this->_idskey);
         $this->assign('suggest', $this->_suggest);
         $this->assign('keyList', $this->_keyList);
         $this->assign('buttonList', $this->_buttonList);
@@ -742,9 +757,19 @@ class AdminListBuilder extends AdminBuilder
             if ($key['type'] == $from) {
                 $key['type'] = $to;
                 foreach ($this->_data as &$data) {
-                    $value = &$data[$key['name']];
+	                $value = &$data[$key['name']];
+	                /*
+	                 * 支持取数组内值
+	                 */
+	                $a = $data;
+                    foreach(explode('.',$key['name']) as $v)
+	                {
+		                $a =$a[$v];
+	                }
+	                $value =(empty($value)?$a:$value);
                     $value = $convertFunction($value, $key, $data);
                     unset($value);
+                    unset($a);
                 }
                 unset($data);
             }
@@ -774,6 +799,14 @@ class AdminListBuilder extends AdminBuilder
         $pattern = $explode[0];
         $fun = empty($explode[1]) ? 'U' : $explode[1];
         return function ($item) use ($pattern, $fun) {
+			// 支持 {other_id}格式 {other_id}将被替换
+			if(preg_match_all('/\{([0-9a-zA-z_]*)\}/',$pattern,$ret,2))
+			{
+				foreach ($ret as $rv)
+				{
+					$pattern = strtr($pattern,array($rv[0]=>$item[$rv[1]]));
+				}
+			}
             $pattern = str_replace('###', $item['id'], $pattern);
             //调用ThinkPHP中的解析引擎解析变量
             $view = new \Think\View();
@@ -872,4 +905,14 @@ class AdminListBuilder extends AdminBuilder
         };
     }
 
+	/**设置多选时传递的键值
+	 * @param string $idskey
+	 *
+	 * @return $this
+	 */
+	public function setIdsKey($idskey='id')
+	{
+		$this->_idskey = $idskey;
+		return $this;
+	}
 }
