@@ -1181,9 +1181,10 @@ function U($url = '', $vars = '', $suffix = true, $domain = false)
             $url = strtolower($url);
         }
         if (!empty($vars)) { // 添加参数
-            foreach ($vars as $var => $val) {
-                if ('' !== trim($val)) $url .= $depr . $var . $depr . urlencode($val);
-            }
+//            foreach ($vars as $var => $val) {
+//                if ('' !== trim($val)) $url .= $depr . $var . $depr . urlencode($val);
+//            }
+			$url .=$depr.preg_replace('/%5B[0-9]+%5D/simU', '%5B%5D',strtr(http_build_query($vars),array('='=>$depr,'&'=>$depr)));
         }
         if ($suffix) {
             $suffix = $suffix === true ? C('URL_HTML_SUFFIX') : $suffix;

@@ -101,6 +101,14 @@ class Wechat
 	const GROUP_UPDATE_URL='/groups/update?';
 	const GROUP_MEMBER_UPDATE_URL='/groups/members/update?';
 	const GROUP_MEMBER_BATCHUPDATE_URL='/groups/members/batchupdate?';
+	const TAGS_CREATE_URL ='/tags/create?';
+	const TAGS_GET_URL ='/tags/get?';
+	const TAGS_UPDATE_URL ='/tags/update?';
+	const TAGS_DELETE_URL ='/tags/delete?';
+	const USER_TAG_GET ='/user/tag/get?';
+	const TAGS_MEMBERS_BATCHTAGGING ='/tags/members/batchtagging?';
+	const TAGS_MEMBERS_BATCHUNTAGGING ='/tags/members/batchuntagging?';
+	const TAGS_GETIDLIST ='/tags/getidlist?';
 	const CUSTOM_SEND_URL='/message/custom/send?';
 	const MEDIA_UPLOADNEWS_URL = '/media/uploadnews?';
 	const MASS_SEND_URL = '/message/mass/send?';
@@ -377,8 +385,6 @@ class Wechat
 		if (!empty($postStr)) {
 			$this->_receive = (array)simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
 		}
-
-
 		return $this;
 	}
 
@@ -2364,12 +2370,232 @@ class Wechat
 	}
 
 	/**
+	 * 创建标签  一个公众号，最多可以创建100个标签。
+	 * @param $name
+	 *
+	 * @return bool|mixed
+	 */
+	public function createTags($name)
+	{
+		if (!$this->access_token && !$this->checkAuth()) return false;
+		$data = array(
+			'tag'=>array(
+				'name'=>$name
+			)
+		);
+		$result = $this->http_post(self::API_URL_PREFIX.self::TAGS_CREATE_URL.'access_token='.$this->access_token,self::json_encode($data));
+		if ($result)
+		{
+			$json = json_decode($result,true);
+			if (isset($json['errcode'])) {
+				$this->errCode = $json['errcode'];
+				$this->errMsg = $json['errmsg'];
+				return false;
+			}
+			return $json['tag'];
+		}
+		return false;
+	}
+
+	/**
+	 * 获取公众号已创建的标签
+	 * @return bool|mixed
+	 */
+	public function getTags()
+	{
+		if (!$this->access_token && !$this->checkAuth()) return false;
+		$result = $this->http_post(self::API_URL_PREFIX.self::TAGS_GET_URL.'access_token='.$this->access_token);
+		if ($result)
+		{
+			$json = json_decode($result,true);
+			if (isset($json['errcode'])) {
+				$this->errCode = $json['errcode'];
+				$this->errMsg = $json['errmsg'];
+				return false;
+			}
+			return $json['tags'];
+		}
+		return false;
+	}
+
+	/**
+	 * 编辑标签
+	 * @param $id 不为0/1/2
+	 * @param $name 标签名长度超过30个字节 不重名
+	 *
+	 * @return bool|mixed
+	 */
+	public function updateTags($id,$name)
+	{
+		if (!$this->access_token && !$this->checkAuth()) return false;
+		$data = array(
+			'tag'=>array(
+				'id'=>$id,
+				'name'=>$name
+			)
+		);
+		$result = $this->http_post(self::API_URL_PREFIX.self::TAGS_UPDATE_URL.'access_token='.$this->access_token,self::json_encode($data));
+		if ($result)
+		{
+			$json = json_decode($result,true);
+			if (!$json || !empty($json['errcode'])) {
+				$this->errCode = $json['errcode'];
+				$this->errMsg = $json['errmsg'];
+				return false;
+			} else
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 删除标签
+	 * 请注意，当某个标签下的粉丝超过10w时，后台不可直接删除标签。
+	 * 此时，开发者可以对该标签下的openid列表，先进行取消标签的操作，直到粉丝数不超过10w后，才可直接删除该标签
+	 * @param $id
+	 *
+	 * @return bool
+	 */
+	public function deleteTags($id)
+	{
+		if (!$this->access_token && !$this->checkAuth()) return false;
+		$data = array(
+			'tag'=>array(
+				'id'=>$id,
+			)
+		);
+		$result = $this->http_post(self::API_URL_PREFIX.self::TAGS_DELETE_URL.'access_token='.$this->access_token,self::json_encode($data));
+		if ($result)
+		{
+			$json = json_decode($result,true);
+			if (!$json || !empty($json['errcode'])) {
+				$this->errCode = $json['errcode'];
+				$this->errMsg = $json['errmsg'];
+				return false;
+			} else
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 获取标签下粉丝列表
+	 * @param        $tagid
+	 * @param string $next_openid
+	 *
+	 * @return bool|mixed
+	 */
+	public function getTagsUser($tagid,$next_openid = '')
+	{
+		if (!$this->access_token && !$this->checkAuth()) return false;
+		$data = array(
+			'tagid'=>$tagid,
+			'next_openid'=>$next_openid
+		);
+		$result = $this->http_post(self::API_URL_PREFIX.self::USER_TAG_GET.'access_token='.$this->access_token,self::json_encode($data));
+		if ($result)
+		{
+			$json = json_decode($result,true);
+			if (!$json || !empty($json['errcode'])) {
+				$this->errCode = $json['errcode'];
+				$this->errMsg = $json['errmsg'];
+				return false;
+			} else
+				return $json;
+		}
+		return false;
+	}
+
+	/**
+	 * 批量为用户打标签
+	 * 标签功能目前支持公众号为用户打上最多三个标签。 2016年6月8日21:35:50
+	 * @param $tagid
+	 * @param $openid_list
+	 *
+	 * @return bool
+	 */
+	public function batchtaggingTagsMembers($tagid,$openid_list)
+	{
+		if (!$this->access_token && !$this->checkAuth()) return false;
+		$data = array(
+			'tagid'=>$tagid,
+			'openid_list'=>$openid_list
+		);
+		$result = $this->http_post(self::API_URL_PREFIX.self::TAGS_MEMBERS_BATCHTAGGING.'access_token='.$this->access_token,self::json_encode($data));
+		if ($result)
+		{
+			$json = json_decode($result,true);
+			if (!$json || !empty($json['errcode'])) {
+				$this->errCode = $json['errcode'];
+				$this->errMsg = $json['errmsg'];
+				return false;
+			} else
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 批量为用户取消标签
+	 * @param $tagid
+	 * @param $openid_list 每次传入的openid列表个数不能超过50个
+	 *
+	 * @return bool
+	 */
+	public function batchuntaggingTagsMembers($tagid,$openid_list =array())
+	{
+		if (!$this->access_token && !$this->checkAuth()) return false;
+		$data = array(
+			'tagid'=>$tagid,
+			'openid_list'=>$openid_list
+		);
+		$result = $this->http_post(self::API_URL_PREFIX.self::TAGS_MEMBERS_BATCHUNTAGGING.'access_token='.$this->access_token,self::json_encode($data));
+		if ($result)
+		{
+			$json = json_decode($result,true);
+			if (!$json || !empty($json['errcode'])) {
+				$this->errCode = $json['errcode'];
+				$this->errMsg = $json['errmsg'];
+				return false;
+			} else
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 获取用户身上的标签列表
+	 * @param $openid
+	 *
+	 * @return bool|mixed
+	 */
+	public function getidlistTags($openid)
+	{
+		if (!$this->access_token && !$this->checkAuth()) return false;
+		$data = array(
+			'openid'=>$openid,
+		);
+		$result = $this->http_post(self::API_URL_PREFIX.self::TAGS_GETIDLIST.'access_token='.$this->access_token,self::json_encode($data));
+		if ($result)
+		{
+			$json = json_decode($result,true);
+			if (!$json || !empty($json['errcode'])) {
+				$this->errCode = $json['errcode'];
+				$this->errMsg = $json['errmsg'];
+				return false;
+			} else
+				return $json['tagid_list'];
+		}
+		return false;
+	}
+	
+	/**
 	 * 获取用户分组列表
 	 * @return boolean|array
 	 */
 	public function getGroup(){
 		if (!$this->access_token && !$this->checkAuth()) return false;
-		$result = $this->http_get(self::API_URL_PREFIX.self::GROUP_GET_URL.'access_token='.$this->access_token);
+		$result = $this->http_post(self::API_URL_PREFIX.self::GROUP_GET_URL.'access_token='.$this->access_token);
 		if ($result)
 		{
 			$json = json_decode($result,true);

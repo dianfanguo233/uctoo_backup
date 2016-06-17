@@ -211,3 +211,23 @@ function get_cover_url($cover_id) {
 
     return "http://".$_SERVER ['HTTP_HOST'].$url;
 }
+
+function get_addoncover_url($addon) {
+
+	if (empty ( $addon ))
+		return '';
+
+	$url = "http://".$_SERVER ['HTTP_HOST'].__ROOT__ . '/Addons/' . $addon . '/View/default/Public'.'/images/cover.png' ; //插件目录下放个回复封面图片例如jssdk插件中的cover.png
+
+	return $url;
+}
+
+function get_addonreply_url($addon,$param) {
+
+	if (empty ( $addon ))
+		return '';
+
+	$url = "http://".$_SERVER ['HTTP_HOST'].addons_url ( $addon.'://'.$addon.'/index', $param );//默认用  插件名://插件名/index 加mp_id参数作为插件用户入口
+
+	return $url;
+}

@@ -149,7 +149,7 @@ function OAuthWeixin($callback) {
 }
 
 // 获取当前上下文的公众号id
-function get_mpid($mp_id = NULL) {
+function get_mpid($mp_id = NULL,$md5=false) {
     if ($mp_id !== NULL) {
         session ( 'mp_id', $mp_id );
     } elseif (! empty ( $_REQUEST ['mp_id'] )) {
@@ -171,7 +171,8 @@ function get_mpid($mp_id = NULL) {
     if (empty ( $mp_id )) {
         return - 1;
     }
-
+	if($md5)
+		$mp_id = mpid_md5($mp_id);
     return $mp_id;
 }
 
