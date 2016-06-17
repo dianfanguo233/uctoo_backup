@@ -18,14 +18,7 @@ function get_zip_originalsize($name,$type = 0) {
     array_pop($dirname);
     $dirname = implode('.',$dirname);
 
-    switch($type){
-        case 0 :
-            $path = __ROOT__.'Application/';
-            break;
-        case 1 :
-            $path = __ROOT__.'Addons/';
-    }
-
+    $path = __ROOT__;
 
     if(!file_exists($filename)){
         die("文件 $filename 不存在！");
@@ -71,7 +64,7 @@ function get_zip_originalsize($name,$type = 0) {
     $endtime = explode(' ',microtime()); //解压结束的时间
     $thistime = $endtime[0]+$endtime[1]-($starttime[0]+$starttime[1]);
     $thistime = round($thistime,3); //保留3为小数
-    echo "<p>解压完毕！，本次解压花费：$thistime 秒。</p>";
+    //echo "<p>解压完毕！，本次解压花费：$thistime 秒。</p>";
     return $file_path;
 
 }

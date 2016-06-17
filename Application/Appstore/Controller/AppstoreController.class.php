@@ -71,7 +71,6 @@ class AppstoreController extends AdminController
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $dpost);
         $contents = curl_exec($ch);
-
         $header= curl_getinfo($ch);
         curl_close($ch);
 
@@ -87,11 +86,9 @@ class AppstoreController extends AdminController
         $fp =fopen($path,'wb');
         fwrite($fp,$contents);
         fclose($fp);
-
         $modelname = $this->unzip($downname,$type);
         sleep(5);
         unlink($path);
-
         switch($type){
             case 0:
                 $this->install($modelname);
@@ -104,6 +101,7 @@ class AppstoreController extends AdminController
             break;
 
         }
+
 
         $this->success('模块安装成功',U('admin/index/index'));
     }
@@ -119,7 +117,7 @@ class AppstoreController extends AdminController
 
         load('Appstore/function');
         $size = get_zip_originalsize($name,$type);
-        echo '解压到'.$size.'完成';
+        //echo '解压到'.$size.'完成';
         $modelname = explode('/',$size);
         return $modelname['1'];
     }
