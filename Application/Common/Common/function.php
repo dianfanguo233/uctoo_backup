@@ -1891,16 +1891,3 @@ function get_all_module_lang($common_lang = array())
             // dump(M()->getLastSql());
         }
     }
-/*
- * log记录
- * */
-function wlog($res_data,$logex=null){
-    ini_set('date.timezone','Asia/Shanghai');
-    $fh = fopen(APP_PATH.'tok.txt','a+');
-    fwrite($fh,'日志：'.$logex.("\r\n"));
-    fwrite($fh,'开始：'.date('ymd-H:i:s',time()).("\r\n"));
-    fwrite($fh,var_export($res_data,true).("\r\n"));
-    fwrite($fh,'结束：'.date('ymd-H:i:s').("\r\n"));
-    fwrite($fh,"\r\n");
-    fclose($fh);
-}

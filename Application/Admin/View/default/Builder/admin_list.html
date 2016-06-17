@@ -35,7 +35,22 @@
     <volist name="searches" id="search">
 
              <!--判断搜索选项是TEXT还是SELECT-->
-    		 <if condition="$search['type'] == 'select'">
+					<switch name="search.type">
+						<case value="text">
+							<tr style="line-height: 28px">
+								<td>
+									{$search.title}
+								</td>
+								<td>
+									<input style="float: none" type="text" name="{$search.name}" class="search-input form-control form-input-width"
+										   value="{:I($search['name'])}">
+								</td>
+								<td>
+									{$search.des}
+								</td>
+							</tr>
+						</case>
+						<case value="select">
 			 	<tr style="line-height: 28px">
                   <td>
                       {$search.title} 
@@ -52,21 +67,34 @@
                       {$search.des}
                   </td>
               </tr>
-			 <else/>
+						</case>
+						<case value="checkbox">
 			 	 <tr style="line-height: 28px">
                   <td>
                       {$search.title}
                   </td>
                   <td>
-                      <input style="float: none" type="text" name="{$search.name}" class="search-input form-control form-input-width"
-                             value="{:I($search['name'])}">
+									<div size="1" style="height: auto;" class="search-input form-input-width">
+										<volist name="search['arrvalue']" id="svo">
+											<label style="margin:8px 15px 0 0;">
+												<input  name="{$search['name']}[]" type="checkbox" value="{$svo.id}"
+												<if condition="in_array($svo['id'],$_GET[$search['name']])">checked</if>>{$svo.value}</input>
+											</label>
+										</volist>
+									</div>
                   </td>
                   <td>
                       {$search.des}
                   </td>
               </tr>
-			 </if>
-
+						</case>
+					</switch>
+				</volist>
+				<volist name="selects" id="select">
+					<tr><td></td>
+						<td><input type="hidden" name="{$select['name']}" value="{:I($select['name'])}"/></td>
+						<td></td>
+					</tr>
     </volist>
             <tr><td></td>
                 <td><input type="submit" class="btn" value={:L("_DETERMINATION_WITH_DOUBLE_")}/> <button class="btn ajax-post btn" onclick="toggle_search()">{:L("_CLOSE_")}</button></td>
@@ -118,7 +146,15 @@
                     }
                 </style>
                 <form id="selectForm" method="get" action="{$selectPostUrl||default=$default_url}" class="form-dont-clear-url-param">
+					<volist name="searches" id="search">
+						<if condition="is_array(I($search['name'])) neq true">
                     <input type="hidden" name="{$search['name']}" value="{:I($search['name'])}"/>
+						<else />
+							<volist name="_GET[$search['name']]" id="val">
+								<input type="hidden" name="{$search['name']}[]" value="{$val}"/>
+							</volist>
+						</if>
+					</volist>
                     <volist name="selects" id="select">
                         <div class="oneselect">
                             <div class="title">{$select.title}</div>
@@ -157,7 +193,7 @@
             <tbody>
             <volist name="list" id="e">
                 <tr>
-                    <td><input class="ids" type="checkbox" value="{$e['id']}" name="ids[]"></td>
+					<td><input class="ids" type="checkbox" value="{$e[(empty($idskey)?'id':$idskey)]}" name="ids[]"></td>
                     <volist name="keyList" id="field">
                         <td style="width:auto;max-width: {$field['width']};"  class="text-ellipsis">{$e[$field['name']]}</td>
 

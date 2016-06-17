@@ -245,8 +245,7 @@ str;
         $request = (array)I('request.');
 
         $listRows = 12;
-        if ($type == 'yes') {
-            //已安装的
+        if ($type == 'yes') {//已安装的
             foreach ($list as $key => $value) {
                 if ($value['uninstall'] != 1) {
                     unset($list[$key]);
