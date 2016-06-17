@@ -4607,7 +4607,7 @@ INSERT INTO `uctoo_hooks` (`id`, `name`, `description`, `type`, `update_time`, `
 (65, 'report', '举报钩子', 1, 1429511732, 'Report'),
 (66, 'handleAction', '行为的额外操作', 2, 1433300260, 'CheckIn'),
 (67, 'uploadDriver', '附件图片上传引擎', 2, 1435306269, ''),
-(68, 'sms', '短信插件钩子', 2, 1437382105, ''),
+(68, 'sms', '短信插件钩子', 2, 1437382105, 'YunSms'),
 (69, 'filterHtmlContent', '渲染富文本', 2, 1441951420, ''),
 (70, 'parseContent', '解析内容', 2, 1445828128, 'Sensitive'),
 (71, 'tool', '返回顶部，右下角工具栏', 1, 1445828128, ''),

@@ -28,6 +28,7 @@ class UserConfigController extends AdminController
 
         $admin_config = new AdminConfigBuilder();
         $data = $admin_config->handleConfig();
+
         $mStep = A('Ucenter/RegStep', 'Widget')->mStep;
         $step = array();
         foreach ($mStep as $key => $v) {
@@ -69,7 +70,6 @@ str;
                 }
             }
         }
-
 
         $admin_config->title(L('_USER_CONFIGURATION_'))->data($data)
             ->keyCheckBox('REG_SWITCH', L('_REGISTRATION_SWITCH_'), L('_THE_REGISTRATION_OPTION_THAT_ALLOWS_THE_USE_OF_THE_REGISTRATION_IS_CLOSED_'), array('username' => L('_USER_NAME_'), 'email' => L('_MAILBOX_'), 'mobile' => L('_MOBILE_PHONE_')))
@@ -113,7 +113,7 @@ str;
             ->group(L('_LOGIN_CONFIGURATION_'), 'OPEN_QUICK_LOGIN,LOGIN_SWITCH')
             ->group(L('_MAILBOX_VERIFICATION_TEMPLATE_'), 'REG_EMAIL_VERIFY')
             ->group(L('_MAILBOX_ACTIVATION_TEMPLATE_'), 'REG_EMAIL_ACTIVATE')
-            ->group(L('_SMS_CONFIGURATION_'), 'SMS_HTTP,SMS_HTTPS,SMS_UID,SMS_PWD,SMS_CONTENT,SMS_HOOK,SMS_RESENDSMS_ACCOUNTSID,SMS_TOKEN,SMS_APPID,SMS_TEMPLATEID')
+            ->group(L('_SMS_CONFIGURATION_'), 'SMS_HTTP,SMS_HTTPS,SMS_UID,SMS_PWD,SMS_CONTENT,SMS_HOOK,SMS_RESEND,SMS_ACCOUNTSID,SMS_TOKEN,SMS_APPID,SMS_TEMPLATEID')
             ->group(L('_BASIC_SETTINGS_'), 'LEVEL,NICKNAME_MIN_LENGTH,NICKNAME_MAX_LENGTH,USERNAME_MIN_LENGTH,USERNAME_MAX_LENGTH,UCENTER_KANBAN')
             ->buttonSubmit('', L('_SAVE_'))
             ->keyDefault('REG_EMAIL_VERIFY',L('_VERICODE_ACCOUNT_').L('_PERIOD_'))

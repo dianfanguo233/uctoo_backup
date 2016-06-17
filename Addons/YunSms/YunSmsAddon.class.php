@@ -35,6 +35,7 @@ class YunSmsAddon extends Addon
         return true;
     }
     public function sendSms($mobile, $content){
+
         $uid = modC('SMS_UID', '', 'USERCONFIG');
         $pwd = modC('SMS_PWD', '', 'USERCONFIG');
         $http = modC('SMS_HTTP', '', 'USERCONFIG');
@@ -80,7 +81,6 @@ class YunSmsAddon extends Addon
         $param=$authnum;
         $param = $param.",10";                                       //添加短信模板的第二个参数，“您的验证码为{1}，请于{2}分钟内正确输入验证码”
         $arr=$ucpass->templateSMS($appId,$to,$templateId,$param);
-
         if (substr($arr,21,6) == 000000) {
             D('Verify')->addSMSVerify($to,$authnum);                //保存验证短信到验证码表
 

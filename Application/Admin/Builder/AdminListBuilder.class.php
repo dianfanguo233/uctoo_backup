@@ -256,7 +256,6 @@ class AdminListBuilder extends AdminBuilder
         } else {
             if (empty($arrdb)) {
                 $this->_search[] = array('title' => $title, 'name' => $name, 'type' => $type, 'des' => $des, 'attr' => $attr, 'field' => $field, 'table' => $table, 'arrvalue' => $arrvalue);
-                $this->setSearchPostUrl('');
             } else {
                 //TODO:呆完善如果$arrdb存在的就把当前数据表的$name字段的信息全部查询出来供筛选。
             }

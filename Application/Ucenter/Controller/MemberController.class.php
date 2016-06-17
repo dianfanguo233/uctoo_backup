@@ -48,6 +48,7 @@ class MemberController extends Controller
             if ($return && !$return['state']) {
                 $this->error($return['info'], $return['url']);
             }
+
             /* 检测验证码 */
             if (check_verify_open('reg')) {
                 if (!check_verify($aVerify)) {
@@ -57,8 +58,8 @@ class MemberController extends Controller
             if (!$aRole) {
                 $this->error(L('_ERROR_ROLE_SELECT_').L('_PERIOD_'));
             }
-
             if (($aRegType == 'mobile' && modC('MOBILE_VERIFY_TYPE', 0, 'USERCONFIG') == 1) || (modC('EMAIL_VERIFY_TYPE', 0, 'USERCONFIG') == 2 && $aRegType == 'email')) {
+
                 if (!D('Verify')->checkVerify($aUsername, $aRegType, $aRegVerify, 0)) {
                     $str = $aRegType == 'mobile' ? L('_PHONE_') : L('_EMAIL_');
                     $this->error($str . L('_FAIL_VERIFY_'));
@@ -84,7 +85,6 @@ class MemberController extends Controller
             if (!$this->checkInviteCode($aCode)) {
                 $this->error(L('_ERROR_INV_ILLEGAL_').L('_EXCLAMATION_'));
             }
-
             /* 注册用户 */
             $ucenterMemberModel=UCenterMember();
             $uid =$ucenterMemberModel ->register($aUsername, $aNickname, $aPassword, $email, $mobile, $aUnType);
@@ -100,6 +100,7 @@ class MemberController extends Controller
 
                 $uid = $ucenterMemberModel->login($username, $aPassword, $aUnType); //通过账号密码取到uid
                 D('Member')->login($uid, false, $aRole); //登陆
+
 
                 $this->success('', U('Ucenter/member/step', array('step' => get_next_step('start'))));
             } else { //注册失败，显示错误信息
@@ -229,7 +230,6 @@ class MemberController extends Controller
     /* 登录页面 */
     public function login()
     {
-        //dump(11111);exit;
         $this->setTitle(L('_MEMBER_TITLE_LOGIN_'));
 
         if (IS_POST) {
