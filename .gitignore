@@ -1,6 +1,4 @@
-/Conf/common.php
-/Conf/user.php
-/Conf/install.lock
+/Conf/*
 /Runtime/*
 /*.sh
 /.idea
@@ -10,3 +8,4 @@
 /Data
 /Uploads
 /OcApi/oc_config.php
+/updata/*
