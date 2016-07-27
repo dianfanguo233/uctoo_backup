@@ -83,7 +83,7 @@ class MpbaseController extends AdminController
         $model = D('Mpbase/Autoreply');
         if (IS_POST) {   //提交表单
             $data['uid'] = I('post.uid', '', 'op_t');
-            $data['mp_id'] = I('post.mp_id', '', 'intval');
+            $data['mp_id'] = I('post.mp_id', '', 'op_t');
             $data['type'] = I('post.type', '', 'intval');
             $data['keyword_id'] = I('post.keyword_id', '', 'intval');
             $data['name'] = I('post.name', '', 'op_t');
@@ -242,13 +242,14 @@ class MpbaseController extends AdminController
     public function change() {
         $map ['id'] = I ( 'id', 0, 'intval' );
         $info = D ( 'Mpbase/MemberPublic' )->where ( $map )->find ();
-        get_mpid($info ['id']);                                               //设置当前上下文mp_id
+        get_mpid($info ['mp_id']);                                               //设置当前上下文mp_id
+
         unset ( $map );
         $map ['uid'] = UID;
         $res =  M ( 'Member' )->where ( $map )->setField ( 'token', $info['public_id'] );
             $user = session('user_auth');
             $user['token'] = $info['public_id'];
-            $user['mp_id'] = $info ['id'];//修复mp_id问题，不知道有没其他影响
+            $user['mp_id'] = $info ['mp_id'];//修复mp_id问题，不知道有没其他影响
             $user['public_name'] = $info['public_name'];
             session('user_auth', $user);
             session('user_auth_sign', data_auth_sign($user));
@@ -496,11 +497,6 @@ class MpbaseController extends AdminController
 
 
     }
-
-
-
-
-
 
 
 }

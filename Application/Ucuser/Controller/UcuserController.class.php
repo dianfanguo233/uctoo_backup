@@ -14,16 +14,18 @@ use Admin\Builder\AdminTreeListBuilder;
 use Common\Model\UcuserModel;
 use Com\TPWechat;
 use Com\ErrCode;
+use Common\Model\VerifyModel;
 
 
 class UcuserController extends AdminController
 {
 	protected $weObj;
 	protected function _initialize()
-    {
+	{
 		parent::_initialize();
 
 	}
+
 	private function init_wx()
 	{
 		$info = get_mpid_appinfo();    //获取当前管理的公众号信息
@@ -33,6 +35,7 @@ class UcuserController extends AdminController
 		$options['encodingaeskey'] = $info['encodingaeskey'];
 		$this->weObj = new TPWechat($options);
 	}
+
     public function index($page=1,$r=10)
     {
         $model = D('Ucuser');
@@ -51,24 +54,24 @@ class UcuserController extends AdminController
 					break;
 				default:
 					$map['tagid_list'] =  $model->get_tag_id_map($taglist);
-        }
+			}
 		}
 		empty($_GET['name_remark']) || $name_remark = I('name_remark','','text');
 		empty($name_remark) || $map['_complex'] = array('nickname'=>array('like','%'.$name_remark.'%'),'remark'=>array('like','%'.$name_remark.'%'),'_logic'=>'or');
-		$list = $model->where($map)->page($page, $r)->order('uid asc')->select();
+		$list = $model->where($map)->page($page, $r)->order('mid asc')->select();
 //		var_dump(__file__.' line:'.__line__,$model->getLastSql());exit;
         $totalCount = $model->where($map)->count();
         //显示页面
         $builder = new AdminListBuilder();
-        $builder
-			->setIdsKey('uid')
-            ->title('用户列表')
+		$builder
+			->setIdsKey('mid')
+			->title('用户列表')
 			->setSelectPostUrl(U('/admin/ucuser/index'))
 			->select('查看模式：', 'show_type', 'select', '', '', '', array(array('id'=>'','value'=>'用户资料'),array('id'=>1,'value'=>'用户标签')))
 			->setSearchPostUrl(U('/admin/ucuser/index'))
 			->search('称呼或备注','name_remark','text','','','','')
 			->button('全部用户', array('href' => U('admin/Ucuser/index/',array('show_type'=>$show_type))))
-			->keyText('uid', 'uid')
+			->keyText('mid', 'mid')
 			->keyText('nickname', '昵称');
 		//				$builder->search('称呼或备注','name_remark','select','','','',array(array('id'=>0,'value'=>'类型1'),array('id'=>1,'value'=>'类型2')));
 		if(($taglist_select = $this->get_tag_list_to_select()))
@@ -82,22 +85,23 @@ class UcuserController extends AdminController
 				{
 					$this->func_get_ucuser_tag($l);
 				}
+
 				$builder
 					->buttonModalPopup(U('/admin/ucuser/editUcuserTagLink/'),'','批量打标签（勾选后设置）',array('target-form'=>'ids'))
 					->buttonModalPopup(U('/admin/ucuser/deleteTagLnik/'),'','批量撤标签（筛选后设置）',array('target-form'=>'ids'))
 					->button('同步标签列表', array('href' => U('admin/Ucuser/sycUcuserTag')))
 					->keytext('remark','备注')
 					->keytext('tagid_lists','他的标签')
-					->keyDoActionModalPopup('/admin/ucuser/editUcuserTagLink/ids/{uid}','打标签','',array('class'=>'btn btn-sm btn-info'))
-					->keyDoActionModalPopup('/admin/ucuser/updateUserRemark/ids/{uid}','修改备注','',array('class'=>'btn btn-sm btn-info'))
+					->keyDoActionModalPopup('/admin/ucuser/editUcuserTagLink/ids/{mid}','打标签','',array('class'=>'btn btn-sm btn-info'))
+					->keyDoActionModalPopup('/admin/ucuser/updateUserRemark/ids/{mid}','修改备注','',array('class'=>'btn btn-sm btn-info'))
 					;
 				break;
 			default :
 				$builder
-            ->button('同步粉丝数据', array('href' => U('Ucuser/sycUcuser')))
-            ->button('获取粉丝信息', array('href' => U('Ucuser/sycUcuserInfo')))
+					->button('同步粉丝数据', array('href' => U('Ucuser/sycUcuser')))
+					->button('获取粉丝信息', array('href' => U('Ucuser/sycUcuserInfo')))
 					->button('强制刷新粉丝信息', array('href' => U('Ucuser/sycUcuserInfo',array('force'=>1))))
-            ->button('数据剔重', array('href' => U('Ucuser/delDup')))
+					->button('数据剔重', array('href' => U('Ucuser/delDup')))
 					//			->keyText('openid', 'openid')
 					->keyImage('headimgurl','头像',array('style'=>'width:90px;hight:90px;border-radius:10px;'))
 					->keyMap('sex', '性别',array(0 => '未知', 1 => '<span class="btn btn-sm" ><i class="icon icon-venus" style="color:blue"></i>男性</span>', 2 => '<span class="btn btn-sm " ><i class="icon icon-mars" style="color:orange"></i>女性</span>'))
@@ -109,9 +113,9 @@ class UcuserController extends AdminController
 		}
 
 		$builder
-            ->data($list)
-            ->pagination($totalCount, $r)
-            ->display();
+			->data($list)
+			->pagination($totalCount, $r)
+			->display();
     }
 
 	/*
@@ -126,7 +130,7 @@ class UcuserController extends AdminController
 			is_numeric($ids) && $ids = array($ids);
 			if(count($ids)==0)
 			{
-				$this->error('缺少uid');
+				$this->error('缺少mid');
 			}
 			$Ucuser = D('Ucuser');
 			$UcTag = D("Ucuser/UcuserTag");
@@ -137,9 +141,9 @@ class UcuserController extends AdminController
 			foreach($taglink as $tagid)
 			{
 				$Ucuser->startTrans();
-				foreach ($ids as  &$uid )
+				foreach ($ids as  &$mid )
 				{
-					$map = array('uid'=>$uid,'mp_id'=>get_mpid());
+					$map = array('mid'=>$mid,'mp_id'=>get_mpid());
 					$tagidlist = $Ucuser->where($map)->getfield('tagid_list');
 					$tagidlist = empty($tagidlist)?array():json_decode($tagidlist,true);
 					$tagidlist = array_merge($tagidlist,array($tagid));
@@ -156,7 +160,7 @@ class UcuserController extends AdminController
 				}
 				//todo 调用微信接口修改标签 失败则回滚
 				$this->init_wx();
-				$openid_list = $Ucuser->where(array('uid'=>array('in',$ids),'mp_id'=>get_mpid()))->getfield('openid',true);
+				$openid_list = $Ucuser->where(array('mid'=>array('in',$ids),'mp_id'=>get_mpid()))->getfield('openid',true);
 				$ret = $this->weObj->batchtaggingTagsMembers($tagid,array($openid_list));
 				if(!$ret)
 				{
@@ -173,7 +177,7 @@ class UcuserController extends AdminController
 				|| (is_array($ids) && (count($ids)==1) && ($ids = $ids['0'])))
 			{
 				$map['mp_id'] = get_mpid();
-				$map['uid'] = $ids;
+				$map['mid'] = $ids;
 				$Ucuser = D('Ucuser');
 				$user_tagidlist = $Ucuser->where($map)->getField('tagid_list');
 				$this->assign('user_tagidlist',json_decode($user_tagidlist,true));
@@ -194,13 +198,14 @@ class UcuserController extends AdminController
 			$this->display('Public/popup');
 		}
 	}
+
 	/*
 	 *	删除某个用户的某个标签
 	 */
 	public function deleteTagLnik()
 	{
-		$uid = I('ids/a','','intval');
-		is_numeric($uid) && $uid = array($uid);
+		$mid = I('ids/a','','intval');
+		is_numeric($mid) && $mid = array($mid);
 		$id = I('id','','intval');
 		is_numeric($id) && $id = array($id);
 		isset($_REQUEST['taglink']) && $id = I('taglink/a','','intval');
@@ -217,11 +222,11 @@ class UcuserController extends AdminController
 			$Ucuser = D('Ucuser');
 			$UcTag = D("Ucuser/UcuserTag");
 			$map['mp_id'] = get_mpid();
-			$map['uid'] = array('in',$uid);
+			$map['mid'] = array('in',$mid);
 			foreach($id as $tagid)
 			{
 				$map['tagid_list'] = $Ucuser->get_tag_id_map($tagid);
-				$ucuser_info_list = $Ucuser->where($map)->Field('uid,openid,tagid_list')->select();
+				$ucuser_info_list = $Ucuser->where($map)->Field('mid,openid,tagid_list')->select();
 				if(empty($ucuser_info_list)) continue;
 				$Ucuser->startTrans();
 				foreach($ucuser_info_list as $ucuser_info)
@@ -229,7 +234,7 @@ class UcuserController extends AdminController
 					$ucuser_info['tagid_list'] = json_decode($ucuser_info['tagid_list'],true);
 					$tagid_list = array_diff($ucuser_info['tagid_list'],array($tagid));
 					$tagid_list = array_values($tagid_list);
-					$ret = $Ucuser->where(array('uid = '.$ucuser_info['uid']))
+					$ret = $Ucuser->where(array('mid = '.$ucuser_info['mid']))
 						->save(array('tagid_list'=>json_encode($tagid_list)));
 					$ret && $UcTag->where(array('id'=>$tagid,'mp_id'=>get_mpid()))->setDec('count');
 				}
@@ -244,15 +249,17 @@ class UcuserController extends AdminController
 				}
 				$Ucuser->commit();
 			}
+
 			$this->success('成功取消标签');
 		}
 		else{
-			if(	is_numeric($uid)
-				|| (is_array($uid) && (count($uid)==1) && ($uid = $uid['0']) && isset($_REQUEST['id']))
+
+			if(	is_numeric($mid)
+				|| (is_array($mid) && (count($mid)==1) && ($mid = $mid['0']) && isset($_REQUEST['id']))
 				)
 			{
 				$this->assign('confirm_text','确定取消标签？');
-				$this->assign('data',array('ids'=>$uid,'id'=>$id));
+				$this->assign('data',array('ids'=>$mid,'id'=>$id));
 				$this->assign('posturl',U('admin/ucuser/deleteTagLnik'));
 				$this->display('Public/popup');
 			}
@@ -268,12 +275,14 @@ class UcuserController extends AdminController
 				}
 				$this->assign('confirm_text','确定要撤销用户标签？');
 				$this->assign('inputs',$inputs);
-				$this->assign('data',array('ids'=>$uid));
+				$this->assign('data',array('ids'=>$mid));
 				$this->assign('posturl',U('admin/ucuser/deleteTagLnik'));
 				$this->display('Public/popup');
 			}
+
 		}
 	}
+
 	private function func_get_ucuser_tag(&$user_info)
 	{
 		if(!empty($user_info['tagid_list']))
@@ -282,14 +291,16 @@ class UcuserController extends AdminController
 			$user_info['tagid_list'] = json_decode($user_info['tagid_list'],true);
 			asort($user_info['tagid_list']);
 			$user_info['tagid_lists'] = '';
+
 			for($i = 0;$i<	4;$i++)
 			{
 				if(!empty($user_info['tagid_list'][$i]))
 				{
 //					$user_info['tagid'.$i] = $user_info['tagid_list'][$i];
 //					$user_info['tagid'.$i.'name'] = $UcTag->where(array('id'=>$user_info['tagid_list'][$i]))->getfield('name');
+
 					$user_info['tagid_lists'] .= '<a class = "btn btn-sm btn-info" href="javascrapt:void(0);" modal-url="';
-					$user_info['tagid_lists'] .= U('/admin/ucuser/deleteTagLnik/',array('ids'=>$user_info['uid'],'id'=>$user_info['tagid_list'][$i])).'" data-role="modal_popup"> ';
+					$user_info['tagid_lists'] .= U('/admin/ucuser/deleteTagLnik/',array('ids'=>$user_info['mid'],'id'=>$user_info['tagid_list'][$i])).'" data-role="modal_popup"> ';
 					$user_info['tagid_lists'] .= $UcTag->where(array('id'=>$user_info['tagid_list'][$i]))->getfield('name').'<span class="text-danger">  X</span>';
 					$user_info['tagid_lists'] .= '</a> ';
 					if($user_info['tagid_list'][$i]==1)
@@ -301,6 +312,7 @@ class UcuserController extends AdminController
 		}
 		return $user_info;
 	}
+
 	/*
 	 * 将tag_id 装换为 select 格式
 	 */
@@ -321,6 +333,7 @@ class UcuserController extends AdminController
 		}
 		return $select;
 	}
+
     /**
      * 同步公众号粉丝数据
 	 * 粉丝超过10w 未防止超时或超内存 跳转接力同步数据
@@ -333,13 +346,16 @@ class UcuserController extends AdminController
 		if(!$res)
 		{
 			$this->error('获取微信粉丝列表错误，错误信息：'.ErrCode::getErrText($this->weObj->errCode));
-        }
+		}
 		$res['count'] = $res['count']+ (empty($arr['count'])?0:$arr['count']);
+
+
         $Ucuser = D("Ucuser"); // 实例化Ucuser对象
         $map['mp_id'] = get_mpid();
-        $allUcuser = $Ucuser->where($map)->getField('uid,openid');
+        $allUcuser = $Ucuser->where($map)->getField('mid,openid');
 		empty($allUcuser) && $allUcuser = array();
         $diff = array_diff($res['data']['openid'],$allUcuser);
+
         foreach($diff as $i) {
           	$Ucuser->registerUser( get_mpid() ,$i);
         }
@@ -371,8 +387,8 @@ class UcuserController extends AdminController
 		{
 			$Ucuser->where($map)->save(array('status'=>1));
 		}
-		$uid = I('uid','','intval');
-		empty($uid) || $map['uid'] = array('gt',$uid);
+		$mid = I('mid','','intval');
+		empty($mid) || $map['mid'] = array('gt',$mid);
         $map['status'] = array('neq',2);//只取未同步的
         $allUcuser = $Ucuser->where($map)->limit(100)->field('openid,language as lang')->select();//微信接口一次最多允许拉取100个粉丝信息
 
@@ -381,7 +397,7 @@ class UcuserController extends AdminController
 		if(!$res)
 		{
 			$this->error('获取粉丝列表失败，错误：'.ErrCode::getErrText($this->weObj->errCode));
-            }
+		}
 		foreach($res['user_info_list'] as &$user_info)
 		{
 			$user_info['status'] = 2;
@@ -389,24 +405,25 @@ class UcuserController extends AdminController
 			// 用户资料
 			$Ucuser->where('openid = "'.addslashes($user_info['openid']).'"')->save($user_info);
 			$last_openid = $user_info['openid'];
-        }
-		$uid = $Ucuser->where('openid = "'.addslashes($last_openid).'"')->getField('uid');
-		$map['uid'] = array('gt',$uid);
+		}
+		$mid = $Ucuser->where('openid = "'.addslashes($last_openid).'"')->getField('mid');
+		$map['mid'] = array('gt',$mid);
 		$count = $Ucuser->where($map)->count();
 		if($count>0)
 		{
 			$this->success('正在获取粉丝信息，剩余数量：'.$count.'，请不要关闭页面',
-			U('admin/ucuser/sycUcuserInfo/uid/'.$uid));
+			U('admin/ucuser/sycUcuserInfo/mid/'.$mid));
 		}
 		else
 		{
-        $this->success('同步粉丝数据成功',U('index'));
+			$this->success('同步粉丝数据成功',U('index'));
 		}
+
 
     }
 
     /**
-     * 删除公众号重复粉丝信息，忘记当时怎么写的算法了，好像效果是只保留openid相同的最大的那个uid记录
+     * 删除公众号重复粉丝信息，忘记当时怎么写的算法了，好像效果是只保留openid相同的最大的那个mid记录
      * @param null $ids
      * @author patrick<contact@uctoo.com>
      */
@@ -414,7 +431,7 @@ class UcuserController extends AdminController
 
         $Ucuser = D("Ucuser"); // 实例化Ucuser对象
         $map['mp_id'] = get_mpid();
-        $allUcuser = $Ucuser->where($map)->getField('uid,openid');
+        $allUcuser = $Ucuser->where($map)->getField('mid,openid');
 
         $unDup = array_flip(array_flip($allUcuser));
         $dup = array_diff_assoc($allUcuser,$unDup);
@@ -425,7 +442,7 @@ class UcuserController extends AdminController
 
     public function config()
     {
-        $list['url'] = addons_url('Ucuser://Ucuser/index', array('mp_id' => get_mpid('',1)));
+        $list['url'] = addons_url('Ucuser://Ucuser/index', array('mp_id' => get_mpid()));
 
         //显示页面
         $builder = new AdminConfigBuilder();
@@ -481,12 +498,12 @@ class UcuserController extends AdminController
                 $this->assign('count', $count);
                 $this->display('');
             }
-
-
         } else {
             $this->redirect('Public/login');
         }
     }
+
+
 	public function ucuser_tag($page = 1,$r=10)
 	{
 		$UcTag = D("Ucuser/UcuserTag");
@@ -508,6 +525,7 @@ class UcuserController extends AdminController
 			->pagination($totalCount, $r)
 			->display();
 	}
+
 	/*
 	 * 删除用户标签组
 	 */
@@ -534,10 +552,11 @@ class UcuserController extends AdminController
 				$this->error('先进行取消标签的操作，直到粉丝数不超过10w后，才可直接删除该标签');
 			}
 			$map['tagid_list'] = $Ucuser->get_tag_id_map($id);
-			$ucuser_list = $Ucuser->where($map)->field('uid,tagid_list')->select();
+			$ucuser_list = $Ucuser->where($map)->field('mid,tagid_list')->select();
 			$Ucuser->startTrans();
 			foreach($ucuser_list as &$a)
 			{
+
 				$Ucuser->delete_tag_id($a,$id);
 			}
 			$UcTag->where($map)->delete();
@@ -550,6 +569,7 @@ class UcuserController extends AdminController
 				$this->error('删除公众号标签失败，错误：'.(ErrCode::getErrText($this->weObj->errCode)?ErrCode::getErrText($this->weObj->errCode):$this->weObj->errMsg));
 			}
 			$UcTag->commit();
+
 			//todo 调用微信接口删除标签 失败则回滚
 			$this->success('删除成功');
 		}
@@ -560,6 +580,7 @@ class UcuserController extends AdminController
 			$this->display('Public/popup');
 		}
 	}
+
 	/*
 	 * 设置备注名
 	 */
@@ -569,7 +590,7 @@ class UcuserController extends AdminController
 		$name = I('name','','text');
 		$model = D('Ucuser');
 		$map['mp_id'] = get_mpid();
-		$map['uid'] = $ids;
+		$map['mid'] = $ids;
 		$user_info = $model->where($map)->Field('remark,nickname,openid')->find();
 		if(IS_POST)
 		{
@@ -602,6 +623,7 @@ class UcuserController extends AdminController
 			$this->display('Public/popup');
 		}
 	}
+
 	/*
 	 * 增加用户标签组
 	 */
@@ -652,6 +674,7 @@ class UcuserController extends AdminController
 			$this->display('Public/popup');
 		}
 	}
+
 	public function createUcuserTags()
 	{
 		$UcTag = D("Ucuser/UcuserTag");
@@ -659,6 +682,7 @@ class UcuserController extends AdminController
 		if(IS_POST)
 		{
 			$name = I('name','','text');
+
 			$map['name'] = $name;
 			$tagid = $UcTag->where($map)->find();
 			if(!empty($tagid))
@@ -692,11 +716,14 @@ class UcuserController extends AdminController
 			$this->display('Public/popup');
 		}
 	}
+
 	/*
 	 * 同步公众号的用户标签列表
 	 */
 	public function sycUcuserTag()
 	{
+
+
 		$this->init_wx();
 		$res = $this->weObj->getTags();
 		if(!$res)
@@ -713,4 +740,5 @@ class UcuserController extends AdminController
 		$UcTag->where(array('mp_id'=>get_mpid(),'id'=>array('not in',$ids)))->delete();
 		$this->success('获取公众号已创建的标签成功',U('admin/ucuser/ucuser_tag'));
 	}
+
 }

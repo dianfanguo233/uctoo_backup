@@ -53,7 +53,7 @@ class PayNotifyCallBackController extends WxPayNotify
         M('shop_order')-> where($map)->setField($data); //商城订单支付状态置为1
         M('order')-> where($omap)->setField("trans_id",$data["transaction_id"]); //支付流水号写入订单
         $ucuser = get_ucuser_by_openid($data['openid']);
-        D('Ucuser/UcuserScore')->setUserScore($ucuser['uid'],$data['total_fee'],4,'inc'); //加余额
+        D('Ucuser/UcuserScore')->setUserScore($ucuser['mid'],$data['total_fee'],4,'inc'); //加余额
 
         //核销订单中使用的优惠券，核销逻辑并未提供完整演示，聪明的开发者请自己写 ：）
         $order = M('order')-> where($omap)->find(); //通用订单

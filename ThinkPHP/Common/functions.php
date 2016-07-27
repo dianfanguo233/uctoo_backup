@@ -34,7 +34,7 @@ function C($name = null, $value = null, $default = null)
             if (is_null($value))
                 return isset($_config[$name]) ? $_config[$name] : $default;
             $_config[$name] = $value;
-            return;
+            return null;
         }
         // 二维数组设置和获取支持
         $name = explode('.', $name);
@@ -42,12 +42,12 @@ function C($name = null, $value = null, $default = null)
         if (is_null($value))
             return isset($_config[$name[0]][$name[1]]) ? $_config[$name[0]][$name[1]] : $default;
         $_config[$name[0]][$name[1]] = $value;
-        return;
+        return null;
     }
     // 批量设置
     if (is_array($name)) {
         $_config = array_merge($_config, array_change_key_case($name, CASE_UPPER));
-        return;
+        return null;
     }
     return null; // 避免非法参数
 }
@@ -56,7 +56,7 @@ function C($name = null, $value = null, $default = null)
  * 加载配置文件 支持格式转换 仅支持一级配置
  * @param string $file 配置文件名
  * @param string $parse 配置解析方法 有些格式需要用户自己解析
- * @return void
+ * @return array
  */
 function load_config($file, $parse = CONF_PARSE)
 {
@@ -76,7 +76,7 @@ function load_config($file, $parse = CONF_PARSE)
             if (function_exists($parse)) {
                 return $parse($file);
             } else {
-                E(L('_NOT_SUPPERT_') . ':' . $ext);
+                E(L('_NOT_SUPPORT_') . ':' . $ext);
             }
     }
 }
@@ -98,6 +98,7 @@ if (!function_exists('yaml_parse_file')) {
  * 抛出异常处理
  * @param string $msg 异常消息
  * @param integer $code 异常代码 默认为0
+ * @throws Think\Exception
  * @return void
  */
 function E($msg, $code = 0)
@@ -141,6 +142,7 @@ function G($start, $end = '', $dec = 4)
         $_info[$start] = microtime(TRUE);
         if (MEMORY_LIMIT_ON) $_mem[$start] = memory_get_usage();
     }
+    return null;
 }
 
 /**
@@ -170,12 +172,12 @@ function L($name = null, $value = null)
             return str_replace($replace, $value, isset($_lang[$name]) ? $_lang[$name] : $name);
         }
         $_lang[$name] = $value; // 语言定义
-        return;
+        return null;
     }
     // 批量定义
     if (is_array($name))
         $_lang = array_merge($_lang, array_change_key_case($name, CASE_UPPER));
-    return;
+    return null;
 }
 
 /**
@@ -184,7 +186,7 @@ function L($name = null, $value = null)
  * @param string $label 标签
  * @param string $level 日志级别
  * @param boolean $record 是否记录日志
- * @return void
+ * @return void|array
  */
 function trace($value = '[think]', $label = '', $level = 'DEBUG', $record = false)
 {
@@ -498,6 +500,7 @@ function array_map_recursive($filter, $data)
  * </code>
  * @param string $key 标识位置
  * @param integer $step 步进值
+ * @param boolean $save 是否保存结果
  * @return mixed
  */
 function N($key, $step = 0, $save = false)
@@ -513,6 +516,7 @@ function N($key, $step = 0, $save = false)
     if (false !== $save) { // 保存结果
         S('N_' . $key, $_num[$key], $save);
     }
+    return null;
 }
 
 /**
@@ -590,6 +594,10 @@ function import($class, $baseUrl = '', $ext = EXT)
             //加载当前模块的类库
             $baseUrl = MODULE_PATH;
             $class = substr_replace($class, '', 0, strlen($class_strut[0]) + 1);
+        }elseif ('Common' == $class_strut[0]) {
+            //加载公共模块的类库
+            $baseUrl = COMMON_PATH;
+            $class   = substr($class, 7);
         } elseif (in_array($class_strut[0], array('Think', 'Org', 'Behavior', 'Com', 'Vendor')) || is_dir(LIB_PATH . $class_strut[0])) {
             // 系统类库包和第三方类库包
             $baseUrl = LIB_PATH;
@@ -604,6 +612,7 @@ function import($class, $baseUrl = '', $ext = EXT)
         // 如果类不存在 则导入类库文件
         return require_cache($classfile);
     }
+    return null;
 }
 
 /**
@@ -650,7 +659,7 @@ function vendor($class, $baseUrl = '', $ext = '.php')
  * 实例化模型类 格式 [资源://][模块/]模型
  * @param string $name 资源地址
  * @param string $layer 模型层名称
- * @return Model
+ * @return Think\Model
  */
 function D($name = '', $layer = '')
 {
@@ -704,6 +713,7 @@ function M($name = '', $tablePrefix = '', $connection = '')
  * 例如 module/controller addon://module/behavior
  * @param string $name 资源地址 格式：[扩展://][模块/]资源名
  * @param string $layer 分层名称
+ * @param integer $level 控制器层次
  * @return string
  */
 function parse_res_name($name, $layer, $level = 1)
@@ -739,7 +749,7 @@ function parse_res_name($name, $layer, $level = 1)
  * 用于实例化访问控制器
  * @param string $name 控制器名
  * @param string $path 控制器命名空间（路径）
- * @return Controller|false
+ * @return Think\Controller|false
  */
 function controller($name, $path = '')
 {
@@ -767,14 +777,14 @@ function controller($name, $path = '')
  * @param string $name 资源地址
  * @param string $layer 控制层名称
  * @param integer $level 控制器层次
- * @return Controller|false
+ * @return Think\Controller|false
  */
 function A($name, $layer = '', $level = 0)
 {
 
     static $_action = array();
-    $layer = $layer ? $layer : C('DEFAULT_C_LAYER');
-    $level = $level ? $level : ($layer == C('DEFAULT_C_LAYER') ? C('CONTROLLER_LEVEL') : 1);
+    $layer  =   $layer? : C('DEFAULT_C_LAYER');
+    $level  =   $level? : ($layer == C('DEFAULT_C_LAYER')?C('CONTROLLER_LEVEL'):1);
 
     if (isset($_action[$name . $layer]))
         return $_action[$name . $layer];
@@ -817,7 +827,7 @@ function R($url, $vars = array(), $layer = '')
  * 处理标签扩展
  * @param string $tag 标签名称
  * @param mixed $params 传入参数
- * @return mixed
+ * @return void
  */
 function tag($tag, &$params = NULL)
 {
@@ -836,7 +846,7 @@ function B($name, $tag = '', &$params = NULL)
     if ('' == $tag) {
         $name .= 'Behavior';
     }
-    \Think\Hook::exec($name, $tag, $params);
+    return \Think\Hook::exec($name,$tag,$params);
 }
 
 /**
@@ -962,7 +972,7 @@ function layout($layout)
  * URL组装 支持不同URL模式
  * @param string $url URL表达式，格式：'[模块/控制器/操作#锚点@域名]?参数1=值1&参数2=值2...'
  * @param string|array $vars 传入的参数，支持数组和字符串
- * @param string $suffix 伪静态后缀，默认为true表示获取配置值
+ * @param string|boolean $suffix 伪静态后缀，默认为true表示获取配置值
  * @param boolean $domain 是否显示域名
  * @return string
  */
@@ -1609,7 +1619,7 @@ function load_ext_file($path)
     if ($configs = C('LOAD_EXT_CONFIG')) {
         if (is_string($configs)) $configs = explode(',', $configs);
         foreach ($configs as $key => $config) {
-            $file = $path . 'Conf/' . $config . CONF_EXT;
+            $file   = is_file($config)? $config : $path.'Conf/'.$config.CONF_EXT;
             if (is_file($file)) {
                 is_numeric($key) ? C(load_config($file)) : C($key, load_config($file));
             }

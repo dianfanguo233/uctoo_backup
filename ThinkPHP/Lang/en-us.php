@@ -30,7 +30,7 @@ return array(
     '_NO_DB_DRIVER_'         => 'Unable to load database driver',
     '_NOT_SUPPORT_DB_'       => 'The system is temporarily not support database',
     '_NO_DB_CONFIG_'         => 'Not define the database configuration',
-    '_NOT_SUPPERT_'          => 'The system does not support',
+    '_NOT_SUPPORT_'          => 'The system does not support',
     '_CACHE_TYPE_INVALID_'   => 'Unable to load the cache type',
     '_FILE_NOT_WRITEABLE_'   => 'Directory (file) is not writable',
     '_METHOD_NOT_EXIST_'     => 'The method you requested  does not exist!',

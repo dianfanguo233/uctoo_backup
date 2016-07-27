@@ -23,7 +23,7 @@ class Sqlite extends Db {
      */
     public function __construct($config='') {
         if ( !extension_loaded('sqlite') ) {
-            E(L('_NOT_SUPPERT_').':sqlite');
+            E(L('_NOT_SUPPORT_').':sqlite');
         }
         if(!empty($config)) {
             if(!isset($config['mode'])) {

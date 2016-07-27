@@ -14,11 +14,11 @@ class UcuserController extends AddonsController{
                 $params['mp_id'] = $map['mp_id'] = get_mpid();
                 $this->assign ( 'mp_id', $params['mp_id'] );
 
-		      $uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
-		      if($uid === false){
+		      $mid = get_ucuser_mid();   //获取粉丝用户mid，一个神奇的函数，没初始化过就初始化一个粉丝
+		      if($mid === false){
                   $this->error('只可在微信中访问');
               }
-              $user = get_uid_ucuser($uid);                    //获取本地存储公众号粉丝用户信息
+              $user = get_mid_ucuser($mid);                    //获取本地存储公众号粉丝用户信息
 
               $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
               $surl = get_shareurl();
@@ -70,11 +70,11 @@ class UcuserController extends AddonsController{
         $params['mp_id'] = $map['mp_id'] = get_mpid();
         $this->assign ( 'mp_id', $params['mp_id'] );
         $map['id'] = I('id');
-        $uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
-        if($uid === false){
+        $mid = get_ucuser_mid();   //获取粉丝用户mid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($mid === false){
             $this->error('只可在微信中访问');
         }
-        $user = get_uid_ucuser($uid);                    //获取公众号粉丝用户信息
+        $user = get_mid_ucuser($mid);                    //获取公众号粉丝用户信息
         $this->assign ( 'user', $user );
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -113,8 +113,8 @@ class UcuserController extends AddonsController{
 
             } else {                                                     //已经通过网站注册过帐号
                 if($member['password'] != $user['password']){
-                    $data['uid'] = $uid;
-                    $data['mid'] = $member['id'];                            //将UCenterMember表的id写入ucuser表mid字段
+                    $data['mid'] = $mid;
+                    $data['uid'] = $member['id'];                            //将UCenterMember表的id写入ucuser表uid字段
                     $data['mobile'] = $aMobile;
                     $data['password'] = $member['password'];              //同步加密后的密码
                     $ucuser = M('Ucuser');
@@ -123,7 +123,7 @@ class UcuserController extends AddonsController{
             }
 
             $ucuser = D('Common/Ucuser');
-            $res = $ucuser->login($uid,$aMobile,$aPassword,$aRemember);
+            $res = $ucuser->login($mid,$aMobile,$aPassword,$aRemember);
            if($res > 0){
                 $this->success ( '登录成功', addons_url ( 'Ucuser://Ucuser/index' ) );
             }else{
@@ -140,11 +140,11 @@ class UcuserController extends AddonsController{
         $params['mp_id'] = $map['mp_id'] = get_mpid();
         $this->assign ( 'mp_id', $params['mp_id'] );
         $map['id'] = I('id');
-        $uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
-        if($uid === false){
+        $mid = get_ucuser_mid();   //获取粉丝用户mid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($mid === false){
             $this->error('只可在微信中访问');
         }
-        $user = get_uid_ucuser($uid);                    //获取公众号粉丝用户信息
+        $user = get_mid_ucuser($mid);                    //获取公众号粉丝用户信息
         $this->assign ( 'user', $user );
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -175,7 +175,7 @@ class UcuserController extends AddonsController{
             $aMobile = I('post.mobile', '', 'op_t');
             $aPassword = I('post.password', '', 'op_t');
             $verify = I('post.verify', '', 'op_t');
-            $aUid = I('uid', 0, 'intval');
+            $aMid = I('mid', 0, 'intval');
             //读取SESSION中的验证信息
                 $mobile = session('reset_password_mobile');
                  //提交修改密码和接收验证码的手机号码不一致
@@ -203,20 +203,20 @@ class UcuserController extends AddonsController{
                 $aUnType = 5;                                           //微信公众号粉丝注册
                 $aRole = 3;                                             //默认公众号粉丝用户角色
                 /* 注册用户 */
-                $mid = UCenterMember()->register($aUsername, $aNickname, $aPassword, $email, $aMobile, $aUnType);
-                if (0 < $mid) { //注册成功
-                    initRoleUser($aRole,$mid); //初始化角色用户
-                    set_user_status($mid, 1);                           //微信注册的用户状态直接设置为1
-                    $data['uid'] = $uid;
-                    $user['mid'] = $data['mid'] = $mid;                               //将member表的uid写入ucuser表mid字段
+                $uid = UCenterMember()->register($aUsername, $aNickname, $aPassword, $email, $aMobile, $aUnType);
+                if (0 < $uid) { //注册成功
+                    initRoleUser($aRole,$uid); //初始化角色用户
+                    set_user_status($uid, 1);                           //微信注册的用户状态直接设置为1
+                    $data['mid'] = $mid;
+                    $user['uid'] = $data['uid'] = $uid;                               //将member表的uid写入ucuser表uid字段
                     Ucuser()->save($data);
                 } else { //注册失败，返回错误信息
                     echo "注册用户失败";
                     return false;
                 }
             } else {                                                     //已经通过网站注册过帐号
-                $data['uid'] = $uid;
-                $data['mid'] = $member['id'];                            //将UCenterMember表的id写入ucuser表mid字段
+                $data['mid'] = $mid;
+                $data['uid'] = $member['id'];                            //将UCenterMember表的id写入ucuser表uid字段
                 $data['mobile'] = $aMobile;
                 $data['password'] = think_ucenter_md5($aPassword, UC_AUTH_KEY);
                 Ucuser()->save($data);
@@ -238,11 +238,11 @@ class UcuserController extends AddonsController{
         $params['mp_id'] = $map['mp_id'] = get_mpid();
         $this->assign ( 'mp_id', $params['mp_id'] );
         $map['id'] = I('id');
-        $uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
-        if($uid === false){
+        $mid = get_ucuser_mid();   //获取粉丝用户mid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($mid === false){
             $this->error('只可在微信中访问');
         }
-        $user = get_uid_ucuser($uid);                    //获取公众号粉丝用户信息
+        $user = get_mid_ucuser($mid);                    //获取公众号粉丝用户信息
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         $surl = get_shareurl();
@@ -271,7 +271,7 @@ class UcuserController extends AddonsController{
         $this->assign ( 'user', $user );
 
         if (IS_POST) {
-            $data['uid'] = $uid;
+            $data['mid'] = $mid;
             $data['nickname'] = I('post.nickname', '', 'op_t');
             $data['mobile'] = I('post.mobile', '', 'op_t');
             $data['email'] = I('post.email', '', 'op_t');
@@ -314,12 +314,12 @@ class UcuserController extends AddonsController{
 
     }
 
-    public function logout($uid = 0){
-        if($uid == 0){
-            $uid = get_ucuser_uid();
+    public function logout($mid = 0){
+        if($mid == 0){
+            $mid = get_ucuser_mid();
         }
         $ucuser = D('Common/Ucuser');
-        $ucuser->logout($uid);
+        $ucuser->logout($mid);
         $this->success ( '已退出登录', addons_url ( 'Ucuser://Ucuser/index' ) );
     }
 
@@ -328,11 +328,11 @@ public function forget(){
         $params['mp_id'] = $map['mp_id'] = get_mpid();
         $this->assign ( 'mp_id', $params['mp_id'] );
         $map['id'] = I('id');
-        $uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
-        if($uid === false){
+        $mid = get_ucuser_mid();   //获取粉丝用户mid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($mid === false){
             $this->error('只可在微信中访问');
         }
-
+        $ucuser = get_mid_ucuser($mid);
         if (IS_POST) {
             $aMobile = I('post.mobile', '', 'op_t');
             $verify = I('post.verify', '', 'op_t');
@@ -360,25 +360,26 @@ public function forget(){
             }
 
             //将新的密码写入数据库
-            $data1 = array('uid' => $uid, 'mobile' => $aMobile, 'password' => $password);
+            $data1 = array('mid' => $mid, 'mobile' => $aMobile, 'password' => $password);
             $model = D('Common/Ucuser');
             $data1 = $model->create($data1);
             if (!$data1) {
                 $this->error('密码格式不正确');
             }
-            $result = $model->where(array('uid' => $uid))->save($data1);
+            $result = $model->where(array('mid' => $mid))->save($data1);
             if ($result === false) {
                 $this->error('数据库写入错误');
             }
 
             //将新的密码写入数据库
-            $data = array('id' => $uid, 'mobile' => $aMobile, 'password' => $password);
+
+            $data = array('id' => $ucuser['uid'], 'mobile' => $aMobile, 'password' => $password);
             $model = UCenterMember();
             $data = $model->create($data);
             if (!$data) {
                 $this->error('密码格式不正确');
             }
-            $result = $model->where(array('id' => $uid))->save($data);
+            $result = $model->where(array('id' => $ucuser['uid']))->save($data);
             if ($result === false) {
                 $this->error('数据库写入错误');
             }
@@ -420,7 +421,7 @@ public function forget(){
     {
         $aMobile = I('post.mobile', '', 'op_t');
         $verify = I('post.verify', '', 'op_t');
-        $aUid = I('uid', 0, 'intval');
+        $aUid = I('mid', 0, 'intval');
 
         //读取SESSION中的验证信息
         $mobile = session('reset_password_mobile');
@@ -448,17 +449,17 @@ public function forget(){
     public function myscore(){
         $params['mp_id'] = $map['mp_id'] = get_mpid();
         $this->assign ( 'mp_id', $params['mp_id'] );
-        $to_uid = I('to_uid');
+        $to_mid = I('to_mid');
 
-        $from_uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
-        if($to_uid == 0){
-            $to_uid = $from_uid;       //没有打分对象，就是默认浏览者5维首页
+        $from_mid = get_ucuser_mid();   //获取粉丝用户mid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($to_mid == 0){
+            $to_mid = $from_mid;       //没有打分对象，就是默认浏览者5维首页
         }
-        if($from_uid === false){
+        if($from_mid === false){
             $this->error('只可在微信中访问');
         }
-        $to_user = get_uid_ucuser($to_uid);                    //获取本地存储公众号粉丝用户信息
-        $from_user = get_uid_ucuser($from_uid);                    //获取本地存储公众号粉丝用户信息
+        $to_user = get_mid_ucuser($to_mid);                    //获取本地存储公众号粉丝用户信息
+        $from_user = get_mid_ucuser($from_mid);                    //获取本地存储公众号粉丝用户信息
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
@@ -496,7 +497,7 @@ public function forget(){
         $this->assign ( 'from_user', $from_user );
 
         //5维图业务逻辑
-        $map['to_uid'] = $to_uid;
+        $map['to_mid'] = $to_mid;
         $myscore = M('Myscore')->where($map)->order('score_time desc')->limit(100)->select();
 
         $avgScore1 = M('Myscore')->where($map)->avg('score1');
@@ -530,13 +531,13 @@ public function forget(){
         $shares5 = $avgScore5? round($avgScore5,1) : "5";
         $sharedata['desc']= "颜".$shares1.",学".$shares2.",财".$shares3.",品".$shares4.",战".$shares5.",不服来单挑！";
         $domain = 'http://'.$_SERVER['HTTP_HOST'];
-        $sharedata['link'] = addons_url('Ucuser://Ucuser/domyscore', array('mp_id' => get_mpid(),'to_uid'=>$to_uid));
+        $sharedata['link'] = addons_url('Ucuser://Ucuser/domyscore', array('mp_id' => get_mpid(),'to_mid'=>$to_mid));
         $sharedata['imgUrl'] = $to_user['headimgurl'];
         $this->assign ( 'sharedata', $sharedata );
 
-        $to_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_uid'=>$to_uid));     //被打分者5维图首页
-        $from_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_uid'=>$from_uid)); //打分者5维图首页
-        $help_url = addons_url('Ucuser://Ucuser/help', array('mp_id' => get_mpid(),'to_uid'=>$from_uid)); //帮助地址
+        $to_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_mid'=>$to_mid));     //被打分者5维图首页
+        $from_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_mid'=>$from_mid)); //打分者5维图首页
+        $help_url = addons_url('Ucuser://Ucuser/help', array('mp_id' => get_mpid(),'to_mid'=>$from_mid)); //帮助地址
 
         $this->assign ( 'to_url', $to_url );
         $this->assign ( 'from_url', $from_url );
@@ -553,16 +554,16 @@ public function forget(){
     public function domyscore(){
         $params['mp_id'] = $map['mp_id'] = get_mpid();
         $this->assign ( 'mp_id', $params['mp_id'] );
-        $to_uid = I('to_uid');
-        if($to_uid == 0){
+        $to_mid = I('to_mid');
+        if($to_mid == 0){
             $this->error('缺少打分对象');
         }
-        $from_uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
-        if($from_uid === false){
+        $from_mid = get_ucuser_mid();   //获取粉丝用户mid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($from_mid === false){
             $this->error('只可在微信中访问');
         }
-        $to_user = get_uid_ucuser($to_uid);                    //获取本地存储公众号粉丝用户信息
-        $from_user = get_uid_ucuser($from_uid);                    //获取本地存储公众号粉丝用户信息
+        $to_user = get_mid_ucuser($to_mid);                    //获取本地存储公众号粉丝用户信息
+        $from_user = get_mid_ucuser($from_mid);                    //获取本地存储公众号粉丝用户信息
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
@@ -600,7 +601,7 @@ public function forget(){
         $this->assign ( 'from_user', $from_user );
 
         //5维图业务逻辑
-        $map['to_uid'] = $to_uid;
+        $map['to_mid'] = $to_mid;
         $myscore = M('Myscore')->where($map)->order('score_time desc')->limit(100)->select();
 
         $this->assign ( 'myscore', $myscore );
@@ -623,14 +624,14 @@ public function forget(){
         $shares5 = "5";
         $sharedata['desc']= "颜".$shares1.",学".$shares2.",财".$shares3.",品".$shares4.",战".$shares5.",不服来单挑！";
         $domain = 'http://'.$_SERVER['HTTP_HOST'];
-        $sharedata['link'] = addons_url('Ucuser://Ucuser/domyscore', array('mp_id' => get_mpid(),'to_uid'=>$to_uid));
+        $sharedata['link'] = addons_url('Ucuser://Ucuser/domyscore', array('mp_id' => get_mpid(),'to_mid'=>$to_mid));
         $sharedata['imgUrl'] = $to_user['headimgurl'];
         $this->assign ( 'sharedata', $sharedata );
 
         $savescore_url = addons_url('Ucuser://Ucuser/savemyscore', array('mp_id' => get_mpid()));
-        $to_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_uid'=>$to_uid));     //被打分者5维图首页
-        $from_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_uid'=>$from_uid)); //打分者5维图首页
-        $help_url = addons_url('Ucuser://Ucuser/help', array('mp_id' => get_mpid(),'to_uid'=>$from_uid)); //帮助地址
+        $to_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_mid'=>$to_mid));     //被打分者5维图首页
+        $from_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_mid'=>$from_mid)); //打分者5维图首页
+        $help_url = addons_url('Ucuser://Ucuser/help', array('mp_id' => get_mpid(),'to_mid'=>$from_mid)); //帮助地址
 
         $this->assign ( 'savescore_url', $savescore_url );
         $this->assign ( 'to_url', $to_url );
@@ -646,10 +647,10 @@ public function forget(){
      *
      */
     public function savemyscore(){
-        $data['to_uid'] = $tdata['to_uid'] = I('to_uid');
+        $data['to_mid'] = $tdata['to_mid'] = I('to_mid');
         $data['to_headimgurl'] = $tdata['to_headimgurl'] = I('to_headimgurl');
         $data['to_name'] = $tdata['to_name'] = I('to_name');
-        $data['from_uid'] = I('from_uid');
+        $data['from_mid'] = I('from_mid');
         $data['from_headimgurl'] = I('from_headimgurl');
         $data['from_name'] = I('from_name');
         $data['mp_id'] = $tdata['mp_id'] = I('mp_id');
@@ -660,7 +661,7 @@ public function forget(){
         $data['score3'] = I('score3');
         $data['score4'] = I('score4');
         $data['score5'] = I('score5');
-        if(empty($data['to_uid'])|| empty($data['from_uid'])|| empty($data['mp_id'])){
+        if(empty($data['to_mid'])|| empty($data['from_mid'])|| empty($data['mp_id'])){
             echo '打分参数错误';
             return false;
         }
@@ -685,8 +686,8 @@ public function forget(){
             return false;
         }
 
-        $map['to_uid'] = $tmap['to_uid'] = I('to_uid');
-        $map['from_uid'] = I('from_uid');
+        $map['to_mid'] = $tmap['to_mid'] = I('to_mid');
+        $map['from_mid'] = I('from_mid');
         $map['mp_id'] = $tmap['mp_id'] = I('mp_id');
         $myscore_mod = M('Myscore');
         $myscore = $myscore_mod->where($map)->find();
@@ -695,14 +696,14 @@ public function forget(){
             if($myscore_mod->create($data) && $myscore_mod->add()){
                 echo "打分成功";
                 //操作积分
-                D('Ucuser/UcuserScore')->setUserScore($data['from_uid'],10,2,'inc'); //打分的粉丝加10威望
-                D('Ucuser/UcuserScore')->setUserScore($data['to_uid'],1,1,'inc'); //被打分的加1积分
+                D('Ucuser/UcuserScore')->setUserScore($data['from_mid'],10,2,'inc'); //打分的粉丝加10威望
+                D('Ucuser/UcuserScore')->setUserScore($data['to_mid'],1,1,'inc'); //被打分的加1积分
                 //给被打分的发模板消息
                 $param['mp_id'] = $data['mp_id'];
                 $param['template_id'] = "cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE";
-                $to_user = get_uid_ucuser($data['to_uid']);                    //获取本地存储公众号粉丝用户信息
+                $to_user = get_mid_ucuser($data['to_mid']);                    //获取本地存储公众号粉丝用户信息
                 $param['touser'] = $to_user["openid"];
-                $to_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_uid'=>$data['to_uid']));     //被打分者5维图首页
+                $to_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_mid'=>$data['to_mid']));     //被打分者5维图首页
                 $param['url'] = $to_url;
                 $param['from_name'] = $data['from_name'];
                 $param['score2'] = $to_user['score2'];
@@ -749,12 +750,12 @@ public function forget(){
             $this->error('打分详情参数错误');
         }
         $showscore = M('Myscore')->where($map)->find();
-        $from_uid = get_ucuser_uid();   //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
-        if($from_uid === false){
+        $from_mid = get_ucuser_mid();   //获取粉丝用户mid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($from_mid === false){
             $this->error('只可在微信中访问');
         }
-        $to_user = get_uid_ucuser($showscore['to_uid']);                    //获取本地存储公众号粉丝用户信息
-        $from_user = get_uid_ucuser($from_uid);                    //获取本地存储公众号粉丝用户信息
+        $to_user = get_mid_ucuser($showscore['to_mid']);                    //获取本地存储公众号粉丝用户信息
+        $from_user = get_mid_ucuser($from_mid);                    //获取本地存储公众号粉丝用户信息
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
@@ -791,9 +792,9 @@ public function forget(){
         $this->assign ( 'to_user', $to_user );
         $this->assign ( 'from_user', $from_user );
 
-        $to_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_uid'=>$showscore['to_uid']));     //被打分者5维图首页
-        $from_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_uid'=>$showscore['from_uid'])); //打分者5维图首页
-        $help_url = addons_url('Ucuser://Ucuser/help', array('mp_id' => get_mpid(),'to_uid'=>$from_uid)); //帮助地址
+        $to_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_mid'=>$showscore['to_mid']));     //被打分者5维图首页
+        $from_url = addons_url('Ucuser://Ucuser/myscore', array('mp_id' => get_mpid(),'to_mid'=>$showscore['from_mid'])); //打分者5维图首页
+        $help_url = addons_url('Ucuser://Ucuser/help', array('mp_id' => get_mpid(),'to_mid'=>$from_mid)); //帮助地址
 
         $this->assign ( 'showscore', $showscore );
         $this->assign ( 'to_url', $to_url );
@@ -808,7 +809,7 @@ public function forget(){
         $shares4 = $showscore['score4'];
         $shares5 = $showscore['score5'];
         $sharedata['desc']= "颜".$shares1.",学".$shares2.",财".$shares3.",品".$shares4.",战".$shares5.",不服来单挑！";
-        $sharedata['link'] = addons_url('Ucuser://Ucuser/domyscore', array('mp_id' => get_mpid(),'to_uid'=>$showscore['to_uid']));
+        $sharedata['link'] = addons_url('Ucuser://Ucuser/domyscore', array('mp_id' => get_mpid(),'to_mid'=>$showscore['to_mid']));
         $sharedata['imgUrl'] = $showscore['to_headimgurl'];
         $this->assign ( 'sharedata', $sharedata );
 

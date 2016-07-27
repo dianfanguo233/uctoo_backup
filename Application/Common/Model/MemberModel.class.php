@@ -217,7 +217,7 @@ class MemberModel extends Model
         $umap ['uid'] = $user['uid'];
         $umap ['public_id'] = $user['token'];
         $info = D ( 'Mpbase/MemberPublic' )->where ( $umap )->find ();
-        get_mpid($info ['id']);                                               //设置当前下上文mp_id
+        get_mpid($info ['mp_id']);                                               //设置当前下上文mp_id
         /* 记录登录SESSION和COOKIES */
         $auth = array(
             'uid' => $user['uid'],
@@ -225,11 +225,10 @@ class MemberModel extends Model
             'last_login_time' => $user['last_login_time'],
             'role_id' => $user['last_login_role'],
             'audit' => $audit,
-            'mp_id'=>$info ['id'],
+            'mp_id'=>$info ['mp_id'],
             'token'=>$info['public_id'],
             'public_name'=>$info['public_name'],
         );
-
         session('user_auth', $auth);
         session('user_auth_sign', data_auth_sign($auth));
         if ($remember) {

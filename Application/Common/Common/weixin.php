@@ -43,7 +43,7 @@ function get_token_appinfo($token = '') {
 
 function get_mpid_appinfo($mp_id = '') {
     empty ( $mp_id ) && $mp_id = get_mpid ();
-    $map ['id'] = $mp_id;
+    $map ['mp_id'] = $mp_id;
     $info = M ( 'member_public' )->where ( $map )->find ();
     return $info;
 }
@@ -148,14 +148,12 @@ function OAuthWeixin($callback) {
     }
 }
 
-// 获取当前上下文的公众号id
-function get_mpid($mp_id = NULL,$md5=false) {
+// 获取当前上下文的公众号mp_id
+function get_mpid($mp_id = NULL) {
     if ($mp_id !== NULL) {
         session ( 'mp_id', $mp_id );
     } elseif (! empty ( $_REQUEST ['mp_id'] )) {
-	    //外链指定mp_id 为加密过的mp_id
-	    $map ['mp_id'] = I('mp_id','','/^\w{32}$/');
-	    $mp_id = M ( 'member_public' )->where ( $map )->getField('id');
+        $mp_id = I('mp_id','','/^\w{32}$/');
         empty($mp_id) || session ( 'mp_id', $mp_id );
     }
     $mp_id = session ( 'mp_id' );
@@ -166,70 +164,68 @@ function get_mpid($mp_id = NULL,$md5=false) {
         $map['uid'] = is_login();
         $map['public_id'] = get_token();
         $mp =  D('Mpbase/MemberPublic')->where($map)->find();  //所登陆会员帐号当前管理的公众号
-        $mp_id = $mp['id'];
+        $mp_id = $mp['mp_id'];
     }
     if (empty ( $mp_id )) {
         return - 1;
     }
-	if($md5)
-		$mp_id = mpid_md5($mp_id);
     return $mp_id;
 }
 
 
-//根据uid获取粉丝用户信息
-function get_uid_ucuser($uid = 0) {
+//根据mid获取粉丝用户信息
+function get_mid_ucuser($mid = 0) {
   $model = D('Ucuser');
-  $user = $model->find($uid);
+  $user = $model->find($mid);
   return $user;
 }
 
 //根据uid获取粉丝用户信息
-function get_ucuser_bymid($mid) {
-    if(empty($mid)){
+function get_ucuser_byuid($uid) {
+    if(empty($uid)){
         return false;
     }
     $model = D('Ucuser');
-    $map['mid'] = $mid;
-    $user = $model->where($map)->select();     //一个pc端帐号的mid可能对应多个公众号的uid
+    $map['uid'] = $uid;
+    $user = $model->where($map)->select();     //一个pc端帐号的uid可能对应多个公众号的mid
     return $user;
 }
 
 
-// 获取当前粉丝用户uid(ucuser表的uid),和 hook('init_ucuser',$params)作用基本相同。只在微信浏览器中可使用。
-function get_ucuser_uid($uid = 0) {
+// 获取当前粉丝用户mid(ucuser表的mid),和 hook('init_ucuser',$params)作用基本相同。只在微信浏览器中可使用。
+function get_ucuser_mid($mid = 0) {
     $mp_id = get_mpid ();
-    if ($uid !== NULL) {
-        session ( 'uid_' . $mp_id, $uid );
-    } elseif (! empty ( $_REQUEST ['uid'] )) {
-        session ( 'uid_' . $mp_id, $_REQUEST ['uid'] );
-    }                                                                    //以上是带uid参数调用函数时设置session中的uid
-    $uid = session ( 'uid_' . $mp_id );
+    if ($mid !== NULL) {
+        session ( 'mid_' . $mp_id, $mid );
+    } elseif (! empty ( $_REQUEST ['mid'] )) {
+        session ( 'mid_' . $mp_id, $_REQUEST ['mid'] );
+    }                                                                    //以上是带mid参数调用函数时设置session中的mid
+    $mid = session ( 'mid_' . $mp_id );
 
     $isWeixinBrowser = isWeixinBrowser ();
     if(!$isWeixinBrowser){                           //非微信浏览器返回false，调用此函数必须对false结果进行判断，非微信浏览器不可访问调用的controller
         return false;
     }
     //下面这段应该逻辑没问题，如果公众号配置信息错误或者没有snsapi_base作用域的获取信息权限可能会出现死循环，注释掉以下if可治愈
-    if ( $uid <= 0 && $isWeixinBrowser) {
+    if ( $mid <= 0 && $isWeixinBrowser) {
         $map['openid'] = get_openid();
         $map['mp_id'] = $mp_id;
         $ucuser = D('Ucuser');
         $data = $ucuser->where($map)->find();
         if(!$data){                                                 //公众号没有这个粉丝信息，就注册一个
-            $uid = $ucuser->registerUser( $map['mp_id'] ,$map['openid']);    //微信粉丝表ucuser表的uid
-            session ( 'uid_' . $mp_id, $uid );
+            $mid = $ucuser->registerUser( $map['mp_id'] ,$map['openid']);    //微信粉丝表ucuser表的mid
+            session ( 'mid_' . $mp_id, $mid );
 
         }else{
-            $uid =  $data['uid'];
-            session ( 'uid_' . $mp_id, $uid );
+            $mid =  $data['mid'];
+            session ( 'mid_' . $mp_id, $mid );
         }
     }
-    if (empty ( $uid )) {
+    if (empty ( $mid )) {
         return - 1;
     }
 
-    return $uid;
+    return $mid;
 }
 
 // 同步微信用户资料到本地存储。

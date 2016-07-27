@@ -55,11 +55,11 @@ class IndexController extends AddonsController{
         $selected_couponsum = I('selected_couponsum', '', 'op_t');
 
 
-        $uid = get_ucuser_uid();                         //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
-        if($uid === false){
+        $mid = get_ucuser_mid();                         //获取粉丝用户mid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($mid === false){
             $this->error('只可在微信中访问');
         }
-        $user = get_uid_ucuser($uid);                    //获取本地存储公众号粉丝用户信息
+        $user = get_mid_ucuser($mid);                    //获取本地存储公众号粉丝用户信息
         $this->assign('user', $user);
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -69,7 +69,7 @@ class IndexController extends AddonsController{
         }
 
         //odata通用订单数据,订单数据可以从订单页面提交过来
-        $odata['uid'] = $uid;
+        $odata['mid'] = $mid;
         $odata['mp_id'] = $params['mp_id'];                    // 当前公众号在系统中ID
         $odata['order_id'] = "time".date("YmdHis");   //
         $odata['order_status'] = 1;                            //不带该字段-全部状态, 2-待发货, 3-已发货, 5-已完成, 8-维权中
@@ -196,11 +196,11 @@ class IndexController extends AddonsController{
         $jsApiPay_url = addons_url('Wxpay://Index/jsApiPay', array('mp_id' => get_mpid()));
         $this->assign ( 'jsApiPay_url', $jsApiPay_url);
 
-        $uid = get_ucuser_uid();                         //获取粉丝用户uid，一个神奇的函数，没初始化过就初始化一个粉丝
-        if($uid === false){
+        $mid = get_ucuser_mid();                         //获取粉丝用户mid，一个神奇的函数，没初始化过就初始化一个粉丝
+        if($mid === false){
             $this->error('只可在微信中访问');
         }
-        $user = get_uid_ucuser($uid);                    //获取本地存储公众号粉丝用户信息
+        $user = get_mid_ucuser($mid);                    //获取本地存储公众号粉丝用户信息
         $this->assign('user', $user);
 
         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -242,7 +242,7 @@ class IndexController extends AddonsController{
         $donate_list = M('order')->where($map)->order('order_create_time desc')->limit(100)->select();
         $this->assign ( 'donate_list', $donate_list );
 
-        $donate_sum = M('order')->field('uid,buyer_nick,sum(order_total_price) as total_price')->where($map)->order('sum(order_total_price) desc')->group('uid')->select();
+        $donate_sum = M('order')->field('mid,buyer_nick,sum(order_total_price) as total_price')->where($map)->order('sum(order_total_price) desc')->group('mid')->select();
         $this->assign ( 'donate_sum', $donate_sum );
 
         //微信卡券相关示例

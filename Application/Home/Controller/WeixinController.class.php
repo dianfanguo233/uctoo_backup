@@ -43,8 +43,8 @@ class WeixinController extends Controller {
      * 在mp.weixin.qq.com 开发者中心配置的 URL(服务器地址)  http://域名/index.php/home/weixin/index/id/member_public表的id.html
      */
 	public function index($mp_id = '') {
-        //
-        get_mpid($mp_id);//初始化公众号
+        //设置当前上下文的公众号mp_id
+        $mp_id = get_mpid($mp_id);//初始化公众号
         $map['mp_id'] = $mp_id;
         $this->member_public = M('MemberPublic')->where($map)->find();
         $this->options['appid'] = $this->member_public['appid'];    //初始化options信息
@@ -58,13 +58,10 @@ class WeixinController extends Controller {
         $ToUserName = $weObj->getRevTo();
         $FromUserName = $weObj->getRevFrom();
         $params['weObj'] = &$weObj;
-        $params['mp_id'] = $this->member_public['id'];
+        $params['mp_id'] = $this->member_public['mp_id'];
         $params['weOptions'] = $this->options;
 
         //如果被动响应可获得用户信息就记录下
-	if (! empty ( $this->member_public['id'] )) {                    //设置当前上下文的公众号id
-            $mp_id =  get_mpid($this->member_public['id']);
-        }
         if (! empty ( $ToUserName )) {
             get_token ( $ToUserName );
         }
@@ -72,7 +69,6 @@ class WeixinController extends Controller {
           $oid =  get_openid($FromUserName);
         }
 
-        
         hook('init_ucuser',$params);   //把消息分发到addons/ucuser/init_ucuser的方法中,初始化公众号粉丝信息
 
         $map['openid'] = get_openid();
@@ -297,7 +293,7 @@ class WeixinController extends Controller {
 		{
 			$this->error('该支付记录不存在');
 		}
-		$map["id"] = $odata["mp_id"];
+		$map["mp_id"] = $odata["mp_id"];
 		$info         = M('member_public')->where($map)->find();
 		//获取公众号信息，jsApiPay初始化参数
 		$cfg = array(

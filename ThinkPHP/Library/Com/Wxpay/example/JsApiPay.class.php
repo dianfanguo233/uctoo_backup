@@ -82,7 +82,7 @@ class JsApiPay
 		|| !array_key_exists("prepay_id", $UnifiedOrderResult)
 		|| $UnifiedOrderResult['prepay_id'] == "")
 		{
-			throw new WxPayException("参数错误");
+			throw new WxPayException(empty($UnifiedOrderResult['err_code_des'])?"参数错误":$UnifiedOrderResult['err_code_des']);
 		}
 		$jsapi = new WxPayJsApiPay();
 		$jsapi->SetAppid($UnifiedOrderResult["appid"]);
