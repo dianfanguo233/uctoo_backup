@@ -105,8 +105,9 @@ class CustommenuController extends AdminController
  * */
     public function getmenu(){
 
-        $id = get_mpid();
-        $member_public = M('MemberPublic')->find($id);
+        $mp_id = get_mpid();
+        $map['mp_id'] = $mp_id;
+        $member_public = M('MemberPublic')->where($map)->find();
         $options['appid'] = $member_public['appid'];    //初始化options信息
         $options['appsecret'] = $member_public['secret'];
         $options['encodingaeskey'] = $member_public['encodingaeskey'];

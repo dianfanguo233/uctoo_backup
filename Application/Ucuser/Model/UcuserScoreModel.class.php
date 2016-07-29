@@ -89,45 +89,45 @@ class UcuserScoreModel extends Model
 
     /**
      * getUserScore  获取用户的积分
-     * @param int $uid
+     * @param int $mid
      * @param int $type
      * @return mixed
      * @author:patrick contact@uctoo.com
      */
-    public function getUserScore($uid,$type){
+    public function getUserScore($mid,$type){
         $model = D('Common/Ucuser');
-        $score = $model->where(array('uid'=>$uid))->getField('score'.$type);
+        $score = $model->where(array('mid'=>$mid))->getField('score'.$type);
         return $score;
     }
 
     /**
      * setUserScore  设置用户的积分
-     * @param $uids
+     * @param $mids
      * @param $score
      * @param $type
      * @param string $action
      * @author:patrick contact@uctoo.com
      */
-    public function setUserScore($uids,$score,$type,$action='inc'){
+    public function setUserScore($mids,$score,$type,$action='inc'){
 
         $model = D('Common/Ucuser');
         switch($action){
             case 'inc':
                 $score = abs($score);
-                $res = $model->where(array('uid'=>array('in',$uids)))->setInc('score'.$type,$score);
+                $res = $model->where(array('mid'=>array('in',$mids)))->setInc('score'.$type,$score);
                 break;
             case 'dec':
                 $score = abs($score);
-                $res = $model->where(array('uid'=>array('in',$uids)))->setDec('score'.$type,$score);
+                $res = $model->where(array('mid'=>array('in',$mids)))->setDec('score'.$type,$score);
                 break;
             case 'to':
-                $res = $model->where(array('uid'=>array('in',$uids)))->setField('score'.$type,$score);
+                $res = $model->where(array('mid'=>array('in',$mids)))->setField('score'.$type,$score);
                 break;
             default:
                 $res = false;
                 break;
         }
-        foreach($uids as $val){
+        foreach($mids as $val){
             clean_query_user_cache($val,'score'.$type);
         }
         unset($val);

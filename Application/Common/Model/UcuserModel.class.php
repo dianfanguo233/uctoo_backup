@@ -114,36 +114,36 @@ class UcuserModel extends Model
      * 初始化一个新用户
      * @param  string $mp_id 公众号mp_id
      * @param  string $openid 用户openid
-     * @return integer          注册成功-用户uid，注册失败-错误编号
+     * @return integer          注册成功-用户mid，注册失败-错误编号
      */
     public function registerUser($mp_id = '',$openid = '')
     {
         /* 在当前应用中注册用户 */
         if ($user = $this->create(array('mp_id' => $mp_id,'openid' => $openid, 'status' => 1))) {
-            $ucuid = $this->add($user);
-            if (!$ucuid) {
+            $ucmid = $this->add($user);
+            if (!$ucmid) {
                 $this->error = '微会员信息注册失败，请重试！';
                 return false;
             }
             sync_wxuser($mp_id,$openid);                                //初始化用户后同步一次用户资料
-            return $ucuid;
+            return $ucmid;
         } else {
             return $this->getError(); //错误详情见自动验证注释
         }
     }
 
     /**
-     * 根据粉丝uid更新关联的mid，电话号码，密码
-     * @param  integer $uid 用户UID
-     * @param  string $mid member表的uid
+     * 根据粉丝mid更新关联的uid，电话号码，密码
+     * @param  integer $mid 粉丝ID
+     * @param  string $uid member表的uid
      * @param  string $password 用户密码
      * @param  string $mobile 用户手机号码
      * @return integer          注册成功-用户信息，注册失败-错误编号
      */
-    public function register($uid,$mid,$password, $mobile)
+    public function register($mid,$uid,$password, $mobile)
     {
-            $data['uid'] = $uid;
-            $data['mid'] = $mid;                            //将UCenterMember表的id写入ucuser表mid字段
+            $data['mid'] = $mid;
+            $data['uid'] = $uid;                            //将UCenterMember表的id写入ucuser表mid字段
             $data['mobile'] = $mobile;
             $data['password'] = think_ucenter_md5($password, UC_AUTH_KEY);
             $res = $this->save($data);
@@ -152,17 +152,17 @@ class UcuserModel extends Model
 
     /**
      * 登录指定用户
-     * @param  integer $uid 用户UID
+     * @param  integer $mid 粉丝ID
      * @param  string  $mobile 用户名
      * @param  string  $password 用户密码
      * @param bool $remember
      * @param int $role_id 有值代表强制登录这个角色
      * @return boolean      ture-登录成功，false-登录失败
      */
-    public function login($uid,$mobile = '', $password = '', $remember = false,$role_id=0)
+    public function login($mid,$mobile = '', $password = '', $remember = false,$role_id=0)
     {
         /* 检测是否在当前应用注册 */
-        $map['uid'] = $uid;
+        $map['mid'] = $mid;
         $map['mobile'] = $mobile;
 
         /* 获取用户数据 */
@@ -176,16 +176,16 @@ class UcuserModel extends Model
             }
         }
 
-        $return = check_action_limit('input_password','ucuser',$user['uid'],$user['uid']);
-        if($return && !$return['state']){
-            return $return['info'];
-        }
+      //  $return = check_action_limit('input_password','ucuser',$user['mid'],$user['mid']);
+      //  if($return && !$return['state']){
+      //      return $return['info'];
+      //  }
 
         if (is_array($user) && $user['status']) {
             /* 验证用户密码 */
             if (think_ucenter_md5($password, UC_AUTH_KEY) === $user['password']) {
-                $this->updateLogin($user['uid']); //更新用户登录信息
-                return $user['uid']; //登录成功，返回用户UID
+                $this->updateLogin($user['mid']); //更新用户登录信息
+                return $user['mid']; //登录成功，返回粉丝ID
             } else {
 
                 return -2; //密码错误
@@ -196,7 +196,7 @@ class UcuserModel extends Model
 
         //以下程序运行不到
 
-        session('temp_login_uid', $uid);
+        session('temp_login_mid', $mid);
         session('temp_login_role_id', $user['last_login_role']);
 
         if ($user['status'] == 3 /*判断是否激活*/) {
@@ -214,7 +214,7 @@ class UcuserModel extends Model
         /* 登录用户 */
         $this->autoLogin($user, $remember);
 
-        session('temp_login_uid',null);
+        session('temp_login_mid',null);
         session('temp_login_role_id', null);
 
         return true;
@@ -224,13 +224,13 @@ class UcuserModel extends Model
      * 注销当前用户
      * @return void
      */
-    public function logout($uid = 0)
+    public function logout($mid = 0)
     {
         session('user_auth', null);
         session('user_auth_sign', null);
         cookie('UCTOO_LOGGED_USER', NULL);
         $data = array(
-            'uid' => $uid,
+            'mid' => $mid,
             'login' => 0,                                              //登录状态设置为0
         );
         $this->save($data);
@@ -238,12 +238,12 @@ class UcuserModel extends Model
 
     /**
      * 更新用户登录信息
-     * @param  integer $uid 用户ID
+     * @param  integer $mid 粉丝ID
      */
-    protected function updateLogin($uid)
+    protected function updateLogin($mid)
     {
         $data = array(
-            'uid' => $uid,
+            'mid' => $mid,
             'last_login_time' => NOW_TIME,
             'last_login_ip' => get_client_ip(1),
             'login' => 1,                                              //登录状态设置为1
@@ -260,21 +260,21 @@ class UcuserModel extends Model
 
         /* 更新登录信息 */
         $data = array(
-            'uid' => $user['uid'],
+            'mid' => $user['mid'],
             'last_login_time' => NOW_TIME,
             'last_login_ip' => get_client_ip(1),
             'last_login_role'=>$user['last_login_role'],
         );
         $this->save($data);
         //判断角色用户是否审核
-        $map['uid']=$user['uid'];
+        $map['mid']=$user['mid'];
         $map['role_id']=$user['last_login_role'];
         $audit=D('UserRole')->where($map)->getField('status');
         //判断角色用户是否审核 end
 
         /* 记录登录SESSION和COOKIES */
         $auth = array(
-            'uid' => $user['uid'],
+            'mid' => $user['mid'],
             'last_login_time' => $user['last_login_time'],
             'role_id'=>$user['last_login_role'],
             'audit'=>$audit,
@@ -283,27 +283,27 @@ class UcuserModel extends Model
         session('user_auth', $auth);
         session('user_auth_sign', data_auth_sign($auth));
         if ($remember) {
-            $user1 = D('user_token')->where('uid=' . $user['uid'])->find();
+            $user1 = D('ucuser_token')->where('mid=' . $user['mid'])->find();
             $token = $user1['token'];
             if ($user1 == null) {
                 $token = build_auth_key();
                 $data['token'] = $token;
                 $data['time'] = time();
-                $data['uid'] = $user['uid'];
-                D('user_token')->add($data);
+                $data['mid'] = $user['mid'];
+                D('ucuser_token')->add($data);
             }
         }
 
         if (!$this->getCookieUid() && $remember) {
             $expire = 3600 * 24 * 7;
-            cookie('UCTOO_LOGGED_USER', $this->jiami($this->change() . ".{$user['uid']}.{$token}"), $expire);
+            cookie('UCTOO_LOGGED_USER', $this->jiami($this->change() . ".{$user['mid']}.{$token}"), $expire);
         }
     }
 
     public function need_login()
     {
-        if ($uid = $this->getCookieUid()) {
-            $this->login($uid);
+        if ($mid = $this->getCookieUid()) {
+            $this->login($mid);
             return true;
         }
     }
@@ -317,8 +317,8 @@ class UcuserModel extends Model
         }
         $cookie = cookie('UCTOO_LOGGED_USER');
         $cookie = explode(".", $this->jiemi($cookie));
-        $map['uid'] = $cookie[1];
-        $user = D('user_token')->where($map)->find();
+        $map['mid'] = $cookie[1];
+        $user = D('ucuser_token')->where($map)->find();
         $cookie_uid = ($cookie[0] != $this->change()) || ($cookie[2] != $user['token']) ? false : $cookie[1];
         $cookie_uid = $user['time'] - time() >= 3600 * 24 * 7 ? false : $cookie_uid;
         return $cookie_uid;
@@ -397,7 +397,7 @@ class UcuserModel extends Model
 
     /**
      * 同步登陆时添加粉丝信息，这个方法一般不在PC端使用，PC端不知道粉丝归属的公众号，且粉丝访问公众号时会自动生成粉丝数据
-     * @param $uid
+     * @param $mid
      * @param $info
      * @return mixed
      * autor:uctoo
@@ -411,7 +411,7 @@ class UcuserModel extends Model
         empty($data1['nickname']) && $data1['nickname'] = $this->rand_nickname();
         $data1['sex'] = $info['sex'];
         $data = $this->create($data1);
-        $data['mid'] = $uid;
+        $data['uid'] = $uid;
         $res = $this->add($data);
         return $res;
     }
@@ -437,7 +437,7 @@ class UcuserModel extends Model
     }
 
     /**
-     * 设置角色用户默认基本信息
+     * 设置角色用户默认基本信息,160721还未支持微信端粉丝角色设置
      * @param $role_id
      * @param $uid
      * @author 郑钟良<zzl@ourstu.com>
@@ -525,7 +525,7 @@ class UcuserModel extends Model
         //默认头衔设置 end
     }
 
-    //默认显示哪一个角色的个人主页设置
+    //默认显示哪一个角色的个人主页设置,160721还未支持微信端粉丝主页设置
     public function initDefaultShowRole($role_id,$uid)
     {
         $userRoleModel=D('UserRole');
@@ -540,7 +540,7 @@ class UcuserModel extends Model
     //默认显示哪一个角色的个人主页设置 end
 
     /**
-     * 获取用户初始化后积分值
+     * 获取用户初始化后积分值,160721还未支持微信端粉丝积分
      * @param $role_id 当前初始化角色
      * @param $uid 初始化用户
      * @param $value 初始化角色积分配置值

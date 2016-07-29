@@ -48,10 +48,10 @@ use Common\Model\UcuserModel;
                    $ucuser = D('Ucuser');
                    $data = $ucuser->where($map)->find();
                     if(!$data){                                             //公众号没有这个粉丝信息，就注册一个
-                        $uid = $ucuser->registerUser( $map['mp_id'] ,$map['openid']);    //微信粉丝表ucuser表的uid字段即为uid
-                        get_ucuser_uid($uid);                               //设置session中uid
+                        $mid = $ucuser->registerUser( $map['mp_id'] ,$map['openid']);    //微信粉丝表ucuser表的mid字段
+                        get_ucuser_mid($mid);                               //设置session中mid
                     }else{
-                        get_ucuser_uid( $data['uid']);                               //设置session中uid
+                        get_ucuser_mid( $data['mid']);                               //设置session中mid
                     }
             }else{                                                          //不存在公众号实例或没显式传mp_id参数，例如分享到朋友圈的内容,访问参数中必须带有公众号在系统中唯一标识mp_id
                 $umap['openid'] = get_openid();                           //只存在公众号信息的，在get_openid中通过oauth获取用户openid
@@ -60,15 +60,14 @@ use Common\Model\UcuserModel;
                     $ucuser = D('Ucuser');
                     $data = $ucuser->where($umap)->find();
                     if(!$data){                                             //公众号没有这个粉丝信息，就注册一个
-                          $uid = $ucuser->registerUser($umap['mp_id'] ,$umap['openid']);    //微信粉丝表ucuser表的id字段即为uid
-                        get_ucuser_uid($uid);                               //设置session中uid
+                          $mid = $ucuser->registerUser($umap['mp_id'] ,$umap['openid']);    //微信粉丝表ucuser表的mid字段
+                        get_ucuser_mid($mid);                               //设置session中mid
                     }else{
-                        get_ucuser_uid( $data['uid']);                               //设置session中uid
+                        get_ucuser_mid( $data['mid']);                               //设置session中mid
                     }
                 }else{                                                      //没有公众号信息，未能初始化粉丝
 
                 }
             }
         }
-
     }

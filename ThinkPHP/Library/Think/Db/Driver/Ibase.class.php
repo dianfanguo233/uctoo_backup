@@ -24,7 +24,7 @@ class Ibase extends Db{
      */
     public function __construct($config='') {
         if ( !extension_loaded('interbase') ) {
-            E(L('_NOT_SUPPERT_').':Interbase or Firebird');
+            E(L('_NOT_SUPPORT_').':Interbase or Firebird');
         }
         if(!empty($config)) {
             $this->config   =   $config;

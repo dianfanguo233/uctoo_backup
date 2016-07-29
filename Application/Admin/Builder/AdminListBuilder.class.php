@@ -308,6 +308,11 @@ class AdminListBuilder extends AdminBuilder
         return $this->key($name, text($title), 'text');
     }
 
+	public function keyTextFunc($name = '', $title = '',$func = '')
+	{
+		return $this->key($name, text($title), 'textfunc',$func);
+	}
+
     /**显示html
      * @param $name 键名
      * @param $title 标题
@@ -406,6 +411,11 @@ class AdminListBuilder extends AdminBuilder
     {
         return $this->key($name, $title, 'uid');
     }
+
+	public function keyPrice($name = 'price',$title='价格')
+	{
+		return $this->key($name, $title, 'price');
+	}
 
     public function keyNickname($name = 'uid', $title, $subtitle = null)
     {
@@ -543,7 +553,13 @@ class AdminListBuilder extends AdminBuilder
      * */
     public function display($solist = '')
     {
+
         //key类型的等价转换
+	    //
+	    $this->convertKey('price', 'text', function ($value) {
+		    return $value/100;
+	    });
+
         //map转换成text
         $this->convertKey('map', 'text', function ($value, $key) {
             return $key['opt'][$value];
@@ -580,6 +596,10 @@ class AdminListBuilder extends AdminBuilder
         $this->convertKey('text', 'html', function ($value) {
             return $value;
         });
+
+		$this->convertKey('textfunc', 'html', function ($value,$key) {
+			return call_user_func($key['opt'],$value);
+		});
 
         //link转换为html
         $this->convertKey('link', 'html', function ($value, $key, $item) {
@@ -625,7 +645,6 @@ class AdminListBuilder extends AdminBuilder
 
                 $src = getThumbImageById($value, 80, 80);
                 $sc_src = $sc_src == '' ? $src : $sc_src;
-				empty($content) && $content = 'style=\"width:80px;height:80px\"';
                 $html = "<div class='popup-gallery'><a title=\"" . L('_VIEW_BIGGER_') . "\" href=\"$sc_src\"><img src=\"$sc_src\"/ \" ".$content."></a></div>";
             } else {//value是图片路径
                 $sc_src = $value;
