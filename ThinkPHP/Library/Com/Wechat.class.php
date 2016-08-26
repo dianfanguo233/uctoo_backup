@@ -54,6 +54,7 @@ class Wechat
 	const MSGTYPE_NEWS = 'news';
 	const MSGTYPE_VOICE = 'voice';
 	const MSGTYPE_VIDEO = 'video';
+	const MSGTYPE_SHORTVIDEO = 'shortvideo';
 	const EVENT_SUBSCRIBE = 'subscribe';       //订阅
 	const EVENT_UNSUBSCRIBE = 'unsubscribe';   //取消订阅
 	const EVENT_SCAN = 'SCAN';                 //扫描带参数二维码
@@ -112,8 +113,8 @@ class Wechat
 	const CUSTOM_SEND_URL='/message/custom/send?';
 	const MEDIA_UPLOADNEWS_URL = '/media/uploadnews?';
 	const MASS_SEND_URL = '/message/mass/send?';
-	const TEMPLATE_SET_INDUSTRY_URL = '/message/template/api_set_industry?';
-	const TEMPLATE_ADD_TPL_URL = '/message/template/api_add_template?';
+	const TEMPLATE_SET_INDUSTRY_URL = '/template/api_set_industry?';
+	const TEMPLATE_ADD_TPL_URL = '/template/api_add_template?';
 	const TEMPLATE_SEND_URL = '/message/template/send?';
 	const MASS_SEND_GROUP_URL = '/message/mass/sendall?';
 	const MASS_DELETE_URL = '/message/mass/delete?';
@@ -1138,7 +1139,24 @@ class Wechat
 			curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, false);
 			curl_setopt($oCurl, CURLOPT_SSLVERSION, 1); //CURL_SSLVERSION_TLSv1
 		}
-		if (is_string($param) || $post_file) {
+	        if (PHP_VERSION_ID >= 50500 && class_exists('\CURLFile')) {
+	            	$is_curlFile = true;
+	        } else {
+	        	$is_curlFile = false;
+	            	if (defined('CURLOPT_SAFE_UPLOAD')) {
+	                	curl_setopt($oCurl, CURLOPT_SAFE_UPLOAD, false);
+	            	}
+	        }
+		if (is_string($param)) {
+	            	$strPOST = $param;
+	        }elseif($post_file) {
+	            	if($is_curlFile) {
+		                foreach ($param as $key => $val) {
+		                    	if (substr($val, 0, 1) == '@') {
+		                        	$param[$key] = new \CURLFile(realpath(substr($val,1)));
+		                    	}
+		                }
+	            	}
 			$strPOST = $param;
 		} else {
 			$aPOST = array();
@@ -2303,12 +2321,34 @@ class Wechat
 	/**
 	 * 获取关注者详细信息
 	 * @param string $openid
+	 * @param string $lang 返回国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语
 	 * @return array {subscribe,openid,nickname,sex,city,province,country,language,headimgurl,subscribe_time,[unionid]}
 	 * 注意：unionid字段 只有在用户将公众号绑定到微信开放平台账号后，才会出现。建议调用前用isset()检测一下
 	 */
-	public function getUserInfo($openid){
+	public function getUserInfo($openid, $lang = 'zh_CN'){
 		if (!$this->access_token && !$this->checkAuth()) return false;
-		$result = $this->http_get(self::API_URL_PREFIX.self::USER_INFO_URL.'access_token='.$this->access_token.'&openid='.$openid);
+		$result = $this->http_get(self::API_URL_PREFIX.self::USER_INFO_URL.'access_token='.$this->access_token.'&openid='.$openid.'&lang='.$lang);
+		if ($result)
+		{
+			$json = json_decode($result,true);
+			if (isset($json['errcode'])) {
+				$this->errCode = $json['errcode'];
+				$this->errMsg = $json['errmsg'];
+				return false;
+			}
+			return $json;
+		}
+		return false;
+	}
+	/**
+	 * 批量获取关注者详细信息
+	 * @param array $openids user_list{{'openid:xxxxxx'},{},{}}
+	 * @return array user_info_list{subscribe,openid,nickname,sex,city,province,country,language,headimgurl,subscribe_time,[unionid]}{}{}...
+	 * 注意：unionid字段 只有在用户将公众号绑定到微信开放平台账号后，才会出现。建议调用前用isset()检测一下
+	 */
+	public function getUsersInfo($openids){
+		if (!$this->access_token && !$this->checkAuth()) return false;
+		$result = $this->http_post(self::API_URL_PREFIX.self::USERS_INFO_URL.'access_token='.$this->access_token,json_encode($openids));
 		if ($result)
 		{
 			$json = json_decode($result,true);
@@ -2595,7 +2635,7 @@ class Wechat
 	 */
 	public function getGroup(){
 		if (!$this->access_token && !$this->checkAuth()) return false;
-		$result = $this->http_post(self::API_URL_PREFIX.self::GROUP_GET_URL.'access_token='.$this->access_token);
+		$result = $this->http_get(self::API_URL_PREFIX.self::GROUP_GET_URL.'access_token='.$this->access_token);
 		if ($result)
 		{
 			$json = json_decode($result,true);
@@ -4225,7 +4265,7 @@ class Wechat
      */
     public function uploadShakeAroundMedia($data){
         if (!$this->access_token && !$this->checkAuth()) return false;
-        $result = $this->http_post(self::API_URL_PREFIX.self::SHAKEAROUND_MATERIAL_ADD.'access_token='.$this->access_token,$data,true);
+        $result = $this->http_post(self::API_BASE_URL_PREFIX.self::SHAKEAROUND_MATERIAL_ADD.'access_token='.$this->access_token,$data,true);
         if ($result)
         {
             $json = json_decode($result,true);

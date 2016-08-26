@@ -442,7 +442,7 @@ class UcuserController extends AdminController
 
     public function config()
     {
-        $list['url'] = addons_url('Ucuser://Ucuser/index', array('mp_id' => get_mpid()));
+        $list['url'] = U('Ucuser/Index/index', array('mp_id' => get_mpid()),true,true);
 
         //显示页面
         $builder = new AdminConfigBuilder();

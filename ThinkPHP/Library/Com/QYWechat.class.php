@@ -204,7 +204,7 @@ class QYWechat
 	            elseif ($value === true)
 	            $str .= 'true';
 	            else
-	                $str .= '"' . addslashes ( $value ) . '"'; //All other things
+	                $str .= '"' .addcslashes($value, "\\\"\n\r\t/"). '"'; //All other things
 	            // :TODO: Is there any more datatype we should be in the lookout for? (Object?)
 	            $parts [] = $str;
 	        }
@@ -274,7 +274,11 @@ class QYWechat
 		curl_setopt($oCurl, CURLOPT_URL, $url);
 		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt($oCurl, CURLOPT_POST,true);
+		if(PHP_VERSION_ID >= 50500){
+			curl_setopt($oCurl, CURLOPT_SAFE_UPLOAD, FALSE);
+		}
 		curl_setopt($oCurl, CURLOPT_POSTFIELDS,$strPOST);
+
 		$sContent = curl_exec($oCurl);
 		$aStatus = curl_getinfo($oCurl);
 		curl_close($oCurl);
