@@ -40,7 +40,7 @@ class WeixinController extends Controller {
      * 微信消息接口入口
      * 所有发送到微信的消息都会推送到该操作
      * 所以，微信公众平台后台填写的api地址则为该操作的访问地址
-     * 在mp.weixin.qq.com 开发者中心配置的 URL(服务器地址)  http://域名/index.php/home/weixin/index/id/member_public表的id.html
+     * 在mp.weixin.qq.com 开发者中心配置的 URL(服务器地址)  http://域名/index.php/home/weixin/index/id/member_public表的mp_id.html
      */
 	public function index($mp_id = '') {
         //设置当前上下文的公众号mp_id

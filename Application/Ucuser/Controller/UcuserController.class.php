@@ -1,10 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: uctoo
- * Date: 15-5-5
- * Time: PM5:20
- */
+// +----------------------------------------------------------------------
+// | UCToo [ Universal Convergence Technology ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2014-2016 http://uctoo.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: Patrick <contact@uctoo.com>
+// +----------------------------------------------------------------------
+
 
 namespace Admin\Controller;
 

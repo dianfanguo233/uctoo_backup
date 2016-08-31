@@ -1,4 +1,13 @@
 <?php
+// +----------------------------------------------------------------------
+// | UCToo [ Universal Convergence Technology ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2014-2015 http://uctoo.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: Patrick <contact@uctoo.com>
+// +----------------------------------------------------------------------
 
 
 namespace Ucuser\Controller;
@@ -347,7 +356,7 @@ class IndexController extends Controller
 
         $appinfo = get_mpid_appinfo ( $params ['mp_id'] );   //获取公众号信息
         $this->assign ( 'appinfo', $appinfo );
-        
+
         if (IS_POST) {
             $aMobile = I('post.mobile', '', 'op_t');
             $verify = I('post.verify', '', 'op_t');
