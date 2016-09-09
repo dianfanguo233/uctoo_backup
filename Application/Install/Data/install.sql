@@ -144,7 +144,8 @@ INSERT INTO `uctoo_addons` (`id`, `name`, `title`, `description`, `status`, `con
 (8, 'SyncLogin', '同步登陆', '同步登陆', 1, '{"type":null,"meta":"","bind":"0","QqKEY":"","QqSecret":"","SinaKEY":"","SinaSecret":"","WeixinKEY":"","WeixinSecret":""}', 'xjw129xjt', '0.1', 1432792112, 0),
 (9, 'Ucuser', '微会员', '微信公众号粉丝初始化行为', 1, '{\"random\":\"1\"}', 'UCToo', '0.1', '1430793843', '1'),
 (10, 'Keyword', '关键词', '关键词数据管理和微信关键词消息处理行为插件', 1, '{\"random\":\"1\"}', 'UCToo', '0.1', '1463128688', '0'),
-(11, 'YunSms', '云之讯', '', 1, '{\"switch\":\"1\"}', 'uctoo', '1.0.0', '1466134320', '0');
+(11, 'YunSms', '云之讯', '', 1, '{\"switch\":\"1\"}', 'uctoo', '1.0.0', '1466134320', '0'),
+(12, 'TplMsg', '模板消息发送', '模板消息发送插件', '1', 'null', 'UCToo', '0.1', '1450244557', '0');
 
 -- --------------------------------------------------------
 
@@ -4614,7 +4615,9 @@ INSERT INTO `uctoo_hooks` (`id`, `name`, `description`, `type`, `update_time`, `
 (69, 'filterHtmlContent', '渲染富文本', 2, 1441951420, ''),
 (70, 'parseContent', '解析内容', 2, 1445828128, 'Sensitive'),
 (71, 'tool', '返回顶部，右下角工具栏', 1, 1445828128, ''),
-(72, 'init_ucuser', '初始化粉丝信息', '2', '1430793836', 'Ucuser');
+(72, 'init_ucuser', '初始化粉丝信息', '2', '1430793836', 'Ucuser'),
+(73, 'wxpay', '微信支付', '1', 1442221555, 'Wxpay'),
+(74, 'TplMsg', '模板消息发送钩子', '2', 1450243898, 'TplMsg');
 
 -- --------------------------------------------------------
 
@@ -5109,6 +5112,7 @@ INSERT INTO `uctoo_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `g
 (1021, '应用市场', 105, 0, 'Appstore/index', 0, '', '云市场', 0, '', ''),
 (1022, '微会员统计', 1011, 0, 'Ucuser/stats', 0, '', '微会员管理', 0, '', ''),
 (1023, '微会员标签列表', 1011, 0, 'Ucuser/ucuser_tag', 0, '', '微会员标签管理', 0, '', ''),
+(1024, '模板消息', 1000, 10, 'Tplmsg/index', 0, '', '公众号', 0, '', ''),
 (10000, '网站主页', 0, 0, 'Home/config', 1, '', '', 0, 'home', 'Home'),
 (10001, '基本设置', 10000, 0, 'Home/config', 0, '', '设置', 0, '', 'Home'),
 (10051, '专辑管理', 10050, 0, 'Issue/issue', 0, '', '专辑', 0, '', 'Issue'),
@@ -5290,6 +5294,31 @@ INSERT INTO `uctoo_picture` (`id`, `type`, `path`, `url`, `md5`, `sha1`, `status
 (2, 'local', '/Uploads/Picture/default/5693156ceb370.png', '', 'a447783f41a83460179639467b6df0e6', '627b995f0a7643ba66aabc7a42ce7df929b5e0d6', 1, 1452479852),
 (3, 'local', '/Uploads/Picture/default/569315aa902f3.png', '', 'c2e044b18aef6d00dcd6475c2ba78764', '3dfa44d10458d300699a25dc6ef476837e475255', 1, 1452479914);
 
+-- ----------------------------
+-- Table structure for uctoo_picture_messages
+-- ----------------------------
+DROP TABLE IF EXISTS `uctoo_picture_messages`;
+CREATE TABLE `uctoo_picture_messages` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `title0` varchar(255) DEFAULT NULL COMMENT '标题',
+  `detile0` text COMMENT '内容',
+  `url0` text COMMENT 'URL',
+  `title1` varchar(255) DEFAULT NULL COMMENT '标题',
+  `detile1` text COMMENT '内容',
+  `url1` text COMMENT 'URL',
+  `title2` varchar(255) DEFAULT NULL COMMENT '标题',
+  `detile2` text COMMENT '内容',
+  `url2` text COMMENT 'URL',
+  `title3` varchar(255) DEFAULT NULL COMMENT '标题',
+  `detile3` text COMMENT '内容',
+  `url3` text COMMENT 'URL',
+  `title4` varchar(255) DEFAULT NULL COMMENT '标题',
+  `detile4` text COMMENT '内容',
+  `url4` text COMMENT 'URL',
+  `pic` varchar(255) DEFAULT NULL COMMENT '图片',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
 -- --------------------------------------------------------
 
 --
@@ -5329,6 +5358,23 @@ CREATE TABLE IF NOT EXISTS `uctoo_rank_user` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
+
+-- ----------------------------
+-- Table structure for uctoo_replay_messages
+-- ----------------------------
+DROP TABLE IF EXISTS `uctoo_replay_messages`;
+CREATE TABLE `uctoo_replay_messages`(
+  `id` int (10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `title` varchar (255) NOT NULL COMMENT '名称',
+  `statu` int (10)  NOT NULL DEFAULT '0',
+  `ms_id` int (10) NOT NULL COMMENT  '关联id',
+  `time` int (15) NOT NULL COMMENT  '时间',
+  `type`  varchar (255) NOT NULL COMMENT '回复类型',
+  `mtype` varchar (255) NOT NULL COMMENT '消息类型',
+  `mp_id` varchar (50) NOT NULL COMMENT '公众号mp_id',
+  `keywork` text  COMMENT '关键词',
+  PRIMARY  KEY (`id`)
+) ENGINE = InnoDB CHARSET=utf8;
 
 --
 -- 表的结构 `uctoo_report`
@@ -5956,6 +6002,49 @@ CREATE TABLE IF NOT EXISTS `uctoo_talk_push` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='对话推送表' AUTO_INCREMENT=1 ;
 
+DROP TABLE IF EXISTS `uctoo_tplmsg`;
+CREATE TABLE `uctoo_tplmsg` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uid` int(10) NOT NULL COMMENT '用户ID',
+  `mp_id` varchar(50) NOT NULL COMMENT '公众号ID',
+  `template_id` varchar(50) NOT NULL COMMENT '消息模板ID',
+  `name` varchar(100) NOT NULL COMMENT '标题',
+  `industry` varchar(100) NOT NULL COMMENT '行业',
+  `topcolor` varchar(50) NOT NULL DEFAULT '#FFFFFF' COMMENT '背景色',
+  `content` varchar(255) NOT NULL COMMENT '详细内容',
+  `url` varchar(255) NOT NULL COMMENT '详情URL',
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  KEY `mp_id` (`mp_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+INSERT INTO `uctoo_tplmsg` VALUES ('3', '1', '919f95036e68433c72749421307dc99d', 'diW6jm5hBwemeoDF0FZdU2agSZ9kydje22YJIC0gVMo', '购买成功通知', 'IT科技 - 互联网|电子商务', '#FF0000', '您好，您已购买成功。\r\n\r\n商品信息：{{name.DATA}}\r\n{{remark.DATA}}', 'http://test.uctoo.com/index.php?s=/home/addons/execute/Ucuser/Ucuser/index/mp_id/919f95036e68433c72749421307dc99d.html');
+INSERT INTO `uctoo_tplmsg` VALUES ('4', '1', '919f95036e68433c72749421307dc99d', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', '积分变动通知', 'IT科技 - 互联网|电子商务', '#FF0000', '{{first.DATA}}\r\n\r\n{{FieldName.DATA}}:{{Account.DATA}}\r\n{{change.DATA}}积分:{{CreditChange.DATA}}\r\n积分余额:{{CreditTotal.DATA}}\r\n{{Remark.DATA}}', 'http://test.uctoo.com/index.php?s=/home/addons/execute/Ucuser/Ucuser/index/mp_id/919f95036e68433c72749421307dc99d.html');
+
+
+DROP TABLE IF EXISTS `uctoo_tplmsg_field`;
+CREATE TABLE `uctoo_tplmsg_field` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `pid` int(10) unsigned NOT NULL COMMENT 'tplmsg表的ID',
+  `mp_id` varchar(50) NOT NULL COMMENT '公众号ID',
+  `template_id` varchar(50) NOT NULL COMMENT '消息模板ID',
+  `name` varchar(50) NOT NULL COMMENT '消息模板字段名',
+  `value` varchar(1000) NOT NULL COMMENT '消息模板字段值',
+  `color` varchar(50) NOT NULL DEFAULT '#173177' COMMENT '字段颜色',
+  PRIMARY KEY (`id`),
+  KEY `template_id` (`template_id`),
+  KEY `mp_id` (`mp_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+INSERT INTO `uctoo_tplmsg_field` VALUES ('2', '3', '919f95036e68433c72749421307dc99d', 'diW6jm5hBwemeoDF0FZdU2agSZ9kydje22YJIC0gVMo', 'name', 'UCToo{$product_name}', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('5', '4', '919f95036e68433c72749421307dc99d', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'first', '{$from_name}给你打了分：', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('4', '3', '919f95036e68433c72749421307dc99d', 'diW6jm5hBwemeoDF0FZdU2agSZ9kydje22YJIC0gVMo', 'remark', 'hahahaha', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('6', '4', '919f95036e68433c72749421307dc99d', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'FieldName', '总威望', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('7', '4', '919f95036e68433c72749421307dc99d', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'Account', '{$score2}', '#FF0000');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('8', '4', '919f95036e68433c72749421307dc99d', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'change', '增加', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('9', '4', '919f95036e68433c72749421307dc99d', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'CreditChange', '10', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('10', '4', '919f95036e68433c72749421307dc99d', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'CreditTotal', '{$score1}', '#173177');
+INSERT INTO `uctoo_tplmsg_field` VALUES ('11', '4', '919f95036e68433c72749421307dc99d', 'cGwtzvU8HleBVvrIIq7WjpwXWjW4kvQY6d02Fa7jAdE', 'Remark', '点击详情，查看打分结果，还可以给对方打分！', '#173177');
 
 
 --
@@ -6119,7 +6208,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucuser` (
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8 COMMENT='微会员表' AUTO_INCREMENT=1;
 
 DROP TABLE IF EXISTS `uctoo_ucuser_tag`;
-CREATE TABLE `uctoo_ucuser_tag` (
+CREATE TABLE IF NOT EXISTS `uctoo_ucuser_tag` (
   `id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '主键',
   `name` varchar(30) NOT NULL COMMENT '名称',
   `mp_id` varchar(50) NOT NULL COMMENT '公众号mp_id',
@@ -6361,19 +6450,7 @@ CREATE TABLE `uctoo_weixin_log` (
 
 
 
-DROP TABLE IF EXISTS `uctoo_replay_messages`;
-CREATE TABLE `uctoo_replay_messages`(
-  `id` INT (10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `title` VARCHAR (255) NOT NULL COMMENT '名称',
-  `statu` INT (10)  NOT NULL DEFAULT '0',
-  `ms_id` INT (10) NOT NULL COMMENT  '关联id',
-  `time` INT (15) NOT NULL COMMENT  '时间',
-  `type`  VARCHAR (255) NOT NULL COMMENT '回复类型',
-  `mtype` VARCHAR (255) NOT NULL COMMENT '消息类型',
-  `mp_id` VARCHAR (50) NOT NULL COMMENT '公众号mp_id',
-  `keywork` TEXT  COMMENT '关键词',
-  PRIMARY  KEY (`id`)
-) ENGINE = InnoDB CHARSET=utf8;
+
 
 
 DROP TABLE IF EXISTS `uctoo_text_messages`;

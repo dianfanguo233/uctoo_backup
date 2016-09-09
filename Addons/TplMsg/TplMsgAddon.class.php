@@ -80,7 +80,7 @@ use Com\Wxauth;
                 "topcolor" => $tplmsg['topcolor'],    //这个参数好像已废弃
                 "data" => $data
             );
-            trace(json_encode($TMArray)."AAA",'TplMsg:','DEBUG',true);
+
             $options['appid'] = $mp['appid'];    //初始化options信息
             $options['appsecret'] = $mp['secret'];
             $options['encodingaeskey'] = $mp['encodingaeskey'];
