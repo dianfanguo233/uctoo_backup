@@ -10,7 +10,7 @@
   width: 48px;
   height: 46px;
   margin-bottom: 10px;
-  background-image: url(/Public/images/tools.png);
+  background-image: url(../images/newtools.png);
   border: 1px solid #dddddd;
 }
 .tool a:last-child {

@@ -27,9 +27,9 @@ return array(
     //开发者网站
     'website' => 'http://www.uctoo.com',
     //前台入口，可用U函数
-    'entry' => 'Ucuser/index/index',
+    'entry' => 'ucuser/Index/index',
 
-   'admin_entry' => 'Admin/Ucuser/index',
+   'admin_entry' => 'ucuser/Ucuser/index',
 
     'icon'=>'comments',
 

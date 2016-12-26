@@ -1,5 +1,5 @@
 <?php
-return array(
+return [
     '_ERROR_FIRST_LOGIN_' => '请登陆后再访问本页面',
     '_DATA_EDIT_' => '编辑资料',
     '_ERROR_NEED_LOGIN_' => '需要登录',
@@ -28,7 +28,7 @@ return array(
     '_FOLLOWERS_MY_' => '我的关注',
     '_CHAT_' => '聊&nbsp;天',
     '_FOLLOWED_CANCEL_' => '取消关注',
-    '_FOLLOWERS_' => '关&nbsp;注',
+    '_FOLLOWERS_' => '关注',
     '_USER_CENTER_' => '用户中心',
     '_FRIENDS_INV_' => '邀请好友',
     '_ERROR_REMARK_CANNOT_EMPTY_' => '备注名不能为空',
@@ -158,10 +158,10 @@ return array(
     '_FOLLOWING_TITLE_' => '的个人关注页',
     '_FOLLOWING_KEYWORDS_' => '，个人关注',
     '_FOLLOWING_DESC_' => '的个人关注页',
-    '_DE_FANS_' => '的粉丝',
-    '_DE_FOLLOWER_' => '的关注',
+    '_DE_FANS_' => '粉丝',
+    '_DE_FOLLOWER_' => '关注',
     '_FOLLOWER_NONE_' => '暂无关注任何人哦，赶紧去看看吧',
-    '_WEIBO_' => '微博',
+    '_WEIBO_' => '动态',
     '_TA_' => 'TA',
     '_MORE_' => '更多',
     '_FOLLOWER_NOTHING_' => '暂无关注任何人哦',
@@ -185,7 +185,7 @@ return array(
     '_RANK_APPLY_REASON_' => '申请理由',
     '_APPLY_' => '申请',
     '_FANS_NONE_' => '暂无粉丝，努力发言哦',
-    '_FANS_TITLE' => '的个人粉丝页',
+    '_FANS_TITLE_' => '的个人粉丝页',
     '_FANS_KEYWORDS_' => '，个人粉丝',
     '_INDEX_TITLE_' => '的个人主页',
 
@@ -233,6 +233,7 @@ return array(
     '_SETTING_PERSONAL_PAGE_DISPLAY_' => '个人主页资料默认展示设置',
     '_PERSONAL_PAGE_DISPLAY_IDENTITY_' => '个人主页默认展示身份',
     '_IDENTITY_OWNED_' => '已持有的身份',
+    '_IDENTITY_CAN_OWNED_' => '可持有的身份',
     '_LOGIN_CHANGE_' => '切换登录',
     '_LOGIN_NOW_' => '当前登录',
     '_IDENTITY_OWN_' => '持有该身份',
@@ -318,8 +319,8 @@ return array(
     '_USER_' => '用户',
     '_REGISTER_INVITE_' => '邀请您注册',
     '_USER_INVITE_FIRST_' => '邀请注册用户请先',
-    'INVITE_CODE_INPUT_' => '输入邀请码',
-    '_REGISTER_INFORMATION_FILL_OUT_' => '再填写注册信息',
+    '_INVITE_CODE_INPUT_' => '输入邀请码',
+    '_REGISTER_INFORMATION_FILL_OUT_' => '请填写注册信息',
     '_REGISTER_IDENTITY_SELECT_' => '选择身份注册',
     '_PLACEHOLDER_USERNAME_INPUT_' => '请输入用户名',
     '_USERNAME_INPUT_LIMIT_' => '输入用户名，只允许字母和数字和下划线',
@@ -331,7 +332,7 @@ return array(
     '_ERROR_PHONE_INPUT_' => '请填写手机号',
     '_PHONE_INPUT_' => '输入手机号',
     '_PHONE_VERIFY_' => '验证手机',
-    '_LENGTH_ILLEGAL' => '长度不符验证失败合要求',
+    '_LENGTH_ILLEGAL_' => '长度不符合要求',
     '_EMPTY_CANNOT_' => '不能为空',
 
 //    forum
@@ -463,8 +464,8 @@ return array(
     '_MY_NEWS_LACK_' => '你还没有投稿过资讯吆~',
     '_AUDIT_SUCCESS_'=>'审核通过',
     '_COMMENT_'=>'评论',
+    '_BUY_CONTENT_' =>'{$user}在{$time}购买了{$num}个{$title}的邀请名额',
 
     '_TIME_TO_BUY_'=>'兑换',
-   ' _INVITATION_'=>'邀请码',
-    '_INVITE_CODE_INPUT_'=>'填写邀请码'
-);
+   ' _INVITATION_'=>'邀请码'
+];

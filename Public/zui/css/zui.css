@@ -7288,6 +7288,9 @@ ol.linenums li {
 .messager-danger {
   background-color: #ee4e2f;
 }
+.messager-error {
+    background-color: #ee4e2f;
+}
 .messager-important {
   background-color: #a76531;
 }

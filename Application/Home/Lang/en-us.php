@@ -1,5 +1,5 @@
 <?php 
- return array(
+ return [
 '_ACTIVE_MEMBER_' =>' Active member',
 '_NEW_MEMBER_' =>' Newest member',
 '_DISCOVERY_' =>' Found',
@@ -13,4 +13,4 @@
 '_POST_' =>' Post',
 
 
-);
+];

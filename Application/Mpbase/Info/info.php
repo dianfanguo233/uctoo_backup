@@ -12,7 +12,7 @@ return array(
     //是否显示在导航栏内？  1是，0否
     'show_nav' => 1,
     //模块描述
-    'summary' => '基础设置模块，用于设置公众平台基础信息',
+    'summary' => '公众号基础设置模块，用于设置公众平台基础信息',
     //开发者
     'developer' => 'UCToo',
     //开发者网站
@@ -20,7 +20,7 @@ return array(
     //前台入口，可用U函数
     'entry' => 'Mpbase/index/index',
 
-    'admin_entry' => 'Admin/Mpbase/index',
+    'admin_entry' => 'mpbase/Mpbase/index',
 
     'icon' => 'cog',
 

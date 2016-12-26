@@ -69,11 +69,11 @@ function check_username(&$username, &$email, &$mobile, &$type = 0)
  * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
  */
 function check_reg_type($type){
-    $t[1] = $t['username'] ='username';
+    //$t[1] = $t['username'] ='username';
     $t[2] = $t['email'] ='email';
     $t[3] = $t['mobile'] ='mobile';
 
-    $switch = modC('REG_SWITCH','','USERCONFIG');
+    $switch = modC('REG_SWITCH','email','USERCONFIG');
     if($switch){
         $switch = explode(',',$switch);
         if(in_array($t[$type],$switch)){
@@ -122,7 +122,7 @@ function get_next_step($now_step =''){
         $now_key = array_search($now_step,$step);
         $return = $step[$now_key+1];
     }
-    if(!in_array($return,array_keys(A('Ucenter/RegStep','Widget')->mStep)) || empty($return)){
+    if(!in_array($return,array_keys(controller('Ucenter/RegStep','Widget')->mStep)) || empty($return)){
         $return = 'finish';
     }
     return $return;
@@ -189,13 +189,43 @@ function check_step_can_skip($step){
 
 
 function check_and_add($args){
-    $Member = D('Member');
+    $Member = model('Member');
     $uid = $args['uid'];
 
-    $check = $Member->find($uid);
+    $check = $Member->get($uid);
     if(!$check){
         $args['status'] =1;
-        $Member-> add($args);
+        $Member-> save($args);
     }
     return true;
+}
+
+
+function check_auth($rule = '', $except_uid = -1, $type = app\admin\model\AuthRule::RULE_URL)
+{
+    if (is_administrator()) {
+        return true;//管理员允许访问任何页面
+    }
+    if ($except_uid != -1) {
+        if (!is_array($except_uid)) {
+            $except_uid = explode(',', $except_uid);
+        }
+        if (in_array(is_login(), $except_uid)) {
+            return true;
+        }
+    }
+    $rule = empty($rule) ? request()->module() . '/' . request()->controller() . '/' . request()->action() : $rule;
+    // 检测是否有该权限
+    if (!db('auth_rule')->where(array('name' => $rule, 'status' => 1))->find()) {
+        return false;
+    }
+    static $Auth = null;
+    if (!$Auth) {
+        $Auth = new \app\common\util\Auth();
+    }
+    if (!$Auth->check($rule, get_uid(), $type)) {
+        return false;
+    }
+    return true;
+
 }

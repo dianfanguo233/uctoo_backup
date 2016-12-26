@@ -1,5 +1,5 @@
-<?php 
- return array(
+<?php
+return [
 '_ACTIVE_MEMBER_' =>' 会員として活躍',
 '_NEW_MEMBER_' =>' 最新の会員',
 '_DISCOVERY_' =>' 発見',
@@ -13,4 +13,4 @@
 '_POST_' =>' 招待状',
 
 
-);
+];

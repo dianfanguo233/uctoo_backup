@@ -30,29 +30,30 @@ function getPageHtml($f_name, $totalpage, $data, $nowpage)
         foreach ($data as $k => $v) {
             $str = $str . '"' . $v . '"' . ',';
         }
-        $pages = '';
+        $pages = '<ul id="navigation"><li onmouseover="displaySubMenu(this)" onmouseout="hideSubMenu(this)"><a style="height:40px;line-height:40px;border: none">'.$nowpage.'</a><ul>';
         for ($i = 1; $i <= $totalpage; $i++) {
-           if ($i == $nowpage) {
+            if ($i == $nowpage) {
                 $pages = $pages . "<li class=\"active\"><a href=\"javascript:\"  class='page active' onclick='" . $f_name . "(" . $str . $i . ")'>" . $i . "</a></li>";
             } else {
                 $pages = $pages . "<li><a href=\"javascript:\"  class='page' onclick='" . $f_name . "(" . $str . $i . ")'>" . $i . "</a></li>";
             }
         }
+        $pages.='</ul></li></ul>';
         if ($nowpage == 1) {
             $a = $nowpage;
-            $pre = "<li class=\"disabled\"><a href=\"javascript:\" class='page_pre'  onclick = '" . $f_name . "( " . $str . $a . ")'>" . "&laquo;" . "</a></li>";
+            $pre = "<li class=\"disabled\"><a style=\"border-radius: 100%!important;padding: 0 5px;\" href=\"javascript:\" class='page_pre'  onclick = '" . $f_name . "( " . $str . $a . ")'> < </a></li>";
         } else {
             $a = $nowpage - 1;
-            $pre = "<li><a href=\"javascript:\" class='page_pre'  onclick = '" . $f_name . "( " . $str . $a . ")'>" . "&laquo;" . "</a></li>";
+            $pre = "<li><a style=\"border-radius: 100%!important;padding: 0 5px;\" href=\"javascript:\" class='page_pre'  onclick = '" . $f_name . "( " . $str . $a . ")'> < </a></li>";
         }
         /*    $pre = "<li class=\"disabled\"><a class='a page_pre'  onclick = '" . $f_name . "( " . $str . $a . ")'>" . L('_LAST_PAGE_') . "</a></li>";*/
 
         if ($nowpage == $totalpage) {
             $b = $totalpage;
-            $next = "<li class=\"disabled\"><a href=\"javascript:\" class='a page_next'  onclick = '" . $f_name . "( " . $str . $b . ")'>" . "&raquo;" . "</a></li>";
+            $next = "<li class=\"disabled\"><a style=\"border-radius: 100%!important;padding: 0 5px;\" href=\"javascript:\" class='a page_next'  onclick = '" . $f_name . "( " . $str . $b . ")'> > </a></li>";
         } else {
             $b = $nowpage + 1;
-            $next = "<li><a href=\"javascript:\" class='a page_next'  onclick = '" . $f_name . "( " . $str . $b . ")'>" . "&raquo;" . "</a></li>";
+            $next = "<li><a style=\"border-radius: 100%!important;padding: 0 5px;\" href=\"javascript:\" class='a page_next'  onclick = '" . $f_name . "( " . $str . $b . ")'> > </a></li>";
         }
 
         return $pre . $pages . $next;
@@ -73,7 +74,7 @@ function addUrlParam($url, $params)
     $controller = CONTROLLER_NAME;
     $action = ACTION_NAME;
     $get = array_merge($_GET, $params);
-    return U("$app/$controller/$action", $get);
+    return url("$app/$controller/$action", $get);
 }
 
 function getCurrentUrl()

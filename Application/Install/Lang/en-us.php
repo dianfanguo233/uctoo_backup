@@ -1,5 +1,4 @@
 <?php
-return array(
-
-
-);
+return [
+    '_INSTALL_PROTOCOL_'=>'install protocol',
+];

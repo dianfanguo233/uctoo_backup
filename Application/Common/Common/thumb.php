@@ -14,10 +14,10 @@ function get_cover($cover_id, $field = null)
         return false;
     }
     $tag = 'picture_' . $cover_id;
-    $picture = S($tag);
+    $picture = cache($tag);
     if ($picture === false) {
-        $picture = M('Picture')->where(array('status' => 1))->getById($cover_id);
-        S($tag, $picture);
+        $picture = db('Picture')->where(array('status' => 1))->find($cover_id);
+        cache($tag, $picture);
     }
 
     $picture['path'] = get_pic_src($picture['path']);
@@ -86,7 +86,7 @@ function getThumbImage($filename, $width = 100, $height = 'auto', $type = 0, $re
             if (intval($height) == 0 || intval($width) == 0) {
                 return 0;
             }
-            require_once('ThinkPHP/Library/Vendor/phpthumb/PhpThumbFactory.class.php');
+
             $thumb = PhpThumbFactory::create($UPLOAD_PATH . $filename);
             if ($type == 0) {
                 $thumb->adaptiveResize($width, $height);
@@ -109,12 +109,12 @@ function getThumbImage($filename, $width = 100, $height = 'auto', $type = 0, $re
  */
 function getRootUrl()
 {
-    if (__ROOT__ != '') {
-        return __ROOT__ . '/';
+    if (ROOT_PATH  != '') {
+        return ROOT_PATH ;
     }
-    if (C('URL_MODEL') == 2)
-        return __ROOT__ . '/';
-    return __ROOT__;
+    if (config('URL_MODEL') == 2)
+        return ROOT_PATH ;
+    return ROOT_PATH ;
 }
 
 /**通过ID获取到图片的缩略图
@@ -128,12 +128,11 @@ function getRootUrl()
  */
 function getThumbImageById($cover_id, $width = 100, $height = 'auto', $type = 0, $replace = false)
 {
-    $picture = S('picture_' . $cover_id);
+    $picture = cache('picture_' . $cover_id);
     if (empty($picture)) {
-        $picture = M('Picture')->where(array('status' => 1))->getById($cover_id);
-        S('picture_' . $cover_id, $picture);
+        $picture = db('Picture')->where(array('status' => 1))->find($cover_id);
+        cache('picture_' . $cover_id, $picture);
     }
-
     if (empty($picture)) {
         return get_pic_src('Public/images/nopic.png');
     }
@@ -197,37 +196,10 @@ function get_pic_src($path)
     $not_https_remote = (strpos($path, 'https://') === false);
     if ($not_http_remote && $not_https_remote) {
         //本地url
-        return str_replace('//', '/', getRootUrl() . $path); //防止双斜杠的出现
+        trace( request()->root(true) ,'info');
+        return request()->root(true).'/' . $path; //防止双斜杠的出现
     } else {
         //远端url
         return $path;
     }
-}
-
-function get_cover_url($cover_id) {
-    $url = get_cover ( $cover_id, 'path' );
-    if (empty ( $url ))
-        return '';
-
-    return "http://".$_SERVER ['HTTP_HOST'].$url;
-}
-
-function get_addoncover_url($addon) {
-
-	if (empty ( $addon ))
-		return '';
-
-	$url = "http://".$_SERVER ['HTTP_HOST'].__ROOT__ . '/Addons/' . $addon . '/View/default/Public'.'/images/cover.png' ; //插件目录下放个回复封面图片例如jssdk插件中的cover.png
-
-	return $url;
-}
-
-function get_addonreply_url($addon,$param) {
-
-	if (empty ( $addon ))
-		return '';
-
-	$url = "http://".$_SERVER ['HTTP_HOST'].addons_url ( $addon.'://'.$addon.'/index', $param );//默认用  插件名://插件名/index 加mp_id参数作为插件用户入口
-
-	return $url;
 }

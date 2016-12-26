@@ -1,5 +1,5 @@
-<?php 
- return array(
+<?php
+return [
 '_ACTIVE_MEMBER_' =>' 활발하다 회원',
 '_NEW_MEMBER_' =>' 최신 회원',
 '_DISCOVERY_' =>' 발견',
@@ -13,4 +13,4 @@
 '_POST_' =>' 글',
 
 
-);
+];

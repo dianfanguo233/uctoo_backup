@@ -184,20 +184,20 @@ function thinkox_hash($message, $salt = "OpenSNS")
  */
 function modC($key, $default = '', $module = '')
 {
-    $mod = $module ? $module : MODULE_NAME;
-    if (MODULE_NAME == "Install" && $key == "NOW_THEME") {
+    $mod = $module ? $module : request()->module();
+    if (request()->module() == "Install" && $key == "NOW_THEME") {
         return $default;
     }
     $tag = 'conf_' . strtoupper($mod) . '_' . strtoupper($key);
-    $result = S($tag);
+    $result = cache($tag);
     if ($result === false) {
-        $config = M('Config')->field('value')->where(array('name' => '_' . strtoupper($mod) . '_' . strtoupper($key)))->find();
+        $config = db('Config')->field('value')->where(array('name' => '_' . strtoupper($mod) . '_' . strtoupper($key)))->find();
         if (!$config) {
             $result = $default;
         } else {
             $result = $config['value'];
         }
-        S($tag, $result);
+        cache($tag, $result);
     }
     return $result;
 }
@@ -212,21 +212,21 @@ function modC($key, $default = '', $module = '')
  */
 function userC($key, $default = '', $module = '', $role_id = -1, $uid = 0)
 {
-    $mod = $module ? $module : MODULE_NAME;
-    if (MODULE_NAME == "Install" && $key == "NOW_THEME") {
+    $mod = $module ? $module : request()->module();
+    if (request()->module() == "Install" && $key == "NOW_THEME") {
         return $default;
     }
     $tag = 'user_conf_' . strtoupper($mod) . '_' . strtoupper($key) . '_' . $role_id . '_' . $uid;
-    $result = S($tag);
+    $result = cache($tag);
     if (empty($result)) {
-        $userConfigModel = D('Ucenter/UserConfig');
+        $userConfigModel = model('Ucenter/UserConfig');
         $config = $userConfigModel->findData(getUserConfigMap($key, $module, $uid));
         if (!$config) {
             $result = $default;
         } else {
             $result = $config['value'];
         }
-        S($tag,$result);
+        cache($tag,$result);
     }
     return $result;
 }
@@ -371,7 +371,7 @@ function qrcode($data, $filename, $picPath = false, $logo = false, $size = '4', 
 
 function import_lang($module_name)
 {
-    $file = APP_PATH . '/' . $module_name . '/Lang/' . LANG_SET . '.php';
+    $file = APP_PATH . '/' . $module_name . '/lang/' . LANG_SET . '.php';
     if (is_file($file))
-        L(include $file);
+        lang(include $file);
 }

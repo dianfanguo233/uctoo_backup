@@ -1,4 +1,4 @@
-﻿(function ($) {
+(function ($) {
     var BG_POS = 'bgPos';
     var usesTween = !!$.Tween;
     if (usesTween) {

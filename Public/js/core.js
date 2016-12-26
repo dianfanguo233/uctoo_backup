@@ -39,6 +39,28 @@ $(function () {
         $(this).find('.adv-tool,.adv-size').hide();
     })
 });
+var flash_title={
+    step:0,
+    id:0,
+    decument_title:document.title,
+    flash:function(){
+        flash_title.step++
+        if (flash_title.step>40) {
+            flash_title.step=0;
+        }else if(flash_title.step<12){
+            if (flash_title.step%2==1) {document.title='【新消息】'+flash_title.decument_title}
+            if (flash_title.step%2==0) {document.title='【　　　】'+flash_title.decument_title}
+        }
+        if(flash_title.id==0){
+            flash_title.id=setInterval("flash_title.flash()",380);
+        }
+    },
+    close:function(){
+        clearInterval(flash_title.id);
+        document.title=flash_title.decument_title;
+        return true;
+    }
+}
 
 $(function () {
     /**
@@ -210,28 +232,23 @@ function paly_ios_sound() {
 function checkMessage() {
     $.get(U('Ucenter/Public/getInformation'), {}, function (msg) {
         if (msg.messages) {
-            var count = parseInt($hint_count.text());
-            if (count == 0) {
-                $('#nav_message').html('');
-            }
-
             paly_ios_sound();
-
+            var message = msg['messages'];
             for (var index in msg.messages) {
-                var message = msg['messages'];
-                tip_message(message[index]['content']['content'] + '<div style="text-align: right"> ' + message[index]['ctime'] + '</div>', message[index]['content']['title']);
-                var html = '<li><a data-url="' + message[index]['content']['web_url'] + '" onclick="Notify.readMessage(this,' + message[index]['id'] + ')">' +
-                    '<h3 class="margin-top-0"><i class="icon-bell"></i>' + message[index]['content']['title'] + '</h3>' +
-                    '<p>' + message[index]['content']['content'] + '</p> ' +
-                    '<span class="time">' + message[index]['ctime'] + '</span></a></li>';
-                $('#nav_message').prepend(html);
+                if(message[index]['content']['untoastr']===undefined||message[index]['content']['untoastr']!=1){
+                    tip_message(message[index]['content']['content'] + '<div style="text-align: right"> ' + message[index]['ctime'] + '</div>', message[index]['content']['title']);
+                }
             }
-
-            $hint_count.text(count + msg.messages.length);
-            $nav_bandage_count.show();
-            $nav_bandage_count.text(count + msg.messages.length);
         }
 
+        //$('[data-role="now-message-num"]').html(msg.message_count);
+        if(msg.message_count==0){
+            flash_title.close();
+            $('[data-role="now-message-num"]').hide();
+        }else{
+            flash_title.flash();
+            $('[data-role="now-message-num"]').show();
+        }
         if (msg.new_talks) {
             play_bubble_sound();
             //发现有新的聊天
@@ -264,8 +281,7 @@ function checkMessage() {
                 }
             );
         }
-
-
+        return true;
     }, 'json');
 
 }
@@ -345,7 +361,7 @@ function op_fetchMessageTpl(message, mid) {
  */
 function bindLogout() {
     $('[event-node=logout]').click(function () {
-        $.get(U('Ucenter/System/logout'), function (msg) {
+        $.get(U('Ucenter/Member/logout'), function (msg) {
             $('body').append(msg.html);
             toast.success(msg.message);
             setTimeout(function () {
@@ -406,30 +422,50 @@ function bind_support() {
 var insertFace = function (obj) {
     $('.XT_insert').css('z-index', '1000');
     $('.XT_face').remove();
-    var html = '<div class="XT_face  XT_insert"><div class="triangle sanjiao"></div><div class="triangle_up sanjiao"></div>' +
+    var html = '<div class="XT_face  XT_insert">' +
         '<div class="XT_face_main"><div class="XT_face_title"><span class="XT_face_bt" style="float: left">常用表情</span>' +
         '<a onclick="close_face()" class="XT_face_close">X</a></div><div id="face" style="padding: 10px;"></div></div></div>';
     obj.parents('.weibo_post_box').find('#emot_content').html(html);
     getFace(obj.parents('.weibo_post_box').find('#emot_content'), '');
 };
 
-var face_chose = function (obj) {
-    var textarea = obj.parents('.weibo_post_box').find('textarea');
-    textarea.focus();
-    //textarea.val(textarea.val()+'['+obj.attr('title')+']');
+var face_chose = function (event,obj) {
+    var flag=event.which;
+    if(flag==3){
+        var isnot=confirm('确定要删除这个表情吗？');
+        if(isnot){
+            var url=U('Weibo/Index/delMyExp');
+            var id=obj.attr('data-type');
+            $.post(url,{id:id},function (res) {
+                if(res==1){
+                    $(obj).hide();
+                    toast.success('删除成功~');
+                }else{
+                    toast.error('删除失败~');
+                }
+            });
+        }
+    }else{
+        var textarea = obj.parents('.weibo_post_box').find('textarea');
 
-    var pos = getCursortPosition(textarea[0]);
-    var s = textarea.val();
-    if (obj.attr('data-type') == 'miniblog') {
-        textarea.val(s.substring(0, pos) + '[' + obj.attr('title') + ']' + s.substring(pos));
-        setCaretPosition(textarea[0], pos + 2 + obj.attr('title').length);
-    } else {
-        textarea.val(s.substring(0, pos) + '[' + obj.attr('title') + ':' + obj.attr('data-type') + ']' + s.substring(pos));
-        setCaretPosition(textarea[0], pos + 3 + obj.attr('title').length + obj.attr('data-type').length);
+        if($(textarea).length ==0){
+            textarea=obj.parents('.weibo_post_box').find('input[type=text]');
+        }
+        textarea.focus();
+        //textarea.val(textarea.val()+'['+obj.attr('title')+']');
+
+        var pos = getCursortPosition(textarea[0]);
+        var s = textarea.val();
+        if (obj.attr('data-type') == 'miniblog') {
+            textarea.val(s.substring(0, pos) + '[' + obj.attr('title') + ']' + s.substring(pos));
+            setCaretPosition(textarea[0], pos + 2 + obj.attr('title').length);
+        } else {
+            textarea.val(s.substring(0, pos) + '[' + obj.attr('title') + ':' + obj.attr('data-type') + ']' + s.substring(pos));
+            setCaretPosition(textarea[0], pos + 3 + obj.attr('title').length + obj.attr('data-type').length);
+        }
     }
-
-
 }
+
 
 var bind_face_pkg = function () {
     $('[data-role="change_pkg"]').unbind('click');
@@ -440,11 +476,14 @@ var bind_face_pkg = function () {
     })
 }
 
-var getFace = function (obj, pkg) {
+
+
+
+var getFace = function (obj, pkg,page) {
     if (typeof pkg == 'undefined') {
         pkg = '';
     }
-    $.post(U('Core/Expression/getSmile'), {pkg: pkg}, function (res) {
+    $.post(U('Core/Expression/getSmile'), {pkg: pkg,page:page},function(res) {
         var expression = res.expression;
         var pkgList = res.pkgList;
         var _imgHtml = '';
@@ -457,22 +496,175 @@ var getFace = function (obj, pkg) {
                     } else {
                         _imgHtml += "<li><a data-role='change_pkg' data-name='" + pkgList[e].name + "'>" + pkgList[e].title + "</a></li>";
                     }
+
                 }
+
                 _imgHtml += "</ul></div>";
+
             }
+
+
             for (var k in expression) {
-                _imgHtml += '<a href="javascript:void(0)" data-type="' + expression[k].type + '" title="' + expression[k].title + '" onclick="face_chose($(this))";><img src="' + expression[k].src + '" width="24" height="24" /></a>';
+                if(expression[k].type=='add_img'&&expression[k].title=='add_img'){
+                    _imgHtml+='<div  style="display: inline; "class="imghtml" ><img src="' + expression[k].src + '" style="width: 60px;height: 60px;cursor: pointer" onclick="up()"><input type="file" name="myexp[]" multiple="multiple" id="myexp" style="display: none" onchange="clicksub(this);"></div>';
+                }else {
+                    if( expression[k].type=='face'){
+                        _imgHtml += '<a href="javascript:void(0)" data-type="' +expression[k].title + '" title="' + expression[k].type  + '" onmousedown="face_chose(event,$(this))" ><img src="' + expression[k].src + '" width="60" height="60"/></a>';
+                    }else{
+                        _imgHtml += '<a href="javascript:void(0)" data-type="' + expression[k].type + '" title="' + expression[k].title + '"onclick="face_chose(event,$(this))" ><img src="' + expression[k].src + '" width="24" height="24" /></a>  ';
+                    }
+                }
+            }
+            var count = Math.ceil(expression[k].totalCount / 23);
+            if (count >= 2) {
+                _imgHtml += '<div style="text-align: center">';
+                if(count<=14){
+                    for (var l = 1; l < count + 1; l++) {
+                        if(l==1){
+                            _imgHtml += '<span class="onfenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="onyeshu">' + l + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                        }else {
+                            _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">' + l + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                        }
+                    }
+                }else{
+                    for(k=1;k<10;k++){
+                        if(k==1){
+                            _imgHtml += '<span class="onfenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="onyeshu">' + k + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                        }else{
+                            _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">' + k + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                        }
+                    }
+                    _imgHtml += '<span class="fenye" ><a  href="javascript:void(0)" ><span class="yeshu">...</span></a><input type="hidden" value="' + pkg + '"></span>';
+                    _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">' + count + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                    _imgHtml += '</div>';
+                }
             }
             _imgHtml += '<div class="c"></div>';
-        } else {
+        }
+        else
+        {
             _imgHtml = '获取表情失败';
         }
 
-        obj.find('#face').html(_imgHtml);
-        bind_face_pkg()
-    }, 'json');
+        $('#face').html( _imgHtml);
+        bind_face_pkg();},'json');
 }
 
+
+function postpage(obj){
+    var page=$(obj).children().children().html();
+    var pkg=$(obj).children().next().val();
+    $.post(U('Core/Expression/getSmile'),{pkg:pkg,page:page},function(res) {
+        var expression = res.expression;
+        var pkgList = res.pkgList;
+        var _imgHtml = '';
+        if (pkgList.length > 0) {
+            if (pkgList.length > 1) {
+                _imgHtml = "<div class='face-tab'><ul>";
+                for (var e in pkgList) {
+                    if (pkgList[e].name == res.pkg) {
+                        _imgHtml += "<li class='active' ><a data-role='change_pkg'  data-name='" + pkgList[e].name + "'>" + pkgList[e].title + "</a></li>";
+                    } else {
+                        _imgHtml += "<li><a data-role='change_pkg' data-name='" + pkgList[e].name + "'>" + pkgList[e].title + "</a></li>";
+                    }
+
+                }
+
+                _imgHtml += "</ul></div>";
+            }
+            for (var k in expression) {
+                if(expression[k].type=='add_img'&&expression[k].title=='add_img'){
+                    _imgHtml+='<div  style="display: inline; "class="imghtml" ><img src="' + expression[k].src + '" style="width: 60px;height: 60px;cursor: pointer" onclick="up()"><input type="file" name="myexp[]" multiple="multiple" id="myexp" style="display: none" onchange="clicksub(this)"></div>';
+                }else {
+                    if( expression[k].type=='face'){
+                        _imgHtml += '<a href="javascript:void(0)" data-type="' +  expression[k].title  + '" title="' +expression[k].type+ '" onmousedown="face_chose(event,$(this))"><img src="' + expression[k].src + '" width="60" height="60" /></a>  ';
+                    }else{
+                        _imgHtml += '<a href="javascript:void(0)" data-type="' + expression[k].type + '" title="' + expression[k].title + '" onclick="face_chose(event,$(this))"><img src="' + expression[k].src + '" width="24" height="24" /></a>  ';
+                    }
+                }
+            }
+
+            var count = Math.ceil(expression[k].totalCount / 23);
+            if (count >= 2) {
+                _imgHtml += '<div style="text-align: center">';
+                if(count<=14){
+                    for (var l = 1; l < count + 1; l++) {
+                        if(l==page){
+                            _imgHtml += '<span class="onfenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="onyeshu">' + l + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                        }else{
+                            _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">' + l + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                        }
+                    }
+                }else{
+                    if(page<=5){
+                        for (var k = 1; k<=11; k++) {
+                            if (k == page) {
+                                _imgHtml += '<span class="onfenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="onyeshu">' + k + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                            }else{
+                                _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">' + k + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                            }
+                        }
+                        _imgHtml += '<span class="fenye" ><a  href="javascript:void(0)" ><span class="yeshu">...</span></a><input type="hidden" value="' + pkg + '"></span>';
+                        _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">' + count + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                    }else{
+                        if(parseInt(page)+5>=count){
+                            _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">1</span></a><input type="hidden" value="' + pkg + '"></span>';
+                            _imgHtml += '<span class="fenye" ><a  href="javascript:void(0)" ><span class="yeshu">...</span></a><input type="hidden" value="' + pkg + '"></span>';
+                            for (var k = page-4; k<page; k++) {
+                                if (k == page) {
+                                    _imgHtml += '<span class="onfenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="onyeshu">' + k + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                                }else{
+                                    _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">' + k + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                                }
+                            }
+                            for (var m = page; m<=count; m++) {
+                                if (m == page) {
+                                    _imgHtml += '<span class="onfenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="onyeshu">' + m + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                                }else{
+                                    _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">' + m + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                                }
+                            }
+
+                        }else{
+                            _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">1</span></a><input type="hidden" value="' + pkg + '"></span>';
+                            _imgHtml += '<span class="fenye" ><a  href="javascript:void(0)" ><span class="yeshu">...</span></a><input type="hidden" value="' + pkg + '"></span>';
+                            for (var k = page-4; k< page; k++) {
+                                _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">' + k + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                            }
+                            for (var l = 1; l < count + 1; l++) {
+                                if (l == page) {
+                                    _imgHtml += '<span class="onfenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="onyeshu">' + l + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                                }
+                            }
+                            for (var m = parseInt(page)+1; m < parseInt(page)+5; m++) {
+                                _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">' + m + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                            }
+                            _imgHtml += '<span class="fenye" ><a  href="javascript:void(0)" ><span class="yeshu">...</span></a><input type="hidden" value="' + pkg + '"></span>';
+                            _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">' + count + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                        }
+                    }
+                  /*  for (var l = 1; l < count + 1; l++) {
+                        if (l == page) {
+                            _imgHtml += '<span class="onfenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="onyeshu">' + l + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                        }
+                    }*/
+                   /* for (var m = parseInt(page)+1; m < parseInt(page)+5; m++) {
+                        _imgHtml += '<span class="fenye" onclick="postpage(this)"><a  href="javascript:void(0)" ><span class="yeshu">' + m + '</span></a><input type="hidden" value="' + pkg + '"></span>';
+                    }*/
+
+                    _imgHtml += '</div>';
+                }
+            }
+            _imgHtml += '<div class="c"></div>';
+        }
+        else
+        {
+            _imgHtml = '获取表情失败';
+        }
+
+        $('#face').html( _imgHtml);
+        bind_face_pkg();},'json');
+}
 var close_face = function () {
     $('.XT_face').remove();
 }
@@ -614,8 +806,8 @@ jQuery.cookie = function (name, value, options) {
             }
             expires = '; expires=' + date.toUTCString();
         }
-        var path = options.path ? '; path=' + (options.path) : '';
-        var domain = options.domain ? '; domain=' + (options.domain) : '';
+        var path = options.path ? '; path=' + (options.path) :(cookie_config.path.length?'; path=' + cookie_config.path:'');
+        var domain = options.domain ? '; domain=' + (options.domain) :(cookie_config.domain.length?'; domain=' + cookie_config.domain:'');
         var secure = options.secure ? '; secure' : '';
         document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join('');
     } else {
@@ -650,3 +842,73 @@ function L(key, obj) {
         return r;
     }
 };
+
+var message_session={
+    init_message:function(){
+        var $tag=$('#message-box #message-content-box');
+        $('[data-role="open-message-box"]').unbind();
+        $('[data-role="open-message-box"]').click(function () {
+            var $session_list_tag=$tag.find('.content-list .session-list');
+            $tag.find('.content-list .message-list').html('');
+            $session_list_tag.html('');
+            OS_Loading.loading($session_list_tag,'loading5','#158eb5');
+            $.post(U('Ucenter/Message/messageSession'),{},function(html){
+                OS_Loading.remove($session_list_tag);
+                $session_list_tag.html(html);
+                $('[data-role="open-message-list"]').first().click();
+            });
+        });
+    },
+    init_message_session:function(){
+        var $tag=$('#message-box #message-content-box');
+        $('[data-role="open-message-list"]').unbind();
+        $('[data-role="open-message-list"]').click(function () {
+            $tag.find('.session-list>li').removeClass('current');
+            var $this=$(this);
+            $this.parent().addClass('current');
+            var session = $(this).attr('data-type');
+            if(!$('#message_block_' + session).is(":visible")){
+                $tag.find('.message-list').find('.list-block').hide();
+                OS_Loading.loading($tag.find('.message-list'),'loading1','#158eb5');
+                if ($('#message_block_' + session).length == 0) {
+                    $.post(U('Ucenter/Message/messageDetail'),{message_session:session},function(html){
+                        $tag.find('.message-list').append(html);
+                        $this.find('.unread-num').hide();
+                        $this.find('.unread-tip').hide();
+                        $tag.find('.message-list').find('.list-block').hide();
+                        OS_Loading.remove($tag.find('.message-list'));
+                        $('#message_block_' + session).show();
+                        checkMessage();//检查消息
+                    });
+                }else{
+                    $tag.find('.message-list').find('.list-block').hide();
+                    OS_Loading.remove($tag.find('.message-list'));
+                    $('#message_block_' + session).show();
+                }
+            }
+        });
+    },
+    init_message_list:function(){
+        $('[data-role="load-more"]').unbind();
+        $('[data-role="load-more"]').click(function(){
+            var now_count=parseInt($(this).attr('data-already')),
+                now_session=$(this).attr('data-session');
+            var $tag=$('#message_block_'+now_session);
+            $tag.find('.load-more .do-button').html('');
+            OS_Loading.loading($tag.find('.load-more .do-button'),'loading1','#158eb5');
+            var num=5;
+            $.post(U('Ucenter/Message/loadMore'),{start:now_count,message_session:now_session,num:num},function(html){
+                OS_Loading.remove($tag.find('.load-more .do-button'));
+                if(html.length){
+                    $tag.find('.load-more-block').append(html);
+                    $tag.find('.load-more .do-button').attr('data-already',now_count+num);
+                    $tag.find('.load-more .do-button').html('查看更多...');
+                }else{
+                    $tag.find('.load-more .do-button').html('没有更多了');
+                    $tag.find('.load-more .do-button').attr('disabled','disabled');
+                    $tag.find('.load-more .do-button').unbind();
+                }
+            },'json');
+        });
+    }
+}

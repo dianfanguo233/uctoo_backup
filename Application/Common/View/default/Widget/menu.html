@@ -1,6 +1,6 @@
 <div id="sub_nav">
     <nav class="navbar navbar-default" role="navigation">
-        <div class="container" style="width:1180px;">
+        <div class="container">
             <a href="{:U($MODULE_INFO['entry'])}" class="navbar-brand logo"><i class="icon-{$brand.icon}"></i>
 
                 <empty name="menu_list.first.title" value="">{$brand.title}
@@ -21,6 +21,7 @@
                                         <neq name="menu.icon" value=""><i class="icon-{$menu.icon}"></i>
                                         </neq>
                                         {$menu.title} <i class="icon-caret-down"></i>
+                                    </a>
                                         <ul class="dropdown-menu" role="menu">
                                             <volist name="menu.children" id="child">
                                                 <li><a href="{$child.href}" class="{$child.class}">
@@ -51,13 +52,12 @@
                                         <a href="{$menu.href}" class="{$menu.a_class}"><i class="icon-{$menu.icon}"></i>{$menu.html}</a>
                                     </case>
                                     <case value="search">
-                                        <form class="navbar-form navbar-right" action="{$menu.action}"
+                                        <form style="margin: 5px 0" class="navbar-form navbar-right" action="{$menu.action}"
                                               method="{$menu.from_method}" role="search">
-                                            <div class="search-input-group">
-                                                <button type="submit" class="input-btn"
-                                                        style="border-color: transparent;background: transparent;padding: 0 10px 0 10px;">
+                                            <div class="search-input-group new-search-group">
+                                                <button type="submit" class="input-btn">
                                                     <i class="icon-search"></i></button>
-                                                <input type="text" class="input" placeholder="{$menu.input_title}"
+                                                <input type="text" class="input new-search" placeholder="{$menu.input_title}"
                                                        name="{$menu.input_name}" value="{$search_keywords}">
                                             </div>
                                             </span>
@@ -71,6 +71,7 @@
                                                 <neq name="menu.icon" value=""><i class="icon-{$menu.icon}"></i>
                                                 </neq>
                                                 {$menu.title} <i class="icon-caret-down"></i>
+                                            </a>
                                                 <ul class="dropdown-menu" role="menu">
                                                     <volist name="menu.children" id="child">
                                                         <li><a href="{$child.href}" class="{$child.class}">

@@ -72,7 +72,7 @@ class ActionLimit
                 }
                 unset($punish);
                 if ($val['if_message']) {
-                    D('Message')->sendMessageWithoutCheckSelf($item['user_id'], L('_SYSTEM_MESSAGE_'),$val['message_content'],$_SERVER['HTTP_REFERER']);
+                    D('Common/Message')->sendMessageWithoutCheckSelf($item['user_id'], L('_SYSTEM_MESSAGE_'),$val['message_content'],$_SERVER['HTTP_REFERER']);
                 }
             }
         }
@@ -107,7 +107,7 @@ class ActionLimit
     function warning($item,$val){
         $this->state = false;
         $this->info = L('_OPERATION_IS_FREQUENT_PLEASE_').$val['time_number'].get_time_unit($val['time_unit']).L('_AND_THEN_');
-        $this->url = U('home/index/index');
+        $this->url = url('home/index/index');
     }
 }
 

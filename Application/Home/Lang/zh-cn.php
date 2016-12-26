@@ -1,5 +1,5 @@
 <?php
-return array(
+return [
 
 //    People__BLOCK_
     '_ACTIVE_MEMBER_'=>'活跃会员',
@@ -20,4 +20,4 @@ return array(
 
 
 
-);
+];

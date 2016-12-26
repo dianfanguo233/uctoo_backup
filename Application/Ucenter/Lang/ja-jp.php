@@ -1,5 +1,5 @@
 <?php 
- return array(
+ return [
 '_ERROR_FIRST_LOGIN_' =>' ご登録後再訪問当ページ',
 '_DATA_EDIT_' =>' 編集資料',
 '_ERROR_NEED_LOGIN_' =>' ログインが必要',
@@ -425,4 +425,4 @@
 '_STEP_' =>' スキップ',
 '_MY_NEWS_LACK_' =>' あなたがまだ投稿した情報マ～',
 
-);
+ ];

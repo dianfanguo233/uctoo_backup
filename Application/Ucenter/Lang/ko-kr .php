@@ -1,5 +1,5 @@
 <?php 
- return array(
+ return [
 '_ERROR_FIRST_LOGIN_' =>' 로그인 후 다시 방문해 주십시오. 이 페이지',
 '_DATA_EDIT_' =>' 편집 자료',
 '_ERROR_NEED_LOGIN_' =>' 필요한 로그인',
@@ -427,4 +427,4 @@
 '_STEP_' =>' 뛰어넘다',
 '_MY_NEWS_LACK_' =>' 너 아직 투고 적이 정보... ~',
 
-);
+ ];

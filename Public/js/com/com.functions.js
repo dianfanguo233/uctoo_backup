@@ -14,7 +14,7 @@ function U(url, params, rewrite) {
 
     if (window.Think.MODEL[0] == 2) {
 
-        var website = _ROOT_ + '/';
+        var website = _DOMAIN_ + _ROOT_ + '/';
         url = url.split('/');
 
         if (url[0] == '' || url[0] == '@')
@@ -34,7 +34,7 @@ function U(url, params, rewrite) {
         }
 
     } else {
-        var website = _ROOT_ + '/index.php';
+        var website = _DOMAIN_ + _ROOT_ + '/index.php';
         url = url.split('/');
         if (url[0] == '' || url[0] == '@')
             url[0] = APPNAME;

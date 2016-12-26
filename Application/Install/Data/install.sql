@@ -1,23 +1,8 @@
--- phpMyAdmin SQL Dump
--- version 3.5.1
--- http://www.phpmyadmin.net
---
--- 主机: localhost
--- 生成日期: 2016 年 01 月 11 日 05:19
--- 服务器版本: 5.5.24-log
--- PHP 版本: 5.3.13
-
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
 --
--- 数据库: `uctoo_v0.6`
+-- 数据库: `uctoo_v1.0`
 --
 
 -- --------------------------------------------------------
@@ -75,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_action_limit` (
   `create_time` int(11) NOT NULL,
   `module` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
 -- 转存表中的数据 `uctoo_action_limit`
@@ -127,21 +112,21 @@ CREATE TABLE IF NOT EXISTS `uctoo_addons` (
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '安装时间',
   `has_adminlist` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否有后台列表',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='插件表' AUTO_INCREMENT=9 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='插件表' AUTO_INCREMENT=15 ;
 
 --
 -- 转存表中的数据 `uctoo_addons`
 --
 
 INSERT INTO `uctoo_addons` (`id`, `name`, `title`, `description`, `status`, `config`, `author`, `version`, `create_time`, `has_adminlist`) VALUES
-(1, 'CheckIn', '签到', '签到插件', 1, '{"random":"1"}', 'xjw129xjt(肖骏涛)', '0.1', 1432791968, 0),
-(2, 'Support', '赞', '赞的功能', 1, 'null', '嘉兴想天信息科技有限公司', '0.1', 1432792013, 0),
-(3, 'SuperLinks', '合作单位', '合作单位', 1, '{"random":"1"}', '苏南 newsn.net', '0.1', 1432792019, 1),
-(4, 'Report', '举报后台', '可举报不法数据', 1, '{"meta":""}', '想天科技xuminwei', '0.1', 1432792026, 1),
-(5, 'LocalComment', '本地评论', '本地评论插件，不依赖社会化评论平台', 1, '{"can_guest_comment":"0"}', 'caipeichao', '0.1', 1432792035, 0),
+(1, 'CheckIn', '签到', '签到插件', 1, '{"random":"1"}', 'UCT', '0.1', 1432791968, 0),
+(2, 'Support', '赞', '赞的功能', 1, 'null', 'UCT', '0.1', 1432792013, 0),
+(3, 'SuperLinks', '合作单位', '合作单位', 1, '{"random":"1"}', 'UCT', '0.1', 1432792019, 1),
+(4, 'Report', '举报后台', '可举报不法数据', 1, '{"meta":""}', 'UCT', '0.1', 1432792026, 1),
+(5, 'LocalComment', '本地评论', '本地评论插件，不依赖社会化评论平台', 1, '{"can_guest_comment":"0"}', 'UCT', '0.1', 1432792035, 0),
 (6, 'ChinaCity', '中国省市区三级联动', '每个系统都需要的一个中国省市区三级联动插件。想天-駿濤修改，将镇级地区移除', 1, 'null', 'i友街', '2.0', 1432792040, 0),
-(7, 'Recommend', '推荐关注', '可选择多种方法推荐用户', 1, '{"howToRecommend":"1","howManyRecommend":"1","recommendUser":"1"}', '嘉兴想天信息科技有限公司', '0.1', 1432792055, 1),
-(8, 'SyncLogin', '同步登陆', '同步登陆', 1, '{"type":null,"meta":"","bind":"0","QqKEY":"","QqSecret":"","SinaKEY":"","SinaSecret":"","WeixinKEY":"","WeixinSecret":""}', 'xjw129xjt', '0.1', 1432792112, 0),
+(7, 'Recommend', '推荐关注', '可选择多种方法推荐用户', 1, '{"howToRecommend":"1","howManyRecommend":"1","recommendUser":"1"}', 'UCT', '0.1', 1432792055, 1),
+(8, 'SyncLogin', '同步登陆', '同步登陆', 1, '{"type":null,"meta":"","bind":"0","QqKEY":"","QqSecret":"","SinaKEY":"","SinaSecret":"","WeixinKEY":"","WeixinSecret":""}', 'UCT', '0.1', 1432792112, 0),
 (9, 'Ucuser', '微会员', '微信公众号粉丝初始化行为', 1, '{\"random\":\"1\"}', 'UCToo', '0.1', '1430793843', '1'),
 (10, 'Keyword', '关键词', '关键词数据管理和微信关键词消息处理行为插件', 1, '{\"random\":\"1\"}', 'UCToo', '0.1', '1463128688', '0'),
 (11, 'YunSms', '云之讯', '', 1, '{\"switch\":\"1\"}', 'uctoo', '1.0.0', '1466134320', '0'),
@@ -198,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_adv_pos` (
 --
 
 INSERT INTO `uctoo_adv_pos` (`id`, `name`, `title`, `path`, `type`, `status`, `data`, `width`, `height`, `margin`, `padding`, `theme`) VALUES
-(1, 'slider', '首页轮播图', 'Home/Index/home', 2, 1, '{"style":1}', '1120px', '300px', '0 0 15px 0', '', 'all');
+(1, 'slider', '首页轮播图', 'home/Index/home', 2, 1, '{"style":1}', '1120px', '300px', '0 0 15px 0', '', 'all');
 
 -- --------------------------------------------------------
 
@@ -239,7 +224,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_auth_extend` (
   UNIQUE KEY `group_extend_type` (`group_id`,`extend_id`,`type`),
   KEY `uid` (`group_id`),
   KEY `group_id` (`extend_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户组与分类的对应关系表';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='权限组与分类的对应关系表';
 
 --
 -- 转存表中的数据 `uctoo_auth_extend`
@@ -263,13 +248,14 @@ INSERT INTO `uctoo_auth_extend` (`group_id`, `extend_id`, `type`) VALUES
 
 DROP TABLE IF EXISTS `uctoo_auth_group`;
 CREATE TABLE IF NOT EXISTS `uctoo_auth_group` (
-  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户组id,自增主键',
-  `module` varchar(20) NOT NULL COMMENT '用户组所属模块',
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT COMMENT '权限组id,自增主键',
+  `module` varchar(20) NOT NULL COMMENT '权限组所属模块',
   `type` tinyint(4) NOT NULL COMMENT '组类型',
-  `title` char(20) NOT NULL DEFAULT '' COMMENT '用户组中文名称',
+  `title` char(20) NOT NULL DEFAULT '' COMMENT '权限组中文名称',
   `description` varchar(80) NOT NULL DEFAULT '' COMMENT '描述信息',
-  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '用户组状态：为1正常，为0禁用,-1为删除',
-  `rules` text NOT NULL COMMENT '用户组拥有的规则id，多个规则 , 隔开',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '权限组状态：为1正常，为0禁用,-1为删除',
+  `rules` text NOT NULL COMMENT '权限组拥有的规则id，多个规则 , 隔开',
+  `end_time` INT( 11 ) NOT NULL DEFAULT  '2000000000' COMMENT '有效期',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
@@ -277,10 +263,10 @@ CREATE TABLE IF NOT EXISTS `uctoo_auth_group` (
 -- 转存表中的数据 `uctoo_auth_group`
 --
 
-INSERT INTO `uctoo_auth_group` (`id`, `module`, `type`, `title`, `description`, `status`, `rules`) VALUES
-(1, 'admin', 1, '普通用户', '', 1, ',338,340,341,344,10000'),
-(2, 'admin', 1, '公众号粉丝组', '公众号粉丝', 1, ''),
-(3, 'admin', 1, '公众号管理用户组', '', 1, '');
+INSERT INTO `uctoo_auth_group` (`id`, `module`, `type`, `title`, `description`, `status`, `rules`, `end_time`) VALUES
+(1, 'admin', 1, '普通用户', '', 1, ',338,340,341,344,10000', ''),
+(2, 'admin', 1, '公众号粉丝组', '公众号粉丝', 1, '', ''),
+(3, 'admin', 1, '公众号管理用户组', '', 1, '', '');
 
 
 -- --------------------------------------------------------
@@ -292,7 +278,7 @@ INSERT INTO `uctoo_auth_group` (`id`, `module`, `type`, `title`, `description`, 
 DROP TABLE IF EXISTS `uctoo_auth_group_access`;
 CREATE TABLE IF NOT EXISTS `uctoo_auth_group_access` (
   `uid` int(10) unsigned NOT NULL COMMENT '用户id',
-  `group_id` mediumint(8) unsigned NOT NULL COMMENT '用户组id',
+  `group_id` mediumint(8) unsigned NOT NULL COMMENT '权限组id',
   UNIQUE KEY `uid_group_id` (`uid`,`group_id`),
   KEY `uid` (`uid`),
   KEY `group_id` (`group_id`)
@@ -322,7 +308,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_auth_rule` (
   `condition` varchar(300) NOT NULL DEFAULT '' COMMENT '规则附加条件',
   PRIMARY KEY (`id`),
   KEY `module` (`module`,`status`,`type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10002 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10000 ;
 
 --
 -- 转存表中的数据 `uctoo_auth_rule`
@@ -360,7 +346,7 @@ INSERT INTO `uctoo_auth_rule` (`id`, `module`, `type`, `name`, `title`, `status`
 (30, 'admin', 1, 'Admin/AuthManager/changeStatus?method=resumeGroup', '恢复', 1, ''),
 (31, 'admin', 1, 'Admin/AuthManager/createGroup', '新增', 1, ''),
 (32, 'admin', 1, 'Admin/AuthManager/editGroup', '编辑', 1, ''),
-(33, 'admin', 1, 'Admin/AuthManager/writeGroup', '保存用户组', 1, ''),
+(33, 'admin', 1, 'Admin/AuthManager/writeGroup', '保存权限组', 1, ''),
 (34, 'admin', 1, 'Admin/AuthManager/group', '授权', 1, ''),
 (35, 'admin', 1, 'Admin/AuthManager/access', '访问授权', 1, ''),
 (36, 'admin', 1, 'Admin/AuthManager/user', '成员授权', 1, ''),
@@ -465,7 +451,7 @@ INSERT INTO `uctoo_auth_rule` (`id`, `module`, `type`, `name`, `title`, `status`
 (136, 'admin', 2, 'Admin/AuthManager/changeStatus?method=resumeGroup', '恢复', -1, ''),
 (137, 'admin', 2, 'Admin/AuthManager/createGroup', '新增', -1, ''),
 (138, 'admin', 2, 'Admin/AuthManager/editGroup', '编辑', -1, ''),
-(139, 'admin', 2, 'Admin/AuthManager/writeGroup', '保存用户组', -1, ''),
+(139, 'admin', 2, 'Admin/AuthManager/writeGroup', '保存权限组', -1, ''),
 (140, 'admin', 2, 'Admin/AuthManager/group', '授权', -1, ''),
 (141, 'admin', 2, 'Admin/AuthManager/access', '访问授权', -1, ''),
 (142, 'admin', 2, 'Admin/AuthManager/user', '成员授权', -1, ''),
@@ -572,7 +558,7 @@ INSERT INTO `uctoo_auth_rule` (`id`, `module`, `type`, `name`, `title`, `status`
 (316, 'admin', 1, 'Admin/module/uninstall', '卸载模块', 1, ''),
 (317, 'admin', 1, 'Admin/AuthManager/addNode', '新增权限节点', 1, ''),
 (318, 'admin', 1, 'Admin/AuthManager/accessUser', '前台权限管理', 1, ''),
-(319, 'admin', 1, 'Admin/User/changeGroup', '转移用户组', 1, ''),
+(319, 'admin', 1, 'Admin/User/changeGroup', '转移权限组', 1, ''),
 (320, 'admin', 1, 'Admin/AuthManager/deleteNode', '删除权限节点', 1, ''),
 (322, 'admin', 2, 'Admin/module/lists', '模块管理', -1, ''),
 (346, 'admin', 1, 'Admin/UserConfig/index', '用户注册配置', 1, ''),
@@ -647,27 +633,27 @@ INSERT INTO `uctoo_auth_rule` (`id`, `module`, `type`, `name`, `title`, `status`
 (415, 'admin', 2, 'Admin/Home/config', '网站主页', 1, ''),
 (416, 'admin', 1, 'Admin/Home/config', '基本设置', 1, ''),
 (423, 'admin', 1, 'Admin/People/config', '基本设置', 1, ''),
+(424, 'admin', 1, 'Admin/Cloud/index', '云市场', 1, ''),
 (425, 'admin', 2, 'Admin/authorize/ssoSetting', '授权', 1, ''),
 (426, 'admin', 2, 'Admin/Role/index', '角色', 1, ''),
 (427, 'admin', 1, 'Admin/Theme/tpls', '主题管理', 1, ''),
 (428, 'admin', 2, 'Admin/ActionLimit/limitList', '安全', 1, ''),
+(429, 'admin', 2, 'Admin/Cloud/index', '云市场', 1, ''),
 (430, 'admin', 2, 'Admin/People/config', '会员展示', 1, ''),
 (431, 'admin', 1, 'Admin/Index/index', '后台入口', 1, ''),
-(2000, 'admin', '2', 'Admin/Mpbase/index', '公众号', '1', ''),
-(2001, 'admin', '1', 'Admin/Mpbase/index', '基础设置', '1', ''),
-(2002, 'admin', '1', 'Admin/Mpbase/editMp', '编辑公众号', '-1', ''),
-(2003, 'admin', '1', 'Admin/Mpbase/config', '管理基本设置', '1', ''),
-(2004, 'admin', '1', 'Admin/Mpbase/doEditMp', '操作编辑公众号', '-1', ''),
-(2005, 'admin', '1', 'Admin/Mpbase/edit', '编辑公众号', '1', ''),
-(2006, 'admin', '1', 'Admin/Mpbase/changePublic', '切换公众号', '-1', ''),
-(2007, 'admin', '1', 'Admin/Mpbase/change', '切换公众号', '1', ''),
+(2000, 'admin', '2', 'mpbase/Mpbase/index', '公众号', '1', ''),
+(2001, 'admin', '1', 'mpbase/Mpbase/index', '基础设置', '1', ''),
+(2002, 'admin', '1', 'mpbase/Mpbase/editMp', '编辑公众号', '-1', ''),
+(2003, 'admin', '1', 'mpbase/Mpbase/config', '管理基本设置', '1', ''),
+(2004, 'admin', '1', 'mpbase/Mpbase/doEditMp', '操作编辑公众号', '-1', ''),
+(2005, 'admin', '1', 'mpbase/Mpbase/edit', '编辑公众号', '1', ''),
+(2006, 'admin', '1', 'mpbase/Mpbase/changePublic', '切换公众号', '-1', ''),
+(2007, 'admin', '1', 'mpbase/Mpbase/change', '切换公众号', '1', ''),
 (2008, 'admin', '1', 'Admin/Custommenu/operate', '自定义菜单操作', '1', ''),
 (2009, 'admin', '1', 'Admin/Custommenu/index', '自定义菜单管理', '1', ''),
 (2010, 'admin', '1', 'Admin/Custommenu/add', '编辑自定义菜单', '1', ''),
 (3000, 'admin', '2', 'Admin/Ucuser/index', '微会员', '1', ''),
-(3001, 'admin', '1', 'Admin/Ucuser/index', '微会员信息', '1', ''),
-(10000, 'Issue', 1, 'addIssueContent', '专辑投稿权限', 1, ''),
-(10001, 'Issue', 1, 'editIssueContent', '编辑专辑内容（管理）', 1, '');
+(3001, 'admin', '1', 'Admin/Ucuser/index', '微会员信息', '1', '');
 
 -- ----------------------------
 -- Table structure for uctoo_autoreply
@@ -675,7 +661,7 @@ INSERT INTO `uctoo_auth_rule` (`id`, `module`, `type`, `name`, `title`, `status`
 DROP TABLE IF EXISTS `uctoo_autoreply`;
 CREATE TABLE `uctoo_autoreply` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `mid` int(10) NOT NULL COMMENT '粉丝ID',
+  `mid` int(11) NOT NULL COMMENT '粉丝ID',
   `mp_id` varchar(50) NOT NULL COMMENT '公众号ID',
   `type` char(10) NOT NULL DEFAULT '0' COMMENT '自定义回复类型',
   `keyword_id` int(10) NOT NULL COMMENT '关键词ID',
@@ -723,6 +709,8 @@ CREATE TABLE IF NOT EXISTS `uctoo_channel` (
   `band_color` varchar(30) NOT NULL,
   `band_text` varchar(30) NOT NULL,
   `icon` varchar(20) NOT NULL,
+  `image` int(11) NOT NULL,
+  `remark` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
@@ -731,11 +719,9 @@ CREATE TABLE IF NOT EXISTS `uctoo_channel` (
 -- 转存表中的数据 `uctoo_channel`
 --
 
-INSERT INTO `uctoo_channel` (`id`, `pid`, `title`, `url`, `sort`, `create_time`, `update_time`, `status`, `target`, `color`, `band_color`, `band_text`, `icon`) VALUES
-(1, 0, '专辑', 'Issue/index/index', 1, 0, 0, 1, 0, '', '', '', ''),
-(2, 0, '首页', 'Home/Index/index', 2, 0, 0, 1, 0, '#000000', '#000000', '', 'home'),
-(3, 0, '找人', 'People/index/index', 3, 0, 0, 1, 0, '', '', '', 'group'),
-(4, 0, '商城', 'Shop/index/index', 100, 0, 0, 1, 0, '', '', '', 'shopping-cart');
+INSERT INTO `uctoo_channel` (`id`, `pid`, `title`, `url`, `sort`, `create_time`, `update_time`, `status`, `target`, `color`, `band_color`, `band_text`, `icon`, `image`, `remark`) VALUES
+(1, 0, '首页', 'home/Index/index', 1, 0, 0, 1, 0, '#000000', '#000000', '', 'home', '', ''),
+(2, 0, '商城', 'shop/index/index', 2, 0, 0, 1, 0, '', '', '', 'shopping-cart', '', '');
 
 -- --------------------------------------------------------
 
@@ -813,21 +799,22 @@ INSERT INTO `uctoo_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `re
 (130, 'NO_BODY_TLE', 2, '空白说明', 2, '', '空白说明', 1392216444, 1392981305, 1, '呵呵，暂时没有内容哦！！', 0),
 (131, 'USER_RESPASS', 5, '密码找回模板', 3, '', '密码找回文本', 1396191234, 1396191234, 1, '<span style="color:#009900;">请点击以下链接找回密码，如无反应，请将链接地址复制到浏览器中打开(下次登录前有效)</span>', 0),
 (132, 'COUNT_CODE', 2, '统计代码', 1, '', '用于统计网站访问量的第三方代码，推荐CNZZ统计', 1403058890, 1403058890, 1, '', 12),
-(134, 'URL_MODEL', 4, 'URL模式', 4, '2:REWRITE模式(开启伪静态)\r\n3:兼容模式', '选择Rewrite模式则开启伪静态，在开启伪静态之前需要先<a href="http://v2.opensns.cn/index.php?s=/news/index/detail/id/128.html" target="_blank">设置伪静态</a>或者阅读/Rewrite/readme.txt中的说明，默认建议开启兼容模式', 1421027546, 1421027676, 1, '3', 0),
+(134, 'URL_MODEL', 4, 'URL模式', 4, '2:REWRITE模式(开启伪静态)\r\n3:兼容模式', '选择Rewrite模式则开启伪静态，在开启伪静态之前需要先<a href="http://doc.uctoo.com" target="_blank">设置伪静态</a>或者阅读/Rewrite/readme.txt中的说明，默认建议开启兼容模式', 1421027546, 1421027676, 1, '3', 0),
 (135, 'DEFUALT_HOME_URL', 1, '登录前首页Url', 1, '', '支持形如weibo/index/index的ThinkPhp路由写法，支持普通的url写法，不填则显示默认聚合首页', 1417509438, 1427340006, 1, '', 1),
+(136, 'AUTO_UPDATE', 4, '自动更新提示', 1, '0:关闭,1:开启', '关闭后，后台将不显示更新提示', 1433731153, 1433731348, 1, '1', 2),
 (137, 'WEB_SITE_CLOSE_HINT', 2, '关站提示文字', 1, '', '站点关闭后的提示文字。', 1433731248, 1433731287, 1, '网站正在更新维护，请稍候再试。', 4),
 (138, 'SESSION_PREFIX', 1, '网站前台session前缀', 1, '', '当多个网站在同一个根域名下请保证每个网站的前缀不同', 1436923664, 1436923664, 1, 'uctoo', 20),
 (139, 'COOKIE_PREFIX', 1, '网站前台cookie前缀', 1, '', '当多个网站在同一个根域名下请保证每个网站的前缀不同', 1436923664, 1436923664, 1, 'uctoo_', 21),
 (140, 'MAIL_SMTP_CE', 1, '邮件发送测试', 5, '', '填写测试邮件地址', 1388334529, 1388584028, 1, '', 11),
 (500, 'MAIL_SMTP_SECURE', 1, 'SMTP安全协议', 5, '', '不填写不使用安全协议，可填写ssl和tls两种安全协议。', 1426735670, 1426735709, 1, 'ssl', '6'),
-(1000, '_USERCONFIG_REG_SWITCH', 0, '', 0, '', '', 1427094903, 1427094903, 1, 'username', 0),
-(10000, '_CONFIG_WEB_SITE_NAME', 0, '', 0, '', '', 1452489485, 1452489485, 1, 'UCToo微信应用开发框架', 0),
-(10001, '_CONFIG_ICP', 0, '', 0, '', '', 1452489485, 1452489485, 1, '粤ICP备XXX号', 0),
-(10002, '_CONFIG_LOGO', 0, '', 0, '', '', 1452489485, 1452489485, 1, '1', 0),
-(10003, '_CONFIG_QRCODE', 0, '', 0, '', '', 1452489485, 1452489485, 1, '', 0),
-(10014, '_CONFIG_ABOUT_US', 0, '', 0, '', '', 1452489485, 1452489485, 1, '<p>&nbsp; 深圳优创智投科技有限公司（UCT）是一家提供微应用开发、运营、推广的一站式服务提供商，公司致力于为微创新从创意萌芽、产品实现、成长发展提供全面的服务和支持。</p>', 0),
-(10013, '_CONFIG_SUBSCRIB_US', 0, '', 0, '', '', 1452489485, 1452489485, 1, '<p>业务QQ：844801465</p><p>联系地址：深圳市南山区蛇口工业六路9号创新谷</p><p>联系电话：0755-36300086</p>', 0),
-(10012, '_CONFIG_COPY_RIGHT', 0, '', 0, '', '', 1452489485, 1452489485, 1, '<p>Copyright ©2014-2016 <a href="http://www.uctoo.com" target="_blank">深圳优创智投科技有限公司</a></p>', 0),
+(1000, '_USERCONFIG_REG_SWITCH', 0, '', 0, '', '', 1427094903, 1427094903, 1, 'mobile', 0),
+(1001, '_CONFIG_WEB_SITE_NAME', 0, '', 0, '', '', 1452489485, 1452489485, 1, 'UCToo开源微信应用开发平台', 0),
+(1002, '_CONFIG_ICP', 0, '', 0, '', '', 1452489485, 1452489485, 1, '粤ICP备XXX号', 0),
+(1003, '_CONFIG_LOGO', 0, '', 0, '', '', 1452489485, 1452489485, 1, '1', 0),
+(1004, '_CONFIG_QRCODE', 0, '', 0, '', '', 1452489485, 1452489485, 1, '', 0),
+(1005, '_CONFIG_ABOUT_US', 0, '', 0, '', '', 1452489485, 1452489485, 1, '<p>&nbsp; 深圳优创智投科技有限公司（UCT）是一家提供微应用开发、运营、推广的一站式服务提供商，公司致力于为微创新从创意萌芽、产品实现、成长发展提供全面的服务和支持。</p>', 0),
+(1006, '_CONFIG_SUBSCRIB_US', 0, '', 0, '', '', 1452489485, 1452489485, 1, '<p>业务QQ：844801465</p><p>联系地址：深圳市南山区软件产业基地6栋3楼S</p><p>联系电话：0755-33942068</p>', 0),
+(1007, '_CONFIG_COPY_RIGHT', 0, '', 0, '', '', 1452489485, 1452489485, 1, '<p>Copyright ©2014-2017 <a href="http://www.uctoo.com" target="_blank">深圳优创智投科技有限公司</a></p>', 0),
 (1008, '_HOME_LOGO', 0, '', 0, '', '', 1432791820, 1432791820, 1, '', 0),
 (1009, '_HOME_ENTER_URL', 0, '', 0, '', '', 1432791820, 1432791820, 1, '', 0),
 (1010, '_HOME_BLOCK', 0, '', 0, '', '', 1432791820, 1432791820, 1, '[{"data-id":"disable","title":"禁用","items":[]},{"data-id":"enable","title":"启用","items":[{"data-id":"slider","title":"轮播"},{"data-id":"Weibo","title":"微博"},{"data-id":"People","title":"会员展示"}]}]', 0),
@@ -4589,7 +4576,6 @@ INSERT INTO `uctoo_hooks` (`id`, `name`, `description`, `type`, `update_time`, `
 (42, 'topicComment', '评论提交方式扩展钩子。', 1, 1380163518, ''),
 (43, 'app_begin', '应用开始', 2, 1384481614, 'Iswaf'),
 (44, 'checkIn', '签到', 1, 1395371353, 'CheckIn'),
-(45, 'Rank', '签到排名钩子', 1, 1395387442, 'Rank_checkin'),
 (46, 'support', '赞', 1, 1398264759, 'Support'),
 (47, 'localComment', '本地评论插件', 1, 1399440321, 'LocalComment'),
 (48, 'weiboType', '微博类型', 1, 1409121894, ''),
@@ -4617,7 +4603,8 @@ INSERT INTO `uctoo_hooks` (`id`, `name`, `description`, `type`, `update_time`, `
 (71, 'tool', '返回顶部，右下角工具栏', 1, 1445828128, ''),
 (72, 'init_ucuser', '初始化粉丝信息', '2', '1430793836', 'Ucuser'),
 (73, 'wxpay', '微信支付', '1', 1442221555, 'Wxpay'),
-(74, 'TplMsg', '模板消息发送钩子', '2', 1450243898, 'TplMsg');
+(74, 'TplMsg', '模板消息发送钩子', '2', 1450243898, 'TplMsg'),
+(75, 'homeIndex', '网站首页', 2, 1445828128, '');
 
 -- --------------------------------------------------------
 
@@ -4688,7 +4675,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_invite_type` (
   `cycle_num` int(10) NOT NULL COMMENT '周期内可购买个数',
   `cycle_time` varchar(50) NOT NULL COMMENT '周期时长，带单位的时间',
   `roles` varchar(50) NOT NULL COMMENT '绑定角色ids',
-  `auth_groups` varchar(50) NOT NULL COMMENT '允许购买的用户组ids',
+  `auth_groups` varchar(50) NOT NULL COMMENT '允许购买的权限组ids',
   `pay_score` int(10) NOT NULL COMMENT '购买消耗积分',
   `pay_score_type` int(11) NOT NULL COMMENT '购买消耗积分类型',
   `income_score` int(10) NOT NULL COMMENT '每邀请成功一个用户，邀请者增加积分',
@@ -4699,6 +4686,8 @@ CREATE TABLE IF NOT EXISTS `uctoo_invite_type` (
   `update_time` int(11) NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='邀请注册码类型表' AUTO_INCREMENT=1 ;
+INSERT INTO `uctoo_invite_type` (`id`, `title`, `length`, `time`, `cycle_num`, `cycle_time`, `roles`, `auth_groups`, `pay_score`, `pay_score_type`, `income_score`, `income_score_type`, `is_follow`, `status`, `create_time`, `update_time`) VALUES
+(1, '系统默认邀请码', 11, '10 year', 1, '1 second', '[1]', '[1],[2]', 0, 1, 0, 1, 1, 1, 1466749163, 1471247871);
 
 -- --------------------------------------------------------
 
@@ -4772,8 +4761,8 @@ CREATE TABLE IF NOT EXISTS `uctoo_issue_content` (
 --
 
 INSERT INTO `uctoo_issue_content` (`id`, `title`, `content`, `view_count`, `cover_id`, `issue_id`, `uid`, `reply_count`, `create_time`, `update_time`, `status`, `url`) VALUES
-(29, 'OpenSNS官方订制门店', '<p><span style="color: rgb(53, 53, 53); font-family: &#39;Microsoft YaHei&#39;; font-size: 13px; line-height: 20px; background-color: rgb(255, 255, 255);">嘉兴奕想信息技术有限公司，opensns官方子公司，是嘉兴想天信息科技有限公司为opensns二次开发专门申请的公司。</span></p>', 7, 3, 14, 1, 0, 1430704938, 1452479973, 1, 'http://os.opensns.cn/appstore/index/shop/id/102.html'),
-(30, 'OpenSNS官方旗舰店', '<p>OpenCenter和OpenSNS开发商-嘉兴想天信息科技有限公司 官方店，提供卓越品质的服务，服务内容包含二次开发。</p><pre class="brush:php;toolbar:false">public&nbsp;function&nbsp;reload(){\r\n&nbsp;&nbsp;$modules&nbsp;=&nbsp;$this-&gt;select();\r\n&nbsp;&nbsp;foreach&nbsp;($modules&nbsp;as&nbsp;$m)&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(file_exists(APP_PATH&nbsp;.&nbsp;&#39;/&#39;&nbsp;.&nbsp;$m[&#39;name&#39;]&nbsp;.&nbsp;&#39;/Info/info.php&#39;))&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$info&nbsp;=&nbsp;array_merge($m,&nbsp;$this-&gt;getInfo($m[&#39;name&#39;]));&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;save($info);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;\r\n&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;\r\n&nbsp;&nbsp;$this-&gt;cleanModulesCache();\r\n}</pre>', 13, 2, 14, 1, 0, 1430705543, 1452480316, 1, 'http://os.opensns.cn/appstore/index/shop/id/1.html');
+(29, 'UCToo官方订制门店', '<p><span style="color: rgb(53, 53, 53); font-family: &#39;Microsoft YaHei&#39;; font-size: 13px; line-height: 20px; background-color: rgb(255, 255, 255);">深圳优创智投科技有限公司英文全称Universal Convergence Technology Co.Ltd。</span></p>', 7, 3, 14, 1, 0, 1430704938, 1452479973, 1, 'http://www.uctoo.cn/index.php?s=/sappstore/index/index.html'),
+(30, 'UCToo官方旗舰店', '<p>UCToo微应用开发一站式解决方案。</p>', 13, 2, 14, 1, 0, 1430705543, 1452480316, 1, 'http://www.uctoo.cn/index.php?s=/sappstore/index/index.html');
 
 -- --------------------------------------------------------
 
@@ -4806,14 +4795,14 @@ CREATE TABLE IF NOT EXISTS `uctoo_local_comment` (
 
 DROP TABLE IF EXISTS `uctoo_member`;
 CREATE TABLE IF NOT EXISTS `uctoo_member` (
-  `uid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `nickname` char(32) NOT NULL DEFAULT '' COMMENT '昵称',
   `sex` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '性别',
   `birthday` date NOT NULL DEFAULT '0000-00-00' COMMENT '生日',
   `qq` char(10) NOT NULL DEFAULT '' COMMENT 'qq号',
   `login` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录次数',
-  `reg_ip` bigint(20) NOT NULL DEFAULT '0' COMMENT '注册IP',
-  `reg_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '注册时间',
+  `registe_ip` bigint(20) NOT NULL DEFAULT '0' COMMENT '注册IP',
+  `registe_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '注册时间',
   `last_login_ip` bigint(20) NOT NULL DEFAULT '0' COMMENT '最后登录IP',
   `last_login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后登录时间',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '会员状态',
@@ -4824,13 +4813,14 @@ CREATE TABLE IF NOT EXISTS `uctoo_member` (
   `pos_city` int(11) NOT NULL,
   `pos_district` int(11) NOT NULL,
   `pos_community` int(11) NOT NULL,
-  `token` varchar(200) DEFAULT NULL COMMENT '当前操作的公众号',
+  `mp_token` varchar(50) DEFAULT NULL COMMENT '当前操作的公众号',
   `score1` double DEFAULT '0' COMMENT '用户积分',
   `score2` double DEFAULT '0' COMMENT 'score2',
   `score3` double DEFAULT '0' COMMENT 'score3',
   `score4` double DEFAULT '0' COMMENT 'score4',
   `con_check` int(11) NOT NULL DEFAULT '0',
   `total_check` int(11) NOT NULL DEFAULT '0',
+  `fans` int(11) NOT NULL DEFAULT '0' COMMENT '粉丝数',
   PRIMARY KEY (`uid`),
   KEY `status` (`status`),
   KEY `name` (`nickname`)
@@ -4840,7 +4830,7 @@ DROP TABLE IF EXISTS `uctoo_member_public`;
 CREATE TABLE `uctoo_member_public` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `mp_id` varchar(50) NOT NULL COMMENT '公众号检索标识',
-  `uid` int(10) NOT NULL COMMENT '用户ID',
+  `uid` int(11) NOT NULL COMMENT '用户ID',
   `public_name` varchar(50) NOT NULL COMMENT '公众号名称',
   `public_id` varchar(100) NOT NULL COMMENT '公众号原始id',
   `wechat` varchar(100) NOT NULL COMMENT '微信号',
@@ -4895,251 +4885,269 @@ CREATE TABLE IF NOT EXISTS `uctoo_menu` (
 --
 
 INSERT INTO `uctoo_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
-(1, '首页', 0, 1, 'Index/index', 0, '', '', 0, 'home', ''),
-(2, '用户', 0, 2, 'User/index', 0, '', '', 0, 'user', ''),
-(3, '用户信息', 2, 2, 'User/index', 0, '', '用户管理', 0, '', ''),
-(4, '积分规则', 113, 3, 'User/action', 0, '', '行为管理', 0, '', ''),
+(1, '首页', 0, 1, 'admin/Index/index', 0, '', '', 0, 'home', ''),
+(2, '用户', 0, 2, 'admin/User/index', 0, '', '', 0, 'user', ''),
+(3, '用户信息', 2, 2, 'admin/User/index', 0, '', '用户管理', 0, '', ''),
+(4, '积分规则', 113, 3, 'admin/User/action', 0, '', '行为管理', 0, '', ''),
 (5, '新增用户行为', 4, 0, 'User/addaction', 0, '', '', 0, '', ''),
 (6, '编辑用户行为', 4, 0, 'User/editaction', 0, '', '', 0, '', ''),
 (7, '保存用户行为', 4, 0, 'User/saveAction', 0, '"用户->用户行为"保存编辑和新增的用户行为', '', 0, '', ''),
 (8, '变更行为状态', 4, 0, 'User/setStatus', 0, '"用户->用户行为"中的启用,禁用和删除权限', '', 0, '', ''),
-(9, '禁用会员', 4, 0, 'User/changeStatus?method=forbidUser', 0, '"用户->用户信息"中的禁用', '', 0, '', ''),
-(10, '启用会员', 4, 0, 'User/changeStatus?method=resumeUser', 0, '"用户->用户信息"中的启用', '', 0, '', ''),
-(11, '删除会员', 4, 0, 'User/changeStatus?method=deleteUser', 0, '"用户->用户信息"中的删除', '', 0, '', ''),
-(12, '用户组管理', 2, 5, 'AuthManager/index', 0, '', '权限管理', 0, '', ''),
-(13, '删除', 12, 0, 'AuthManager/changeStatus?method=deleteGroup', 0, '删除用户组', '', 0, '', ''),
-(14, '禁用', 12, 0, 'AuthManager/changeStatus?method=forbidGroup', 0, '禁用用户组', '', 0, '', ''),
-(15, '恢复', 12, 0, 'AuthManager/changeStatus?method=resumeGroup', 0, '恢复已禁用的用户组', '', 0, '', ''),
-(16, '新增', 12, 0, 'AuthManager/createGroup', 0, '创建新的用户组', '', 0, '', ''),
-(17, '编辑', 12, 0, 'AuthManager/editGroup', 0, '编辑用户组名称和描述', '', 0, '', ''),
-(18, '保存用户组', 12, 0, 'AuthManager/writeGroup', 0, '新增和编辑用户组的"保存"按钮', '', 0, '', ''),
-(19, '授权', 12, 0, 'AuthManager/group', 0, '"后台 \\ 用户 \\ 用户信息"列表页的"授权"操作按钮,用于设置用户所属用户组', '', 0, '', ''),
-(20, '访问授权', 12, 0, 'AuthManager/access', 0, '"后台 \\ 用户 \\ 权限管理"列表页的"访问授权"操作按钮', '', 0, '', ''),
-(21, '成员授权', 12, 0, 'AuthManager/user', 0, '"后台 \\ 用户 \\ 权限管理"列表页的"成员授权"操作按钮', '', 0, '', ''),
-(22, '解除授权', 12, 0, 'AuthManager/removeFromGroup', 0, '"成员授权"列表页内的解除授权操作按钮', '', 0, '', ''),
-(23, '保存成员授权', 12, 0, 'AuthManager/addToGroup', 0, '"用户信息"列表页"授权"时的"保存"按钮和"成员授权"里右上角的"添加"按钮)', '', 0, '', ''),
-(24, '分类授权', 12, 0, 'AuthManager/category', 0, '"后台 \\ 用户 \\ 权限管理"列表页的"分类授权"操作按钮', '', 0, '', ''),
-(25, '保存分类授权', 12, 0, 'AuthManager/addToCategory', 0, '"分类授权"页面的"保存"按钮', '', 0, '', ''),
-(26, '模型授权', 12, 0, 'AuthManager/modelauth', 0, '"后台 \\ 用户 \\ 权限管理"列表页的"模型授权"操作按钮', '', 0, '', ''),
-(27, '保存模型授权', 12, 0, 'AuthManager/addToModel', 0, '"分类授权"页面的"保存"按钮', '', 0, '', ''),
-(28, '新增权限节点', 12, 0, 'AuthManager/addNode', 1, '', '', 1, '', ''),
-(29, '前台权限管理', 12, 0, 'AuthManager/accessUser', 1, '', '权限管理', 0, '', ''),
-(30, '删除权限节点', 12, 0, 'AuthManager/deleteNode', 1, '', '', 0, '', ''),
-(31, '行为日志', 113, 4, 'Action/actionlog', 0, '', '行为管理', 0, '', ''),
-(32, '查看行为日志', 31, 0, 'action/edit', 1, '', '', 0, '', ''),
-(33, '修改密码', 2, 3, 'User/updatePassword', 1, '', '', 0, '', ''),
-(34, '修改昵称', 2, 4, 'User/updateNickname', 1, '', '', 0, '', ''),
-(35, '查看用户', 197, 1, 'Rank/userList', 0, '', '头衔管理', 0, '', ''),
-(36, '用户头衔列表', 35, 0, 'Rank/userRankList', 1, '', '', 0, '', ''),
-(37, '关联新头衔', 35, 0, 'Rank/userAddRank', 1, '', '', 0, '', ''),
-(38, '编辑头衔关联', 35, 0, 'Rank/userChangeRank', 1, '', '', 0, '', ''),
-(39, '扩展资料', 2, 3, 'User/profile', 0, '', '用户管理', 0, '', ''),
-(40, '添加、编辑分组', 39, 0, 'Admin/User/editProfile', 0, '', '', 0, '', ''),
-(41, '分组排序', 39, 0, 'Admin/User/sortProfile', 0, '', '', 0, '', ''),
-(42, '字段列表', 39, 0, 'Admin/User/field', 0, '', '', 0, '', ''),
-(43, '添加、编辑字段', 39, 0, 'Admin/User/editFieldSetting', 0, '', '', 0, '', ''),
-(44, '字段排序', 39, 0, 'Admin/User/sortField', 0, '', '', 0, '', ''),
-(45, '用户扩展资料列表', 2, 7, 'User/expandinfo_select', 0, '', '用户管理', 0, '', ''),
-(46, '扩展资料详情', 45, 0, 'User/expandinfo_details', 0, '', '', 0, '', ''),
-(47, '待审核用户头衔', 197, 2, 'Rank/rankVerify', 0, '', '头衔管理', 0, '', ''),
-(48, '被驳回的头衔申请', 197, 3, 'Rank/rankVerifyFailure', 0, '', '头衔管理', 0, '', ''),
-(49, '转移用户组', 2, 7, 'User/changeGroup', 1, '批量转移用户组', '', 0, '', ''),
-(50, '用户注册配置', 2, 1, 'UserConfig/index', 0, '', '注册配置', 0, '', ''),
-(51, '积分类型列表', 113, 1, 'User/scoreList', 0, '', '行为管理', 0, '', ''),
-(52, '新增/编辑类型', 113, 2, 'User/editScoreType', 1, '', '行为管理', 0, '', ''),
-(53, '充值积分', 113, 5, 'User/recharge', 1, '', '', 0, '用户管理', ''),
-(54, '头衔列表', 197, 6, 'Rank/index', 0, '', '头衔管理', 0, '', ''),
-(55, '添加头衔', 54, 2, 'Rank/editRank', 1, '', '头衔管理', 0, '', ''),
-(57, '插件管理', 105, 4, 'Addons/index', 0, '', '本地', 0, '', ''),
-(58, '钩子管理', 57, 2, 'Addons/hooks', 0, '', '本地', 0, '', ''),
-(59, '创建', 57, 0, 'Addons/create', 0, '服务器上创建插件结构向导', '', 0, '', ''),
-(60, '检测创建', 57, 0, 'Addons/checkForm', 0, '检测插件是否可以创建', '', 0, '', ''),
-(61, '预览', 57, 0, 'Addons/preview', 0, '预览插件定义类文件', '', 0, '', ''),
-(62, '快速生成插件', 57, 0, 'Addons/build', 0, '开始生成插件结构', '', 0, '', ''),
-(64, '设置', 57, 0, 'Addons/config', 0, '设置插件配置', '', 0, '', ''),
-(65, '禁用', 57, 0, 'Addons/disable', 0, '禁用插件', '', 0, '', ''),
-(66, '启用', 57, 0, 'Addons/enable', 0, '启用插件', '', 0, '', ''),
-(67, '安装', 57, 0, 'Addons/install', 0, '安装插件', '', 0, '', ''),
-(68, '卸载', 57, 0, 'Addons/uninstall', 0, '卸载插件', '', 0, '', ''),
-(69, '更新配置', 57, 0, 'Addons/saveconfig', 0, '更新插件配置处理', '', 0, '', ''),
-(70, '插件后台列表', 57, 0, 'Addons/adminList', 0, '', '', 0, '', ''),
-(71, 'URL方式访问插件', 57, 0, 'Addons/execute', 0, '控制是否有权限通过url访问插件控制器方法', '', 0, '', ''),
-(72, '新增钩子', 58, 0, 'Addons/addHook', 0, '', '', 0, '', ''),
-(73, '编辑钩子', 58, 0, 'Addons/edithook', 0, '', '', 0, '', ''),
-(74, '系统', 0, 7, 'Config/group', 0, '', '', 0, 'windows', ''),
-(75, '网站设置', 74, 1, 'Config/group', 0, '', '系统设置', 0, '', ''),
-(76, '配置管理', 74, 7, 'Config/index', 0, '', '系统设置', 0, '', ''),
-(77, '编辑', 76, 0, 'Config/edit', 0, '新增编辑和保存配置', '', 0, '', ''),
-(78, '删除', 76, 0, 'Config/del', 0, '删除配置', '', 0, '', ''),
-(79, '新增', 76, 0, 'Config/add', 0, '新增配置', '', 0, '', ''),
-(80, '保存', 76, 0, 'Config/save', 0, '保存配置', '', 0, '', ''),
-(81, '排序', 76, 0, 'Config/sort', 1, '', '', 0, '', ''),
-(82, '后台菜单管理', 2, 6, 'Menu/index', 0, '', '权限管理', 0, '', ''),
-(83, '新增', 82, 0, 'Menu/add', 0, '', '系统设置', 0, '', ''),
-(84, '编辑', 82, 0, 'Menu/edit', 0, '', '', 0, '', ''),
-(85, '导入', 82, 0, 'Menu/import', 0, '', '', 0, '', ''),
-(86, '排序', 82, 0, 'Menu/sort', 1, '', '', 0, '', ''),
-(87, '顶部导航', 74, 3, 'Channel/index', 0, '', '导航管理', 0, '', ''),
-(88, '新增', 87, 0, 'Channel/add', 0, '', '', 0, '', ''),
-(89, '编辑', 87, 0, 'Channel/edit', 0, '', '', 0, '', ''),
-(90, '删除', 87, 0, 'Channel/del', 0, '', '', 0, '', ''),
-(91, '排序', 87, 0, 'Channel/sort', 1, '', '', 0, '', ''),
-(92, '备份数据库', 113, 8, 'Database/index?type=export', 0, '', '数据备份', 0, '', ''),
-(93, '备份', 92, 0, 'Database/export', 0, '备份数据库', '', 0, '', ''),
-(94, '优化表', 92, 0, 'Database/optimize', 0, '优化数据表', '', 0, '', ''),
-(95, '修复表', 92, 0, 'Database/repair', 0, '修复数据表', '', 0, '', ''),
-(96, '还原数据库', 113, 9, 'Database/index?type=import', 0, '', '数据备份', 0, '', ''),
-(97, '恢复', 96, 0, 'Database/import', 0, '数据库恢复', '', 0, '', ''),
-(98, '删除', 96, 0, 'Database/del', 0, '删除备份文件', '', 0, '', ''),
-(99, 'SEO规则管理', 74, 8, 'SEO/index', 0, '', 'SEO规则', 0, '', ''),
-(100, '新增、编辑', 99, 0, 'SEO/editRule', 0, '', '', 0, '', ''),
-(101, '排序', 99, 0, 'SEO/sortRule', 1, '', '', 0, '', ''),
-(102, 'SEO规则回收站', 74, 9, 'SEO/ruleTrash', 0, '', 'SEO规则', 0, '', ''),
-(103, '全部补丁', 74, 16, 'Update/quick', 1, '', '升级补丁', 0, '', ''),
-(104, '新增补丁', 74, 15, 'Update/addpack', 1, '', '升级补丁', 0, '', ''),
-(105, '扩展', 0, 11, 'Module/lists', 0, '', '', 0, 'cloud', ''),
-(106, '模块安装', 105, 3, 'module/install', 1, '', '本地', 0, '', ''),
-(107, '模块管理', 105, 5, 'module/lists', 0, '', '本地', 0, '', ''),
-(108, '卸载模块', 105, 7, 'module/uninstall', 1, '', '本地', 0, '', ''),
-(109, '授权', 0, 6, 'authorize/ssoSetting', 0, '', '', 0, 'lock', ''),
-(110, '单点登录配置', 109, 0, 'Authorize/ssoSetting', 0, '', '单点登录', 0, '', ''),
-(111, '应用列表', 109, 0, 'Authorize/ssolist', 0, '', '单点登录', 0, '', ''),
-(112, '新增/编辑应用', 109, 0, 'authorize/editssoapp', 1, '', '单点登录', 0, '', ''),
-(113, '安全', 0, 5, 'ActionLimit/limitList', 0, '', '', 0, 'shield', ''),
-(114, '行为限制列表', 113, 6, 'ActionLimit/limitList', 0, '', '行为限制', 0, '', ''),
-(115, '新增/编辑行为限制', 113, 7, 'ActionLimit/editLimit', 1, '', '行为限制', 0, '', ''),
-(116, '身份', 0, 3, 'Role/index', 0, '', '', 0, 'group', ''),
-(117, '身份列表', 116, 1, 'Role/index', 0, '', '身份管理', 0, '', ''),
-(118, '编辑身份', 116, 2, 'Role/editRole', 1, '', '', 0, '', ''),
-(119, '启用、禁用、删除身份', 116, 3, 'Role/setStatus', 1, '', '', 0, '', ''),
-(120, '身份排序', 116, 4, 'Role/sort', 1, '', '', 0, '', ''),
-(121, '默认积分配置', 117, 0, 'Role/configScore', 1, '', '', 0, '', ''),
-(122, '默认权限配置', 117, 0, 'Role/configAuth', 1, '', '', 0, '', ''),
-(123, '默认头像配置', 117, 0, 'Role/configAvatar', 1, '', '', 0, '', ''),
-(124, '默认头衔配置', 117, 0, 'Role/configRank', 1, '', '', 0, '', ''),
-(125, '默认字段管理', 117, 0, 'Role/configField', 1, '', '', 0, '', ''),
-(126, '身份分组', 116, 5, 'Role/group', 0, '', '身份管理', 0, '', ''),
-(127, '编辑分组', 126, 0, 'Role/editGroup', 1, '', '', 0, '', ''),
-(128, '删除分组', 126, 0, 'Role/deleteGroup', 1, '', '', 0, '', ''),
-(129, '身份基本信息配置', 116, 6, 'Role/config', 1, '', '身份管理', 0, '', ''),
-(130, '用户列表', 116, 7, 'Role/userList', 0, '', '身份用户管理', 0, '', ''),
-(131, '设置用户状态', 130, 0, 'Role/setUserStatus', 1, '', '', 0, '', ''),
-(132, '审核用户', 130, 0, 'Role/setUserAudit', 1, '', '', 0, '', ''),
-(133, '迁移用户', 130, 0, 'Role/changeRole', 1, '', '', 0, '', ''),
-(134, '上传默认头像', 123, 0, 'Role/uploadPicture', 1, '', '', 0, '', ''),
-(135, '类型管理', 116, 8, 'Invite/index', 0, '', '邀请注册管理', 0, '', ''),
-(136, '邀请码管理', 116, 9, 'Invite/invite', 0, '', '邀请注册管理', 0, '', ''),
-(137, '基础配置', 116, 10, 'Invite/config', 0, '', '邀请注册管理', 0, '', ''),
-(138, '兑换记录', 116, 11, 'Invite/buyLog', 0, '', '邀请注册管理', 0, '', ''),
-(139, '邀请记录', 116, 12, 'Invite/inviteLog', 0, '', '邀请注册管理', 0, '', ''),
-(140, '用户信息', 116, 13, 'Invite/userInfo', 0, '', '邀请注册管理', 0, '', ''),
-(141, '编辑邀请注册类型', 135, 0, 'Invite/edit', 1, '', '', 0, '', ''),
-(142, '删除邀请', 135, 0, 'Invite/setStatus', 1, '', '', 0, '', ''),
-(143, '删除邀请码', 136, 0, 'Invite/delete', 1, '', '', 0, '', ''),
-(144, '生成邀请码', 136, 0, 'Invite/createCode', 1, '', '', 0, '', ''),
-(145, '删除无用邀请码', 136, 0, 'Invite/deleteTrue', 1, '', '', 0, '', ''),
-(146, '导出cvs', 136, 0, 'Invite/cvs', 1, '', '', 0, '', ''),
-(147, '用户信息编辑', 140, 0, 'Invite/editUserInfo', 1, '', '', 0, '', ''),
-(148, '删除日志', 31, 0, 'Action/remove', 1, '', '', 0, '', ''),
-(149, '清空日志', 31, 0, 'Action/clear', 1, '', '', 0, '', ''),
-(150, '设置积分状态', 51, 0, 'User/setTypeStatus', 1, '', '', 0, '', ''),
-(151, '删除积分类型', 51, 0, 'User/delType', 1, '', '', 0, '', ''),
-(152, '充值积分-获取用户昵称', 53, 0, 'User/getNickname', 1, '', '', 0, '', ''),
-(153, '删除菜单', 82, 0, 'Menu/del', 1, '', '', 0, '', ''),
-(154, '设置开发者模式可见', 82, 0, 'Menu/toogleDev', 1, '', '', 0, '', ''),
-(155, '设置显示隐藏', 82, 0, 'Menu/toogleHide', 1, '', '', 0, '', ''),
-(156, '行为限制启用、禁用、删除', 114, 0, 'ActionLimit/setLimitStatus', 1, '', '', 0, '', ''),
-(157, '启用、禁用、删除、回收站还原', 99, 0, 'SEO/setRuleStatus', 1, '', '', 0, '', ''),
-(158, '回收站彻底删除', 102, 0, 'SEO/doClear', 1, '', '', 0, '', ''),
-(159, '初始化无角色用户', 130, 0, 'Role/initUnhaveUser', 1, '', '', 0, '', ''),
-(160, '删除钩子', 58, 0, 'Addons/delHook', 0, '', '', 0, '', ''),
-(161, '使用补丁', 103, 0, 'Update/usePack', 1, '', '', 0, '', ''),
-(162, '查看补丁', 103, 0, 'Update/view', 1, '', '', 0, '', ''),
-(163, '删除补丁', 103, 0, 'Update/delPack', 1, '', '', 0, '', ''),
-(164, '用户标签列表', 2, 4, 'UserTag/userTag', 0, '', '用户管理', 0, '', ''),
-(165, '添加分类、标签', 164, 0, 'UserTag/add', 1, '', '', 0, '', ''),
-(166, '设置分类、标签状态', 164, 0, 'UserTag/setStatus', 1, '', '', 0, '', ''),
-(167, '分类、标签回收站', 164, 0, 'UserTag/tagTrash', 1, '', '', 0, '', ''),
-(168, '测底删除回收站内容', 164, 0, 'UserTag/userTagClear', 1, '', '', 0, '', ''),
-(169, '可拥有标签配置', 116, 14, 'role/configusertag', 1, '', '', 0, '', ''),
-(170, '编辑模块', 107, 0, 'Module/edit', 1, '', '模块管理', 0, '', ''),
-(171, '网站信息', 74, 2, 'Config/website', 0, '', '系统设置', 0, '', ''),
-(172, '主题管理', 105, 6, 'Theme/tpls', 0, '', '本地', 0, '', ''),
-(173, '使用主题', 105, 8, 'Theme/setTheme', 1, '', '本地', 0, '', ''),
-(174, '查看主题', 105, 9, 'Theme/lookTheme', 1, '', '本地', 0, '', ''),
-(175, '主题打包下载', 105, 10, 'Theme/packageDownload', 1, '', '本地', 0, '', ''),
-(176, '卸载删除主题', 105, 11, 'Theme/delete', 1, '', '本地', 0, '', ''),
-(177, '上传安装主题', 105, 12, 'Theme/add', 1, '', '本地', 0, '', ''),
-(197, '运营', 0, 4, 'Operation/index', 0, '', '', 0, 'laptop', ''),
-(198, '群发消息用户列表', 197, 4, 'message/userList', 0, '', '群发消息', 0, '', ''),
-(199, '群发消息', 197, 5, 'message/sendMessage', 1, '', '群发消息', 0, '', ''),
-(201, '重置用户密码', 3, 0, 'User/initpass', 1, '', '', 0, '', ''),
-(209, '表情设置', 74, 4, 'Expression/index', 0, '', '表情设置', 0, '', ''),
-(210, '添加表情包', 74, 5, 'Expression/add', 1, '', '表情设置', 0, '', ''),
-(211, '表情包列表', 74, 6, 'Expression/package', 0, '', '表情设置', 0, '', ''),
-(212, '表情列表', 74, 7, 'Expression/expressionList', 1, '', '表情设置', 0, '', ''),
-(213, '删除表情包', 74, 8, 'Expression/delPackage', 1, '', '表情设置', 0, '', ''),
-(214, '编辑表情包', 74, 9, 'Expression/editPackage', 1, '', '表情设置', 0, '', ''),
-(215, '删除表情', 74, 10, 'Expression/delExpression', 1, '', '表情设置', 0, '', ''),
-(216, '上传表情包', 74, 11, 'Expression/upload', 1, '', '表情设置', 0, '', ''),
-(217, '用户头衔审核', 47, 2, 'Rank/setVerifyStatus', 1, '', '头衔管理', 0, '', ''),
-(225, '广告位', 197, 0, 'Adv/pos', 0, '', '广告配置', 0, '', ''),
-(226, '广告管理', 197, 0, 'Adv/adv', 0, '', '广告配置', 0, '', ''),
-(227, '新增广告', 226, 0, 'Adv/editAdv', 1, '', '', 0, '', ''),
-(228, '编辑广告位', 225, 0, 'Adv/editPos', 1, '', '', 0, '', ''),
-(229, '设置广告位状态', 225, 0, 'Adv/setPosStatus', 1, '', '', 0, '', ''),
-(230, '广告排期', 226, 0, 'Adv/schedule', 1, '', '', 0, '', ''),
-(231, '用户导航', 74, 0, 'Channel/user', 0, '', '导航管理', 0, '', 'Core'),
-(232, '积分日志', 113, 0, 'Action/scoreLog', 0, '', '积分管理', 0, '', ''),
-(1000, '公众号', 0, 0, 'Mpbase/index', 1, '', '', 0, '', ''),
-(1001, '编辑公众号', 1000, 0, 'Mpbase/editMp', 1, '', '基础设置', 0, '', ''),
-(1002, '公众号管理', 1000, 0, 'Mpbase/index', 0, '', '基础设置', 0, '', ''),
-(1003, '管理基本设置', 1000, 0, 'Mpbase/config', 1, '', '基础设置', 0, '', ''),
-(1004, '编辑自定义菜单', 1000, 0, 'Admin/Custommenu/add', 1, '', '基础设置', 0, '', ''),
-(1005, '自定义菜单管理', 1000, 2, 'Admin/Custommenu/index', 0, '', '基础设置', 0, '', ''),
-(1006, '自定义菜单操作', 1000, 0, 'Admin/Custommenu/operate', 1, '', '基础设置', 0, '', ''),
-(1008, '切换公众号', 1000, 0, 'Mpbase/change', 1, '', '基础设置', 0, '', ''),
-(1009, '删除公众号', 1000, 0, 'Mpbase/del', 1, '', '基础设置', 0, '', ''),
-(1011, '微会员', 0, 0, 'Ucuser/index', 1, '', '', 0, '', ''),
-(1012, '微会员信息', 1011, 0, 'Ucuser/index', 0, '', '微会员管理', 0, '', ''),
-(1013, '系统信息', 74, 10, 'System/index', 0, '', '系统设置', 0, '', ''),
-(1014, '自动回复管理', 1000, 4, 'Mpbase/replay_messages', 0, '', '基础设置', 0, '', ''),
-(1015, '微会员配置', 1011, 0, 'Ucuser/config', 0, '', '微会员管理', 0, '', ''),
-(1017, '编辑模板消息', 1000, 0, 'Tplmsg/edit', 1, '', '基础设置', 0, '', ''),
-(1018, '删除模板消息', 1000, 0, 'Tplmsg/del', 1, '', '基础设置', 0, '', ''),
-(1019, '管理模板消息字段', 1000, 0, 'Tplmsg/field', 1, '', '基础设置', 0, '', ''),
-(1020, '编辑模板消息字段', 1000, 0, 'Tplmsg/editField', 1, '', '基础设置', 0, '', ''),
-(1021, '应用市场', 105, 0, 'Appstore/index', 0, '', '云市场', 0, '', ''),
-(1022, '微会员统计', 1011, 0, 'Ucuser/stats', 0, '', '微会员管理', 0, '', ''),
-(1023, '微会员标签列表', 1011, 0, 'Ucuser/ucuser_tag', 0, '', '微会员标签管理', 0, '', ''),
-(1024, '模板消息', 1000, 10, 'Tplmsg/index', 0, '', '公众号', 0, '', ''),
-(10000, '网站主页', 0, 0, 'Home/config', 1, '', '', 0, 'home', 'Home'),
-(10001, '基本设置', 10000, 0, 'Home/config', 0, '', '设置', 0, '', 'Home'),
-(10051, '专辑管理', 10050, 0, 'Issue/issue', 0, '', '专辑', 0, '', 'Issue'),
-(10050, '专辑', 0, 22, 'Issue/issue', 1, '', '', 0, '', 'Issue'),
-(10052, '设置专辑状态', 10051, 0, 'Issue/setIssueContentStatus', 1, '', '', 0, '', 'Issue'),
-(10053, '专辑操作', 10051, 0, 'Issue/operate', 1, '', '专辑', 0, '', 'Issue'),
-(10054, '编辑专辑', 10051, 0, 'Issue/add', 1, '', '专辑', 0, '', 'Issue'),
-(10055, '合并专辑', 10051, 0, 'Issue/doMerge', 1, '', '', 0, '', 'Issue'),
-(10056, '专辑回收站', 10050, 4, 'Issue/issueTrash', 0, '', '专辑', 0, '', 'Issue'),
-(10057, '内容管理', 10050, 0, 'Issue/contents', 0, '', '内容管理', 0, '', 'Issue'),
-(10058, '内容回收站', 10050, 5, 'Issue/contentTrash', 0, '', '内容管理', 0, '', 'Issue'),
-(10059, '内容审核', 10050, 1, 'Issue/verify', 0, '', '内容管理', 0, '', 'Issue'),
-(10060, '专辑设置', 10050, 0, 'Issue/config', 0, '', '设置', 0, '', 'Issue'),
-(10061, '会员展示', 0, 22, 'People/config', 1, '', '', 0, '', 'People'),
-(10062, '基本设置', 10061, 0, 'People/config', 0, '', '配置', 0, '', 'People'),
-(10063, '商城基本设置', '0', '0', 'shop/product', '1', '', '', '0', '', 'Shop'),
-(10064, '商品评论', '10063', '0', 'shop/product_comment', '0', '', '商品管理', '0', '', 'Shop'),
-(10065, '派发优惠券', '10063', '0', 'admin/shop/user_coupon/action/add', '0', '', '优惠券', '0', '', 'Shop'),
-(10066, '已领取优惠券', '10063', '0', 'shop/user_coupon', '0', '', '优惠券', '0', '', 'Shop'),
-(10067, '优惠券', '10063', '0', 'shop/coupon', '0', '', '优惠券', '0', '', 'Shop'),
-(10068, '商城反馈', '10063', '0', 'shop/message', '0', '', '商城反馈', '0', '', 'Shop'),
-(10069, '运费模板', '10063', '0', 'shop/delivery', '0', '', '商城基本设置', '0', '', 'Shop'),
-(10070, '商城幻灯片', '10063', '0', 'shop/slides', '0', '', '商城基本设置', '0', '', 'Shop'),
-(10071, '订单管理', '10063', '0', 'shop/order', '0', '', '订单管理', '0', '', 'Shop'),
-(10072, '商品分类管理', '10063', '0', 'shop/product_cats', '0', '', '商品分类管理', '0', '', 'Shop'),
-(10073, '商品管理', '10063', '0', 'shop/product', '0', '', '商品管理', '0', '', 'Shop'),
-(10074, '商城基本设置', '10063', '0', 'shop/shop', '0', '', '商城基本设置', '0', '', 'Shop');
+(9, '禁用会员', 4, 0, 'admin/User/changeStatus?method=forbidUser', 0, '"用户->用户信息"中的禁用', '', 0, '', ''),
+(10, '启用会员', 4, 0, 'admin/User/changeStatus?method=resumeUser', 0, '"用户->用户信息"中的启用', '', 0, '', ''),
+(11, '删除会员', 4, 0, 'admin/User/changeStatus?method=deleteUser', 0, '"用户->用户信息"中的删除', '', 0, '', ''),
+(12, '权限组管理', 2, 5, 'admin/AuthManager/index', 0, '', '权限管理', 0, '', ''),
+(13, '删除', 12, 0, 'admin/AuthManager/changeStatus?method=deleteGroup', 0, '删除权限组', '', 0, '', ''),
+(14, '禁用', 12, 0, 'admin/AuthManager/changeStatus?method=forbidGroup', 0, '禁用权限组', '', 0, '', ''),
+(15, '恢复', 12, 0, 'admin/AuthManager/changeStatus?method=resumeGroup', 0, '恢复已禁用的权限组', '', 0, '', ''),
+(16, '新增', 12, 0, 'admin/AuthManager/createGroup', 0, '创建新的权限组', '', 0, '', ''),
+(17, '编辑', 12, 0, 'admin/AuthManager/editGroup', 0, '编辑权限组名称和描述', '', 0, '', ''),
+(18, '保存权限组', 12, 0, 'admin/AuthManager/writeGroup', 0, '新增和编辑权限组的"保存"按钮', '', 0, '', ''),
+(19, '授权', 12, 0, 'admin/AuthManager/group', 0, '"后台 \\ 用户 \\ 用户信息"列表页的"授权"操作按钮,用于设置用户所属权限组', '', 0, '', ''),
+(20, '访问授权', 12, 0, 'admin/AuthManager/access', 0, '"后台 \\ 用户 \\ 权限管理"列表页的"访问授权"操作按钮', '', 0, '', ''),
+(21, '成员授权', 12, 0, 'admin/AuthManager/user', 0, '"后台 \\ 用户 \\ 权限管理"列表页的"成员授权"操作按钮', '', 0, '', ''),
+(22, '解除授权', 12, 0, 'admin/AuthManager/removeFromGroup', 0, '"成员授权"列表页内的解除授权操作按钮', '', 0, '', ''),
+(23, '保存成员授权', 12, 0, 'admin/AuthManager/addToGroup', 0, '"用户信息"列表页"授权"时的"保存"按钮和"成员授权"里右上角的"添加"按钮)', '', 0, '', ''),
+(24, '分类授权', 12, 0, 'admin/AuthManager/category', 0, '"后台 \\ 用户 \\ 权限管理"列表页的"分类授权"操作按钮', '', 0, '', ''),
+(25, '保存分类授权', 12, 0, 'admin/AuthManager/addToCategory', 0, '"分类授权"页面的"保存"按钮', '', 0, '', ''),
+(26, '模型授权', 12, 0, 'admin/AuthManager/modelauth', 0, '"后台 \\ 用户 \\ 权限管理"列表页的"模型授权"操作按钮', '', 0, '', ''),
+(27, '保存模型授权', 12, 0, 'admin/AuthManager/addToModel', 0, '"分类授权"页面的"保存"按钮', '', 0, '', ''),
+(28, '新增权限节点', 12, 0, 'admin/AuthManager/addNode', 1, '', '', 1, '', ''),
+(29, '前台权限管理', 12, 0, 'admin/AuthManager/accessUser', 1, '', '权限管理', 0, '', ''),
+(30, '删除权限节点', 12, 0, 'admin/AuthManager/deleteNode', 1, '', '', 0, '', ''),
+(31, '行为日志', 113, 4, 'admin/Action/actionlog', 0, '', '行为管理', 0, '', ''),
+(32, '查看行为日志', 31, 0, 'admin/action/edit', 1, '', '', 0, '', ''),
+(33, '修改密码', 2, 3, 'admin/User/updatePassword', 1, '', '', 0, '', ''),
+(34, '修改昵称', 2, 4, 'admin/User/updateNickname', 1, '', '', 0, '', ''),
+(35, '查看用户', 197, 1, 'admin/Rank/userList', 0, '', '头衔管理', 0, '', ''),
+(36, '用户头衔列表', 35, 0, 'admin/Rank/userRankList', 1, '', '', 0, '', ''),
+(37, '关联新头衔', 35, 0, 'admin/Rank/userAddRank', 1, '', '', 0, '', ''),
+(38, '编辑头衔关联', 35, 0, 'admin/Rank/userChangeRank', 1, '', '', 0, '', ''),
+(39, '扩展资料', 2, 3, 'admin/User/profile', 0, '', '用户管理', 0, '', ''),
+(40, '添加、编辑分组', 39, 0, 'admin/User/editProfile', 0, '', '', 0, '', ''),
+(41, '分组排序', 39, 0, 'admin/User/sortProfile', 0, '', '', 0, '', ''),
+(42, '字段列表', 39, 0, 'admin/User/field', 0, '', '', 0, '', ''),
+(43, '添加、编辑字段', 39, 0, 'admin/User/editFieldSetting', 0, '', '', 0, '', ''),
+(44, '字段排序', 39, 0, 'admin/User/sortField', 0, '', '', 0, '', ''),
+(45, '用户扩展资料列表', 2, 7, 'admin/User/expandinfo_select', 0, '', '用户管理', 0, '', ''),
+(46, '扩展资料详情', 45, 0, 'admin/User/expandinfo_details', 0, '', '', 0, '', ''),
+(47, '待审核用户头衔', 197, 2, 'admin/Rank/rankVerify', 0, '', '头衔管理', 0, '', ''),
+(48, '被驳回的头衔申请', 197, 3, 'admin/Rank/rankVerifyFailure', 0, '', '头衔管理', 0, '', ''),
+(49, '转移权限组', 2, 7, 'admin/User/changeGroup', 1, '批量转移权限组', '', 0, '', ''),
+(50, '用户基础配置', 2, 1, 'admin/UserConfig/index', 0, '', '用户配置', 0, '', ''),
+(51, '积分类型列表', 113, 1, 'admin/User/scoreList', 0, '', '行为管理', 0, '', ''),
+(52, '新增/编辑类型', 113, 2, 'admin/User/editScoreType', 1, '', '行为管理', 0, '', ''),
+(53, '充值积分', 113, 5, 'admin/User/recharge', 1, '', '', 0, '用户管理', ''),
+(54, '头衔列表', 197, 6, 'admin/Rank/index', 0, '', '头衔管理', 0, '', ''),
+(55, '添加头衔', 54, 2, 'admin/Rank/editRank', 1, '', '头衔管理', 0, '', ''),
+(57, '插件管理', 105, 4, 'admin/Addons/index', 0, '', '本地', 0, '', ''),
+(58, '钩子管理', 57, 2, 'admin/Addons/hooks', 0, '', '本地', 0, '', ''),
+(59, '创建', 57, 0, 'admin/Addons/create', 0, '服务器上创建插件结构向导', '', 0, '', ''),
+(60, '检测创建', 57, 0, 'admin/Addons/checkForm', 0, '检测插件是否可以创建', '', 0, '', ''),
+(61, '预览', 57, 0, 'admin/Addons/preview', 0, '预览插件定义类文件', '', 0, '', ''),
+(62, '快速生成插件', 57, 0, 'admin/Addons/build', 0, '开始生成插件结构', '', 0, '', ''),
+(64, '设置', 57, 0, 'admin/Addons/config', 0, '设置插件配置', '', 0, '', ''),
+(65, '禁用', 57, 0, 'admin/Addons/disable', 0, '禁用插件', '', 0, '', ''),
+(66, '启用', 57, 0, 'admin/Addons/enable', 0, '启用插件', '', 0, '', ''),
+(67, '安装', 57, 0, 'admin/Addons/install', 0, '安装插件', '', 0, '', ''),
+(68, '卸载', 57, 0, 'admin/Addons/uninstall', 0, '卸载插件', '', 0, '', ''),
+(69, '更新配置', 57, 0, 'admin/Addons/saveconfig', 0, '更新插件配置处理', '', 0, '', ''),
+(70, '插件后台列表', 57, 0, 'admin/Addons/adminList', 0, '', '', 0, '', ''),
+(71, 'URL方式访问插件', 57, 0, 'admin/Addons/execute', 0, '控制是否有权限通过url访问插件控制器方法', '', 0, '', ''),
+(72, '新增钩子', 58, 0, 'admin/Addons/addHook', 0, '', '', 0, '', ''),
+(73, '编辑钩子', 58, 0, 'admin/Addons/edithook', 0, '', '', 0, '', ''),
+(74, '系统', 0, 7, 'admin/Config/group', 0, '', '', 0, 'windows', ''),
+(75, '网站设置', 74, 1, 'admin/Config/group', 0, '', '系统设置', 0, '', ''),
+(76, '配置管理', 74, 7, 'admin/Config/index', 0, '', '系统设置', 0, '', ''),
+(77, '编辑', 76, 0, 'admin/Config/edit', 0, '新增编辑和保存配置', '', 0, '', ''),
+(78, '删除', 76, 0, 'admin/Config/del', 0, '删除配置', '', 0, '', ''),
+(79, '新增', 76, 0, 'admin/Config/add', 0, '新增配置', '', 0, '', ''),
+(80, '保存', 76, 0, 'admin/Config/save', 0, '保存配置', '', 0, '', ''),
+(81, '排序', 76, 0, 'admin/Config/sort', 1, '', '', 0, '', ''),
+(82, '后台菜单管理', 2, 6, 'admin/Menu/index', 0, '', '权限管理', 0, '', ''),
+(83, '新增', 82, 0, 'admin/Menu/add', 0, '', '系统设置', 0, '', ''),
+(84, '编辑', 82, 0, 'admin/Menu/edit', 0, '', '', 0, '', ''),
+(85, '导入', 82, 0, 'admin/Menu/import', 0, '', '', 0, '', ''),
+(86, '排序', 82, 0, 'admin/Menu/sort', 1, '', '', 0, '', ''),
+(87, '顶部导航', 74, 3, 'admin/Channel/index', 0, '', '导航管理', 0, '', ''),
+(88, '新增', 87, 0, 'admin/Channel/add', 0, '', '', 0, '', ''),
+(89, '编辑', 87, 0, 'admin/Channel/edit', 0, '', '', 0, '', ''),
+(90, '删除', 87, 0, 'admin/Channel/del', 0, '', '', 0, '', ''),
+(91, '排序', 87, 0, 'admin/Channel/sort', 1, '', '', 0, '', ''),
+(92, '备份数据库', 113, 8, 'admin/Database/index?type=export', 0, '', '数据备份', 0, '', ''),
+(93, '备份', 92, 0, 'admin/Database/export', 0, '备份数据库', '', 0, '', ''),
+(94, '优化表', 92, 0, 'admin/Database/optimize', 0, '优化数据表', '', 0, '', ''),
+(95, '修复表', 92, 0, 'admin/Database/repair', 0, '修复数据表', '', 0, '', ''),
+(96, '还原数据库', 113, 9, 'admin/Database/index?type=import', 0, '', '数据备份', 0, '', ''),
+(97, '恢复', 96, 0, 'admin/Database/import', 0, '数据库恢复', '', 0, '', ''),
+(98, '删除', 96, 0, 'admin/Database/del', 0, '删除备份文件', '', 0, '', ''),
+(99, 'SEO规则管理', 74, 8, 'admin/SEO/index', 0, '', 'SEO规则', 0, '', ''),
+(100, '新增、编辑', 99, 0, 'admin/SEO/editRule', 0, '', '', 0, '', ''),
+(101, '排序', 99, 0, 'admin/SEO/sortRule', 1, '', '', 0, '', ''),
+(102, 'SEO规则回收站', 74, 9, 'admin/SEO/ruleTrash', 0, '', 'SEO规则', 0, '', ''),
+(103, '全部补丁', 74, 16, 'admin/Update/quick', 1, '', '升级补丁', 0, '', ''),
+(104, '新增补丁', 74, 15, 'admin/Update/addpack', 1, '', '升级补丁', 0, '', ''),
+(105, '扩展', 0, 11, 'admin/Module/lists', 0, '', '', 0, 'cloud', ''),
+(106, '模块安装', 105, 3, 'admin/module/install', 1, '', '本地', 0, '', ''),
+(107, '模块管理', 105, 5, 'admin/module/lists', 0, '', '本地', 0, '', ''),
+(108, '卸载模块', 105, 7, 'admin/module/uninstall', 1, '', '本地', 0, '', ''),
+(109, '授权', 0, 6, 'admin/Authorize/ssoSetting', 1, '', '', 0, 'lock', ''),
+(110, '单点登录配置', 109, 0, 'admin/Authorize/ssoSetting', 0, '', '单点登录', 0, '', ''),
+(111, '应用列表', 109, 0, 'admin/Authorize/ssolist', 0, '', '单点登录', 0, '', ''),
+(112, '新增/编辑应用', 109, 0, 'admin/authorize/editssoapp', 1, '', '单点登录', 0, '', ''),
+(113, '安全', 0, 5, 'admin/ActionLimit/limitList', 0, '', '', 0, 'shield', ''),
+(114, '行为限制列表', 113, 6, 'admin/ActionLimit/limitList', 0, '', '行为限制', 0, '', ''),
+(115, '新增/编辑行为限制', 113, 7, 'admin/ActionLimit/editLimit', 1, '', '行为限制', 0, '', ''),
+(116, '身份', 0, 3, 'admin/Role/index', 0, '', '', 0, 'group', ''),
+(117, '身份列表', 116, 1, 'admin/Role/index', 0, '', '身份管理', 0, '', ''),
+(118, '编辑身份', 116, 2, 'admin/Role/editRole', 1, '', '', 0, '', ''),
+(119, '启用、禁用、删除身份', 116, 3, 'admin/Role/setStatus', 1, '', '', 0, '', ''),
+(120, '身份排序', 116, 4, 'admin/Role/sort', 1, '', '', 0, '', ''),
+(121, '默认积分配置', 117, 0, 'admin/Role/configScore', 1, '', '', 0, '', ''),
+(122, '默认权限配置', 117, 0, 'admin/Role/configAuth', 1, '', '', 0, '', ''),
+(123, '默认头像配置', 117, 0, 'admin/Role/configAvatar', 1, '', '', 0, '', ''),
+(124, '默认头衔配置', 117, 0, 'admin/Role/configRank', 1, '', '', 0, '', ''),
+(125, '默认字段管理', 117, 0, 'admin/Role/configField', 1, '', '', 0, '', ''),
+(126, '身份分组', 116, 5, 'admin/Role/group', 0, '', '身份管理', 0, '', ''),
+(127, '编辑分组', 126, 0, 'admin/Role/editGroup', 1, '', '', 0, '', ''),
+(128, '删除分组', 126, 0, 'admin/Role/deleteGroup', 1, '', '', 0, '', ''),
+(129, '身份基本信息配置', 116, 6, 'admin/Role/config', 1, '', '身份管理', 0, '', ''),
+(130, '用户列表', 116, 7, 'admin/Role/userList', 0, '', '身份用户管理', 0, '', ''),
+(131, '设置用户状态', 130, 0, 'admin/Role/setUserStatus', 1, '', '', 0, '', ''),
+(132, '审核用户', 130, 0, 'admin/Role/setUserAudit', 1, '', '', 0, '', ''),
+(133, '迁移用户', 130, 0, 'admin/Role/changeRole', 1, '', '', 0, '', ''),
+(134, '上传默认头像', 123, 0, 'admin/Role/uploadPicture', 1, '', '', 0, '', ''),
+(135, '类型管理', 116, 8, 'admin/Invite/index', 0, '', '邀请注册管理', 0, '', ''),
+(136, '邀请码管理', 116, 9, 'admin/Invite/invite', 0, '', '邀请注册管理', 0, '', ''),
+(137, '基础配置', 116, 10, 'admin/Invite/config', 0, '', '邀请注册管理', 0, '', ''),
+(138, '兑换记录', 116, 11, 'admin/Invite/buyLog', 0, '', '邀请注册管理', 0, '', ''),
+(139, '邀请记录', 116, 12, 'admin/Invite/inviteLog', 0, '', '邀请注册管理', 0, '', ''),
+(140, '用户信息', 116, 13, 'admin/Invite/userInfo', 0, '', '邀请注册管理', 0, '', ''),
+(141, '编辑邀请注册类型', 135, 0, 'admin/Invite/edit', 1, '', '', 0, '', ''),
+(142, '删除邀请', 135, 0, 'admin/Invite/setStatus', 1, '', '', 0, '', ''),
+(143, '删除邀请码', 136, 0, 'admin/Invite/delete', 1, '', '', 0, '', ''),
+(144, '生成邀请码', 136, 0, 'admin/Invite/createCode', 1, '', '', 0, '', ''),
+(145, '删除无用邀请码', 136, 0, 'admin/Invite/deleteTrue', 1, '', '', 0, '', ''),
+(146, '导出cvs', 136, 0, 'admin/Invite/cvs', 1, '', '', 0, '', ''),
+(147, '用户信息编辑', 140, 0, 'admin/Invite/editUserInfo', 1, '', '', 0, '', ''),
+(148, '删除日志', 31, 0, 'admin/Action/remove', 1, '', '', 0, '', ''),
+(149, '清空日志', 31, 0, 'admin/Action/clear', 1, '', '', 0, '', ''),
+(150, '设置积分状态', 51, 0, 'admin/User/setTypeStatus', 1, '', '', 0, '', ''),
+(151, '删除积分类型', 51, 0, 'admin/User/delType', 1, '', '', 0, '', ''),
+(152, '充值积分-获取用户昵称', 53, 0, 'admin/User/getNickname', 1, '', '', 0, '', ''),
+(153, '删除菜单', 82, 0, 'admin/Menu/del', 1, '', '', 0, '', ''),
+(154, '设置开发者模式可见', 82, 0, 'admin/Menu/toogleDev', 1, '', '', 0, '', ''),
+(155, '设置显示隐藏', 82, 0, 'admin/Menu/toogleHide', 1, '', '', 0, '', ''),
+(156, '行为限制启用、禁用、删除', 114, 0, 'admin/ActionLimit/setLimitStatus', 1, '', '', 0, '', ''),
+(157, '启用、禁用、删除、回收站还原', 99, 0, 'admin/SEO/setRuleStatus', 1, '', '', 0, '', ''),
+(158, '回收站彻底删除', 102, 0, 'admin/SEO/doClear', 1, '', '', 0, '', ''),
+(159, '初始化无角色用户', 130, 0, 'admin/Role/initUnhaveUser', 1, '', '', 0, '', ''),
+(160, '删除钩子', 58, 0, 'admin/Addons/delHook', 0, '', '', 0, '', ''),
+(161, '使用补丁', 103, 0, 'admin/Update/usePack', 1, '', '', 0, '', ''),
+(162, '查看补丁', 103, 0, 'admin/Update/view', 1, '', '', 0, '', ''),
+(163, '删除补丁', 103, 0, 'admin/Update/delPack', 1, '', '', 0, '', ''),
+(164, '用户标签列表', 2, 4, 'admin/UserTag/userTag', 0, '', '用户管理', 0, '', ''),
+(165, '添加分类、标签', 164, 0, 'admin/UserTag/add', 1, '', '', 0, '', ''),
+(166, '设置分类、标签状态', 164, 0, 'admin/UserTag/setStatus', 1, '', '', 0, '', ''),
+(167, '分类、标签回收站', 164, 0, 'admin/UserTag/tagTrash', 1, '', '', 0, '', ''),
+(168, '测底删除回收站内容', 164, 0, 'admin/UserTag/userTagClear', 1, '', '', 0, '', ''),
+(169, '可拥有标签配置', 116, 14, 'admin/Role/configusertag', 1, '', '', 0, '', ''),
+(170, '编辑模块', 107, 0, 'admin/Module/edit', 1, '', '模块管理', 0, '', ''),
+(171, '网站信息', 74, 2, 'admin/Config/website', 0, '', '系统设置', 0, '', ''),
+(172, '主题管理', 105, 6, 'admin/Theme/tpls', 0, '', '本地', 0, '', ''),
+(173, '使用主题', 105, 8, 'admin/Theme/setTheme', 1, '', '本地', 0, '', ''),
+(174, '查看主题', 105, 9, 'admin/Theme/lookTheme', 1, '', '本地', 0, '', ''),
+(175, '主题打包下载', 105, 10, 'admin/Theme/packageDownload', 1, '', '本地', 0, '', ''),
+(176, '卸载删除主题', 105, 11, 'admin/Theme/delete', 1, '', '本地', 0, '', ''),
+(177, '上传安装主题', 105, 12, 'admin/Theme/add', 1, '', '本地', 0, '', ''),
+(178, '云平台', 105, 1, 'admin/Cloud/index', 0, '', '云市场', 0, '', ''),
+(197, '运营', 0, 4, 'admin/Operation/index', 0, '', '', 0, 'laptop', ''),
+(198, '群发消息用户列表', 197, 4, 'admin/Message/userList', 0, '', '群发消息', 0, '', ''),
+(199, '群发消息', 197, 5, 'admin/Message/sendMessage', 1, '', '群发消息', 0, '', ''),
+(200, '在线安装', 178, 0, 'admin/Cloud/install', 1, '', '', 0, '', ''),
+(201, '重置用户密码', 3, 0, 'admin/User/initpass', 1, '', '', 0, '', ''),
+(202, '自动升级', 105, 2, 'admin/Cloud/update', 0, '', '云市场', 0, '', ''),
+(203, '获取版本信息', 202, 0, 'admin/Cloud/version', 1, '', '', 0, '', ''),
+(204, '获取文件列表', 202, 0, 'admin/Cloud/getFileList', 1, '', '', 0, '', ''),
+(205, '比较本地文件', 202, 0, 'admin/Cloud/compare', 1, '', '', 0, '', ''),
+(206, '覆盖文件', 202, 0, 'admin/Cloud/cover', 1, '', '', 0, '', ''),
+(207, '更新数据库', 202, 0, 'admin/Cloud/updb', 1, '', '', 0, '', ''),
+(208, '更新完成', 202, 0, 'admin/Cloud/finish', 1, '', '', 0, '', ''),
+(209, '表情设置', 74, 4, 'admin/Expression/index', 0, '', '表情设置', 0, '', ''),
+(210, '添加表情包', 74, 5, 'admin/Expression/add', 1, '', '表情设置', 0, '', ''),
+(211, '表情包列表', 74, 6, 'admin/Expression/package', 0, '', '表情设置', 0, '', ''),
+(212, '表情列表', 74, 7, 'admin/Expression/expressionList', 1, '', '表情设置', 0, '', ''),
+(213, '删除表情包', 74, 8, 'admin/Expression/delPackage', 1, '', '表情设置', 0, '', ''),
+(214, '编辑表情包', 74, 9, 'admin/Expression/editPackage', 1, '', '表情设置', 0, '', ''),
+(215, '删除表情', 74, 10, 'admin/Expression/delExpression', 1, '', '表情设置', 0, '', ''),
+(216, '上传表情包', 74, 11, 'admin/Expression/upload', 1, '', '表情设置', 0, '', ''),
+(217, '用户头衔审核', 47, 2, 'admin/Rank/setVerifyStatus', 1, '', '头衔管理', 0, '', ''),
+(218, '获取扩展升级列表', 106, 0, 'admin/Cloud/getVersionList', 1, '', '', 0, '', ''),
+(219, '自动升级', 178, 0, 'admin/Cloud/updateGoods', 1, '', '', 0, '', ''),
+(220, '自动升级1-获取文件列表', 178, 0, 'admin/Cloud/Updating1', 1, '', '', 0, '', ''),
+(221, '自动升级2-比较文件', 178, 0, 'admin/Cloud/Updating2', 1, '', '', 0, '', ''),
+(222, '自动升级3-升级代码', 178, 0, 'admin/Cloud/updating3', 1, '', '', 0, '', ''),
+(223, '自动升级4-导入数据库', 178, 0, 'admin/Cloud/updating4', 1, '', '', 0, '', ''),
+(224, '自动升级5-重置版本号', 178, 0, 'admin/Cloud/updating5', 1, '', '', 0, '', ''),
+(225, '广告位', 197, 0, 'admin/Adv/pos', 0, '', '广告配置', 0, '', ''),
+(226, '广告管理', 197, 0, 'admin/Adv/adv', 0, '', '广告配置', 0, '', ''),
+(227, '新增广告', 226, 0, 'admin/Adv/editAdv', 1, '', '', 0, '', ''),
+(228, '编辑广告位', 225, 0, 'admin/Adv/editPos', 1, '', '', 0, '', ''),
+(229, '设置广告位状态', 225, 0, 'admin/Adv/setPosStatus', 1, '', '', 0, '', ''),
+(230, '广告排期', 226, 0, 'admin/Adv/schedule', 1, '', '', 0, '', ''),
+(231, '用户导航', 74, 0, 'admin/Channel/user', 0, '', '导航管理', 0, '', 'common'),
+(232, '积分日志', 113, 0, 'admin/Action/scoreLog', 0, '', '积分管理', 0, '', ''),
+(233, '仪表盘', 1, 0, 'admin/Index/index', 0, '', '系统首页', 0, '', ''),
+(234, '数据统计', 1, 1, 'admin/Index/stats', 0, '', '统计管理', 0, '', ''),
+(1000, '公众号', 0, 0, 'mpbase/Mpbase/index', 1, '', '', 0, '', ''),
+(1001, '编辑公众号', 1000, 0, 'mpbase/Mpbase/editMp', 1, '', '基础设置', 0, '', ''),
+(1002, '公众号管理', 1000, 0, 'mpbase/Mpbase/index', 0, '', '基础设置', 0, '', ''),
+(1003, '公众号基本设置', 1000, 0, 'mpbase/Mpbase/config', 1, '', '基础设置', 0, '', ''),
+(1004, '编辑自定义菜单', 1000, 0, 'admin/Custommenu/add', 1, '', '基础设置', 0, '', ''),
+(1005, '自定义菜单管理', 1000, 2, 'admin/Custommenu/index', 0, '', '基础设置', 0, '', ''),
+(1006, '自定义菜单操作', 1000, 0, 'admin/Custommenu/operate', 1, '', '基础设置', 0, '', ''),
+(1008, '切换公众号', 1000, 0, 'mpbase/Mpbase/change', 1, '', '基础设置', 0, '', ''),
+(1009, '删除公众号', 1000, 0, 'mpbase/Mpbase/del', 1, '', '基础设置', 0, '', ''),
+(1011, '微会员', 0, 0, 'ucuser/Ucuser/index', 1, '', '', 0, '', ''),
+(1012, '微会员信息', 1011, 0, 'ucuser/Ucuser/index', 0, '', '微会员管理', 0, '', ''),
+(1013, '系统信息', 74, 10, 'admin/System/index', 0, '', '系统设置', 0, '', ''),
+(1014, '自动回复管理', 1000, 4, 'mpbase/Mpbase/replay_messages', 0, '', '基础设置', 0, '', ''),
+(1015, '微会员配置', 1011, 0, 'ucuser/Ucuser/config', 0, '', '微会员管理', 0, '', ''),
+(1017, '编辑模板消息', 1000, 0, 'admin/Tplmsg/edit', 1, '', '基础设置', 0, '', ''),
+(1018, '删除模板消息', 1000, 0, 'admin/Tplmsg/del', 1, '', '基础设置', 0, '', ''),
+(1019, '管理模板消息字段', 1000, 0, 'admin/Tplmsg/field', 1, '', '基础设置', 0, '', ''),
+(1020, '编辑模板消息字段', 1000, 0, 'admin/Tplmsg/editField', 1, '', '基础设置', 0, '', ''),
+(1021, '应用市场', 105, 0, 'admin/Appstore/index', 0, '', '云市场', 0, '', ''),
+(1022, '微会员统计', 1011, 0, 'ucuser/Ucuser/stats', 0, '', '微会员管理', 0, '', ''),
+(1023, '微会员标签列表', 1011, 0, 'ucuser/Ucuser/ucuser_tag', 0, '', '微会员标签管理', 0, '', ''),
+(1024, '模板消息', 1000, 10, 'admin/Tplmsg/index', 0, '', '公众号', 0, '', ''),
+(10000, '网站主页', 0, 0, 'home/Home/config', 1, '', '', 0, 'home', 'home'),
+(10001, '基本设置', 10000, 0, 'home/Home/config', 0, '', '设置', 0, '', 'home'),
+(10051, '专辑管理', 10050, 0, 'admin/Issue/issue', 0, '', '专辑', 0, '', 'Issue'),
+(10050, '专辑', 0, 22, 'admin/Issue/issue', 1, '', '', 0, '', 'Issue'),
+(10052, '设置专辑状态', 10051, 0, 'admin/Issue/setIssueContentStatus', 1, '', '', 0, '', 'Issue'),
+(10053, '专辑操作', 10051, 0, 'admin/Issue/operate', 1, '', '专辑', 0, '', 'Issue'),
+(10054, '编辑专辑', 10051, 0, 'admin/Issue/add', 1, '', '专辑', 0, '', 'Issue'),
+(10055, '合并专辑', 10051, 0, 'admin/Issue/doMerge', 1, '', '', 0, '', 'Issue'),
+(10056, '专辑回收站', 10050, 4, 'admin/Issue/issueTrash', 0, '', '专辑', 0, '', 'Issue'),
+(10057, '内容管理', 10050, 0, 'admin/Issue/contents', 0, '', '内容管理', 0, '', 'Issue'),
+(10058, '内容回收站', 10050, 5, 'admin/Issue/contentTrash', 0, '', '内容管理', 0, '', 'Issue'),
+(10059, '内容审核', 10050, 1, 'admin/Issue/verify', 0, '', '内容管理', 0, '', 'Issue'),
+(10060, '专辑设置', 10050, 0, 'admin/Issue/config', 0, '', '设置', 0, '', 'Issue'),
+(10061, '会员展示', 0, 22, 'admin/People/config', 1, '', '', 0, '', 'People'),
+(10062, '基本设置', 10061, 0, 'admin/People/config', 0, '', '配置', 0, '', 'People'),
+(10063, '商品基本设置', '0', '0', 'shop/Shop/product', '1', '', '', '0', '', 'shop'),
+(10064, '商品评论', '10063', '0', 'shop/Shop/product_comment', '0', '', '商品管理', '0', '', 'shop'),
+(10065, '派发优惠券', '10063', '0', 'shop/Shop/user_coupon/action/add', '0', '', '优惠券', '0', '', 'shop'),
+(10066, '已领取优惠券', '10063', '0', 'shop/Shop/user_coupon', '0', '', '优惠券', '0', '', 'shop'),
+(10067, '优惠券', '10063', '0', 'shop/Shop/coupon', '0', '', '优惠券', '0', '', 'shop'),
+(10068, '商城反馈', '10063', '0', 'shop/Shop/message', '0', '', '商城反馈', '0', '', 'shop'),
+(10069, '运费模板', '10063', '0', 'shop/Shop/delivery', '0', '', '商城基本设置', '0', '', 'shop'),
+(10070, '商城幻灯片', '10063', '0', 'shop/Shop/slides', '0', '', '商城基本设置', '0', '', 'shop'),
+(10071, '订单管理', '10063', '0', 'shop/Shop/order', '0', '', '订单管理', '0', '', 'shop'),
+(10072, '商品分类管理', '10063', '0', 'shop/Shop/product_cats', '0', '', '商品分类管理', '0', '', 'shop'),
+(10073, '商品管理', '10063', '0', 'shop/Shop/product', '0', '', '商品管理', '0', '', 'shop'),
+(10074, '商城基本设置', '10063', '0', 'shop/Shop/shop', '0', '', '商城基本设置', '0', '', 'shop');
 
 
 -- --------------------------------------------------------
@@ -5158,6 +5166,8 @@ CREATE TABLE IF NOT EXISTS `uctoo_message` (
   `is_read` tinyint(4) NOT NULL,
   `last_toast` int(11) NOT NULL,
   `status` tinyint(4) NOT NULL,
+  `type` varchar(25) NOT NULL COMMENT '消息类型',
+  `tpl` varchar(100) NOT NULL COMMENT '消息模板',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='消息表' AUTO_INCREMENT=1 ;
 
@@ -5175,11 +5185,20 @@ CREATE TABLE IF NOT EXISTS `uctoo_message_content` (
   `content` text NOT NULL,
   `url` varchar(100) NOT NULL,
   `args` text NOT NULL,
-  `type` tinyint(11) NOT NULL,
+  `type` varchar(25) NOT NULL,
   `create_time` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `uctoo_message_type`;
+CREATE TABLE IF NOT EXISTS `uctoo_message_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL COMMENT '用户id',
+  `type` varchar(25) NOT NULL COMMENT '消息类型',
+  `status` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户消息类型表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -5204,6 +5223,8 @@ CREATE TABLE IF NOT EXISTS `uctoo_module` (
   `icon` varchar(20) NOT NULL,
   `can_uninstall` tinyint(4) NOT NULL,
   `admin_entry` varchar(50) NOT NULL,
+  `menu_hide` TINYINT NOT NULL DEFAULT  '0' COMMENT  '后台入口隐藏',
+  `auth_role` VARCHAR( 200 ) NOT NULL COMMENT  '允许访问角色，为空表示非登录也能访问',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `name_2` (`name`)
@@ -5213,16 +5234,16 @@ CREATE TABLE IF NOT EXISTS `uctoo_module` (
 -- 转存表中的数据 `uctoo_module`
 --
 
-INSERT INTO `uctoo_module` (`id`, `name`, `alias`, `version`, `is_com`, `show_nav`, `summary`, `developer`, `website`, `entry`, `is_setup`, `sort`, `icon`, `can_uninstall`, `admin_entry`) VALUES
-(1, 'Home', '网站主页', '2.0.0', 0, 1, '首页模块，主要用于展示网站内容', '嘉兴想天信息科技有限公司', 'http://www.ourstu.com', 'Home/index/index', 1, 0, 'home', 1, 'Admin/Home/config'),
-(2, 'Ucenter', '用户中心', '2.0.0', 0, 1, '用户中心模块，系统核心模块', '嘉兴想天信息科技有限公司', 'http://www.ourstu.com', 'Ucenter/index/index', 1, 0, 'user', 0, 'Admin/User/index'),
-(3, 'People', '找人', '2.0.0', 0, 1, '会员展示模块，可以用于会员的查找', '嘉兴想天信息科技有限公司', 'http://www.ourstu.com', 'People/index/index', 1, 0, 'group', 1, 'People/config'),
-(4, 'Core', '系统公共模块', '2.1.0', 0, 0, '系统核心模块，必不可少，负责核心的处理。', '嘉兴想天信息科技有限公司', 'http://www.ourstu.com', '', 1, 0, 'globe', 0, ''),
-(5, 'Issue', '专辑', '2.3.0', 0, 1, '专辑模块，适用于精品内容展示', '嘉兴想天信息科技有限公司', 'http://www.ourstu.com', 'Issue/index/index', 1, 0, 'th', 1, 'Admin/Issue/contents'),
-(6, 'Appstore', '应用商城', '1.0.0', 1, 0, '应用商城模块，用户可以在应用市场购买UCToo产品和服务', 'UCT', 'http://www.uctoo.com', 'Appstore/index/index', 1, 0, 'cloud', 0, 'Admin/Appstore/index'),
-(7, 'Mpbase', '公众号', '1.0.0', 0, 1, '基础设置模块，用于设置公众平台基础信息', 'UCToo', 'http://www.uctoo.com', 'Mpbase/index/index', 1, 0, 'cog', 0, 'Admin/Mpbase/index'),
-(8, 'Ucuser', '微会员', '1.0.0', 0, 1, '微信用户中心模块，系统核心模块', 'UCToo', 'http://www.uctoo.com', 'Ucuser/index/index', 1, 0, 'comments', 0, 'Admin/Ucuser/index'),
-(9, 'Shop', '商城', '1.0.1', 0, 1, '商城模块', 'UCToo', '', 'Shop/index/index', 1, 0, 'shopping-cart', 1, 'Admin/Shop/index');
+INSERT INTO `uctoo_module` (`id`, `name`, `alias`, `version`, `is_com`, `show_nav`, `summary`, `developer`, `website`, `entry`, `is_setup`, `sort`, `icon`, `can_uninstall`, `admin_entry`,`menu_hide`,`auth_role`) VALUES
+(1, 'home', '网站主页', '1.0.0', 0, 1, '首页模块，主要用于展示网站内容', 'UCT', 'http://www.uctoo.com', 'home/index/index', 1, 0, 'home', 1, 'home/Home/config',0,''),
+(2, 'ucenter', '用户中心', '1.0.0', 0, 1, '用户中心模块，系统核心模块', 'UCT', 'http://www.uctoo.com', 'ucenter/index/index', 1, 0, 'user', 0, 'admin/User/index',0,''),
+(3, 'people', '找人', '1.0.0', 0, 0, '会员展示模块，可以用于会员的查找', 'UCT', 'http://www.uctoo.com', 'people/index/index', 1, 0, 'group', 1, 'people/People/config',0,''),
+(4, 'common', '系统公共模块', '1.0.0', 0, 0, '系统核心模块，必不可少，负责核心的处理。', 'UCT', 'http://www.uctoo.com', '', 1, 0, 'globe', 0, '',0,''),
+(5, 'issue', '专辑', '1.0.0', 0, 0, '专辑模块，适用于精品内容展示', 'UCT', 'http://www.uctoo.com', 'issue/index/index', 1, 0, 'th', 1, 'issue/Issue/contents',0,''),
+(6, 'appstore', '应用商城', '1.0.0', 1, 0, '应用商城模块，用户可以在应用市场购买UCToo产品和服务', 'UCT', 'http://www.uctoo.com', 'appstore/index/index', 1, 0, 'cloud', 0, 'admin/Appstore/index',0,''),
+(7, 'mpbase', '公众号', '1.0.0', 0, 1, '基础设置模块，用于设置公众平台基础信息', 'UCToo', 'http://www.uctoo.com', 'mpbase/index/index', 1, 0, 'cog', 0, 'mpbase/Mpbase/index',0,''),
+(8, 'ucuser', '微会员', '1.0.0', 0, 1, '微信用户中心模块，系统核心模块', 'UCToo', 'http://www.uctoo.com', 'ucuser/index/index', 1, 0, 'comments', 0, 'ucuser/Ucuser/index',0,''),
+(9, 'shop', '商城', '1.0.2', 0, 1, '商城模块', 'UCToo', '', 'shop/Index/index', 1, 0, 'shopping-cart', 1, 'shop/Shop/index',0,'');
 
 --
 -- 通用订单表的结构 `uctoo_order`
@@ -5282,17 +5303,15 @@ CREATE TABLE IF NOT EXISTS `uctoo_picture` (
   `sha1` char(40) NOT NULL DEFAULT '' COMMENT '文件 sha1编码',
   `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `width` int(11) NOT NULL DEFAULT '0',
+  `height` int(11) NOT NULL DEFAULT '0',
+
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- 转存表中的数据 `uctoo_picture`
 --
-
-INSERT INTO `uctoo_picture` (`id`, `type`, `path`, `url`, `md5`, `sha1`, `status`, `create_time`) VALUES
-(1, 'local', '/Uploads/Picture/default/5693110b42b23.png', '', '78339089a068beeac30171fd0571406e', '26774b61df9fa7412d4dd5f32a5f020a6c2693f0', 1, 1452478731),
-(2, 'local', '/Uploads/Picture/default/5693156ceb370.png', '', 'a447783f41a83460179639467b6df0e6', '627b995f0a7643ba66aabc7a42ce7df929b5e0d6', 1, 1452479852),
-(3, 'local', '/Uploads/Picture/default/569315aa902f3.png', '', 'c2e044b18aef6d00dcd6475c2ba78764', '3dfa44d10458d300699a25dc6ef476837e475255', 1, 1452479914);
 
 -- ----------------------------
 -- Table structure for uctoo_picture_messages
@@ -5412,7 +5431,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_role` (
   `name` varchar(25) NOT NULL COMMENT '英文标识',
   `title` varchar(25) NOT NULL COMMENT '中文标题',
   `description` varchar(500) NOT NULL COMMENT '描述',
-  `user_groups` varchar(200) NOT NULL COMMENT '默认用户组ids',
+  `user_groups` varchar(200) NOT NULL COMMENT '默认权限组ids',
   `invite` tinyint(4) NOT NULL COMMENT '预留字段(类型：是否需要邀请注册等)',
   `audit` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否需要审核',
   `sort` int(10) NOT NULL DEFAULT '0',
@@ -5449,6 +5468,12 @@ CREATE TABLE IF NOT EXISTS `uctoo_role_config` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='角色配置表' AUTO_INCREMENT=1 ;
 
+INSERT INTO `uctoo_role_config` (`id`, `role_id`, `name`, `category`, `value`, `data`, `update_time`) VALUES
+(1, 1, 'user_tag', '', '2,3', '', 1476755028),
+(2, 1, 'expend_field', 'expend_field', '1,2,3,4,5,6,7', '', 1476755034),
+(3, 1, 'register_expend_field', 'expend_field', '1,2,3,4,5,6,7', '', 1476755110);
+
+
 -- --------------------------------------------------------
 
 --
@@ -5462,6 +5487,24 @@ CREATE TABLE IF NOT EXISTS `uctoo_role_group` (
   `update_time` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='角色分组' AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `uctoo_schedule`;
+CREATE TABLE IF NOT EXISTS `uctoo_schedule` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `method` varchar(100) NOT NULL,
+  `args` varchar(500) NOT NULL,
+  `type` tinyint(4) NOT NULL,
+  `type_value` varchar(200) NOT NULL,
+  `start_time` int(11) NOT NULL,
+  `end_time` int(11) NOT NULL,
+  `intro` varchar(500) NOT NULL,
+  `lever` int(11) NOT NULL COMMENT '优先级',
+  `status` tinyint(4) NOT NULL,
+  `create_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+INSERT INTO `uctoo_schedule` (`id`, `method`, `args`, `type`, `type_value`, `start_time`, `end_time`, `intro`, `lever`, `status`, `create_time`) VALUES
+(1, 'Admin/Count->dayCount', '', 3, 'Daily=01:00', 1469167215, 2147483647, '执行了数据统计', 0, 0, 1469167281);
 
 -- --------------------------------------------------------
 
@@ -5568,6 +5611,15 @@ INSERT INTO `uctoo_seo_rule` (`id`, `title`, `app`, `controller`, `action`, `sta
 (1046, '我的回答', 'Question', 'Index', 'myquestion', 1, '', '', '', 0, '-'),
 (1047, '全部问题', 'Question', 'Index', 'questions', 1, '', '', '', 0, '-'),
 (1048, '详情', 'Question', 'Index', 'detail', 1, '', '', '', 0, 'question：问题变量集\n   question.title 问题标题\n   question.description 问题描述\n   question.answer_num 回答数\nbest_answer：最佳回答\n   best_answer.content 最佳答案内容');
+
+
+DROP TABLE IF EXISTS `uctoo_session`;
+CREATE TABLE IF NOT EXISTS `uctoo_session` (
+  `session_id` varchar(225) NOT NULL,
+  `session_expire` int(11) NOT NULL,
+  `session_data` text NOT NULL,
+  UNIQUE KEY `session_id` (`session_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 -- ----------------------------
@@ -5900,7 +5952,9 @@ CREATE TABLE IF NOT EXISTS `uctoo_super_links` (
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='友情连接表' AUTO_INCREMENT=5 ;
-
+INSERT INTO `uctoo_super_links` (`id`, `type`, `title`, `cover_id`, `link`, `level`, `status`, `create_time`) VALUES
+(1, 2, 'UCT公司', 0, 'http://www.uctoo.com', 0, 1, 1471424712),
+(2, 2, 'UCToo产品', 0, 'http://www.uctoo.cn', 0, 1, 1471424736);
 -- --------------------------------------------------------
 
 --
@@ -6133,6 +6187,8 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucenter_score_type` (
   `title` varchar(50) NOT NULL,
   `status` tinyint(4) NOT NULL,
   `unit` varchar(20) NOT NULL,
+  `type_value` INT( 11 ) NOT NULL,
+  `type_key` INT( 11 ) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
@@ -6166,8 +6222,8 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucenter_setting` (
 --
 DROP TABLE  IF EXISTS `uctoo_ucuser`;
 CREATE TABLE IF NOT EXISTS `uctoo_ucuser` (
-  `mid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '粉丝ID',
-  `uid` int(10) unsigned NOT NULL COMMENT '关联的Member表uid',
+  `mid` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '粉丝ID',
+  `uid` int(11) unsigned NOT NULL COMMENT '关联的Member表uid',
   `mp_id` varchar(50) NOT NULL COMMENT '公众号ID',
   `subscribe` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否订阅了公众号',
   `openid` varchar(50) NOT NULL COMMENT 'OpenId用户的标识，对当前公众号唯一',
@@ -6205,7 +6261,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucuser` (
   PRIMARY KEY (`mid`),
   KEY `status` (`status`),
   unique KEY `openid` (`openid`)
-) ENGINE = InnoDB  DEFAULT CHARSET=utf8 COMMENT='微会员表' AUTO_INCREMENT=1;
+) ENGINE = MyISAM  DEFAULT CHARSET=utf8 COMMENT='微会员表' AUTO_INCREMENT=1;
 
 DROP TABLE IF EXISTS `uctoo_ucuser_tag`;
 CREATE TABLE IF NOT EXISTS `uctoo_ucuser_tag` (
@@ -6215,7 +6271,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_ucuser_tag` (
   `count` int(10) NOT NULL COMMENT '数量',
   KEY `id` (`id`),
   KEY `mp_id` (`mp_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -6275,7 +6331,7 @@ CREATE TABLE IF NOT EXISTS `uctoo_user_config` (
   `name` varchar(30) NOT NULL,
   `role_id` int(11) NOT NULL DEFAULT '0',
   `model` varchar(30) NOT NULL,
-  `value` varchar(100) NOT NULL,
+  `value` TEXT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户配置信息表' AUTO_INCREMENT=1 ;
 
@@ -6375,6 +6431,24 @@ CREATE TABLE IF NOT EXISTS `uctoo_user_tag_link` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户标签关联表' AUTO_INCREMENT=1 ;
 
+DROP TABLE IF EXISTS `uctoo_tile`;
+CREATE TABLE IF NOT EXISTS `uctoo_tile` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `aid` int(11) NOT NULL COMMENT '父页面id',
+  `icon` varchar(20) NOT NULL COMMENT '图标',
+  `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` int(11) NOT NULL,
+  `title` varchar(50) NOT NULL COMMENT '标题',
+  `title_vo` varchar(50) NOT NULL COMMENT '父页面标题',
+  `url` varchar(255) NOT NULL COMMENT '路径',
+  `url_vo` varchar(255) NOT NULL COMMENT '父页面路径',
+  `tile_bg` varchar(10) NOT NULL COMMENT '块颜色(背景)',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='常用操作' AUTO_INCREMENT=1 ;
+
+INSERT INTO `uctoo_tile` (`id`, `aid`, `icon`, `sort`, `status`, `title`, `title_vo`, `url`, `url_vo`, `tile_bg`) VALUES
+(1, 3, 'direction', 1, 1, '用户管理', '用户', 'admin/User/index', 'admin/User/index', '#1ba1e2');
+
 -- --------------------------------------------------------
 
 --
@@ -6434,12 +6508,98 @@ CREATE TABLE IF NOT EXISTS `uctoo_version` (
 INSERT INTO `uctoo_version` (`title`, `create_time`, `update_time`, `log`, `url`, `number`, `name`, `is_current`) VALUES
 ('UCToo V0.6.0', 1452484820, 1452484820, '发布UCToo V0.6', '', 20160315, '0.6.0', 0);
 
+DROP TABLE IF EXISTS `uctoo_weibo`;
+CREATE TABLE IF NOT EXISTS `uctoo_weibo` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `content` text NOT NULL,
+  `create_time` int(11) NOT NULL,
+  `comment_count` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `is_top` tinyint(4) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `data` text NOT NULL,
+  `repost_count` int(11) NOT NULL,
+  `from` varchar(40) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `uctoo_weibo_comment`;
+CREATE TABLE IF NOT EXISTS `uctoo_weibo_comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `weibo_id` int(11) NOT NULL,
+  `content` text NOT NULL,
+  `create_time` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `to_comment_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `uctoo_weibo_top`;
+CREATE TABLE IF NOT EXISTS `uctoo_weibo_top` (
+  `weibo_id` int(11) NOT NULL DEFAULT '0',
+  `create_time` int(11) NOT NULL,
+  PRIMARY KEY (`weibo_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='置顶微博表';
+
+DROP TABLE IF EXISTS `uctoo_weibo_topic`;
+CREATE TABLE IF NOT EXISTS `uctoo_weibo_topic` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL COMMENT '话题名',
+  `logo` varchar(255) NOT NULL DEFAULT '/topicavatar.jpg' COMMENT '话题logo',
+  `intro` varchar(255) NOT NULL COMMENT '导语',
+  `qrcode` varchar(255) NOT NULL COMMENT '二维码',
+  `uadmin` int(11) NOT NULL DEFAULT '0' COMMENT '话题管理   默认无',
+  `read_count` int(11) NOT NULL DEFAULT '0' COMMENT '阅读',
+  `is_top` tinyint(4) NOT NULL,
+  `weibo_num` int(11) NOT NULL DEFAULT '0' COMMENT '微博数',
+  `status` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `uctoo_weibo_topic_follow`;
+CREATE TABLE IF NOT EXISTS `uctoo_weibo_topic_follow` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `topic_id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `status` tinyint(4) NOT NULL,
+  `create_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `uctoo_weibo_topic_link`;
+CREATE TABLE IF NOT EXISTS `uctoo_weibo_topic_link` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `weibo_id` int(11) NOT NULL,
+  `topic_id` int(11) NOT NULL,
+  `status` tinyint(4) NOT NULL,
+  `create_time` int(11) NOT NULL,
+  `is_top` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='话题、微博关联表' AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `uctoo_weibo_cache`;
+CREATE TABLE IF NOT EXISTS `uctoo_weibo_cache` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `weibo_id` int(11) NOT NULL,
+  `groups` varchar(100) NOT NULL,
+  `cache_html` text NOT NULL,
+  `create_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='微博html缓存表' AUTO_INCREMENT=1 ;
+
 -- ----------------------------
 -- Table structure for uctoo_weixin_log
 -- ----------------------------
 DROP TABLE IF EXISTS `uctoo_weixin_log`;
 CREATE TABLE `uctoo_weixin_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mp_id` varchar(50) NOT NULL COMMENT '公众号ID',
+  `mid` int(11) unsigned COMMENT '粉丝ID',
+  `ToUserName` varchar(32) COMMENT '消息接收者',
+  `FromUserName` varchar(32) COMMENT '消息发送者',
+  `type` varchar(8) COMMENT '消息类型',
   `cTime` int(11) DEFAULT NULL,
   `cTime_format` varchar(30) DEFAULT NULL,
   `data` text,
@@ -6448,19 +6608,12 @@ CREATE TABLE `uctoo_weixin_log` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
-
-
-
-
-
 DROP TABLE IF EXISTS `uctoo_text_messages`;
 CREATE TABLE `uctoo_text_messages`(
   `id` INT (10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `detile` VARCHAR (255) COMMENT '内容',
-
-
   PRIMARY KEY (`id`)
-)ENGINE =   InnoDB CHARSET=utf8;
+)ENGINE = MyISAM CHARSET=utf8;
 
 DROP TABLE IF EXISTS `uctoo_picture_messages`;
 CREATE  TABLE `uctoo_picture_messages`(
@@ -6482,6 +6635,6 @@ CREATE  TABLE `uctoo_picture_messages`(
   `url4` TEXT COMMEnt'URL',
   `pic` VARCHAR (255) COMMENT '图片',
   PRIMARY KEY (`id`)
-)ENGINE = InnoDB CHARSET=utf8;
+)ENGINE = MyISAM CHARSET=utf8;
 
 

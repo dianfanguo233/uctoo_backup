@@ -1,5 +1,5 @@
 <?php
-return array(
+return [
 
     /*Builder*/
 
@@ -36,7 +36,7 @@ return array(
     '_Q_AND_A_' => '问答',
     '_DOCUMENT_' => '文档',
     '_CACHE_CLEAR_' => '清空缓存',
-    '_CHOOSE_MP_' => '请选择公众号',
+    '_CHOOSE_MP_' => '选择公众号',
     '_CACHE_CLEAR_SUCCESS_' => '清理缓存成功',
     '_FORESTAGE_OPEN_' => '打开前台',
     '_PASSWORD_CHANGE_' => '修改密码',
@@ -73,10 +73,7 @@ return array(
     '_THINKPHP_VERSION_' => 'ThinkPHP版本',
     '_RUNTIME_ENVIR_' => '运行环境',
     '_MYSQL_VERSION_' => 'MYSQL版本',
-    '_OC_VERSION_' => 'OpenCenter主程序版本：',
-    '_OC_QQ_GROUP_' => 'OpenCenter开发者QQ群：',
-    '_UCTOO_VERSION_' => 'UCToo主程序版本：',
-    '_UCTOO_QQ_GROUP_' => 'UCToo开发者QQ群：',
+    '_OS_VERSION_' => 'UCToo主程序版本：',
     '_LIMIT_UPLOAD_' => '上传限制',
     '_MODIFY_HOW_TO_' => '如何修改',
     '_USER_INCREASE_RECENT_' => '最近{$count_day}天用户增长数',
@@ -96,7 +93,13 @@ return array(
     '_USER_GROUP_SELECT_' => '选择用户分组',
     '_PW_RESET_' => '重置密码',
     '_PW_RESET_TIP_' => '重置密码后新密码为“123456”',
-    '_PLACEHOLDER_NICKNAME_ID_' => '请输入用户昵称或者ID',
+    '_SELECT_WAY_' => '选择方式',
+    '_PLACEHOLDER_NONE_' => '请先选择搜索用户的方式',
+    '_PLACEHOLDER_UID_' => '请输入用户UID',
+    '_PLACEHOLDER_NICKNAME_' => '请输入用户昵称',
+    '_PLACEHOLDER_EMAIL_' => '请输入用户邮箱',
+    '_PLACEHOLDER_MOBILE_' => '请输入用户手机号',
+    '_PLACEHOLDER_PROFILE_NAME_' => '请输入用户名',
     '_PW_RESET_CONFIRM_' => '密码重置为“123456”',
     '_USER_LIST_' => '用户列表',
     '_UID_' => 'UID',
@@ -119,7 +122,7 @@ return array(
     '_SEARCH_' => '搜索',
     '_BG_ADJUST_' => '后台调整',
     '_USER_EXPAND_INFO_DETAIL_' => '用户扩展资料详情',
-    '_USER_NAME_' => '用户名称',
+    '_USER_NAME_' => '用户名',
     '_ROLE_GROUP_NONE_' => '无分组身份',
     '_MULTI_OPTIONS_' => '可以多选',
     '_ROLE_GROUP_' => '分组[{$title}]身份',
@@ -137,7 +140,7 @@ return array(
     '_MENU_BG_MANAGER_' => '后台菜单管理',
     '_MENU_NEW_' => '新增后台菜单（后台权限节点）',
     '_AUTH_FG_NEW_' => '新增前台权限节点',
-    '_USER_GROUP_' => '用户组',
+    '_USER_GROUP_' => '权限组',
     '_DESC_' => '描述',
     '_AUTH_' => '授权',
     '_AUTH_BG_MANAGER_' => '管理权限',
@@ -185,7 +188,7 @@ return array(
     '_SITE_NAME_' => '网站名',
     '_SITE_NAME_VICE_' => '用于邮件,短信,站内信显示',
     '_LICENSE_NO_' => '网站备案号',
-    '_LICENSE_NO_VICE_' => '设置在网站底部显示的备案号，如“粤ICP备XXX号-2',
+    '_LICENSE_NO_VICE_' => '设置在网站底部显示的备案号，如“沪ICP备12007941号-2',
     '_SITE_LOGO_' => '网站Logo',
     '_SITE_LOGO_VICE_' => '网站的Logo设置，一般会替换掉导航栏内的图标，建议尺寸156*50',
     '_QR_WEIXIN_' => '微信二维码',
@@ -291,8 +294,8 @@ return array(
 //    authmanager
 
     '_PRIVILEGE_MANAGEMENT_' => '权限管理',
-    '_NEW_USER_GROUP_' => '新增用户组',
-    '_EDIT_USER_GROUP_' => '编辑用户组',
+    '_NEW_USER_GROUP_' => '新增权限组',
+    '_EDIT_USER_GROUP_' => '编辑权限组',
     '_PLEASE_CHOOSE_TO_OPERATE_THE_DATA_' => '请选择要操作的数据!',
     '_ILLEGAL_' => '参数非法',
     '_MEMBER_AUTHORITY_' => '成员授权',
@@ -300,7 +303,7 @@ return array(
     '_THE_USER_IS_A_SUPER_ADMINISTRATOR_' => '该用户为超级管理员',
     '_ADMIN_USER_DOES_NOT_EXIST_' => '管理员用户不存在',
     '_NOT_ALLOWED_TO_RELEASE_ITS_OWN_AUTHORITY_' => '不允许解除自身授权',
-    '_USER_GROUP_DOES_NOT_EXIST_' => '用户组不存在',
+    '_USER_GROUP_DOES_NOT_EXIST_' => '权限组不存在',
     '_SUCCESS_OPERATE_' => '操作成功',
     '_FAIL_OPERATE_' => '操作失败',
     '_SUCCESS_EDIT_' => '编辑成功',
@@ -507,7 +510,7 @@ return array(
     '_PERIOD_CAN_BUY_A_FEW_' => '周期内可购买个数',
     '_PERIOD_IS_LONG_' => '周期时长',
     '_BINDING_IDENTITY_' => '绑定身份',
-    '_ALLOWS_USERS_TO_BUY_' => '允许购买的用户组',
+    '_ALLOWS_USERS_TO_BUY_' => '允许购买的权限组',
     '_EACH_AMOUNT_' => '每个额度消费',
     '_AFTER_EVERY_SUCCESS_' => '每个成功后获得',
     '_SUCCESS_IS_CONCERNED_WITH_EACH_OTHER_' => '成功后是否互相关注',
@@ -601,8 +604,8 @@ return array(
 //    _MESSAGE_
     '_"MASS_USER_LIST"_' => "群发用户列表",
     '_GROUP_USER_LIST_' => '群发用户列表',
-    '_USER_GROUP:_' => '用户组：',
-    '_FILTER_ACCORDING_TO_USER_GROUP_' => '根据用户组筛选',
+    '_USER_GROUP:_' => '权限组：',
+    '_FILTER_ACCORDING_TO_USER_GROUP_' => '根据权限组筛选',
     '_IDENTITY_' => '身份：',
     '_FILTER_ACCORDING_TO_USER_IDENTITY_' => '根据用户身份筛选',
     '_SEARCH_ACCORDING_TO_USERS_NICKNAME_' => '根据用户昵称搜索',
@@ -612,7 +615,7 @@ return array(
     '_"NICKNAME"_' => "昵称",
     '_PLEASE_ENTER_THE_MESSAGE_HEADER_' => '请输入消息标题',
     '_PLEASE_ENTER_THE_MESSAGE_CONTENT_' => '请输入消息内容',
-    '_PLEASE_SELECT_A_USER_GROUP_OR_AN_IDENTITY_GROUP_OR_USER_' => '请选择用户组或身份组或者用户',
+    '_PLEASE_SELECT_A_USER_GROUP_OR_AN_IDENTITY_GROUP_OR_USER_' => '请选择权限组或身份组或者用户',
     '_SEND_' => '发送成功',
 
 //    model
@@ -668,7 +671,6 @@ return array(
     '_MODULE_KEY_TOKEN_' => '模块密钥Token',
     '_MODULE_KEY_TOKEN_VICE_' => '请到云市场对应版本的下载页找到Token，并填入，此后Token会自动跟随版本升级，无需再手动修改',
     '_MODULE_EDIT_' => '编辑模块—',
-    '_SHOW_NAV_'=>'是否显示在导航栏',
 
 //    public
     '_VERIFICATION_CODE_INPUT_ERROR_' => '验证码输入错误！',
@@ -759,7 +761,9 @@ return array(
 //    role
     '_IDENTITY_LIST_' => '身份列表',
     '_DESCRIPTION_' => '描述',
-    '_DEFAULT_USER_GROUP_' => '默认用户组',
+    '_SAME_GROUP_ROLE_CANNOT_BE_AT_THE_SAME_TIME_' => '同一分组中的身份不能同时持有',
+    '_NO_GROUP_POINT_I_CREATE_' => '还没有分组？点我创建',
+    '_DEFAULT_USER_GROUP_' => '默认权限组',
     '_SORT_' => '排序',
     '_DO_YOU_NEED_AN_INVITATION_TO_REGISTER_' => '是否需要邀请才能注册',
     '_REGISTRATION_WILL_NEED_TO_AUDIT_' => '注册后是否需要审核',
@@ -770,7 +774,7 @@ return array(
     '_NO_GROUP_' => '无分组',
     '_CANT_REPEAT_' => '不能重复',
     '_ENGLISH_LOGO_' => '英文标识',
-    '_THE_DEFAULT_USER_REGISTRATION_WHERE_THE_USER_GROUP_CHOOSE_' => '用户注册后的默认所在用户组,多选',
+    '_THE_DEFAULT_USER_REGISTRATION_WHERE_THE_USER_GROUP_CHOOSE_' => '用户注册后的默认所在权限组，多选',
     '_NEED_TO_BE_INVITED_TO_REGISTER_' => '需要邀请注册',
     '_DEFAULT_IS_OFF_AFTER_OPENING_THE_USER_CAN_BE_INVITED_TO_REGISTER_' => '默认为关闭，开启后，得到邀请的用户才能注册',
     '_OFF_' => '关闭',
@@ -863,6 +867,7 @@ return array(
     '_REGISTRATION_SWITCH_' => '注册开关',
     '_THE_REGISTRATION_OPTION_THAT_ALLOWS_THE_USE_OF_THE_REGISTRATION_IS_CLOSED_' => '允许使用的注册选项,全不选即为关闭注册',
     '_MAILBOX_' => '邮箱',
+    '_WECHAT_' =>'微信',
     '_MOBILE_PHONE_' => '手机',
     '_MAILBOX_VERIFICATION_TYPE_' => '邮箱验证类型',
     '_TYPE_MAILBOX_VERIFICATION_' => '邮箱验证的类型',
@@ -884,13 +889,8 @@ return array(
     '_SMS_SEND_SERVICE_PROVIDERS_NEED_TO_INSTALL_THE_PLUG-IN_' => '短信发送服务商，需要安装插件',
     '_THE_MESSAGE_RETRANSMISSION_TIME_' => '短信重发时间',
     '_SMS_PLATFORM_HTTP_' => '短信平台HTTP',
-    '_SMS_PLATFORM_HTTPS_' => '短信平台HTTPS',
     '_SMS_PLATFORM_ACCOUNT_NUMBER_' => '短信平台帐号',
     '_SMS_PLATFORM_PASSWORD_' => '短信平台密码',
-    '_SMS_ACCOUNTSID_' => '短信平台开发者ID',
-    '_SMS_TOKEN_' => '短信平台TOKEN',
-    '_SMS_APPID_' => '短信平台应用ID',
-    '_SMS_TEMPLATEID_' => '短信平台模板ID',
     '_MESSAGE_CONTENT_' => '短信内容',
     '_HIERARCHY_' => '等级配置',
     '_ONE_PER_LINE_BETWEEN_THE_NAME_AND_THE_INTEGRAL_BY_A_COLON_' => '每行一条，名称和积分之间用冒号分隔',
@@ -968,6 +968,11 @@ return array(
     '_PLEASE_ENTER_THE_CONFIRMATION_PASSWORD_' => '请输入确认密码',
     '_YOUR_NEW_PASSWORD_IS_NOT_CONSISTENT_WITH_THE_CONFIRMATION_PASSWORD_' => '您输入的新密码与确认密码不一致',
     '_CHANGE_PASSWORD_SUCCESS_' => '修改密码成功！',
+    '_MODIFY_USERNAME_' => '修改用户名',
+    '_PLEASE_ENTER_A_USERNAME_' => '请输入用户名',
+    '_PLEASE_ENTER_A_MOBILE_' => '请输入手机号码',
+    '_MODIFY_USERNAME_SUCCESS_' => '修改用户名成功！',
+    '_MODIFY_USERNAME_FAILURE_' => '修改用户名失败！',
     '_SYSTEM_' => '系统',
     '_USER_BEHAVIOR_' => '用户行为',
     '_NEW_BEHAVIOR_' => '新增行为',
@@ -1200,7 +1205,7 @@ return array(
     '_PACK_MODULE_GUIDE_' => '模块打包向导',
     '_PACK_MODULE_GUIDE_VICE_' => '（适用于v2.1.0以上版本OS）',
     '_PACK_WELCOME_' => '欢迎使用本工具。本工具将会通过引导来快速生成一个模块安装引导脚本。',
-    '_PACK_SYSTEM_REQUEST_' => '使用本工具打包的程序必须是在OpenSNS 2.1.0版本或OpenCenter 1.5.0 以上方可安装。更低版本的OpenSNS及1.0.0版的OpenCenter均无法兼容。',
+    '_PACK_SYSTEM_REQUEST_' => '使用本工具打包的程序必须是在UCToo 1.0.0 以上方可安装。更低版本的UCToo均无法兼容。',
     '_PACK_MODULE_SELECT_' => '选择您要打包的模块',
     '_PACK_STEP_ONE_' => '第一步.导出后台菜单',
     '_PACK_STEP_TWO_' => '第二步.导出权限节点',
@@ -1225,7 +1230,7 @@ return array(
 
     '_PACK_STEP_TWO_VICE_' => '（请先在后台为模块建立完整的前台权限节点）',
     '_PACK_SYSTEM_DETECTED_AUTHORITY_' => '系统检测到的模块前台权限节点',
-    '_PACK_AUTHORITY_CHECK_' => '勾选所有用户组默认持有的权限，不勾选的话，模块安装后管理员需要手动分配权限。',
+    '_PACK_AUTHORITY_CHECK_' => '勾选所有权限组默认持有的权限，不勾选的话，模块安装后管理员需要手动分配权限。',
     '_PACK_SYSTEM_DETECTED_AUTHORITY_SKIP_' => '未检测到任何的前台权限节点，如果确定不需要前台节点，可直接跳过本步骤。',
 
     '_PACK_STEP_THREE_VICE_' => '（请先在后台为模块建立对应的用户行为和行为限制）',
@@ -1263,7 +1268,7 @@ return array(
     '_PACK_VERSION_GUIDE_' => '版本打包向导',
     '_PACK_VERSION_GUIDE_VICE_' => '（适用于v2.1.0以上版本OS）',
     '_PACK_VERSION_WELCOME_' => '欢迎使用本工具。本工具将会生成一个可以导入到云市场的系统版本。',
-    '_PACK_VERSION_LIMIT_' => '使用本工具打包的程序必须是在OpenSNS 2.1.0版本或OpenCenter 1.5.0 以上方可安装。更低版本的OpenSNS及1.0.0版的OpenCenter均无法兼容。',
+    '_PACK_VERSION_LIMIT_' => '使用本工具打包的程序必须是在UCToo 1.0.0 以上方可安装。更低版本的UCToo均无法兼容。',
     '_PACK_VERSION_MD5_' => '当前系统的文件MD5序列',
 
     '_FAIL_BACKUP_WITH_BR_' => '备份{$file}失败。<br>',
@@ -1289,7 +1294,10 @@ return array(
     '_EXECUTION_TIME_' => '执行时间',
     '_DETAILED_' => '详细',
     '_THERE_IS_NO_CONTENT_' => ' 暂时还没有内容!',
-
+    '_SCREEN_' => '筛选',
+    '_EXPORT_CSV_' => '导出CSV',
+    '_DATA_MORE_' => 'id,行为名称,执行者,执行者IP,日志内容,执行时间',
+    '_EXPORT_SCORE_LOG_'=> 'id,用户,积分类型,调整类型,积分变动,积分最终值,变动描述,创建时间',
 
 //edit
     '_VIEWING_BEHAVIOR_LOG_' => '查看行为日志',
@@ -1415,8 +1423,8 @@ return array(
 
 
 //group
-    '_USER_GROUP_AUTHORIZATION_' => '用户组授权',
-    '_USER_GROUP_LIST_' => ' 所属的用户组列表',
+    '_USER_GROUP_AUTHORIZATION_' => '权限组授权',
+    '_USER_GROUP_LIST_' => ' 所属的权限组列表',
 
 //index
 
@@ -1425,7 +1433,7 @@ return array(
 
 
 //user
-    '_USER_GROUP_MEMBERSHIP_' => '用户组成员授权',
+    '_USER_GROUP_MEMBERSHIP_' => '权限组成员授权',
     '_LAST_LOGIN_TIME_' => '最后登录时间',
     '_LAST_LOGIN_IP_' => '最后登录IP',
     '_STATE_' => '状态',
@@ -1869,7 +1877,7 @@ return array(
 
 //_LIST_s
     '_ONLY_THE_MODULE_IN_THE_CLOUD_MARKET_CAN_DETECT_UPDATES_' => '（只有云市场中的模块方可检测更新）',
-    '_CHECK_FOR_UPDATES_IMMEDIATELY_' => ' 刷新',
+    '_CHECK_FOR_UPDATES_IMMEDIATELY_' => ' 立刻检查更新',
     '_RESET_ALL_MODULE_INFORMATION_IS_NOT_SYNCHRONIZED_TO_USE_' => ' 重置全部（模块信息不同步的时候使用）',
     '_A_NEW_VERSION_CAN_BE_UPDATED_WITH_DOUBLE_' => '"有新版本可以更新"',
     '_THERE_IS_A_NEW_VERSION_' => '有新版',
@@ -2004,7 +2012,7 @@ return array(
     '_PLEASE_SET_UP_THE_EXTENDED_DATA_FIELD_FOR_THE_USER_' => '请先设置身份用户拥有的扩展资料字段',
 
 //rank
-    '_DEFAULT_TITLE_CONFIGURATION_' => '默认头衔配置',
+    '_DEFAULT_TITLE_AND_LABEL_CONFIGURATION_' => '默认头衔和标签配置',
     '_USER_CAN_APPLY_FOR_TITLE_' => '用户可申请头衔',
     '_CREATE_PERSON_' => ' 创建人',
     '_USERS_CAN_NOT_APPLY_FOR_THE_TITLE_' => '用户不可申请头衔',
@@ -2014,7 +2022,7 @@ return array(
     '_ADD_A_TITLE_' => '添加头衔',
 
 //score
-    '_DEFAULT_INTEGRATION_' => '默认积分配置',
+    '_DEFAULT_INTEGRATION_AND_AVATAR_' => '默认积分和头像配置',
     '_UNIT_WITH_COLON_' => '（单位：',
 
 //usertag
@@ -2029,6 +2037,14 @@ return array(
     '_CAN_HAVE_A_LABEL_CONFIGURATION_' => '可拥有标签配置',
     '_EXTENDED_DATA_CONFIGURATION_' => '扩展资料配置',
     '_FILL_IN_THE_DATA_CONFIGURATION_REGISTER_' => '注册时填写资料配置',
+
+//新增
+    '_USER_DEFAULT_SCORE_AND_AVATAR_CONFIGURATION_' => '设置获得该身份用户的默认积分和头像',
+    '_USER_DEFAULT_TITLE_AND_LABEL_CONFIGURATION_' => '获得该身份的用户将默认获得勾选的头衔和标签',
+    '_USER_EXTENDED_DATA_FIELD_CONFIGURATION_' => '设置拥有该身份用户的可拥有扩展资料字段',
+    '_USER_EXTENDED_DATA_FIELD_CONFIGURATION_FOR_REGISTRATION_' => '设置拥有该身份用户注册时要填写的扩展资料字段',
+    '_TITLE_AND_LABEL_CONFIGURATION_' => '头衔和标签配置',
+    '_WEIBO_TITLE_' => '标题名称',
 
 
     /*Theme*/
@@ -2046,7 +2062,7 @@ return array(
     '_THEME_VERSION_WITH_DOUBLE_' => '"主题版本"',
     '_CHECK_THE_THEME_WITH_DOUBLE_' => '"查看该主题"',
     '_SYSTEM_DEFAULT_THEME_' => ' 系统默认主题',
-    '_BUILT_IN_OPENSNS_' => ' 内置于OpenCenter',
+    '_BUILT_IN_UCTOO_' => ' 内置于UCToo',
     '_IN_THE_SYSTEM_IT_IS_THE_BASIS_OF_OTHER_TOPICS_' => ' 系统中，是其它主题的基础主题',
     '_JIAXING_WANTS_TO_DAY_MDT_INFOTECH_LTD_' => '嘉兴想天信息科技有限公司',
     '_BASIC_THEME_' => '基础主题',
@@ -2109,10 +2125,10 @@ return array(
 //changegroup
     '_CURRENTLY_SELECTED_USERS_' => '当前选中用户',
     '__ALL_USERS_PLEASE_BE_CAREFUL_' => '-所有用户(请谨慎操作！',
-    '_CHOOSE_THE_USER_GROUP_OF_THESE_USERS_' => '请选择这些用户的用户组',
-    '_THE_GROUP_THAT_WILL_BE_LOST_TO_THE_USER_GROUP_WHICH_IS_OWNED_BY_THE_USER_ALL_USERS_ARE_USING_THE_NEW_SET_OF_USERS_' => '（将丢失原先用户所属的用户组，全部使用新设置的用户组）',
+    '_CHOOSE_THE_USER_GROUP_OF_THESE_USERS_' => '请选择这些用户的权限组',
+    '_THE_GROUP_THAT_WILL_BE_LOST_TO_THE_USER_GROUP_WHICH_IS_OWNED_BY_THE_USER_ALL_USERS_ARE_USING_THE_NEW_SET_OF_USERS_' => '（将丢失原先用户所属的权限组，全部使用新设置的权限组）',
     '_SUBMIT_' => '提交',
-    '_DETERMINE_THE_USER_GROUP_THAT_SET_THESE_USERS?_THIS_OPERATION_CAN_NOT_BE_REDUCED_WITH_SINGLE_' => "'确定设置这些用户的用户组？此操作不可还原。'",
+    '_DETERMINE_THE_USER_GROUP_THAT_SET_THESE_USERS?_THIS_OPERATION_CAN_NOT_BE_REDUCED_WITH_SINGLE_' => "'确定设置这些用户的权限组？此操作不可还原。'",
 
 
 //editaction
@@ -2247,13 +2263,13 @@ return array(
 
 
 //AuthGroupModel
-    '_YOU_MUST_SET_THE_USERS_GROUP_TITLE_' => '必须设置用户组标题',
+    '_YOU_MUST_SET_THE_USERS_GROUP_TITLE_' => '必须设置权限组标题',
     '_DESCRIPTION_UP_TO_80_CHARACTERS_' => '描述最多80字符',
     '_RULE_DATA_IS_NOT_LEGAL_' => '规则数据不合法',
     '_CANT_REPEAT_THE_ADD_' => '不能重复添加',
     '_USER_ID_' => '用户id',
-    '_USER_GROUP_ID_' => '用户组id',
-    '_USER_GROUP_NAME_' => '用户组名称',
+    '_USER_GROUP_ID_' => '权限组id',
+    '_USER_GROUP_NAME_' => '权限组名称',
 
 
 //AuthRuleModel
@@ -2349,4 +2365,4 @@ return array(
 
 
     '_SUCCESS_SETTING_'=>'设置成功'
-);
+];

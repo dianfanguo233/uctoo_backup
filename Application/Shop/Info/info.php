@@ -28,7 +28,7 @@ return array(
     //前台入口，可用U函数
     'entry' => 'Shop/index/index',
 
-    'admin_entry' => 'Admin/Shop/index',
+    'admin_entry' => 'shop/Shop/index',
 
     'icon' => 'shopping-cart',
 

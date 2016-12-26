@@ -61,7 +61,26 @@ function get_at_users($content)
 
     return array_unique($users[1]);
 }
-
+/*
+ * 获取@用户昵称
+ * fanjiawei
+ */
+function get_at_usersnickname($content)
+{
+    //正则表达式匹配   /\@\[([a-zA-Z]+|[0-9]+|[\x{4e00}-\x{9fa5}]+)\]/u
+    //('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/',$name);
+    //$user_pattern= '/\@\[[A-Za-z0-9_\x{4e00}-\x{9fa5}\x80-\xff]+\]/';
+    $user_pattern= '/\@\[[A-Za-z0-9_\x{4e00}-\x{9fa5}\x80-\xff]+\]/u';
+    preg_match_all($user_pattern, $content, $users);
+   $k=0;
+    $nickname=array();
+   foreach($users[$k] as $v){
+       $nickname[]=substr($v,2,strlen($v)-3);
+       $k++;
+   }
+    //dump($nickname);
+    return array_unique($nickname);
+}
 
 function get_at_app_users($content)
 {
@@ -90,8 +109,17 @@ function get_at_uids($content)
 
 function parse_comment_content($content)
 {
-    //就目前而言，评论内容和微博的格式是一样的。
-    return parse_weibo_content($content);
+    if (modC('WEIBO_BR', 0, 'Weibo')) {
+        $content = str_replace('/br', '<br/>', $content);
+        $content = str_replace('/nb', ' ', $content);
+
+    } else {
+        $content=str_replace('/br','',$content);
+        $content=str_replace('/nb','',$content);
+    }
+    
+    $content = parseWeiboContent($content);
+    return $content;
 }
 
 function parse_comment_mob_content($content)
@@ -141,16 +169,19 @@ function shorten_white_space($content)
 
 function parse_url_link($content)
 {
-    $content = preg_replace("#((http|https|ftp)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)#ie",
-        "'<a class=\"label label-badge\" href=\"$1\" target=\"_blank\"><i class=\"icon-link\" title=\"$1\"></i></a>$4'", $content
-    );
+    if(!strrpos($content,'exp_img')){
+        $content = preg_replace("#((http|https|ftp)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)#ie",
+            "'<a class=\"label label-badge badge-label\" href=\"$1\" target=\"_blank\"><i class=\"icon-link\" title=\"$1\"></i></a>$4'", $content
+        );
+    }
+        
     return $content;
 }
 
 function parseWeiboContent($content)
 {
     hook('parseWeiboContent', array('content' => &$content));
-    hook('parseContent',array('content'=>&$content));
+    $content=sensitive_text($content);
     return $content;
 }
 

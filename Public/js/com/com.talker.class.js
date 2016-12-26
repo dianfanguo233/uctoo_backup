@@ -27,12 +27,25 @@ var talker = {
      * 发起聊天请求
      * @param uid
      */
-    start_talk: function (id) {
+    start_talk: function (id,has) {
+        if(has == 1){
+            show_chat_frame(function(){
+                create_conv(id);
+            });
+        }
 
-        show_chat_frame(function(){
-            create_conv(id);
-        });
-
+        else{
+            $.post(U('Ucenter/Session/createTalk'), {uids: id}, function (msg) {
+                if (msg.status) {
+                    talker.show();
+                    talker.open(msg.info.id);
+                    /*在面板中加入一个项目*/
+                    talker.prepend_session(msg.info);
+                } else {
+                    //TODO 创建失败
+                }
+            }, 'json');
+        }
 
 
 /*

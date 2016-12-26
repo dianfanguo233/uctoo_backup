@@ -18,16 +18,36 @@ function parse_expression_callback($data)
     if (preg_match("/#.+#/i", $data[0])) {
         return $data[0];
     }
-    $allexpression = D('Core/Expression')->getAll();
-    /*    if(!stristr($data[0],":")){
-            $data[0] = str_replace(']',':miniblog]',$data[0]);
-        }*/
+
+    $allexpression = D('Core/AllMyExpression')->getAll();
     $info = $allexpression[$data[0]];
+    $exppkg = M('expression_pkg');
+    $pkg = $exppkg->field('pkg_name')->select();
+    foreach ($pkg as $f) {
+        $arr[] = $f['pkg_name'];
+    }
+    $str = $info['emotion'];//^[0-9]*$
+    $pkgname = substr($str,1,4);//mycollection
+    $expname=substr($str,6,strlen($str)-strrpos($str, ':')-1-1);//279
+    if($pkgname=='face'&&preg_match('/^[0-9]*$/',$expname)){
+        $key=1;
+    }
+    else{
+        $key=0;
+    }
+
     if ($info) {
-        return preg_replace("/\\[.+?\\]/i", "<img src='" . $info['src'] . "' />", $data[0]);
+        if ($key==0) {
+            return preg_replace("/\\[.+?\\]/i", "<div class='expression_pic'><img class='expimg' src='" . $info['src'] . "' /></div>", $data[0]);
+        }
+            //<span class='collect' onclick='collect(this)'onmouseout='hidspan(this)'></span>
+      
+
+
     } else {
         return $data[0];
     }
+
 }
 
 /**
@@ -43,7 +63,7 @@ function getShort($str, $length = 40, $ext = '')
     $str = strip_tags($str);
     $str = htmlspecialchars_decode($str);
     $strlenth = 0;
-    $out = '';
+    $output = '';
     preg_match_all("/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xff][\x80-\xbf]{3}/", $str, $match);
     foreach ($match[0] as $v) {
         preg_match("/[\xe0-\xef][\x80-\xbf]{2}/", $v, $matchs);

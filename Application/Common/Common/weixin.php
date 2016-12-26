@@ -2,56 +2,63 @@
 // +----------------------------------------------------------------------
 // | UCToo [ Universal Convergence Technology ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2015 http://www.uctoo.com All rights reserved.
+// | Copyright (c) 2014-2017 http://uctoo.com All rights reserved.
 // +----------------------------------------------------------------------
-// | Author: patrick <contact@uctoo.com> <http://www.uctoo.com>
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: Patrick <contact@uctoo.com>
 // +----------------------------------------------------------------------
 
-function addWeixinLog($data, $data_post = '') {
+function addWeixinLog($data, $data_post = '',$mp_id = 0, $mid = 0,$ToUserName = '',$FromUserName = '',$type = '') {
     $log ['cTime'] = time ();
     $log ['cTime_format'] = date ( 'Y-m-d H:i:s', $log ['cTime'] );
     $log ['data'] = is_array ( $data ) ? serialize ( $data ) : $data;
+    $log ['mp_id'] = $mp_id;
+    $log ['mid'] = $mid;
+    $log ['ToUserName'] = $ToUserName;
+    $log ['FromUserName'] = $FromUserName;
+    $log ['type'] = $type;
     $log ['data_post'] = is_array ( $data_post ) ? serialize ( $data_post ) : $data_post;
-    M ( 'weixin_log' )->add ( $log );
+    db ( 'weixin_log' )->insert ( $log );
 }
 
-// 获取当前用户的Token
-function get_token($token = NULL) {
-    if ($token !== NULL) {
-        session ( 'token', $token );
-    } elseif (! empty ( $_REQUEST ['token'] )) {
-        session ( 'token', $_REQUEST ['token'] );
+// 获取当前用户的mp_Token
+function get_token($mp_token = NULL) {
+    if ($mp_token !== NULL) {
+        session ( 'mp_token', $mp_token );
+    } elseif (! empty ( $_REQUEST ['mp_token'] )) {
+        session ( 'mp_token', $_REQUEST ['mp_token'] );
     }
-    $token = session ( 'token' );
-    if (empty ( $token )) {
-        $token = session('user_auth.token');
+    $mp_token = session ( 'mp_token' );
+    if (empty ( $mp_token )) {
+        $mp_token = session('user_auth.mp_token');
     }
-    if (empty ( $token )) {
+    if (empty ( $mp_token )) {
         return - 1;
     }
 
-    return $token;
+    return $mp_token;
 }
 
-// 获取公众号的信息   TODO:有bug隐患，存在不同管理员在系统中添加了相同公众号的情况
+// 获取公众号的信息
 function get_token_appinfo($token = '') {
     empty ( $token ) && $token = get_token ();
     $map ['public_id'] = $token;
-    $info = M ( 'member_public' )->where ( $map )->find ();
+    $info = model ( 'member_public' )->where ( $map )->find ();
     return $info;
 }
 
 function get_mpid_appinfo($mp_id = '') {
     empty ( $mp_id ) && $mp_id = get_mpid ();
     $map ['mp_id'] = $mp_id;
-    $info = M ( 'member_public' )->where ( $map )->find ();
+    $info = model ( 'member_public' )->where ( $map )->find ();
     return $info;
 }
 // 获取公众号的信息
 function get_token_appname($token = '') {
     empty ( $token ) && $token = get_token ();
     $map ['public_id'] = $token;
-    $info = M ( 'member_public' )->where ( $map )->find ();
+    $info = model ( 'member_public' )->where ( $map )->find ();
     return $info['public_name'];
 }
 
@@ -95,7 +102,7 @@ function get_openid($openid = NULL) {
     //下面这段应该逻辑没问题，如果公众号配置信息错误或者没有snsapi_base作用域的获取信息权限可能会出现死循环，注释掉以下if可治愈
     if ( empty($openid) && $isWeixinBrowser) {
 
-        $callback = GetCurUrl ();
+       // $callback = GetCurUrl ();
        // OAuthWeixin ( $callback );
         $info = get_mpid_appinfo ();
 
@@ -118,43 +125,29 @@ function get_openid($openid = NULL) {
     return $openid;
 }
 
-//没有用到这个函数，请使用wxauth类
-function OAuthWeixin($callback) {
-    $isWeixinBrowser = isWeixinBrowser ();
-    $info = get_mpid_appinfo ();
 
-    if (! $isWeixinBrowser || $info ['type'] != 2 || empty ( $info ['appid'] )) {
-        redirect ( $callback . '&openid=-1' );
-    }
-    $param ['appid'] = $info ['appid'];
-
-    if (! isset ( $_GET ['getOpenId'] )) {
-        $param ['redirect_uri'] = $callback . '&getOpenId=1';
-        $param ['response_type'] = 'code';
-        $param ['scope'] = 'snsapi_base';
-        $param ['state'] = 123;
-        $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?' . http_build_query ( $param ) . '#wechat_redirect';
-        redirect ( $url );
-    } elseif ($_GET ['state']) {
-        $param ['secret'] = $info ['secret'];
-        $param ['code'] = I ( 'code' );
-        $param ['grant_type'] = 'authorization_code';
-
-        $url = 'https://api.weixin.qq.com/sns/oauth2/access_token?' . http_build_query ( $param );
-        $content = file_get_contents ( $url );
-        $content = json_decode ( $content, true );
-
-        redirect ( $callback . '&openid=' . $content ['openid'] );
-    }
-}
-
-// 获取当前上下文的公众号mp_id
-function get_mpid($mp_id = NULL) {
+// 设置当前上下文的公众号mp_id
+function set_mpid($mp_id = NULL) {
     if ($mp_id !== NULL) {
         session ( 'mp_id', $mp_id );
     } elseif (! empty ( $_REQUEST ['mp_id'] )) {
-        $mp_id = I('mp_id','','/^\w{32}$/');
+        $mp_id = input('mp_id','','/^\w{32}$/');
         empty($mp_id) || session ( 'mp_id', $mp_id );
+    }
+
+    return $mp_id;
+}
+// 获取当前上下文的公众号mp_id
+function get_mpid($mp_id = NULL) {
+    trace('__get_mpid input1','info');
+    trace(input ('mp_id'),'info');
+    if ($mp_id !== NULL) {
+        session ( 'mp_id', $mp_id );
+    } elseif (! empty ( input('mp_id') )) {
+        trace('__get_mpid input','info');
+        trace(input ('mp_id'),'info');
+        $mp_id = input('mp_id');
+        session ( 'mp_id', $mp_id );
     }
     $mp_id = session ( 'mp_id' );
     if (empty ( $mp_id )) {
@@ -163,7 +156,7 @@ function get_mpid($mp_id = NULL) {
     if (empty ( $mp_id )) {
         $map['uid'] = is_login();
         $map['public_id'] = get_token();
-        $mp =  D('Mpbase/MemberPublic')->where($map)->find();  //所登陆会员帐号当前管理的公众号
+        $mp =  model('MemberPublic')->where($map)->find();  //所登陆会员帐号当前管理的公众号
         $mp_id = $mp['mp_id'];
     }
     if (empty ( $mp_id )) {
@@ -175,7 +168,7 @@ function get_mpid($mp_id = NULL) {
 
 //根据mid获取粉丝用户信息
 function get_mid_ucuser($mid = 0) {
-  $model = D('Ucuser');
+  $model = model('Ucuser');
   $user = $model->find($mid);
   return $user;
 }
@@ -185,7 +178,7 @@ function get_ucuser_byuid($uid) {
     if(empty($uid)){
         return false;
     }
-    $model = D('Ucuser');
+    $model = model('Ucuser');
     $map['uid'] = $uid;
     $user = $model->where($map)->select();     //一个pc端帐号的uid可能对应多个公众号的mid
     return $user;
@@ -197,8 +190,8 @@ function get_ucuser_mid($mid = 0) {
     $mp_id = get_mpid ();
     if ($mid !== NULL) {
         session ( 'mid_' . $mp_id, $mid );
-    } elseif (! empty ( $_REQUEST ['mid'] )) {
-        session ( 'mid_' . $mp_id, $_REQUEST ['mid'] );
+    } elseif (! empty ( input('mid') )) {
+        session ( 'mid_' . $mp_id, input('mid') );
     }                                                                    //以上是带mid参数调用函数时设置session中的mid
     $mid = session ( 'mid_' . $mp_id );
 
@@ -210,7 +203,7 @@ function get_ucuser_mid($mid = 0) {
     if ( $mid <= 0 && $isWeixinBrowser) {
         $map['openid'] = get_openid();
         $map['mp_id'] = $mp_id;
-        $ucuser = D('Ucuser');
+        $ucuser = model('Ucuser');
         $data = $ucuser->where($map)->find();
         if(!$data){                                                 //公众号没有这个粉丝信息，就注册一个
             $mid = $ucuser->registerUser( $map['mp_id'] ,$map['openid']);    //微信粉丝表ucuser表的mid
@@ -230,11 +223,11 @@ function get_ucuser_mid($mid = 0) {
 
 // 同步微信用户资料到本地存储。
 function sync_wxuser($mp_id, $openid) {
-    $model = D('Ucuser');
+    $model = model('Ucuser');
     $map['mp_id'] = $mp_id;
     $map['openid'] = $openid;
     $wxuser = session ( 'wxuser_' . $mp_id.$openid );
-    if(!empty($wxuser['openid'])){         //通过oauth获取到过粉丝信息
+    if(!empty($wxuser['openid'])){         //通过oauth获取到过粉丝信息,在get_openid中获取和保存到了粉丝信息到session
         $user = $model->where($map)->find();
         if($user['status'] != 2){           //没有同步过粉丝信息
             $user = array_merge($user ,$wxuser);
@@ -267,7 +260,7 @@ function get_member_by_openid($openid) {
     if(empty($openid)){
         return false;
     }
-    $model = D('Ucuser');
+    $model = model('Ucuser');
     $map['openid'] = $openid;
     $user = $model->where($map)->find();
     trace($user["openid"]."for".$user['mid']."get".$user['uid']."a",'用户中心get_member_by_openid','DEBUG',true);
@@ -284,7 +277,7 @@ function get_ucuser_by_openid($openid) {
     if(empty($openid)){
         return false;
     }
-    $model = D('Ucuser');
+    $model = model('Ucuser');
     $map['openid'] = $openid;
     $user = $model->where($map)->find();
 

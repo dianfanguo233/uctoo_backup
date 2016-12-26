@@ -1,5 +1,5 @@
 <?php 
- return array(
+ return [
 '_ERROR_FIRST_LOGIN_' =>' Please visit this page after landing',
 '_DATA_EDIT_' =>' Edit data',
 '_ERROR_NEED_LOGIN_' =>' Need to log in',
@@ -419,4 +419,4 @@
 '_STEP_' =>' Skip',
 '_MY_NEWS_LACK_' =>" You haven't submitted information yo ~",
 
-);
+ ];

@@ -14,8 +14,10 @@
  */
 function query_user($fields = null, $uid = null)
 {
+    trace('___query_user','info');
     $uid = $uid == null ? is_login():$uid;
-    $info = D('Common/User')->query_user($fields, $uid);
+    $user = new app\common\model\User();
+    $info = $user->query_user($fields, $uid);
 
 /*    if(!in_array($uid,$_SESSION['assign_user_ids'])){
         $query = D('Common/User')->query_user(null, $uid);
@@ -30,12 +32,12 @@ function query_user($fields = null, $uid = null)
 function read_query_user_cache($uid, $field)
 {
 
-    return D('Common/User')->read_query_user_cache($uid, $field);
+    return model('Common/User')->read_query_user_cache($uid, $field);
 }
 
 function write_query_user_cache($uid, $field, $value)
 {
-    return D('Common/User')->write_query_user_cache($uid, $field, $value);
+    return model('Common/User')->write_query_user_cache($uid, $field, $value);
 }
 
 /**清理用户数据缓存，即时更新query_user返回结果。
@@ -45,5 +47,5 @@ function write_query_user_cache($uid, $field, $value)
  */
 function clean_query_user_cache($uid, $field)
 {
-    D('Common/User')->clean_query_user_cache($uid, $field);
+    model('Common/User')->clean_query_user_cache($uid, $field);
 }
